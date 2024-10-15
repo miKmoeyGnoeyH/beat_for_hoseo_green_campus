@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 abstract class Palette {
-  static Color get primary => const Color(0xff08449a);
+  static Color get primary => const Color(0xff222BA3);
   static Color get secondary => const Color(0xff03a1ac);
   static Color get tertiary => const Color(0xFFa30c1a);
   static Color get quarternary => const Color(0xff5e5a57);
