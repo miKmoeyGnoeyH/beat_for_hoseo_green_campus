@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:beat_flutter/data/provider/prefs_provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
@@ -8,23 +11,48 @@ class UserProvider {
 
   Future<User> signIn(String studentId, String nickname) async {
     final String requestUrl = dotenv.env['SIGN_IN']!;
+    User user = Guest();
+
+    final http.Response response = await _httpClient.post(
+      Uri.parse(requestUrl),
+      body: {
+        'studentId': studentId,
+        'nickname': nickname,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      PrefsProvider.setValue<String>('saved_studentId', studentId);
+      PrefsProvider.setValue<String>('saved_nickname', nickname);
+
+      final String authorization = response.headers['authorization']!;
+      final String neuroesInHand = await myNeuro(authorization);
+
+      user = Member(studentId, nickname, authorization, neuroesInHand);
+    }
+
+    return user;
+  }
+
+  Future<String> myNeuro(String authorization) async {
+    final String requestUrl = dotenv.env['MY_NEURO']!;
+    String ret = '';
 
     try {
-      final http.Response response = await _httpClient.post(
+      final http.Response response = await _httpClient.get(
         Uri.parse(requestUrl),
         headers: {
-          'studentId': studentId,
-          'nickname': nickname,
+          'authorization': authorization,
         },
       );
 
       if (response.statusCode == 200) {
-        return Member(studentId, nickname, response.headers['Authorization']!);
+        ret = response.body;
       }
-    } catch (e) {
-      return Guest();
+    } on Exception {
+      ret = '';
     }
-    return Guest();
+    return ret;
   }
 
   Future<bool> emailRequest(String studentId) async {

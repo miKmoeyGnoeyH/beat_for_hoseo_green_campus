@@ -1,7 +1,12 @@
+import 'package:beat_flutter/pages/home_page.dart';
+import 'package:beat_flutter/pages/sign_in_page.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import 'pages/sign_in_page.dart';
+import 'business/user_bloc.dart';
+import 'data/models/user_model.dart';
+import 'pages/routes/navigator_key_manager.dart';
+import 'pages/routes/routes.dart';
 import 'theme/theme_factory.dart';
 
 
@@ -15,6 +20,7 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> with WidgetsBindingObserver {
+  final UserBloc _userBloc = UserBloc();
   ThemeData theme = ThemeFactory.getThemeDataDependsOnSystemBrightness;
 
   @override
@@ -24,10 +30,17 @@ class _AppState extends State<App> with WidgetsBindingObserver {
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       theme: theme,
-      home: const SignInPage(),
+      navigatorKey: NavigatorKeyManager().navigatorKey,
+      routes: {
+        Routes.home: (context) => HomePage(),
+        Routes.signIn: (context) => SignInPage(),
+      },
+      initialRoute: user.userPageRoute,
     );
   }
 
+  User get user => _userBloc.state;
+  
   @override
   void initState() {
     super.initState();

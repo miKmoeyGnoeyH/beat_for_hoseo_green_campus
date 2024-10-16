@@ -1,34 +1,50 @@
+import 'dart:developer';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PrefsProvider {
   static final PrefsProvider _instance = PrefsProvider._internal();
-  late final SharedPreferences _prefs;
-
-  SharedPreferences get prefs => _prefs;
+  static late final SharedPreferences _prefs;
 
   factory PrefsProvider() => _instance;
-  PrefsProvider._internal() {
-    _init();
-  }
+  PrefsProvider._internal();
 
-  Future<void> _init() async {
+  static Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
   }
 
-  T getValueAs<T>(String key) {
+  static T getValueAs<T>(String key) {
+    if (!_prefs.containsKey(key)) return defaultValue<T>();
+
     switch(T) {
       case const (int):
-        return _prefs.getInt(key) as T? ?? _getDefaultValue<T>();
+        return _prefs.getInt(key) as T? ?? defaultValue<T>();
       case const (double):
-        return _prefs.getDouble(key) as T? ?? _getDefaultValue<T>();
+        return _prefs.getDouble(key) as T? ?? defaultValue<T>();
       case const (String):
-        return _prefs.getString(key) as T? ?? _getDefaultValue<T>();
+        return _prefs.getString(key) as T? ?? defaultValue<T>();
       default:
         throw Exception('Not supported type');
     }
   }
 
-  T _getDefaultValue<T>() {
+  static Future<void> setValue<T>(String key, T value) async {
+    switch(T) {
+      case const (int):
+        await _prefs.setInt(key, value as int);
+        break;
+      case const (double):
+        await _prefs.setDouble(key, value as double);
+        break;
+      case const (String):
+        await _prefs.setString(key, value as String);
+        break;
+      default:
+        throw Exception('Not supported type');
+    }
+  }
+
+  static T defaultValue<T>() {
     switch(T) {
       case const (int) :
         return 0 as T;

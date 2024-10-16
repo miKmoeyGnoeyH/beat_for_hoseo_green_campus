@@ -7,9 +7,10 @@ abstract class Palette {
   static Color get quarternary => const Color(0xff5e5a57);
   static Color get quinary => const Color(0xffe5e5e5);
 
-  static Color get lightSurface => const Color(0xffFFFFFF);
-  static Color get lightOnSurface => const Color(0xff000000);
+  static Color get lightSurface => const Color(0xfff5f5f5);
+  static Color get lightOnSurface => const Color(0xffffffff);
   static Color get lightOnPrimary => const Color(0xffffffff);
+  static Color get lightSecondary => const Color(0xffffffff);
   static Color get lightOnSecondary => const Color(0xffffffff);
   static Color get lightOnTertiary => const Color(0xffffffff);
   static Color get lightOnQuarternary => const Color(0xffffffff);

@@ -1,1 +1,11 @@
-{}
+{
+  "student_id": "Student ID",
+  "sid_hint": "Enter Your Student ID",
+  "nickname": "Nickname",
+  "nickname_hint": "Enter Your Nickname.",
+  "sign_in": "Sing In",
+  "register": "Register",
+  "forgot_sid": "Forgot Student ID",
+  "forgot_nickname": "Forgot Nickname",
+  "neuroes_in_hand": "neuroes in Hand"
+}

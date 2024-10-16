@@ -1,1 +1,11 @@
-{}
+{
+  "student_id": "학번",
+  "sid_hint": "학번을 입력해주세요.",
+  "nickname": "닉네임",
+  "nickname_hint": "닉네임을 입력해주세요.",
+  "sign_in": "로그인",
+  "register": "회원가입",
+  "forgot_sid": "학번 찾기",
+  "forgot_nickname": "닉네임 찾기",
+  "neuroes_in_hand": "보유 neuro"
+}

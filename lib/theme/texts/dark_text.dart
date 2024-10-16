@@ -1,51 +1,64 @@
 import 'package:flutter/material.dart';
 
 import '../colors/palette.dart';
+import 'fontweights.dart';
+
+final Color color = Palette.darkText;
 
 TextTheme get darkTextTheme => TextTheme(
-  headlineLarge: TextStyle(
+  displayLarge: TextStyle(
     fontSize: 96.0,
-    fontWeight: FontWeight.w300,
-    color: Palette.darkText,
+    fontWeight: FontWeights.light,
+    color: color,
+  ),
+  displayMedium: TextStyle(
+    fontSize: 60.0,
+    fontWeight: FontWeights.light,
+    color: color,
+  ),
+  displaySmall: TextStyle(
+    fontSize: 48.0,
+    fontWeight: FontWeights.regular,
+    color: color,
+  ),
+  headlineLarge: TextStyle(
+    fontSize: 34.0,
+    fontWeight: FontWeights.regular,
+    color: color,
   ),
   headlineMedium: TextStyle(
-    fontSize: 60.0,
-    fontWeight: FontWeight.w300,
-    color: Palette.darkText,
+    fontSize: 24.0,
+    fontWeight: FontWeights.regular,
+    color: color,
   ),
   headlineSmall: TextStyle(
-    fontSize: 48.0,
-    fontWeight: FontWeight.w400,
-    color: Palette.darkText,
+    fontSize: 20.0,
+    fontWeight: FontWeights.medium,
+    color: color,
   ),
   titleLarge: TextStyle(
-    fontSize: 34.0,
-    fontWeight: FontWeight.w400,
-    color: Palette.darkText,
+    fontSize: 16.0,
+    fontWeight: FontWeights.medium,
+    color: color,
   ),
   titleMedium: TextStyle(
-    fontSize: 24.0,
-    fontWeight: FontWeight.w400,
-    color: Palette.darkText,
-  ),
-  titleSmall: TextStyle(
-    fontSize: 20.0,
-    fontWeight: FontWeight.w500,
-    color: Palette.darkText,
+    fontSize: 14.0,
+    fontWeight: FontWeights.medium,
+    color: color,
   ),
   bodyLarge: TextStyle(
     fontSize: 16.0,
-    fontWeight: FontWeight.w400,
-    color: Palette.darkText,
+    fontWeight: FontWeights.regular,
+    color: color,
   ),
   bodyMedium: TextStyle(
     fontSize: 14.0,
-    fontWeight: FontWeight.w400,
-    color: Palette.darkText,
+    fontWeight: FontWeights.regular,
+    color: color,
   ),
   labelLarge: TextStyle(
-    fontSize: 12.0,
-    fontWeight: FontWeight.w400,
-    color: Palette.darkText,
+    fontSize: 14.0,
+    fontWeight: FontWeights.regular,
+    color: color.withOpacity(0.5),
   ),
 );

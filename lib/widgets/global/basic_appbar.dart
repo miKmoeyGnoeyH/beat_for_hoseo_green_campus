@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 
 class BasicAppBar extends StatelessWidget {
   const BasicAppBar({
-    required this.title,
+    this.title,
     this.textColor,
+    this.textStyle,
     this.leading,
     this.actions,
     super.key,
@@ -13,37 +14,18 @@ class BasicAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
-      title: Text(
-        title,
-        style: textColor != null
-            ? context.textTheme.titleMedium!.copyWith(color: textColor)
-            : context.textTheme.titleMedium,
-      ),
-      foregroundColor: context.colorScheme.onPrimary,
-      backgroundColor: context.colorScheme.primary,
-      surfaceTintColor: context.colorScheme.primary,
-      actions: [
-        // TODO: Replace with your icon
-        IconButton(
-          icon: const Icon(
-            Icons.leaderboard_outlined,
-            size: 24,
-          ),
-          onPressed: () {},
-        ),
-        IconButton(
-          icon: const Icon(
-            Icons.notifications_none_rounded,
-            size: 24,
-          ),
-          onPressed: () {},
-        ),
-      ],
+      title: title,
+      foregroundColor: context.colorScheme.onSecondary,
+      backgroundColor: context.colorScheme.secondary,
+      surfaceTintColor: context.colorScheme.secondary,
+      leading: leading,
+      actions: actions,
     );
   }
 
-  final String title;
+  final Widget? title;
   final Color? textColor;
+  final TextStyle? textStyle;
   final Widget? leading;
   final List<Widget>? actions;
 }
