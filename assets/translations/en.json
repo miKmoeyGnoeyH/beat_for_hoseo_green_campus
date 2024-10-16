@@ -7,5 +7,7 @@
   "register": "Register",
   "forgot_sid": "Forgot Student ID",
   "forgot_nickname": "Forgot Nickname",
-  "neuroes_in_hand": "neuroes in Hand"
+  "neuroes_in_hand": "neuroes in Hand",
+  "settings": "Settings",
+  "sign_out": "Sign Out"
 }

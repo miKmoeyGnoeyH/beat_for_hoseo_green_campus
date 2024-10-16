@@ -8,6 +8,7 @@ class BasicAppBar extends StatelessWidget {
     this.textStyle,
     this.leading,
     this.actions,
+    this.iconTheme,
     super.key,
   });
 
@@ -20,6 +21,13 @@ class BasicAppBar extends StatelessWidget {
       surfaceTintColor: context.colorScheme.secondary,
       leading: leading,
       actions: actions,
+      iconTheme: iconTheme,
+      shape: Border(
+        bottom: BorderSide(
+          color: context.colorScheme.onSecondary.withOpacity(0.2),
+          width: 0.5,
+        ),
+      ),
     );
   }
 
@@ -28,4 +36,5 @@ class BasicAppBar extends StatelessWidget {
   final TextStyle? textStyle;
   final Widget? leading;
   final List<Widget>? actions;
+  final IconThemeData? iconTheme;
 }

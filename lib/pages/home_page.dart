@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import '../data/models/user_model.dart';
 import '../widgets/global/basic_appbar.dart';
 import '../widgets/global/custom_scaffold.dart';
+import 'routes/routes.dart';
 
 class HomePage extends StatelessWidget {
   final UserBloc _userBloc = UserBloc();
@@ -15,27 +16,32 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomScaffold(
       appBar: BasicAppBar(
-        leading: Image.asset(
-          'assets/images/beat_icon.png',
-          width: 24,
-          height: 24,
-          fit: BoxFit.cover,
-        ),
-        title: Text.rich(
-          TextSpan(
-            children: [
+        title: Row(
+          children: [
+            Image.asset(
+              'assets/images/beat_icon.png',
+              width: 24,
+              height: 24,
+              fit: BoxFit.cover,
+            ),
+            const SizedBox(width: 12),
+            Text.rich(
               TextSpan(
-                text: '${user.nickname}님 ',
-                style: context.textTheme.bodyMedium,
+                children: [
+                  TextSpan(
+                    text: '${user.nickname}님 ',
+                    style: context.textTheme.bodyMedium,
+                  ),
+                  TextSpan(
+                    text: '${user.neuroesInHand} neuro',
+                    style: context.textTheme.bodyMedium!.copyWith(
+                      color: context.colorScheme.primary,
+                    ),
+                  ),
+                ],
               ),
-              TextSpan(
-                text: '${user.neuroesInHand} neuro',
-                style: context.textTheme.bodyMedium!.copyWith(
-                  color: context.colorScheme.primary,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
         textStyle: context.textTheme.bodyMedium,
         actions: [
@@ -59,40 +65,43 @@ class HomePage extends StatelessWidget {
               Icons.settings_outlined,
               size: 24,
             ),
-            onPressed: () {},
+            onPressed: () => Navigator.pushNamed(context, Routes.settings),
           ),
         ],
       ),
-      body: Column(
-        children: [
-          RoundedBorderedContainer(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              child: Row(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        context.tr('neuroes_in_hand'),
-                        style: context.textTheme.bodyLarge!.copyWith(
-                          color: context.colorScheme.onPrimary,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 32),
+        child: Column(
+          children: [
+            RoundedBorderedContainer(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                child: Row(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          context.tr('neuroes_in_hand'),
+                          style: context.textTheme.bodyLarge!.copyWith(
+                            color: context.colorScheme.onPrimary,
+                          ),
                         ),
-                      ),
-                      // TODO: 사용자 별 neuro로 변경
-                      Text(
-                        user.neuroesInHand,
-                        style: context.textTheme.headlineLarge!.copyWith(
-                          color: context.colorScheme.onPrimary,
+                        Text(
+                          user.neuroesInHand,
+                          style: context.textTheme.headlineLarge!.copyWith(
+                            color: context.colorScheme.onPrimary,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

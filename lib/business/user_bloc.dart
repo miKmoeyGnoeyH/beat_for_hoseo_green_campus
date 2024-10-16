@@ -62,6 +62,10 @@ class UserBloc extends Bloc<UserEvent, User> {
   }
 
   void _signOut(SignOut event, Emitter<User> emit) {
+    NavigatorKeyManager().navigatorState!.pushNamedAndRemoveUntil(
+          Routes.signIn,
+          (route) => false,
+        );
     emit(Guest());
   }
 }

@@ -1,4 +1,5 @@
 import 'package:beat_flutter/pages/home_page.dart';
+import 'package:beat_flutter/pages/settings_page.dart';
 import 'package:beat_flutter/pages/sign_in_page.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +35,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
       routes: {
         Routes.home: (context) => HomePage(),
         Routes.signIn: (context) => SignInPage(),
+        Routes.settings: (context) => SettingsPage(),
       },
       initialRoute: user.userPageRoute,
     );

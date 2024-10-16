@@ -7,5 +7,7 @@
   "register": "회원가입",
   "forgot_sid": "학번 찾기",
   "forgot_nickname": "닉네임 찾기",
-  "neuroes_in_hand": "보유 neuro"
+  "neuroes_in_hand": "보유 neuro",
+  "settings": "설정",
+  "sign_out": "로그아웃"
 }
