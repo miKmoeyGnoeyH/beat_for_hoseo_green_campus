@@ -1,4 +1,4 @@
-# bloc_ex
+# beat_flutter
 
 A new Flutter project.
 
