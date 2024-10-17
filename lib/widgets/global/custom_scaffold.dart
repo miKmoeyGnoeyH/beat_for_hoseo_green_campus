@@ -9,6 +9,7 @@ class CustomScaffold extends StatelessWidget {
     this.appBar,
     this.body,
     this.hasScrollBody = true,
+    this.bottomNavigationBar,
     super.key,
   });
 
@@ -35,6 +36,7 @@ class CustomScaffold extends StatelessWidget {
           ),
         ),
       ),
+      bottomNavigationBar: bottomNavigationBar,
     );
   }
 
@@ -44,4 +46,5 @@ class CustomScaffold extends StatelessWidget {
   final Widget? appBar;
   final Widget? body;
   final bool hasScrollBody;
+  final Widget? bottomNavigationBar;
 }

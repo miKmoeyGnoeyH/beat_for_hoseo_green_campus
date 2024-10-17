@@ -2,10 +2,10 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 
 import '../data/models/user_model.dart';
-import '../data/provider/prefs_provider.dart';
 import '../data/provider/user_provider.dart';
-import '../pages/routes/navigator_key_manager.dart';
-import '../pages/routes/routes.dart';
+import '../managers/navigator/navigator_key_manager.dart';
+import '../managers/navigator/routes.dart';
+import '../managers/prefs/prefs_manager.dart';
 
 sealed class UserEvent {}
 
@@ -34,11 +34,11 @@ class UserBloc extends Bloc<UserEvent, User> {
 
   Future<void> _init(Init event, Emitter<User> emit) async {
     log("UserBloc: _init()");
-    String studentId = PrefsProvider.getValueAs<String>('saved_studentId');
-    String nickname = PrefsProvider.getValueAs<String>('saved_nickname');
+    String studentId = PrefsManager.getValueAs<String>('saved_studentId');
+    String nickname = PrefsManager.getValueAs<String>('saved_nickname');
 
-    if (studentId == PrefsProvider.defaultValue<String>() ||
-        nickname == PrefsProvider.defaultValue<String>()) {
+    if (studentId == PrefsManager.defaultValue<String>() ||
+        nickname == PrefsManager.defaultValue<String>()) {
       emit(Guest());
     } else {
       add(SignIn(studentId, nickname));

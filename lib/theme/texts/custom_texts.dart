@@ -39,17 +39,17 @@ abstract class CustomTexts {
 
   static TextStyle get subtitleLarge => TextStyle(
     fontSize: 16.0,
-    fontWeight: FontWeights.regular,
+    fontWeight: FontWeights.medium,
     letterSpacing: letterSpacing,
   );
   static TextStyle get subtitleMedium => TextStyle(
     fontSize: 14.0,
-    fontWeight: FontWeights.regular,
+    fontWeight: FontWeights.medium,
     letterSpacing: letterSpacing,
   );
   static TextStyle get subtitleSmall => TextStyle(
     fontSize: 12.0,
-    fontWeight: FontWeights.regular,
+    fontWeight: FontWeights.medium,
     letterSpacing: letterSpacing,
   );
 

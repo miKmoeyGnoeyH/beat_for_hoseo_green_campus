@@ -1,22 +1,34 @@
 import 'package:BEAT/extensions/buildcontext_extension.dart';
+import 'package:BEAT/managers/navigator/navigator_key_manager.dart';
 import 'package:BEAT/theme/texts/custom_texts.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import '../business/user_bloc.dart';
-import '../widgets/global/basic_appbar.dart';
-import '../widgets/global/custom_scaffold.dart';
-import '../widgets/global/rounded_bordered_container.dart';
+import '../../business/user_bloc.dart';
+import '../global/custom_appbar.dart';
+import '../global/custom_scaffold.dart';
+import '../global/custom_rounded_bordered_container.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsScreen extends StatelessWidget {
   final UserBloc _userBloc = UserBloc();
 
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
       isScrollable: false,
-      appBar: BasicAppBar(
-        iconTheme: IconThemeData(color: context.appColors.primary),
+      appBar: CustomAppBar(
+        hasBorder: true,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 20.0),
+          child: GestureDetector(
+            onTap: () => NavigatorKeyManager().pop(),
+            child: Icon(
+              Icons.arrow_back_ios,
+              color: context.appColors.primary,
+              size: 24,
+            ),
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 32),
@@ -25,12 +37,14 @@ class SettingsPage extends StatelessWidget {
           children: [
             Text(
               context.tr('settings'),
-              style: CustomTexts.headlineSmall,
+              style: CustomTexts.headlineSmall.copyWith(
+                color: context.appColors.onBackground,
+              ),
             ),
             const SizedBox(height: 24),
             GestureDetector(
               onTap: () => _userBloc.add(SignOut()),
-              child: RoundedBorderedContainer(
+              child: CustomRoundedBorderedContainer(
                 color: context.appColors.primary,
                 child: Center(
                   child: Padding(
@@ -50,5 +64,5 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  SettingsPage({super.key});
+  SettingsScreen({super.key});
 }

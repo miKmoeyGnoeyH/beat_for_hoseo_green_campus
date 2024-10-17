@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 
 import 'business/user_bloc.dart';
 import 'data/models/user_model.dart';
-import 'pages/home_page.dart';
-import 'pages/routes/navigator_key_manager.dart';
-import 'pages/routes/routes.dart';
-import 'pages/settings_page.dart';
-import 'pages/sign_in_page.dart';
+import 'managers/navigator/routes.dart';
+import 'widgets/home/home_screen.dart';
+import 'managers/navigator/navigator_key_manager.dart';
+import 'widgets/register/register_affiliation_screen.dart';
+import 'widgets/settings/settings_screen.dart';
+import 'widgets/sign_in/sign_in_screen.dart';
 
 class App extends StatefulWidget {
   static bool isForeground = true;
@@ -31,9 +32,10 @@ class _AppState extends State<App> with WidgetsBindingObserver {
         supportedLocales: context.supportedLocales,
         navigatorKey: NavigatorKeyManager().navigatorKey,
         routes: {
-          Routes.home: (context) => HomePage(),
-          Routes.signIn: (context) => SignInPage(),
-          Routes.settings: (context) => SettingsPage(),
+          Routes.home: (context) => HomeScreen(),
+          Routes.signIn: (context) => SignInScreen(),
+          Routes.settings: (context) => SettingsScreen(),
+          Routes.register: (context) => RegisterAffiliationScreen(),
         },
         initialRoute: user.userPageRoute,
       ),

@@ -1,5 +1,5 @@
 
-import '../../pages/routes/routes.dart';
+import '../../managers/navigator/routes.dart';
 
 abstract final class User {
   User(this.studentId, this.nickname, this.authorization, this.neuroesInHand);

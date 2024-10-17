@@ -8,11 +8,16 @@ class NavigatorKeyManager {
   GlobalKey<NavigatorState> get navigatorKey => _navigatorKey;
   NavigatorState? get navigatorState => _navigatorKey.currentState;
 
+  factory NavigatorKeyManager() => _instance;
   NavigatorKeyManager._internal(){
     log("NavigatorKeyManager created.");
   }
 
-  factory NavigatorKeyManager() {
-    return _instance;
+  void pop() {
+    navigatorState?.pop();
+  }
+
+  void pushNamed(String routeName) {
+    navigatorState?.pushNamed(routeName);
   }
 }

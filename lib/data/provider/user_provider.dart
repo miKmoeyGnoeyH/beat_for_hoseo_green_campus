@@ -2,8 +2,8 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
+import '../../managers/prefs/prefs_manager.dart';
 import '../models/user_model.dart';
-import 'prefs_provider.dart';
 
 class UserProvider {
   final http.Client _httpClient = http.Client();
@@ -21,8 +21,8 @@ class UserProvider {
     );
 
     if (response.statusCode == 200) {
-      PrefsProvider.setValue<String>('saved_studentId', studentId);
-      PrefsProvider.setValue<String>('saved_nickname', nickname);
+      PrefsManager.setValue<String>('saved_studentId', studentId);
+      PrefsManager.setValue<String>('saved_nickname', nickname);
 
       final String authorization = response.headers['authorization']!;
       final String neuroesInHand = await myNeuro(authorization);

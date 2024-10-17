@@ -3,20 +3,20 @@ import 'package:BEAT/theme/texts/custom_texts.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import '../business/user_bloc.dart';
-import '../data/models/user_model.dart';
-import '../widgets/global/basic_appbar.dart';
-import '../widgets/global/custom_scaffold.dart';
-import '../widgets/global/rounded_bordered_container.dart';
-import 'routes/routes.dart';
+import '../../business/user_bloc.dart';
+import '../../data/models/user_model.dart';
+import '../../managers/navigator/routes.dart';
+import '../global/custom_appbar.dart';
+import '../global/custom_scaffold.dart';
+import '../global/custom_rounded_bordered_container.dart';
 
-class HomePage extends StatelessWidget {
+class HomeScreen extends StatelessWidget {
   final UserBloc _userBloc = UserBloc();
 
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
-      appBar: BasicAppBar(
+      appBar: CustomAppBar(
         title: Row(
           children: [
             Image.asset(
@@ -73,7 +73,7 @@ class HomePage extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 32),
         child: Column(
           children: [
-            RoundedBorderedContainer(
+            CustomRoundedBorderedContainer(
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -106,5 +106,5 @@ class HomePage extends StatelessWidget {
 
   User get user => _userBloc.state;
 
-  HomePage({super.key});
+  HomeScreen({super.key});
 }

@@ -1,11 +1,13 @@
 import 'package:BEAT/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
 
-class RoundedBorderedContainer extends StatelessWidget {
-  const RoundedBorderedContainer({
+class CustomRoundedBorderedContainer extends StatelessWidget {
+  const CustomRoundedBorderedContainer({
     this.width,
     this.height,
     this.color,
+    this.borderColor,
+    this.borderWidth,
     this.child,
     super.key,
   });
@@ -19,8 +21,8 @@ class RoundedBorderedContainer extends StatelessWidget {
         color: color ?? context.appColors.primary,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: context.appColors.onSurface.withOpacity(0.5),
-          width: 0.2,
+          color: borderColor ?? context.appColors.onSurface.withOpacity(0.5),
+          width: borderWidth ?? 0.1,
         ),
       ),
       child: child,
@@ -30,5 +32,7 @@ class RoundedBorderedContainer extends StatelessWidget {
   final double? width;
   final double? height;
   final Color? color;
+  final Color? borderColor;
+  final double? borderWidth;
   final Widget? child;
 }

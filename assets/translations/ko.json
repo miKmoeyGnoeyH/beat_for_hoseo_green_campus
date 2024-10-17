@@ -1,13 +1,19 @@
 {
+  "sign_in": "로그인",
   "student_id": "학번",
   "sid_hint": "학번을 입력해주세요.",
   "nickname": "닉네임",
   "nickname_hint": "닉네임을 입력해주세요.",
-  "sign_in": "로그인",
   "register": "회원가입",
+  "affiliation": "구분",
+  "register_sid_hint": "사용할 학번을 입력해 주세요.",
+  "register_nickname_hint": "사용할 닉네임을 입력해 주세요.",
+  "validate_nickname": "중복확인",
   "forgot_sid": "학번 찾기",
   "forgot_nickname": "닉네임 찾기",
   "neuroes_in_hand": "보유 neuro",
   "settings": "설정",
-  "sign_out": "로그아웃"
+  "sign_out": "로그아웃",
+  "next": "다음",
+  "back": "이전"
 }

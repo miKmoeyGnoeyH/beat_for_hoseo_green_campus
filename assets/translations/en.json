@@ -1,13 +1,19 @@
 {
+  "sign_in": "Sign In",
   "student_id": "Student ID",
   "sid_hint": "Enter Your Student ID",
   "nickname": "Nickname",
   "nickname_hint": "Enter Your Nickname.",
-  "sign_in": "Sign In",
   "register": "Register",
+  "affiliation": "Affiliation",
+  "register_sid_hint": "Enter Student ID to use.",
+  "register_nickname_hint": "Enter Nickname to use.",
+  "validate_nickname": "Validate",
   "forgot_sid": "Forgot Student ID",
   "forgot_nickname": "Forgot Nickname",
   "neuroes_in_hand": "neuroes in Hand",
   "settings": "Settings",
-  "sign_out": "Sign Out"
+  "sign_out": "Sign Out",
+  "next": "Next",
+  "back": "Back"
 }
