@@ -1,11 +1,10 @@
 import 'dart:developer';
-
-import 'package:beat_flutter/pages/routes/navigator_key_manager.dart';
 import 'package:bloc/bloc.dart';
 
 import '../data/models/user_model.dart';
 import '../data/provider/prefs_provider.dart';
 import '../data/provider/user_provider.dart';
+import '../pages/routes/navigator_key_manager.dart';
 import '../pages/routes/routes.dart';
 
 sealed class UserEvent {}

@@ -1,10 +1,10 @@
-import 'package:beat_flutter/business/user_bloc.dart';
-import 'package:beat_flutter/data/provider/prefs_provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'app.dart';
+import 'business/user_bloc.dart';
+import 'data/provider/prefs_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

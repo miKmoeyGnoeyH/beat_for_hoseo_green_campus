@@ -1,4 +1,4 @@
-# beat_flutter
+# BEAT
 
 A new Flutter project.
 

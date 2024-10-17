@@ -1,15 +1,14 @@
-import 'package:beat_flutter/pages/home_page.dart';
-import 'package:beat_flutter/pages/settings_page.dart';
-import 'package:beat_flutter/pages/sign_in_page.dart';
+import 'package:BEAT/widgets/global/custom_theme_app.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'business/user_bloc.dart';
 import 'data/models/user_model.dart';
+import 'pages/home_page.dart';
 import 'pages/routes/navigator_key_manager.dart';
 import 'pages/routes/routes.dart';
-import 'theme/theme_factory.dart';
-
+import 'pages/settings_page.dart';
+import 'pages/sign_in_page.dart';
 
 class App extends StatefulWidget {
   static bool isForeground = true;
@@ -22,27 +21,27 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> with WidgetsBindingObserver {
   final UserBloc _userBloc = UserBloc();
-  ThemeData theme = ThemeFactory.getThemeDataDependsOnSystemBrightness;
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      localizationsDelegates: context.localizationDelegates,
-      supportedLocales: context.supportedLocales,
-      theme: theme,
-      navigatorKey: NavigatorKeyManager().navigatorKey,
-      routes: {
-        Routes.home: (context) => HomePage(),
-        Routes.signIn: (context) => SignInPage(),
-        Routes.settings: (context) => SettingsPage(),
-      },
-      initialRoute: user.userPageRoute,
+    return CustomThemeApp(
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: context.localizationDelegates,
+        supportedLocales: context.supportedLocales,
+        navigatorKey: NavigatorKeyManager().navigatorKey,
+        routes: {
+          Routes.home: (context) => HomePage(),
+          Routes.signIn: (context) => SignInPage(),
+          Routes.settings: (context) => SettingsPage(),
+        },
+        initialRoute: user.userPageRoute,
+      ),
     );
   }
 
   User get user => _userBloc.state;
-  
+
   @override
   void initState() {
     super.initState();
@@ -53,15 +52,6 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
-  }
-
-  @override
-  void didChangePlatformBrightness() {
-    debugPrint('didChangePlatformBrightness');
-    setState(() {
-      theme = ThemeFactory.getThemeDataDependsOnSystemBrightness;
-    });
-    super.didChangePlatformBrightness();
   }
 
   @override

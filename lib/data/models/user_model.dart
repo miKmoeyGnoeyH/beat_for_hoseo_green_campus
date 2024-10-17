@@ -1,8 +1,5 @@
-import 'package:flutter/material.dart';
 
-import '../../pages/home_page.dart';
 import '../../pages/routes/routes.dart';
-import '../../pages/sign_in_page.dart';
 
 abstract final class User {
   User(this.studentId, this.nickname, this.authorization, this.neuroesInHand);

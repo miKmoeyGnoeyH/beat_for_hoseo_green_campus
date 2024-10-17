@@ -1,12 +1,13 @@
-import 'package:beat_flutter/business/user_bloc.dart';
-import 'package:beat_flutter/extensions/buildcontext_extension.dart';
-import 'package:beat_flutter/widgets/global/rounded_bordered_container.dart';
+import 'package:BEAT/extensions/buildcontext_extension.dart';
+import 'package:BEAT/theme/texts/custom_texts.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../business/user_bloc.dart';
 import '../data/models/user_model.dart';
 import '../widgets/global/basic_appbar.dart';
 import '../widgets/global/custom_scaffold.dart';
+import '../widgets/global/rounded_bordered_container.dart';
 import 'routes/routes.dart';
 
 class HomePage extends StatelessWidget {
@@ -30,25 +31,24 @@ class HomePage extends StatelessWidget {
                 children: [
                   TextSpan(
                     text: '${user.nickname}님 ',
-                    style: context.textTheme.bodyMedium,
+                    style: CustomTexts.bodyLarge,
                   ),
                   TextSpan(
                     text: '${user.neuroesInHand} neuro',
-                    style: context.textTheme.bodyMedium!.copyWith(
-                      color: context.colorScheme.primary,
-                    ),
+                    style: CustomTexts.bodyLarge
+                        .copyWith(color: context.appColors.primary),
                   ),
                 ],
               ),
             ),
           ],
         ),
-        textStyle: context.textTheme.bodyMedium,
+        textStyle: CustomTexts.bodyMedium,
         actions: [
           IconButton(
             icon: Icon(
               Icons.leaderboard_outlined,
-              color: context.colorScheme.onSurface,
+              color: context.appColors.onSurface,
               size: 24,
             ),
             onPressed: () {},
@@ -84,15 +84,13 @@ class HomePage extends StatelessWidget {
                       children: [
                         Text(
                           context.tr('neuroes_in_hand'),
-                          style: context.textTheme.bodyLarge!.copyWith(
-                            color: context.colorScheme.onPrimary,
-                          ),
+                          style: CustomTexts.subtitleLarge
+                              .copyWith(color: context.appColors.onPrimary),
                         ),
                         Text(
                           user.neuroesInHand,
-                          style: context.textTheme.headlineLarge!.copyWith(
-                            color: context.colorScheme.onPrimary,
-                          ),
+                          style: CustomTexts.headlineLarge
+                              .copyWith(color: context.appColors.onPrimary),
                         ),
                       ],
                     ),

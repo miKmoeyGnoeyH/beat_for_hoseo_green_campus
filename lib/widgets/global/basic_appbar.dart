@@ -1,4 +1,4 @@
-import 'package:beat_flutter/extensions/buildcontext_extension.dart';
+import 'package:BEAT/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
 
 class BasicAppBar extends StatelessWidget {
@@ -16,15 +16,15 @@ class BasicAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverAppBar(
       title: title,
-      foregroundColor: context.colorScheme.onSecondary,
-      backgroundColor: context.colorScheme.secondary,
-      surfaceTintColor: context.colorScheme.secondary,
+      foregroundColor: context.appColors.onBackground,
+      backgroundColor: context.appColors.background,
+      surfaceTintColor: context.appColors.surface,
       leading: leading,
       actions: actions,
       iconTheme: iconTheme,
       shape: Border(
         bottom: BorderSide(
-          color: context.colorScheme.onSecondary.withOpacity(0.2),
+          color: context.appColors.onSurface.withOpacity(0.2),
           width: 0.5,
         ),
       ),
