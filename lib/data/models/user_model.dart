@@ -15,12 +15,12 @@ final class Guest extends User {
   Guest() : super('', '', '', '');
 
   @override
-  String get userPageRoute => Routes.signIn;
+  String get userPageRoute => RouteNames.signIn;
 }
 
 final class Member extends User {
   Member(super.studentId, super.nickname, super.authorization, super.neuroesInHand);
 
   @override
-  String get userPageRoute => Routes.home;
+  String get userPageRoute => RouteNames.home;
 }

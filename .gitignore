@@ -44,4 +44,7 @@ app.*.map.json
 
 # dotenv
 *.env
+assets
+assets/images
+assets/translations
 assets/config/*.env

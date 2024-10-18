@@ -51,7 +51,7 @@ class SettingsScreen extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     child: Text(
                       context.tr('sign_out'),
-                      style: CustomTexts.titleLarge
+                      style: CustomTexts.subtitleLarge
                           .copyWith(color: context.appColors.onPrimary),
                     ),
                   ),

@@ -40,6 +40,7 @@ dependencies:
   bloc: ^8.1.4
   shared_preferences: ^2.3.2
   easy_localization: ^3.0.7
+  auto_size_text: ^3.0.0
 
 dev_dependencies:
   flutter_test:

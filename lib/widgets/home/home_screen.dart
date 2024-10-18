@@ -65,7 +65,7 @@ class HomeScreen extends StatelessWidget {
               Icons.settings_outlined,
               size: 24,
             ),
-            onPressed: () => Navigator.pushNamed(context, Routes.settings),
+            onPressed: () => Navigator.pushNamed(context, RouteNames.settings),
           ),
         ],
       ),

@@ -21,6 +21,22 @@ abstract class CustomTexts {
     letterSpacing: letterSpacing,
   );
 
+  static TextStyle get displayLarge => TextStyle(
+    fontSize: 34.0,
+    fontWeight: FontWeights.regular,
+    letterSpacing: letterSpacing,
+  );
+  static TextStyle get displayMedium => TextStyle(
+    fontSize: 24.0,
+    fontWeight: FontWeights.regular,
+    letterSpacing: letterSpacing,
+  );
+  static TextStyle get displaySmall => TextStyle(
+    fontSize: 20.0,
+    fontWeight: FontWeights.regular,
+    letterSpacing: letterSpacing,
+  );
+
   static TextStyle get titleLarge => TextStyle(
     fontSize: 20.0,
     fontWeight: FontWeights.medium,

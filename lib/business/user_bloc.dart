@@ -52,7 +52,7 @@ class UserBloc extends Bloc<UserEvent, User> {
       user = await _userProvider.signIn(event.studentId, event.nickname);
       NavigatorKeyManager()
           .navigatorState!
-          .pushNamedAndRemoveUntil(Routes.home, (route) => false);
+          .pushNamedAndRemoveUntil(RouteNames.home, (route) => false);
     } on Exception {
       user = Guest();
     }
@@ -62,7 +62,7 @@ class UserBloc extends Bloc<UserEvent, User> {
 
   void _signOut(SignOut event, Emitter<User> emit) {
     NavigatorKeyManager().navigatorState!.pushNamedAndRemoveUntil(
-          Routes.signIn,
+          RouteNames.signIn,
           (route) => false,
         );
     emit(Guest());

@@ -60,7 +60,9 @@ class SignInScreen extends StatelessWidget {
                   ),
                   decoration: InputDecoration(
                     hintText: context.tr("sid_hint"),
-                    hintStyle: CustomTexts.bodyLarge,
+                    hintStyle: CustomTexts.bodyLarge.copyWith(
+                      color: context.appColors.onBackground.withOpacity(0.5),
+                    ),
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(
                         color: context.appColors.onBackground.withOpacity(0.2),
@@ -91,7 +93,7 @@ class SignInScreen extends StatelessWidget {
                   decoration: InputDecoration(
                     hintText: context.tr("nickname_hint"),
                     hintStyle: CustomTexts.bodyLarge.copyWith(
-                      color: context.appColors.onBackground,
+                      color: context.appColors.onBackground.withOpacity(0.5),
                     ),
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(
@@ -130,7 +132,7 @@ class SignInScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 GestureDetector(
-                  onTap: () => _navigatorKeyManager.pushNamed(Routes.register),
+                  onTap: () => _navigatorKeyManager.pushNamed(RouteNames.registerOrganization),
                   child: CustomRoundedBorderedContainer(
                     color: context.appColors.background,
                     borderColor: context.appColors.onBackground,
