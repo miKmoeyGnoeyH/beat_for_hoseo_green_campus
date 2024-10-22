@@ -30,11 +30,11 @@ class HomeScreen extends StatelessWidget {
               TextSpan(
                 children: [
                   TextSpan(
-                    text: '${user.nickname}님 ',
+                    text: context.tr('indicate_nickname', args: [user.nickname]),
                     style: CustomTexts.bodyLarge,
                   ),
                   TextSpan(
-                    text: '${user.neuroesInHand} neuro',
+                    text: '${user.neuroesInHand} Neuro',
                     style: CustomTexts.bodyLarge
                         .copyWith(color: context.appColors.primary),
                   ),

@@ -149,6 +149,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  hand_signature:
+    dependency: "direct main"
+    description:
+      name: hand_signature
+      sha256: e007153776b9558234761150b6b3ae98a6b3008e9b824da9911475794a982994
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.3"
   http:
     dependency: "direct main"
     description:

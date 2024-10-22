@@ -5,6 +5,7 @@ class CustomRoundedBorderedContainer extends StatelessWidget {
   const CustomRoundedBorderedContainer({
     this.width,
     this.height,
+    this.margin,
     this.color,
     this.borderColor,
     this.borderWidth,
@@ -17,6 +18,7 @@ class CustomRoundedBorderedContainer extends StatelessWidget {
     return Container(
       width: width ?? double.infinity,
       height: height,
+      margin: margin,
       decoration: BoxDecoration(
         color: color ?? context.appColors.primary,
         borderRadius: BorderRadius.circular(16),
@@ -31,6 +33,7 @@ class CustomRoundedBorderedContainer extends StatelessWidget {
 
   final double? width;
   final double? height;
+  final EdgeInsetsGeometry? margin;
   final Color? color;
   final Color? borderColor;
   final double? borderWidth;

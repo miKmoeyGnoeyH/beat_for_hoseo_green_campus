@@ -28,7 +28,8 @@ class _AppState extends State<App> with WidgetsBindingObserver {
         supportedLocales: context.supportedLocales,
         navigatorKey: NavigatorKeyManager().navigatorKey,
         routes: Routes.routes,
-        initialRoute: user.userPageRoute,
+        initialRoute: RouteNames.registerFillInform,
+        // user.userPageRoute,
       ),
     );
   }

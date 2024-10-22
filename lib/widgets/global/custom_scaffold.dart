@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class CustomScaffold extends StatelessWidget {
   const CustomScaffold({
     this.top = false,
+    this.bottom = false,
     this.backgroundColor,
     this.isScrollable,
     this.appBar,
@@ -20,6 +21,7 @@ class CustomScaffold extends StatelessWidget {
         color: backgroundColor ?? context.appColors.surface,
         child: SafeArea(
           top: top,
+          bottom: bottom,
           child: CustomScrollView(
             physics: isScrollable == null
                 ? const AlwaysScrollableScrollPhysics()
@@ -30,6 +32,7 @@ class CustomScaffold extends StatelessWidget {
               if (appBar != null) appBar!,
               SliverFillRemaining(
                 hasScrollBody: hasScrollBody,
+                fillOverscroll: false,
                 child: body,
               ),
             ],
@@ -41,6 +44,7 @@ class CustomScaffold extends StatelessWidget {
   }
 
   final bool top;
+  final bool bottom;
   final Color? backgroundColor;
   final bool? isScrollable;
   final Widget? appBar;

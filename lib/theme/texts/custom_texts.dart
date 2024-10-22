@@ -87,17 +87,17 @@ abstract class CustomTexts {
 
   static TextStyle get labelLarge => TextStyle(
     fontSize: 14.0,
-    fontWeight: FontWeights.regular,
+    fontWeight: FontWeights.bold,
     letterSpacing: letterSpacing,
   );
   static TextStyle get labelMedium => TextStyle(
     fontSize: 12.0,
-    fontWeight: FontWeights.regular,
+    fontWeight: FontWeights.bold,
     letterSpacing: letterSpacing,
   );
   static TextStyle get labelSmall => TextStyle(
     fontSize: 10.0,
-    fontWeight: FontWeights.regular,
+    fontWeight: FontWeights.bold,
     letterSpacing: letterSpacing,
   );
 }
