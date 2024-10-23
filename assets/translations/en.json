@@ -1,5 +1,8 @@
 {
   "sign_in": "Sign In",
+  "sign_in_failed": "Sign In Failed",
+  "sign_in_failed_message": "Please check your Student ID or Nickname.",
+  "connection_error": "Please check your internet connection.",
   "student_id": "Student ID",
   "sid_hint": "Enter Your Student ID",
   "nickname": "Nickname",
@@ -32,6 +35,10 @@
   "register_name_hint": "Enter Your Name.",
   "register_sid_hint": "Enter Student ID to use.",
   "validate_mail": "Verify your Email",
+  "email_sent": "Email Sent",
+  "email_sent_message": "A Validation Email has been sent. Please check your mailbox.",
+  "email_sent_error": "Email Sent Error",
+  "email_sent_error_message": "Failed to send the email. Please try again.",
   "register_nickname_hint": "Enter Nickname to use.",
   "validate_nickname": "Duplicate Check",
   "why_do_i_need_to_sign": "Why do I need to sign?",
@@ -61,5 +68,6 @@
   "sign_out": "Sign Out",
   "next": "Next",
   "back": "Back",
+  "confirm": "Confirm",
   "done": "Done"
 }

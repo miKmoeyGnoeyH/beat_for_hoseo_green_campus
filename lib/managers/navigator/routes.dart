@@ -1,5 +1,7 @@
+import 'package:BEAT/controller/register/register_sid_controller.dart';
 import 'package:BEAT/widgets/register/register_affiliation_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../widgets/home/home_screen.dart';
 import '../../widgets/register/register_department_screen.dart';
@@ -28,12 +30,20 @@ abstract class Routes {
   static Map<String, Widget Function(BuildContext)> routes = {
     RouteNames.home: (context) => HomeScreen(),
     RouteNames.signIn: (context) => SignInScreen(),
-    RouteNames.registerOrganization: (context) => const RegisterOrganizationScreen(),
+    RouteNames.registerOrganization: (context) =>
+        const RegisterOrganizationScreen(),
     RouteNames.registerCollege: (context) => const RegisterCollegeScreen(),
-    RouteNames.registerDepartment: (context) => const RegisterDepartmentScreen(),
-    RouteNames.registerAffiliation: (context) => const RegisterAffiliationScreen(),
+    RouteNames.registerDepartment: (context) =>
+        const RegisterDepartmentScreen(),
+    RouteNames.registerAffiliation: (context) =>
+        const RegisterAffiliationScreen(),
     RouteNames.registerOrgDetail: (context) => const RegisterOrgDetailScreen(),
-    RouteNames.registerFillInform: (context) => const RegisterFillInformScreen(),
+    RouteNames.registerFillInform: (context) => MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (context) => RegisterSidController()),
+          ],
+          child: const RegisterFillInformScreen(),
+        ),
     RouteNames.registerSign: (context) => const RegisterSignScreen(),
     RouteNames.settings: (context) => SettingsScreen(),
   };

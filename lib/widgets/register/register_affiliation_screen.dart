@@ -1,13 +1,13 @@
-import 'package:BEAT/data/provider/register/register_agreement_provider.dart';
-import 'package:BEAT/data/provider/register/register_sign_provider.dart';
+import 'package:BEAT/controller/register/register_sign_controller.dart';
 import 'package:BEAT/extensions/buildcontext_extension.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import '../../data/provider/register/register_college_provider.dart';
-import '../../data/provider/register/register_department_provider.dart';
-import '../../data/provider/register/register_organization_provider.dart';
+import '../../controller/register/register_agreement_controller.dart';
+import '../../controller/register/register_college_controller.dart';
+import '../../controller/register/register_department_controller.dart';
+import '../../controller/register/register_organization_controller.dart';
 import '../../managers/navigator/navigator_key_manager.dart';
 import '../../managers/navigator/routes.dart';
 import '../../theme/texts/custom_texts.dart';
@@ -23,11 +23,11 @@ class RegisterAffiliationScreen extends StatefulWidget {
 }
 
 class _RegisterAffiliationScreenState extends State<RegisterAffiliationScreen> {
-  final RegisterOrganizationProvider _registerController =
-      RegisterOrganizationProvider()
-        ..registerCollegeProvider = RegisterCollegeProvider.initAffiliation(
-            RegisterDepartmentProvider(
-                RegisterSignProvider(RegisterAgreementProvider())));
+  final RegisterOrganizationController _registerController =
+      RegisterOrganizationController()
+        ..registerCollegeProvider = RegisterCollegeController.initAffiliation(
+            RegisterDepartmentController(
+                RegisterSignController(RegisterAgreementController())));
   final TextEditingController _affiliationController = TextEditingController();
   final int minLength = 3;
 

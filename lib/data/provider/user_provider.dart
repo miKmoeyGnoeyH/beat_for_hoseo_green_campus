@@ -1,4 +1,4 @@
-
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
@@ -12,22 +12,28 @@ class UserProvider {
     final String requestUrl = dotenv.env['SIGN_IN']!;
     User user = Guest();
 
-    final http.Response response = await _httpClient.post(
-      Uri.parse(requestUrl),
-      body: {
-        'studentId': studentId,
-        'nickname': nickname,
-      },
-    );
+    try {
+      final http.Response response = await _httpClient.post(
+        Uri.parse(requestUrl),
+        body: {
+          'studentId': studentId,
+          'nickname': nickname,
+        },
+      ).timeout(const Duration(seconds: 5));
 
-    if (response.statusCode == 200) {
-      PrefsManager.setValue<String>('saved_studentId', studentId);
-      PrefsManager.setValue<String>('saved_nickname', nickname);
+      if (response.statusCode == 200) {
+        PrefsManager.setValue<String>('saved_studentId', studentId);
+        PrefsManager.setValue<String>('saved_nickname', nickname);
 
-      final String authorization = response.headers['authorization']!;
-      final String neuroesInHand = await myNeuro(authorization);
+        final String authorization = response.headers['authorization']!;
+        final String neuroesInHand = await myNeuro(authorization);
 
-      user = Member(studentId, nickname, authorization, neuroesInHand);
+        user = Member(studentId, nickname, authorization, neuroesInHand);
+      } else {
+        user = ErrorUser('sign_in_failed_message'.tr());
+      }
+    } catch (e) {
+      user = ErrorUser('connection_error'.tr());
     }
 
     return user;

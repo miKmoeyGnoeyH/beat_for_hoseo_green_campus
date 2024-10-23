@@ -3,7 +3,7 @@ import 'package:BEAT/theme/texts/custom_texts.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import '../../business/user_bloc.dart';
+import '../../controller/user_bloc.dart';
 import '../../data/models/user_model.dart';
 import '../../managers/navigator/routes.dart';
 import '../global/custom_appbar.dart';

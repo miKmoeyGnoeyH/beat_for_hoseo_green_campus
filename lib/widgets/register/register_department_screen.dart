@@ -1,4 +1,3 @@
-import 'package:BEAT/data/provider/register/register_organization_provider.dart';
 import 'package:BEAT/extensions/buildcontext_extension.dart';
 import 'package:BEAT/managers/navigator/navigator_key_manager.dart';
 import 'package:BEAT/managers/navigator/routes.dart';
@@ -7,6 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../controller/register/register_organization_controller.dart';
 import '../../theme/texts/custom_texts.dart';
 import '../global/custom_appbar.dart';
 import '../global/custom_scaffold.dart';
@@ -20,8 +20,8 @@ class RegisterDepartmentScreen extends StatefulWidget {
 }
 
 class _RegisterDepartmentScreenState extends State<RegisterDepartmentScreen> {
-  final String college = RegisterOrganizationProvider().registerCollegeProvider.college;
-  final RegisterOrganizationProvider _registerController = RegisterOrganizationProvider()..setRegisterDepartmentProviderFromCollege();
+  final String college = RegisterOrganizationController().registerCollegeProvider.college;
+  final RegisterOrganizationController _registerController = RegisterOrganizationController()..setRegisterDepartmentProviderFromCollege();
 
   @override
   Widget build(BuildContext context) {

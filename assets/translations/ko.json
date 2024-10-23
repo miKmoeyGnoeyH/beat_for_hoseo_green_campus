@@ -1,5 +1,8 @@
 {
   "sign_in": "로그인",
+  "sign_in_failed": "로그인 실패",
+  "sign_in_failed_message": "학번 또는 닉네임을 확인해주세요.",
+  "connection_error": "인터넷 연결상태를 확인해 주세요.",
   "student_id": "학번",
   "sid_hint": "학번을 입력해주세요.",
   "nickname": "닉네임",
@@ -32,6 +35,10 @@
   "register_name_hint": "이름을 입력해주세요.",
   "register_sid_hint": "사용할 학번을 입력해 주세요.",
   "validate_mail": "메일 인증",
+  "email_sent": "메일 전송 완료",
+  "email_sent_message": "확인 메일을 전송했습니다. 메일함을 확인해주세요.",
+  "email_sent_error": "메일 전송 실패",
+  "email_sent_error_message": "메일 전송에 실패했습니다. 다시 시도해주세요.",
   "register_nickname_hint": "사용할 닉네임을 입력해 주세요.",
   "validate_nickname": "중복확인",
   "why_do_i_need_to_sign": "서명을 왜 해야 하나요?",
@@ -61,5 +68,6 @@
   "sign_out": "로그아웃",
   "next": "다음",
   "back": "이전",
+  "confirm": "확인",
   "done": "완료"
 }

@@ -1,34 +1,34 @@
 import 'dart:developer';
 
-import 'package:BEAT/data/provider/register/register_department_provider.dart';
+import 'package:BEAT/controller/register/register_department_controller.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-class RegisterCollegeProvider {
-  RegisterCollegeProvider(this.registerDepartmentProvider) {
+class RegisterCollegeController {
+  RegisterCollegeController(this.registerDepartmentProvider) {
     log('RegisterCollegeProvider');
     colleges = [];
     college = '';
   }
 
-  RegisterCollegeProvider.initColleges(this.registerDepartmentProvider) {
+  RegisterCollegeController.initColleges(this.registerDepartmentProvider) {
     log('RegisterCollegeProvider');
     colleges = 'colleges'.tr().split(',');
     college = colleges.first;
   }
 
-  RegisterCollegeProvider.initOrgDetails(this.registerDepartmentProvider) {
+  RegisterCollegeController.initOrgDetails(this.registerDepartmentProvider) {
     log('RegisterCollegeProvider');
     colleges = 'organization_details'.tr().split(',');
     college = colleges.first;
   }
 
-  RegisterCollegeProvider.initAffiliation(this.registerDepartmentProvider) {
+  RegisterCollegeController.initAffiliation(this.registerDepartmentProvider) {
     log('RegisterCollegeProvider');
     colleges = [];
     college = '';
   }
 
-  RegisterDepartmentProvider registerDepartmentProvider;
+  RegisterDepartmentController registerDepartmentProvider;
   late final List<String> colleges;
   String college = '';
 }

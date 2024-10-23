@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'app.dart';
-import 'business/user_bloc.dart';
+import 'controller/user_bloc.dart';
 import 'managers/prefs/prefs_manager.dart';
 
 Future<void> main() async {

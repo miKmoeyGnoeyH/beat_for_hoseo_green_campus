@@ -1,8 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'business/user_bloc.dart';
-import 'data/models/user_model.dart';
+import 'controller/user_bloc.dart';
 import 'managers/navigator/routes.dart';
 import 'widgets/global/custom_theme_app.dart';
 import 'managers/navigator/navigator_key_manager.dart';
@@ -17,24 +17,23 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> with WidgetsBindingObserver {
-  final UserBloc _userBloc = UserBloc();
-
   @override
   Widget build(BuildContext context) {
     return CustomThemeApp(
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        localizationsDelegates: context.localizationDelegates,
-        supportedLocales: context.supportedLocales,
-        navigatorKey: NavigatorKeyManager().navigatorKey,
-        routes: Routes.routes,
-        initialRoute: RouteNames.registerFillInform,
-        // user.userPageRoute,
+      child: BlocProvider<UserBloc>(
+        create: (context) => UserBloc(),
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          localizationsDelegates: context.localizationDelegates,
+          supportedLocales: context.supportedLocales,
+          navigatorKey: NavigatorKeyManager().navigatorKey,
+          routes: Routes.routes,
+          initialRoute: RouteNames.signIn,
+          // user.userPageRoute,
+        ),
       ),
     );
   }
-
-  User get user => _userBloc.state;
 
   @override
   void initState() {

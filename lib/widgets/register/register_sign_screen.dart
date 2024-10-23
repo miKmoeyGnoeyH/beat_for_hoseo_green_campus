@@ -1,4 +1,4 @@
-import 'package:BEAT/data/provider/register/register_sign_provider.dart';
+import 'package:BEAT/controller/register/register_sign_controller.dart';
 import 'package:BEAT/extensions/buildcontext_extension.dart';
 import 'package:BEAT/managers/navigator/navigator_key_manager.dart';
 import 'package:BEAT/widgets/global/custom_scaffold.dart';
@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hand_signature/signature.dart';
 
-import '../../data/provider/register/register_organization_provider.dart';
+import '../../controller/register/register_organization_controller.dart';
 import '../../theme/texts/custom_texts.dart';
 import '../global/custom_rounded_bordered_container.dart';
 
@@ -19,7 +19,7 @@ class RegisterSignScreen extends StatefulWidget {
 }
 
 class _RegisterSignScreenState extends State<RegisterSignScreen> {
-  final RegisterSignProvider _registerSignProvider = RegisterOrganizationProvider().registerSignProvider;
+  final RegisterSignController _registerSignProvider = RegisterOrganizationController().registerSignProvider;
 
   @override
   void initState() {

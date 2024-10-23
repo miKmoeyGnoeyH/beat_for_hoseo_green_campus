@@ -46,15 +46,14 @@ class UserBloc extends Bloc<UserEvent, User> {
   }
 
   Future<void> _signIn(SignIn event, Emitter<User> emit) async {
+    emit(IsLoading());
     User user;
 
-    try {
-      user = await _userProvider.signIn(event.studentId, event.nickname);
+    user = await _userProvider.signIn(event.studentId, event.nickname);
+    if(!user.isError) {
       NavigatorKeyManager()
-          .navigatorState!
-          .pushNamedAndRemoveUntil(RouteNames.home, (route) => false);
-    } on Exception {
-      user = Guest();
+        .navigatorState!
+        .pushNamedAndRemoveUntil(RouteNames.home, (route) => false);
     }
 
     emit(user);
