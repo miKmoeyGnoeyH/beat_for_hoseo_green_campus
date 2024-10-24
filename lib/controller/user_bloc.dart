@@ -21,12 +21,12 @@ final class SignIn extends UserEvent {
 final class SignOut extends UserEvent {}
 
 class UserBloc extends Bloc<UserEvent, User> {
-  static final UserBloc _instance = UserBloc._internal();
+  // static final UserBloc _instance = UserBloc._internal();
   final UserProvider _userProvider = UserProvider();
 
-  factory UserBloc() => _instance;
+  // factory UserBloc() => _instance;
 
-  UserBloc._internal() : super(Guest()) {
+  UserBloc() : super(Guest()) {
     on<Init>(_init);
     on<SignIn>(_signIn);
     on<SignOut>(_signOut);

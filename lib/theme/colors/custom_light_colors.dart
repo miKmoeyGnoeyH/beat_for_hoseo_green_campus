@@ -39,5 +39,8 @@ class CustomLightColors implements CustomColors {
   Color get onError => const Color(0xffffffff);
 
   @override
+  Color get disabled => const Color(0xff000000).withOpacity(0.3);
+
+  @override
   Color get defaultTextColor => const Color(0xff000000);
 }

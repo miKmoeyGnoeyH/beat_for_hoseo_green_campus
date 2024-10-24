@@ -7,6 +7,7 @@ import 'app.dart';
 import 'controller/user_bloc.dart';
 import 'managers/prefs/prefs_manager.dart';
 
+// TODO : 전체적으로 리팩토링 한 번 싹 조져주기
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   PrefsManager.init();

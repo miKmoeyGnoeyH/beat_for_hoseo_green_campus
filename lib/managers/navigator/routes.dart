@@ -1,3 +1,4 @@
+import 'package:BEAT/controller/register/register_nickname_controller.dart';
 import 'package:BEAT/controller/register/register_sid_controller.dart';
 import 'package:BEAT/widgets/register/register_affiliation_screen.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +42,7 @@ abstract class Routes {
     RouteNames.registerFillInform: (context) => MultiBlocProvider(
           providers: [
             BlocProvider(create: (context) => RegisterSidController()),
+            BlocProvider(create: (context) => RegisterNicknameController()),
           ],
           child: const RegisterFillInformScreen(),
         ),

@@ -4,12 +4,12 @@ import 'package:BEAT/data/models/email_state.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
-class RegisterProvider {
+class EmailCheckProvider {
   final http.Client _httpClient = http.Client();
 
   Future<EmailState> emailRequest(String studentId) async {
     await Future.delayed(const Duration(seconds: 3));
-    EmailState emailState = EmailInitial();
+    EmailState emailState = EmailNotSent();
     final String requestUrl = dotenv.env['EMAIL_REQUEST']!;
 
     try {

@@ -1,3 +1,4 @@
+import 'dart:developer';
 
 import 'package:BEAT/controller/register/register_name_controller.dart';
 import 'package:BEAT/controller/register/register_sid_controller.dart';
@@ -6,17 +7,22 @@ import 'package:BEAT/managers/navigator/navigator_key_manager.dart';
 import 'package:BEAT/managers/navigator/routes.dart';
 import 'package:BEAT/widgets/global/custom_rounded_bordered_container.dart';
 import 'package:BEAT/widgets/global/custom_scaffold.dart';
+import 'package:BEAT/widgets/global/custom_profanity_filter.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../controller/register/register_agreement_controller.dart';
+import '../../controller/register/register_nickname_controller.dart';
 import '../../controller/register/register_organization_controller.dart';
 import '../../controller/register/register_sign_controller.dart';
 import '../../data/models/email_state.dart';
+import '../../data/models/nickname_state.dart';
 import '../../theme/texts/custom_texts.dart';
 import '../global/custom_appbar.dart';
+import '../global/methods/custom_show_dialog.dart';
 import 'bottom_sheet.dart';
 
 class RegisterFillInformScreen extends StatefulWidget {
@@ -33,85 +39,58 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
   final RegisterNameController _registerNameController =
       RegisterNameController();
 
-  final RegisterSidController _registerSidController = RegisterSidController();
-
   @override
   Widget build(BuildContext context) {
+    final RegisterSidController registerSidController =
+        context.read<RegisterSidController>();
+    final RegisterNicknameController registerNicknameController =
+        context.read<RegisterNicknameController>();
+
     return MultiBlocListener(
       listeners: [
         BlocListener<RegisterSidController, EmailState>(
           listener: (context, state) {
             if (state is EmailSent) {
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: Text(
-                    context.tr('email_sent'),
-                    style: CustomTexts.titleLarge
-                        .copyWith(color: context.appColors.onBackground),
-                  ),
-                  content: Text(
-                    context.tr('email_sent_message'),
-                    style: CustomTexts.bodyLarge
-                        .copyWith(color: context.appColors.onBackground),
-                  ),
-                  actionsAlignment: MainAxisAlignment.center,
-                  actions: [
-                    GestureDetector(
-                      onTap: () => NavigatorKeyManager().pop(),
-                      child: CustomRoundedBorderedContainer(
-                        child: Center(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            child: Text(
-                              context.tr('confirm'),
-                              style: CustomTexts.subtitleLarge
-                                  .copyWith(color: context.appColors.onPrimary),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+              customShowDialog(
+                context,
+                context.tr('email_sent'),
+                context.tr('email_sent_message'),
               );
             } else if (state is EmailError) {
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: Text(
-                    context.tr('email_sent_error'),
-                    style: CustomTexts.titleLarge
-                        .copyWith(color: context.appColors.onBackground),
-                  ),
-                  content: Text(
-                    context.tr('email_sent_error_message'),
-                    style: CustomTexts.bodyLarge
-                        .copyWith(color: context.appColors.onBackground),
-                  ),
-                  actionsAlignment: MainAxisAlignment.center,
-                  actions: [
-                    GestureDetector(
-                      onTap: () => NavigatorKeyManager().pop(),
-                      child: CustomRoundedBorderedContainer(
-                        child: Center(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            child: Text(
-                              context.tr('confirm'),
-                              style: CustomTexts.subtitleLarge
-                                  .copyWith(color: context.appColors.onPrimary),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+              _isEmailButtonEnabled = true;
+              customShowDialog(
+                context,
+                context.tr('email_sent_error'),
+                context.tr('email_sent_error_message'),
               );
             }
           },
         ),
+        BlocListener<RegisterNicknameController, NicknameState>(
+          listener: (context, state) {
+            if (state is NicknameChecked) {
+              customShowDialog(
+                context,
+                context.tr('nickname_checked'),
+                context.tr('nickname_checked_message'),
+              );
+            } else if (state is NicknameAlreadyTaken) {
+              _isNicknameButtonEnabled = true;
+              customShowDialog(
+                context,
+                context.tr('nickname_unchecked'),
+                context.tr('nickname_unchecked_message'),
+              );
+            } else if (state is NicknameError) {
+              _isNicknameButtonEnabled = true;
+              customShowDialog(
+                context,
+                context.tr('nickname_check_error'),
+                context.tr('nickname_check_error_message'),
+              );
+            }
+          },
+        )
       ],
       child: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
@@ -137,16 +116,21 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children: [
-                        Text(organization, style: CustomTexts.labelLarge),
+                        Text(organization,
+                            style: CustomTexts.labelLarge.copyWith(
+                                color: context.appColors.onBackground)),
                         const SizedBox(width: 15),
                         Text(
                             department != ''
                                 ? context
                                     .tr('register_college_of', args: [college])
                                 : college,
-                            style: CustomTexts.labelLarge),
+                            style: CustomTexts.labelLarge.copyWith(
+                                color: context.appColors.onBackground)),
                         const SizedBox(width: 15),
-                        Text(department, style: CustomTexts.labelLarge),
+                        Text(department,
+                            style: CustomTexts.labelLarge.copyWith(
+                                color: context.appColors.onBackground)),
                       ],
                     ),
                   ),
@@ -159,9 +143,19 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                   ),
                   TextField(
                     controller: _registerNameController.nameController,
-                    keyboardType: TextInputType.number,
-                    maxLength: 8,
+                    maxLength: 6,
                     cursorColor: context.appColors.primary,
+                    onChanged: (value) {
+                      if (!RegExp(r'[ㅏ-ㅣㄱ-ㅎ]').hasMatch(value)) {
+                        _isNameValid = true;
+                      } else {
+                        _isNameValid = false;
+                      }
+                    },
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(
+                          RegExp(r'[a-zA-Zㄱ-ㅎ가-힣]'))
+                    ],
                     style: CustomTexts.bodyLarge.copyWith(
                       color: context.appColors.onBackground,
                     ),
@@ -169,7 +163,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                       counterText: "",
                       hintText: context.tr("register_name_hint"),
                       hintStyle: CustomTexts.bodyLarge.copyWith(
-                        color: context.appColors.onBackground.withOpacity(0.5),
+                        color: context.appColors.onBackground.withOpacity(0.3),
                       ),
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(
@@ -197,11 +191,20 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                       Flexible(
                         flex: 2,
                         child: TextField(
-                          controller: _registerSidController.sidController,
+                          controller: registerSidController.sidController,
                           keyboardType: TextInputType.number,
                           maxLength: 8,
                           cursorColor: context.appColors.primary,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                          ],
                           onChanged: (value) {
+                            registerSidController.add(EmailChanged());
+                            if (value.length >= 8) {
+                              _isEmailButtonEnabled = true;
+                            } else {
+                              _isEmailButtonEnabled = false;
+                            }
                             setState(() {});
                           },
                           style: CustomTexts.bodyLarge.copyWith(
@@ -212,7 +215,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                             hintText: context.tr("register_sid_hint"),
                             hintStyle: CustomTexts.bodyLarge.copyWith(
                               color: context.appColors.onBackground
-                                  .withOpacity(0.5),
+                                  .withOpacity(0.3),
                             ),
                             enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(
@@ -233,20 +236,17 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                       BlocBuilder<RegisterSidController, EmailState>(
                         builder: (context, state) => Flexible(
                           child: GestureDetector(
-                            onTap: state is EmailEnabled
-                                ? text.length >= 8
-                                    ? () => _registerSidController
-                                        .add(EmailRequest())
-                                    : () {}
+                            onTap: _isEmailButtonEnabled
+                                ? () {
+                                    _isEmailButtonEnabled = false;
+                                    registerSidController.add(EmailRequest());
+                                  }
                                 : () {},
                             child: CustomRoundedBorderedContainer(
-                              color: state is EmailEnabled
-                                  ? text.length >= 8
-                                      ? context.appColors.primary
-                                      : context.appColors.onBackground
-                                          .withOpacity(0.5)
+                              color: _isEmailButtonEnabled
+                                  ? context.appColors.primary
                                   : context.appColors.onBackground
-                                      .withOpacity(0.5),
+                                      .withOpacity(0.3),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 10, vertical: 16.0),
@@ -278,10 +278,23 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                       Flexible(
                         flex: 2,
                         child: TextField(
-                          // controller: _studentIdController,
-                          keyboardType: TextInputType.number,
-                          maxLength: 8,
+                          controller:
+                              registerNicknameController.nicknameController,
+                          onChanged: (value) {
+                            registerNicknameController.add(NicknameChanged());
+                            if (value.length >= 2) {
+                              _isNicknameButtonEnabled = true;
+                            } else {
+                              _isNicknameButtonEnabled = false;
+                            }
+                            setState(() {});
+                          },
+                          maxLength: 10,
                           cursorColor: context.appColors.primary,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(
+                                RegExp(r'[a-zA-Z0-9ㄱ-ㅎ가-힣]'))
+                          ],
                           style: CustomTexts.bodyLarge.copyWith(
                             color: context.appColors.onBackground,
                           ),
@@ -290,7 +303,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                             hintText: context.tr("register_nickname_hint"),
                             hintStyle: CustomTexts.bodyLarge.copyWith(
                               color: context.appColors.onBackground
-                                  .withOpacity(0.5),
+                                  .withOpacity(0.3),
                             ),
                             enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(
@@ -308,17 +321,53 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                         ),
                       ),
                       const SizedBox(width: 10),
-                      Flexible(
-                        child: CustomRoundedBorderedContainer(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 16.0),
-                            child: Center(
-                              child: AutoSizeText(
-                                maxLines: 1,
-                                context.tr('validate_nickname'),
-                                style: CustomTexts.subtitleLarge.copyWith(
-                                  color: context.appColors.onPrimary,
+                      BlocBuilder<RegisterNicknameController, NicknameState>(
+                        builder: (context, state) => Flexible(
+                          child: GestureDetector(
+                            onTap: _isNicknameButtonEnabled
+                                ? () async {
+                                    final String text =
+                                        registerNicknameController
+                                            .nicknameController.text;
+                                    // 닉네임에 초성이 포함된 경우
+                                    if (RegExp(r'[ㅏ-ㅣㄱ-ㅎ]').hasMatch(text)) {
+                                      customShowDialog(
+                                          context,
+                                          context.tr('inapropriate_nickname'),
+                                          context.tr(
+                                              'nickname_has_initial_consonant'));
+                                    }
+                                    // 닉네임에 비속어가 포함된 경우
+                                    else if (customProfanityFilter
+                                        .hasMatch(text)) {
+                                      customShowDialog(
+                                          context,
+                                          context.tr('inapropriate_nickname'),
+                                          context.tr(
+                                              'inapropriate_nickname_message'));
+                                    } else {
+                                      _isNicknameButtonEnabled = false;
+                                      registerNicknameController
+                                          .add(NicknameRequest());
+                                    }
+                                  }
+                                : () {},
+                            child: CustomRoundedBorderedContainer(
+                              color: _isNicknameButtonEnabled
+                                  ? context.appColors.primary
+                                  : context.appColors.onBackground
+                                      .withOpacity(0.3),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 16.0),
+                                child: Center(
+                                  child: AutoSizeText(
+                                    maxLines: 1,
+                                    context.tr('validate_nickname'),
+                                    style: CustomTexts.subtitleLarge.copyWith(
+                                      color: context.appColors.onPrimary,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
@@ -417,21 +466,36 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 20),
                 ],
               ),
             ),
           ),
-          bottomNavigationBar: GestureDetector(
-            onTap: () {},
-            child: BottomAppBar(
-              height: context.width * 0.12,
-              color: context.appColors.primary,
-              child: Center(
-                child: Text(
-                  maxLines: 1,
-                  context.tr('sign_up'),
-                  style: CustomTexts.titleLarge.copyWith(
-                    color: context.appColors.onPrimary,
+          bottomNavigationBar: BlocBuilder<RegisterSidController, EmailState>(
+            builder: (context, sidState) =>
+                BlocBuilder<RegisterNicknameController, NicknameState>(
+              builder: (context, nicknameState) => GestureDetector(
+                onTap: () {
+                  if (_isNameValid &&
+                      sidState is EmailSent &&
+                      nicknameState is NicknameChecked &&
+                      _registerAgreementProvider.isAgreementChecked) {
+                    log('Sign Up Button Pressed');
+                  } else {
+                    return;
+                  }
+                },
+                child: BottomAppBar(
+                  height: context.width * 0.12,
+                  color: getBottomAppBarColor(context, sidState, nicknameState),
+                  child: Center(
+                    child: Text(
+                      maxLines: 1,
+                      context.tr('sign_up'),
+                      style: CustomTexts.titleLarge.copyWith(
+                        color: context.appColors.onPrimary,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -440,6 +504,18 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
         ),
       ),
     );
+  }
+
+  Color getBottomAppBarColor(
+      BuildContext context, EmailState sidState, NicknameState nicknameState) {
+    if (_isNameValid &&
+        sidState is EmailSent &&
+        nicknameState is NicknameChecked &&
+        _registerAgreementProvider.isAgreementChecked) {
+      return context.appColors.primary;
+    } else {
+      return context.appColors.onBackground.withOpacity(0.3);
+    }
   }
 
   void setIsAgreementChecked(bool value) {
@@ -455,11 +531,13 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
   String get department => _registerController
       .registerCollegeProvider.registerDepartmentProvider.department;
 
-  String get text => _registerSidController.sidController.text;
-
   RegisterSignController get _registerSignProvider =>
       _registerController.registerSignProvider;
 
   RegisterAgreementController get _registerAgreementProvider =>
       _registerSignProvider.registerAgreementProvider;
+
+  bool _isNameValid = false;
+  bool _isEmailButtonEnabled = false;
+  bool _isNicknameButtonEnabled = false;
 }

@@ -43,6 +43,8 @@ dependencies:
   auto_size_text: ^3.0.0
   hand_signature: ^3.0.3
   flutter_bloc: ^8.1.6
+  korean_profanity_filter: ^1.0.0
+  safe_text: ^1.0.7
 
 dev_dependencies:
   flutter_test:

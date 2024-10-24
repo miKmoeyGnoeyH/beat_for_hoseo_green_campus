@@ -19,5 +19,6 @@ abstract class CustomColors {
   Color get error;
   Color get onError;
 
+  Color get disabled;
   Color get defaultTextColor;
 }
