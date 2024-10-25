@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import '../../controller/user_bloc.dart';
 import '../../data/models/user_model.dart';
 import '../../managers/navigator/routes.dart';
-import '../global/custom_appbar.dart';
-import '../global/custom_scaffold.dart';
-import '../global/custom_rounded_bordered_container.dart';
+import '../global/widgets/custom_appbar.dart';
+import '../global/widgets/custom_rounded_bordered_container.dart';
+import '../global/widgets/custom_scaffold.dart';
 
 class HomeScreen extends StatelessWidget {
   final UserBloc _userBloc = UserBloc();

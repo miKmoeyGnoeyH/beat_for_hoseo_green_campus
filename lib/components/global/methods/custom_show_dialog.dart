@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../../managers/navigator/navigator_key_manager.dart';
 import '../../../theme/texts/custom_texts.dart';
-import '../custom_rounded_bordered_container.dart';
+import '../widgets/custom_rounded_bordered_container.dart';
 
 Future<dynamic> customShowDialog(
     BuildContext context, String title, String content) {

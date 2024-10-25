@@ -2,9 +2,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'components/global/widgets/custom_theme_app.dart';
 import 'controller/user_bloc.dart';
 import 'managers/navigator/routes.dart';
-import 'widgets/global/custom_theme_app.dart';
 import 'managers/navigator/navigator_key_manager.dart';
 
 class App extends StatefulWidget {

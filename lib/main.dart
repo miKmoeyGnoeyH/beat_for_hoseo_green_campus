@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'app.dart';
-import 'controller/user_bloc.dart';
 import 'managers/prefs/prefs_manager.dart';
 
 // TODO : 전체적으로 리팩토링 한 번 싹 조져주기
@@ -15,7 +14,7 @@ Future<void> main() async {
   await EasyLocalization.ensureInitialized();
   await dotenv.load(fileName: "assets/config/.env");
 
-  UserBloc().add(Init());
+  // UserBloc().add(Init());
 
   runApp(
     EasyLocalization(
