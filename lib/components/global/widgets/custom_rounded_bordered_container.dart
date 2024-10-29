@@ -23,7 +23,7 @@ class CustomRoundedBorderedContainer extends StatelessWidget {
         color: color ?? context.appColors.primary,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: borderColor ?? context.appColors.disabled,
+          color: borderColor ?? context.appColors.borderColor,
           width: borderWidth ?? 0.1,
         ),
       ),

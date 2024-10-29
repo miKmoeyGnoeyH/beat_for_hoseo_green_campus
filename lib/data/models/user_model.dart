@@ -1,28 +1,24 @@
-
-
-abstract final class User {
-  User(this.studentId, this.nickname, this.authorization, this.neuroesInHand, this.isLoading, this.isError);
+sealed class User {
+  User(this.studentId, this.nickname, this.authorization, this.neuroesInHand);
 
   final String studentId;
   final String nickname;
   final String neuroesInHand;
   final String authorization;
-  final bool isLoading;
-  final bool isError;
 }
 
 final class Guest extends User {
-  Guest() : super('', '', '', '', false, false);
+  Guest() : super('', '', '', '');
 }
 
 final class Member extends User {
-  Member(studentId, nickname, authorization, neuroesInHand) : super(studentId, nickname, authorization, neuroesInHand, false, false);
+  Member(super.studentId, super.nickname, super.authorization, super.neuroesInHand);
 }
 
 final class IsLoading extends User {
-  IsLoading() : super('', '', '', '', true, false);
+  IsLoading() : super('', '', '', '');
 }
 
 final class ErrorUser extends User {
-  ErrorUser(studentId) : super(studentId, '', '', '', false, true);
+  ErrorUser(studentId) : super(studentId, '', '', '');
 }

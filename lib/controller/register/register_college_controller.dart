@@ -1,34 +1,25 @@
-import 'dart:developer';
 
-import 'package:BEAT/controller/register/register_department_controller.dart';
+
+import 'package:bloc/bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-class RegisterCollegeController {
-  RegisterCollegeController(this.registerDepartmentProvider) {
-    log('RegisterCollegeProvider');
-    colleges = [];
-    college = '';
+import '../../data/models/register_basics_state.dart';
+import 'register_basic_events.dart';
+
+class RegisterCollegeController extends Bloc<RegisterBasicEvent, RegisterBasicState> {
+  RegisterCollegeController() : super(RegisterBasicInformState('')) {
+    on<RegisterBasicInformInitial>(_onRegisterCollegeInit);
+    on<RegisterBasicInformChangedByIndex>(_onRegisterCollegeChangedByIndex);
   }
 
-  RegisterCollegeController.initColleges(this.registerDepartmentProvider) {
-    log('RegisterCollegeProvider');
-    colleges = 'colleges'.tr().split(',');
-    college = colleges.first;
+  void _onRegisterCollegeInit(RegisterBasicEvent event, Emitter<RegisterBasicState> emit) {
+    emit(RegisterBasicInformState(colleges.first));
   }
 
-  RegisterCollegeController.initOrgDetails(this.registerDepartmentProvider) {
-    log('RegisterCollegeProvider');
-    colleges = 'organization_details'.tr().split(',');
-    college = colleges.first;
+  void _onRegisterCollegeChangedByIndex(RegisterBasicInformChangedByIndex event,
+      Emitter<RegisterBasicState> emit) {
+    emit(RegisterBasicInformState(colleges[event.index]));
   }
 
-  RegisterCollegeController.initAffiliation(this.registerDepartmentProvider) {
-    log('RegisterCollegeProvider');
-    colleges = [];
-    college = '';
-  }
-
-  RegisterDepartmentController registerDepartmentProvider;
-  late final List<String> colleges;
-  String college = '';
+  final List<String> colleges = 'colleges'.tr().split(',');
 }

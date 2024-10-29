@@ -26,7 +26,7 @@ class SignInScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<UserBloc, User>(
       listener: (context, state) {
-        if (state.isError) {
+        if (state is ErrorUser) {
           customShowDialog(
             context,
             context.tr('sign_in_failed'),
@@ -53,8 +53,9 @@ class SignInScreen extends StatelessWidget {
                   SignInNicknameField(nicknameController: _nicknameController),
                   const SizedBox(height: 36),
                   SignInSignInButton(
-                      studentIdController: _studentIdController,
-                      nicknameController: _nicknameController),
+                    studentIdController: _studentIdController,
+                    nicknameController: _nicknameController,
+                  ),
                   const SizedBox(height: 12),
                   const SignInRegisterButton(),
                   const SizedBox(height: 24),

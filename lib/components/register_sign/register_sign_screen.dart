@@ -1,15 +1,14 @@
-import 'package:BEAT/controller/register/register_sign_controller.dart';
+import 'package:BEAT/controller/register_fill_inform/register_sign_controller.dart';
 import 'package:BEAT/extensions/buildcontext_extension.dart';
 import 'package:BEAT/managers/navigator/navigator_key_manager.dart';
-import 'package:BEAT/widgets/global/custom_scaffold.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hand_signature/signature.dart';
 
-import '../../controller/register/register_organization_controller.dart';
 import '../../theme/texts/custom_texts.dart';
-import '../global/custom_rounded_bordered_container.dart';
+import '../global/widgets/custom_rounded_bordered_container.dart';
+import '../global/widgets/custom_scaffold.dart';
 
 class RegisterSignScreen extends StatefulWidget {
   const RegisterSignScreen({super.key});
@@ -19,7 +18,7 @@ class RegisterSignScreen extends StatefulWidget {
 }
 
 class _RegisterSignScreenState extends State<RegisterSignScreen> {
-  final RegisterSignController _registerSignProvider = RegisterOrganizationController().registerSignProvider;
+  final RegisterSignController registerSignController = RegisterSignController();
 
   @override
   void initState() {
@@ -60,7 +59,7 @@ class _RegisterSignScreenState extends State<RegisterSignScreen> {
                       borderRadius: BorderRadius.circular(5),
                     ),
                     child: HandSignature(
-                      control: _registerSignProvider.handSignatureControl,
+                      control: registerSignController.handSignatureControl,
                       color: Colors.black,
                       width: 1.0,
                       maxWidth: 4.0,
@@ -71,7 +70,7 @@ class _RegisterSignScreenState extends State<RegisterSignScreen> {
                     top: 0,
                     right: 0,
                     child: GestureDetector(
-                      onTap: () => _registerSignProvider.handSignatureControl.clear(),
+                      onTap: () => registerSignController.handSignatureControl.clear(),
                       child: SizedBox(
                         child: Padding(
                           padding: const EdgeInsets.all(10.0),

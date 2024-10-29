@@ -1,18 +1,21 @@
-import 'package:BEAT/controller/register/register_nickname_controller.dart';
-import 'package:BEAT/controller/register/register_sid_controller.dart';
-import 'package:BEAT/widgets/register/register_affiliation_screen.dart';
+import 'package:BEAT/controller/register/register_college_controller.dart';
+import 'package:BEAT/controller/register/register_department_controller.dart';
+import 'package:BEAT/controller/register/register_organization_controller.dart';
+import 'package:BEAT/controller/register_fill_inform/register_nickname_controller.dart';
+import 'package:BEAT/controller/register_fill_inform/register_sid_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../widgets/home/home_screen.dart';
-import '../../widgets/register/register_department_screen.dart';
-import '../../widgets/register/register_fill_inform_screen.dart';
-import '../../widgets/register/register_org_detail_screen.dart';
-import '../../widgets/register/register_organization_screen.dart';
-import '../../widgets/register/register_college_screen.dart';
-import '../../widgets/register/register_sign_screen.dart';
-import '../../widgets/settings/settings_screen.dart';
-import '../../widgets/sign_in/sign_in_screen.dart';
+import '../../components/home/home_screen.dart';
+import '../../components/register_affiliation/register_affiliation_screen.dart';
+import '../../components/register_college/register_college_screen.dart';
+import '../../components/register_department/register_department_screen.dart';
+import '../../components/register_fill_inform/register_fill_inform_screen.dart';
+import '../../components/register_org_detail/register_org_detail_screen.dart';
+import '../../components/register_organization/register_organization_screen.dart';
+import '../../components/register_sign/register_sign_screen.dart';
+import '../../components/settings/settings_screen.dart';
+import '../../components/sign_in/sign_in_screen.dart';
 
 abstract class RouteNames {
   static const String home = '/home';
@@ -28,25 +31,105 @@ abstract class RouteNames {
 }
 
 abstract class Routes {
-  static Map<String, Widget Function(BuildContext)> routes = {
-    RouteNames.home: (context) => HomeScreen(),
-    RouteNames.signIn: (context) => SignInScreen(),
-    RouteNames.registerOrganization: (context) =>
-        const RegisterOrganizationScreen(),
-    RouteNames.registerCollege: (context) => const RegisterCollegeScreen(),
-    RouteNames.registerDepartment: (context) =>
-        const RegisterDepartmentScreen(),
-    RouteNames.registerAffiliation: (context) =>
-        const RegisterAffiliationScreen(),
-    RouteNames.registerOrgDetail: (context) => const RegisterOrgDetailScreen(),
-    RouteNames.registerFillInform: (context) => MultiBlocProvider(
-          providers: [
-            BlocProvider(create: (context) => RegisterSidController()),
-            BlocProvider(create: (context) => RegisterNicknameController()),
-          ],
-          child: const RegisterFillInformScreen(),
-        ),
-    RouteNames.registerSign: (context) => const RegisterSignScreen(),
-    RouteNames.settings: (context) => SettingsScreen(),
-  };
+  static Route<dynamic> onGenerateRoute(RouteSettings settings) {
+    switch (settings.name) {
+      case RouteNames.home:
+        return MaterialPageRoute(
+          builder: (context) => const HomeScreen(),
+        );
+
+      case RouteNames.signIn:
+        return MaterialPageRoute(builder: (context) => SignInScreen());
+
+      case RouteNames.registerOrganization:
+        return MaterialPageRoute(
+          builder: (context) {
+            return BlocProvider(
+              create: (context) => RegisterOrganizationController(),
+              child: const RegisterOrganizationScreen(),
+            );
+          },
+        );
+
+      case RouteNames.registerCollege:
+        {
+          return MaterialPageRoute(
+            builder: (context) {
+              return BlocProvider(
+                create: (context) => RegisterCollegeController(),
+                child: const RegisterCollegeScreen(),
+              );
+            },
+          );
+        }
+
+      case RouteNames.registerDepartment:
+        {
+          return MaterialPageRoute(
+            builder: (context) {
+              return BlocProvider(
+                create: (context) => RegisterDepartmentController.fromOthers(),
+                child: const RegisterDepartmentScreen(),
+              );
+            },
+          );
+        }
+
+      case RouteNames.registerAffiliation:
+        {
+          return MaterialPageRoute(
+            builder: (context) => BlocProvider(
+              create: (context) =>
+                  RegisterDepartmentController.fromAffiliation(),
+              child: const RegisterAffiliationScreen(),
+            ),
+          );
+        }
+
+      case RouteNames.registerOrgDetail:
+        {
+          return MaterialPageRoute(
+            builder: (context) => BlocProvider(
+              create: (context) => RegisterDepartmentController.fromOthers(),
+              child: const RegisterOrgDetailScreen(),
+            ),
+          );
+        }
+
+      case RouteNames.registerFillInform:
+        {
+          return MaterialPageRoute(
+            builder: (context) => MultiBlocProvider(
+              providers: [
+                // BlocProvider.value(
+                //   value: organizationContext!
+                //       .read<RegisterOrganizationController>(),
+                // ),
+                // BlocProvider.value(
+                //   value: BlocProvider.of<RegisterCollegeController>(
+                //       collegeContext!),
+                // ),
+                // BlocProvider.value(
+                //   value: BlocProvider.of<RegisterDepartmentController>(
+                //       departmentContext!),
+                // ),
+                BlocProvider(create: (context) => RegisterSidController()),
+                BlocProvider(create: (context) => RegisterNicknameController()),
+              ],
+              child: const RegisterFillInformScreen(),
+            ),
+          );
+        }
+
+      case RouteNames.registerSign:
+        return MaterialPageRoute(
+            builder: (context) => const RegisterSignScreen());
+
+      case RouteNames.settings:
+        return MaterialPageRoute(builder: (context) => SettingsScreen());
+
+      default:
+        return MaterialPageRoute(builder: (context) => const HomeScreen());
+    }
+  }
 }

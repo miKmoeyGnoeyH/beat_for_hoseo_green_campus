@@ -24,7 +24,7 @@ class SignInSignInButton extends StatelessWidget {
 
     return BlocBuilder<UserBloc, User>(
       builder: (context, state) => CustomWideButton(
-        onTap: state.isLoading
+        onTap: state is IsLoading
             ? () {}
             : () => userBloc.add(
           SignIn(
@@ -32,7 +32,7 @@ class SignInSignInButton extends StatelessWidget {
             _nicknameController.text,
           ),
         ),
-        buttonColor: state.isLoading
+        buttonColor: state is IsLoading
             ? context.appColors.disabled
             : context.appColors.primary,
         buttonText: context.tr('sign_in'),

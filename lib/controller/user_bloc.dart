@@ -1,11 +1,9 @@
-import 'dart:developer';
 import 'package:bloc/bloc.dart';
 
 import '../data/models/user_model.dart';
 import '../data/provider/user_provider.dart';
 import '../managers/navigator/navigator_key_manager.dart';
 import '../managers/navigator/routes.dart';
-import '../managers/prefs/prefs_manager.dart';
 
 sealed class UserEvent {}
 
@@ -24,30 +22,17 @@ class UserBloc extends Bloc<UserEvent, User> {
   final UserProvider _userProvider = UserProvider();
 
   UserBloc() : super(Guest()) {
-    // on<Init>(_init);
     on<SignIn>(_signIn);
     on<SignOut>(_signOut);
   }
 
-  Future<void> _init(Init event, Emitter<User> emit) async {
-    log("UserBloc: _init()");
-    String studentId = PrefsManager.getValueAs<String>('saved_studentId');
-    String nickname = PrefsManager.getValueAs<String>('saved_nickname');
-
-    if (studentId == PrefsManager.defaultValue<String>() ||
-        nickname == PrefsManager.defaultValue<String>()) {
-      emit(Guest());
-    } else {
-      add(SignIn(studentId, nickname));
-    }
-  }
-
   Future<void> _signIn(SignIn event, Emitter<User> emit) async {
     emit(IsLoading());
-    User user;
 
+    User user;
     user = await _userProvider.signIn(event.studentId, event.nickname);
-    if(!user.isError) {
+
+    if(user is !ErrorUser) {
       NavigatorKeyManager()
         .navigatorState!
         .pushNamedAndRemoveUntil(RouteNames.home, (route) => false);

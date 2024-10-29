@@ -20,5 +20,7 @@ abstract class CustomColors {
   Color get onError;
 
   Color get disabled;
+  Color get borderColor => disabled;
+
   Color get defaultTextColor;
 }

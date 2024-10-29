@@ -42,5 +42,8 @@ class CustomLightColors implements CustomColors {
   Color get disabled => const Color(0xff000000).withOpacity(0.3);
 
   @override
+  Color get borderColor => disabled;
+
+  @override
   Color get defaultTextColor => const Color(0xff000000);
 }

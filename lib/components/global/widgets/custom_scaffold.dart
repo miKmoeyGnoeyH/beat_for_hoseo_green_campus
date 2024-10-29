@@ -25,7 +25,7 @@ class CustomScaffold extends StatelessWidget {
           child: CustomScrollView(
             physics: isScrollable == null
                 ? const AlwaysScrollableScrollPhysics()
-                : isScrollable!
+                : isScrollable == true
                     ? const AlwaysScrollableScrollPhysics()
                     : const NeverScrollableScrollPhysics(),
             slivers: [
