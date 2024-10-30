@@ -33,13 +33,16 @@ abstract class RouteNames {
 abstract class Routes {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
+
       case RouteNames.home:
         return MaterialPageRoute(
           builder: (context) => const HomeScreen(),
         );
 
       case RouteNames.signIn:
-        return MaterialPageRoute(builder: (context) => SignInScreen());
+        return MaterialPageRoute(
+          builder: (context) => SignInScreen(),
+        );
 
       case RouteNames.registerOrganization:
         return MaterialPageRoute(

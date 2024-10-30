@@ -20,15 +20,8 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return CustomThemeApp(
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider<UserBloc>(
-            create: (context) => UserBloc(),
-          ),
-          // BlocProvider<QuestsController>(
-          //   create: (context) => QuestsController(),
-          // ),
-        ],
+      child: BlocProvider(
+        create: (context) => UserBloc(),
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           localizationsDelegates: context.localizationDelegates,

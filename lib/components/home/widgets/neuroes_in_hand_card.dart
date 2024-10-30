@@ -22,6 +22,7 @@ class NeuroesInHandCard extends StatelessWidget {
         padding:
         const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,6 +37,7 @@ class NeuroesInHandCard extends StatelessWidget {
                 ),
               ],
             ),
+            Image.asset('assets/images/beat_coin_pile.png', width: 80,),
           ],
         ),
       ),

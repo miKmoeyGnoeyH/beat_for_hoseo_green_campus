@@ -14,6 +14,8 @@ class CustomSubtitleLarge extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text ?? '',
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
       style: CustomTexts.subtitleLarge.copyWith(
         color: textColor ?? context.appColors.onBackground,
       ),
