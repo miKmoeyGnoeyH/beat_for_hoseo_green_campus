@@ -1,3 +1,4 @@
+import 'package:BEAT/components/home/widgets/home_contents.dart';
 import 'package:BEAT/components/home/widgets/quest_list/quest_list.dart';
 import 'package:BEAT/components/home/widgets/quiz_list/quiz_list.dart';
 import 'package:BEAT/components/home/widgets/survey_list/survey_list.dart';
@@ -18,19 +19,18 @@ class HomeScreen extends StatelessWidget {
 
     return CustomScaffold(
       appBar: HomeAppbar(userBloc: userBloc),
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
               child: NeuroesInHandCard(userBloc: userBloc),
             ),
-          ),
-          const HomeQuestList(),
-          const HomeQuizList(),
-          const HomeSurveyList(),
-          const SliverToBoxAdapter(child: SizedBox(height: 20,),)
-        ],
+            const SliverToBoxAdapter(child: SizedBox(height: 20,),),
+            const HomeContents(),
+            const SliverToBoxAdapter(child: SizedBox(height: 20,),)
+          ],
+        ),
       ),
     );
   }

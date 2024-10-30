@@ -17,19 +17,18 @@ class HomeSurveyList extends StatelessWidget {
       create: (context) => SurveyListController(),
       child: BlocBuilder<SurveyListController, DataListState>(
         builder: (context, state) {
-          return SliverList(
-            delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8.0),
-                  child: SurveyCard(
-                    index: index,
-                    surveyModel: state.dataList[index] as SurveyModel,
-                  ),
-                );
-              },
-              childCount: state.dataList.length,
-            ),
+          return ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: state.dataList.length,
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            separatorBuilder: (context, index) => const SizedBox(height: 16),
+            itemBuilder: (context, index) {
+              return SurveyCard(
+                index: index,
+                surveyModel: state.dataList[index] as SurveyModel,
+              );
+            },
           );
         },
       ),

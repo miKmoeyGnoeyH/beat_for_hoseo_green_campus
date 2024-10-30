@@ -17,19 +17,18 @@ class HomeQuizList extends StatelessWidget {
       create: (context) => QuizListController(),
       child: BlocBuilder<QuizListController, DataListState>(
         builder: (context, state) {
-          return SliverList(
-            delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8.0),
-                  child: QuizCard(
-                    index: index,
-                    quizModel: state.dataList[index] as QuizModel,
-                  ),
-                );
-              },
-              childCount: state.dataList.length,
-            ),
+          return ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: state.dataList.length,
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            separatorBuilder: (context, index) => const SizedBox(height: 16),
+            itemBuilder: (context, index) {
+              return QuizCard(
+                index: index,
+                quizModel: state.dataList[index] as QuizModel,
+              );
+            },
           );
         },
       ),

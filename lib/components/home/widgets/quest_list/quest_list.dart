@@ -17,19 +17,18 @@ class HomeQuestList extends StatelessWidget {
       create: (context) => QuestListController(),
       child: BlocBuilder<QuestListController, DataListState>(
         builder: (context, state) {
-          return SliverList(
-            delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8.0),
-                  child: QuestCard(
-                    index: index,
-                    questModel: state.dataList[index] as QuestModel,
-                  ),
-                );
-              },
-              childCount: state.dataList.length,
-            ),
+          return ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: state.dataList.length,
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            separatorBuilder: (context, index) => const SizedBox(height: 16),
+            itemBuilder: (context, index) {
+              return QuestCard(
+                index: index,
+                questModel: state.dataList[index] as QuestModel,
+              );
+            },
           );
         },
       ),
