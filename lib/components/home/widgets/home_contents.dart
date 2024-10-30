@@ -1,4 +1,3 @@
-import 'package:BEAT/components/global/beat/beat_full_logo.dart';
 import 'package:BEAT/components/global/widgets/texts/custom_subtitle_large.dart';
 import 'package:BEAT/components/home/widgets/quest_list/quest_list.dart';
 import 'package:BEAT/extensions/buildcontext_extension.dart';

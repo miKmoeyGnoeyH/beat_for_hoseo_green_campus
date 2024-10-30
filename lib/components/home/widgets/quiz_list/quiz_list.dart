@@ -2,9 +2,11 @@ import 'package:BEAT/controller/home/quiz_list_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../data/models/data_models.dart';
+import '../../../../controller/home/data_list_events.dart';
 import '../../../../data/states/data_list_state.dart';
-import 'quiz_card.dart';
+import '../../../global/widgets/buttons/custom_refresh_button.dart';
+import '../../../global/widgets/custom_circular_progress_indicator.dart';
+import 'custom_quiz_list_view.dart';
 
 class HomeQuizList extends StatelessWidget {
   const HomeQuizList({
@@ -17,19 +19,16 @@ class HomeQuizList extends StatelessWidget {
       create: (context) => QuizListController(),
       child: BlocBuilder<QuizListController, DataListState>(
         builder: (context, state) {
-          return ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: state.dataList.length,
-            padding: const EdgeInsets.symmetric(vertical: 20),
-            separatorBuilder: (context, index) => const SizedBox(height: 16),
-            itemBuilder: (context, index) {
-              return QuizCard(
-                index: index,
-                quizModel: state.dataList[index] as QuizModel,
-              );
-            },
-          );
+          final QuizListController quizListController =
+              context.read<QuizListController>();
+
+          if (state is DataListLoading) {
+            return const CustomCircularProgressIndicator();
+          } else if (state is DataListLoadingError) {
+            return CustomRefreshButton(onTap: () => quizListController.add(DataListRequest()));
+          } else {
+            return CustomQuizListView(list: state.dataList);
+          }
         },
       ),
     );

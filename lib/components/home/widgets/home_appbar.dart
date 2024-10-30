@@ -4,7 +4,7 @@ import '../../../controller/user_bloc.dart';
 import '../../../theme/texts/custom_texts.dart';
 import '../../global/beat/beat_logo_small.dart';
 import '../../global/widgets/custom_appbar.dart';
-import 'home_appbar_text.dart';
+import '../../global/widgets/texts/custom_body_large.dart';
 import 'home_leaderboard_button.dart';
 import 'home_notifications_button.dart';
 import 'home_settings_button.dart';
@@ -24,7 +24,7 @@ class HomeAppbar extends StatelessWidget {
         children: [
           const BeatLogoSmall(),
           const SizedBox(width: 12),
-          HomeAppbarText(userBloc: userBloc),
+          CustomBodyLarge(text: userBloc.state.nickname)
         ],
       ),
       textStyle: CustomTexts.bodyMedium,

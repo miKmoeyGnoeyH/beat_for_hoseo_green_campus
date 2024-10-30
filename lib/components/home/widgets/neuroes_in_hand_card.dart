@@ -1,3 +1,4 @@
+import 'package:BEAT/components/global/widgets/texts/custom_body_large.dart';
 import 'package:BEAT/extensions/buildcontext_extension.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,10 @@ class NeuroesInHandCard extends StatelessWidget {
                   text: userBloc.state.neuroesInHand,
                   textColor: context.appColors.onPrimary,
                 ),
+                CustomBodyLarge(
+                  text: context.tr('tap_to_check_your_history'),
+                  textColor: context.appColors.onPrimary,
+                )
               ],
             ),
             Image.asset('assets/images/beat_coin_pile.png', width: 80,),
