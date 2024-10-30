@@ -1,4 +1,4 @@
-import 'package:BEAT/data/models/nickname_state.dart';
+import 'package:BEAT/data/states/nickname_state.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 

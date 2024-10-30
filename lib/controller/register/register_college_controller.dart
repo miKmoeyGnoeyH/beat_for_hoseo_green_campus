@@ -3,7 +3,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import '../../data/models/register_basics_state.dart';
+import '../../data/states/register_basics_state.dart';
 import 'register_basic_events.dart';
 
 class RegisterCollegeController extends Bloc<RegisterBasicEvent, RegisterBasicState> {

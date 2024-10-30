@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../data/models/event_model.dart';
+import '../../../../data/models/data_models.dart';
 import 'quest_card_icon_and_neuro.dart';
 import 'quest_card_title_and_desc.dart';
 

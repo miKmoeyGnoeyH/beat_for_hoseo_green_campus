@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../controller/home/events_controller.dart';
-import '../../../../data/models/event_model.dart';
+import '../../../../controller/home/quest_list_controller.dart';
+import '../../../../data/models/data_models.dart';
+import '../../../../data/states/data_list_state.dart';
 import 'quest_card.dart';
 
 class HomeQuestList extends StatelessWidget {
@@ -12,26 +13,26 @@ class HomeQuestList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<QuestsController, QuestsState>(
-      builder: (context, state) {
-        return Expanded(
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: state.quests.length,
-            physics: const NeverScrollableScrollPhysics(),
-            padding: const EdgeInsets.symmetric(vertical: 20),
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: QuestCard(
-                  index: index,
-                  questModel: state.quests[index],
-                ),
-              );
-            },
-          ),
-        );
-      },
+    return BlocProvider(
+      create: (context) => QuestListController(),
+      child: BlocBuilder<QuestListController, DataListState>(
+        builder: (context, state) {
+          return SliverList(
+            delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8.0),
+                  child: QuestCard(
+                    index: index,
+                    questModel: state.dataList[index] as QuestModel,
+                  ),
+                );
+              },
+              childCount: state.dataList.length,
+            ),
+          );
+        },
+      ),
     );
   }
 }

@@ -1,6 +1,6 @@
 
 import 'package:BEAT/controller/register/register_basic_events.dart';
-import 'package:BEAT/data/models/register_basics_state.dart';
+import 'package:BEAT/data/states/register_basics_state.dart';
 import 'package:bloc/bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 

@@ -1,7 +1,7 @@
 import 'package:BEAT/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../data/models/event_model.dart';
+import '../../../../data/models/data_models.dart';
 import '../../../global/widgets/custom_rounded_bordered_container.dart';
 import 'quest_card_contents.dart';
 

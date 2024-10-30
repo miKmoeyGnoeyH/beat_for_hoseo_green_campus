@@ -1,4 +1,4 @@
-import 'package:BEAT/data/models/nickname_state.dart';
+import 'package:BEAT/data/states/nickname_state.dart';
 import 'package:BEAT/data/provider/nickname_check_provider.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
