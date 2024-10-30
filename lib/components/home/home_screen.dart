@@ -1,5 +1,6 @@
 import 'package:BEAT/components/home/widgets/quest_list/quest_list.dart';
 import 'package:BEAT/components/home/widgets/quiz_list/quiz_list.dart';
+import 'package:BEAT/components/home/widgets/survey_list/survey_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -27,6 +28,7 @@ class HomeScreen extends StatelessWidget {
           ),
           const HomeQuestList(),
           const HomeQuizList(),
+          const HomeSurveyList(),
           const SliverToBoxAdapter(child: SizedBox(height: 20,),)
         ],
       ),

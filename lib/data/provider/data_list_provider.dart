@@ -24,7 +24,7 @@ class DataListProvider {
         break;
       case DataListType.survey:
       default:
-        eventsUrl = dotenv.env['QUIZ_LIST']!;
+        eventsUrl = dotenv.env['SURVEY_LIST']!;
         break;
     }
 
@@ -50,10 +50,11 @@ class DataListProvider {
             }
             break;
           case DataListType.survey:
-          default:
             for (var data in body) {
-              dataList.add(QuizModel.fromJson(data));
+              dataList.add(SurveyModel.fromJson(data));
             }
+          default:
+            break;
         }
         return DataListLoadingSuccess(dataList);
       } else {

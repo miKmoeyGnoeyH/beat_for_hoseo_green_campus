@@ -1,0 +1,31 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+
+import '../../../../data/models/data_models.dart';
+import 'survey_card_title_and_desc.dart';
+
+class SurveyCardContents extends StatelessWidget {
+  const SurveyCardContents({
+    super.key,
+    required this.index,
+    required this.surveyModel,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        SurveyCardTitleAndDesc(
+          index: index,
+          title: surveyModel.title,
+          content: context.tr('survey_desc'),
+        ),
+        const SizedBox(width: 20),
+      ],
+    );
+  }
+
+  final int index;
+  final SurveyModel surveyModel;
+}

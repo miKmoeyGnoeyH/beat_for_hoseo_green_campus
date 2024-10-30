@@ -1,5 +1,6 @@
 abstract class DataModel {
   DataModel();
+
   DataModel.fromJson(Map<String, dynamic> json);
 }
 
@@ -12,12 +13,12 @@ class QuestModel extends DataModel {
     required this.eventType,
   });
 
-  QuestModel.fromJson(Map<String, dynamic> json) :
-    eventId = json['eventId'],
-    eventName = json['eventName'],
-    descriptionShort = json['descriptionShort'],
-    neuro = json['neuro'],
-    eventType = json['eventType'];
+  QuestModel.fromJson(Map<String, dynamic> json)
+      : eventId = json['eventId'],
+        eventName = json['eventName'],
+        descriptionShort = json['descriptionShort'],
+        neuro = json['neuro'],
+        eventType = json['eventType'];
 
   final int eventId;
   final String eventName;
@@ -35,16 +36,27 @@ class QuizModel extends DataModel {
     required this.alreadySolved,
   });
 
-  QuizModel.fromJson(Map<String, dynamic> json) :
-    quizId = json['quizId'],
-    title = json['title'],
-    content = json['content'],
-    neuro = json['neuro'],
-    alreadySolved = json['alreadySolved'];
+  QuizModel.fromJson(Map<String, dynamic> json)
+      : quizId = json['quizId'],
+        title = json['title'],
+        content = json['content'],
+        neuro = json['neuro'],
+        alreadySolved = json['alreadySolved'];
 
   final int quizId;
   final String title;
   final String content;
   final int neuro;
   final bool alreadySolved;
+}
+
+class SurveyModel extends DataModel {
+  SurveyModel({required this.surveyId, required this.title});
+
+  SurveyModel.fromJson(Map<String, dynamic> json)
+      : surveyId = json['surveyId'],
+        title = json['title'];
+
+  final int surveyId;
+  final String title;
 }
