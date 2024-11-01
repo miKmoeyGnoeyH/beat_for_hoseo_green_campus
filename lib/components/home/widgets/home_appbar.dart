@@ -33,6 +33,7 @@ class HomeAppbar extends StatelessWidget {
         HomeNotificationsButton(),
         HomeSettingsButton(),
       ],
+      pinned: true,
     );
   }
 }

@@ -2,7 +2,7 @@ import 'package:BEAT/controller/home/survey_list_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../controller/home/data_list_events.dart';
+import '../../../../controller/home/data_events.dart';
 import '../../../../data/states/data_list_state.dart';
 import '../../../global/widgets/buttons/custom_refresh_button.dart';
 import '../../../global/widgets/custom_circular_progress_indicator.dart';

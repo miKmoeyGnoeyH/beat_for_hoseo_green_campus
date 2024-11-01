@@ -12,6 +12,7 @@ class CustomAppBar extends StatelessWidget {
     this.actions,
     this.iconTheme,
     this.hasBorder = true,
+    this.pinned = false,
     super.key,
   });
 
@@ -21,7 +22,7 @@ class CustomAppBar extends StatelessWidget {
       title: title,
       foregroundColor: context.appColors.onBackground,
       backgroundColor: context.appColors.background,
-      surfaceTintColor: context.appColors.onSurface,
+      surfaceTintColor: context.appColors.background,
       leading: leading,
       leadingWidth: leadingWidth,
       actions: actions,
@@ -34,6 +35,7 @@ class CustomAppBar extends StatelessWidget {
               ),
             )
           : null,
+      pinned: pinned,
     );
   }
 
@@ -46,4 +48,5 @@ class CustomAppBar extends StatelessWidget {
   final List<Widget>? actions;
   final IconThemeData? iconTheme;
   final bool hasBorder;
+  final bool pinned;
 }

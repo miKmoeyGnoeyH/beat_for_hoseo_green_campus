@@ -12,25 +12,25 @@ enum DataListType { quest, quiz, survey }
 class DataListProvider {
   final http.Client _httpClient = http.Client();
 
-  Future<DataListState> fetchQuests(DataListType type) async {
-    final String eventsUrl;
+  Future<DataListState> fetchDataList(DataListType type) async {
+    final String requestUrl;
 
     switch (type) {
       case DataListType.quest:
-        eventsUrl = dotenv.env['QUEST_LIST']!;
+        requestUrl = dotenv.env['QUEST_LIST']!;
         break;
       case DataListType.quiz:
-        eventsUrl = dotenv.env['QUIZ_LIST']!;
+        requestUrl = dotenv.env['QUIZ_LIST']!;
         break;
       case DataListType.survey:
       default:
-        eventsUrl = dotenv.env['SURVEY_LIST']!;
+        requestUrl = dotenv.env['SURVEY_LIST']!;
         break;
     }
 
     try {
       final http.Response response = await _httpClient
-          .get(Uri.parse(eventsUrl))
+          .get(Uri.parse(requestUrl))
           .timeout(const Duration(seconds: 5));
 
       if (response.statusCode == 200) {

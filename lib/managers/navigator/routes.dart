@@ -1,3 +1,5 @@
+import 'package:BEAT/components/quest_detail/quest_detail_screen.dart';
+import 'package:BEAT/controller/home/data_controller.dart';
 import 'package:BEAT/controller/register/register_college_controller.dart';
 import 'package:BEAT/controller/register/register_department_controller.dart';
 import 'package:BEAT/controller/register/register_organization_controller.dart';
@@ -16,9 +18,11 @@ import '../../components/register_organization/register_organization_screen.dart
 import '../../components/register_sign/register_sign_screen.dart';
 import '../../components/settings/settings_screen.dart';
 import '../../components/sign_in/sign_in_screen.dart';
+import '../../data/models/data_models.dart';
 
 abstract class RouteNames {
   static const String home = '/home';
+  static const String questDetail = '/quest_detail';
   static const String signIn = '/signIn';
   static const String registerOrganization = '/register_organization';
   static const String registerCollege = '/register_college';
@@ -33,11 +37,22 @@ abstract class RouteNames {
 abstract class Routes {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
-
       case RouteNames.home:
         return MaterialPageRoute(
           builder: (context) => const HomeScreen(),
         );
+
+      case RouteNames.questDetail:
+        {
+          final QuestModel arg = settings.arguments as QuestModel;
+
+          return MaterialPageRoute(
+            builder: (context) => BlocProvider(
+              create: (context) => DataDetailModelController(arg),
+              child: const QuestDetailScreen(),
+            ),
+          );
+        }
 
       case RouteNames.signIn:
         return MaterialPageRoute(

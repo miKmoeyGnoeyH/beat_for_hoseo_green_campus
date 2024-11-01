@@ -1,11 +1,9 @@
-import 'package:BEAT/components/global/widgets/texts/custom_subtitle_large.dart';
-import 'package:BEAT/components/global/widgets/texts/custom_title_medium.dart';
 import 'package:BEAT/components/home/widgets/quest_list/quest_list.dart';
 import 'package:BEAT/extensions/buildcontext_extension.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import '../../global/widgets/texts/custom_title_large.dart';
+import 'home_contents_tab_button.dart';
 import 'quiz_list/quiz_list.dart';
 import 'survey_list/survey_list.dart';
 
@@ -33,33 +31,25 @@ class _HomeContentsState extends State<HomeContents> {
 
   @override
   Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Column(
-        children: [
-          Row(
-            children: [
-              for (int i = 0; i < _contents.length; i++)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _currentIndex = i;
-                      });
-                    },
-                    child: CustomSubtitleLarge(
-                      text: _contents[i].title,
-                      textColor: i == _currentIndex
-                          ? context.appColors.primary
-                          : context.appColors.onBackground
-                    ),
-                  ),
-                )
-            ],
-          ),
-          _contents[_currentIndex].content,
-        ],
-      ),
+    return Column(
+      children: [
+        Row(
+          children: [
+            for (int i = 0; i < _contents.length; i++)
+              HomeContentsTabButton(
+                  onTap: () {
+                    setState(() {
+                      _currentIndex = i;
+                    });
+                  },
+                  title: _contents[i].title,
+                  textColor: i == _currentIndex
+                      ? context.appColors.primary
+                      : context.appColors.onBackground),
+          ],
+        ),
+        _contents[_currentIndex].content,
+      ],
     );
   }
 }

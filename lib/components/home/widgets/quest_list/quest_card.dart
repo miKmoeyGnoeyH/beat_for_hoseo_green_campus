@@ -1,4 +1,8 @@
+import 'dart:developer';
+
 import 'package:BEAT/extensions/buildcontext_extension.dart';
+import 'package:BEAT/managers/navigator/navigator_key_manager.dart';
+import 'package:BEAT/managers/navigator/routes.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../data/models/data_models.dart';
@@ -14,15 +18,20 @@ class QuestCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomRoundedBorderedContainer(
-      color: context.appColors.background,
-      height: context.height * 0.133,
-      borderWidth: 0.3,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-        child: QuestCardContents(
-          index: index,
-          questModel: questModel,
+    return GestureDetector(
+      onTap: () {
+        NavigatorKeyManager().pushNamed(RouteNames.questDetail, arguments: questModel);
+      },
+      child: CustomRoundedBorderedContainer(
+        color: context.appColors.background,
+        height: context.height * 0.133,
+        borderWidth: 0.3,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          child: QuestCardContents(
+            index: index,
+            questModel: questModel,
+          ),
         ),
       ),
     );

@@ -28,6 +28,7 @@ class CustomRoundedBorderedContainer extends StatelessWidget {
         ),
       ),
       child: child,
+      clipBehavior: Clip.hardEdge,
     );
   }
 
