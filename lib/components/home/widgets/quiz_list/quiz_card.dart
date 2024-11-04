@@ -16,8 +16,8 @@ class QuizCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomRoundedBorderedContainer(
       color: context.appColors.background,
-      height: context.height * 0.11,
       borderWidth: 0.3,
+      height: context.height * 0.12,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         child: QuizCardContents(

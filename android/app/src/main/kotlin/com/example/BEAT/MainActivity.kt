@@ -1,4 +1,4 @@
-package com.example.bloc_ex
+package com.example.BEAT
 
 import io.flutter.embedding.android.FlutterActivity
 

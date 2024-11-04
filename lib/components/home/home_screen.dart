@@ -17,16 +17,14 @@ class HomeScreen extends StatelessWidget {
     return CustomScaffold(
       appBar: HomeAppbar(userBloc: userBloc),
       body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-          child: Column(
-            children: [
-              NeuroesInHandCard(userBloc: userBloc),
-              const SizedBox(height: 20,),
-              const HomeContents(),
-              const SizedBox(height: 20,)
-            ],
-          ),
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          children: [
+            NeuroesInHandCard(userBloc: userBloc),
+            const SizedBox(height: 20,),
+            const HomeContents(),
+            const SizedBox(height: 20,)
+          ],
         ),
       ),
     );

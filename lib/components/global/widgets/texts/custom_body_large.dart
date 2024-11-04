@@ -8,6 +8,7 @@ class CustomBodyLarge extends StatelessWidget {
     super.key,
     this.text,
     this.textColor,
+    this.maxLines
   });
 
   @override
@@ -16,9 +17,12 @@ class CustomBodyLarge extends StatelessWidget {
       text ?? '',
       style: CustomTexts.bodyLarge
           .copyWith(color: textColor ?? context.appColors.onBackground),
+      maxLines: maxLines,
+      overflow: maxLines == null ? null : TextOverflow.ellipsis,
     );
   }
 
   final String? text;
   final Color? textColor;
+  final int? maxLines;
 }

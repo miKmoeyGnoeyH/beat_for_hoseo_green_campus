@@ -2,7 +2,7 @@ import 'package:BEAT/extensions/buildcontext_extension.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
-import '../../../theme/texts/custom_texts.dart';
+import '../../../../theme/texts/custom_texts.dart';
 
 class CustomBottomAppbar extends StatelessWidget {
   const CustomBottomAppbar({

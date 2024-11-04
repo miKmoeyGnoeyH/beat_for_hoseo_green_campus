@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../custom_bottom_appbar.dart';
+import '../appbars/custom_bottom_appbar.dart';
 
 class CustomBottomAppbarButton extends StatelessWidget {
   const CustomBottomAppbarButton({

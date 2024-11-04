@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:BEAT/extensions/buildcontext_extension.dart';
 import 'package:BEAT/managers/navigator/navigator_key_manager.dart';
 import 'package:BEAT/managers/navigator/routes.dart';
@@ -24,8 +22,8 @@ class QuestCard extends StatelessWidget {
       },
       child: CustomRoundedBorderedContainer(
         color: context.appColors.background,
-        height: context.height * 0.133,
         borderWidth: 0.3,
+        height: context.height * 0.15,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
           child: QuestCardContents(

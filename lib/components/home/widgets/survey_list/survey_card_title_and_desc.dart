@@ -25,7 +25,10 @@ class SurveyCardTitleAndDesc extends StatelessWidget {
             textColor: context.appColors.primary,
           ),
           CustomSubtitleLarge(text: title),
-          CustomBodyLarge(text: content),
+          CustomBodyLarge(
+            text: content,
+            maxLines: 2,
+          ),
         ],
       ),
     );

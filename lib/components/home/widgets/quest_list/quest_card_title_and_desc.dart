@@ -25,7 +25,10 @@ class QuestCardTitleAndDesc extends StatelessWidget {
             textColor: context.appColors.primary,
           ),
           CustomSubtitleLarge(text: eventName),
-          CustomBodyLarge(text: descriptionShort),
+          CustomBodyLarge(
+            text: descriptionShort,
+            maxLines: 2,
+          ),
         ],
       ),
     );

@@ -2,7 +2,7 @@ import 'package:BEAT/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
 
 import '../../../theme/texts/custom_texts.dart';
-import '../../global/widgets/custom_appbar.dart';
+import '../../global/widgets/appbars/custom_appbar.dart';
 
 class RegisterBasicAppbar extends StatelessWidget {
   const RegisterBasicAppbar({
