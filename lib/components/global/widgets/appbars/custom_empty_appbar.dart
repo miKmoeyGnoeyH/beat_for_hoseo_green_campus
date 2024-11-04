@@ -13,6 +13,7 @@ class CustomEmptyAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomAppBar(
       hasBorder: true,
+      pinned: true,
       leading: Padding(
         padding: const EdgeInsets.only(left: 20.0),
         child: GestureDetector(

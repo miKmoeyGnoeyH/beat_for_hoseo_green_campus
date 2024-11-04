@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:BEAT/controller/home/data_events.dart';
 import 'package:BEAT/data/provider/data_detail_provider.dart';
 import 'package:BEAT/data/states/data_state.dart';
@@ -16,7 +14,7 @@ class DataDetailModelController extends Bloc<DataDetailEvent, DataDetailModelSta
   void _onDataDetailRequest(DataDetailEvent event, Emitter<DataDetailModelState> emit) async {
     emit(DataDetailModelLoading());
     final DataDetailModelState dataDetailModelState = await _dataDetailProvider.fetchData(dataModel);
-    log(dataDetailModelState.toString());
+    // log(dataDetailModelState.toString());
     emit(dataDetailModelState);
   }
 

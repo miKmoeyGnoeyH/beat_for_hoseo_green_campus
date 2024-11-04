@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:BEAT/data/models/data_models.dart';
 import 'package:BEAT/data/states/data_state.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
@@ -10,7 +10,6 @@ class DataDetailProvider {
   final http.Client _httpClient = http.Client();
 
   Future<DataDetailModelState> fetchData(DataModel dataModel) async {
-    log(dataModel.toString());
     final String requestUrl;
 
     switch (dataModel.runtimeType) {
@@ -29,11 +28,15 @@ class DataDetailProvider {
           .get(Uri.parse(requestUrl))
           .timeout(const Duration(seconds: 5));
 
-      log(response.body);
+      // log('DataDetailProvider: fetchData: response.statusCode: ${response.statusCode}');
+      // log('DataDetailProvider: fetchData: response.body: ${response.body}');
 
       if (response.statusCode == 200) {
         DataModel data;
         final body = jsonDecode(utf8.decode(response.bodyBytes));
+
+        // log('DataDetailProvider: fetchData: jsonBody: ${body.toString()}');
+        // log('DataDetailProvider: fetchData: dataModel.runtimeType: ${dataModel.runtimeType.toString()}');
 
         switch (dataModel.runtimeType) {
           case const (QuestModel):
@@ -50,6 +53,7 @@ class DataDetailProvider {
         return DataDetailModelLoadingError();
       }
     } catch (e) {
+      debugPrint(e.toString());
       return DataDetailModelLoadingError();
     }
   }

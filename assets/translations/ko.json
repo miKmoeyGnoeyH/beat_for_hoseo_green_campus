@@ -84,10 +84,14 @@
   "reward": "보상",
   "quest_type": "퀘스트 타입",
   "location": "위치",
+  "subjective": "주관식",
+  "objective": "객관식",
+  "writing_answers": "답안 작성",
   "settings": "설정",
   "sign_out": "로그아웃",
   "next": "다음",
   "back": "이전",
   "confirm": "확인",
-  "done": "완료"
+  "done": "완료",
+  "retry": "재시도"
 }

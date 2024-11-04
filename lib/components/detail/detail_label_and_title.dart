@@ -1,6 +1,7 @@
 import 'package:BEAT/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
 
+import '../global/beat/beat_coin.dart';
 import '../global/widgets/texts/custom_subtitle_large.dart';
 import '../global/widgets/texts/custom_title_large.dart';
 
@@ -9,6 +10,7 @@ class DetailLabelAndTItle extends StatelessWidget {
     super.key,
     this.labelText,
     this.title,
+    this.neuro,
   });
 
   @override
@@ -20,8 +22,26 @@ class DetailLabelAndTItle extends StatelessWidget {
           text: labelText,
           textColor: context.appColors.primary,
         ),
-        CustomTitleLarge(
-          text: title,
+        const SizedBox(height: 5),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            CustomTitleLarge(
+              text: title,
+            ),
+            neuro != null
+                ? Row(
+                    children: [
+                      CustomTitleLarge(
+                        text: neuro.toString(),
+                        textColor: context.appColors.primary,
+                      ),
+                      const SizedBox(width: 5),
+                      const BeatCoin(width: 25),
+                    ],
+                  )
+                : const SizedBox(),
+          ],
         ),
       ],
     );
@@ -29,4 +49,5 @@ class DetailLabelAndTItle extends StatelessWidget {
 
   final String? labelText;
   final String? title;
+  final int? neuro;
 }

@@ -1,4 +1,5 @@
 import 'package:BEAT/components/quest_detail/quest_detail_screen.dart';
+import 'package:BEAT/components/quiz_detail/quiz_detail_screen.dart';
 import 'package:BEAT/controller/home/data_controller.dart';
 import 'package:BEAT/controller/register/register_college_controller.dart';
 import 'package:BEAT/controller/register/register_department_controller.dart';
@@ -20,19 +21,7 @@ import '../../components/settings/settings_screen.dart';
 import '../../components/sign_in/sign_in_screen.dart';
 import '../../data/models/data_models.dart';
 
-abstract class RouteNames {
-  static const String home = '/home';
-  static const String questDetail = '/quest_detail';
-  static const String signIn = '/signIn';
-  static const String registerOrganization = '/register_organization';
-  static const String registerCollege = '/register_college';
-  static const String registerDepartment = '/register_department';
-  static const String registerAffiliation = '/register_affiliation';
-  static const String registerOrgDetail = '/register_org_detail';
-  static const String registerFillInform = '/register_fill_inform';
-  static const String registerSign = '/register_sign';
-  static const String settings = '/settings';
-}
+part 'route_names.dart';
 
 abstract class Routes {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -50,6 +39,18 @@ abstract class Routes {
             builder: (context) => BlocProvider(
               create: (context) => DataDetailModelController(arg),
               child: const QuestDetailScreen(),
+            ),
+          );
+        }
+
+      case RouteNames.quizDetail:
+        {
+          final QuizModel arg = settings.arguments as QuizModel;
+
+          return MaterialPageRoute(
+            builder: (context) => BlocProvider(
+              create: (context) => DataDetailModelController(arg),
+              child: const QuizDetailScreen(),
             ),
           );
         }

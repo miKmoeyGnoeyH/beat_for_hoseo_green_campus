@@ -5,6 +5,7 @@ class QuizModel extends DataModel {
     required this.quizId,
     required this.title,
     required this.content,
+    required this.imageUrl,
     required this.neuro,
     required this.alreadySolved,
   });
@@ -13,21 +14,26 @@ class QuizModel extends DataModel {
       : quizId = json['quizId'],
         title = json['title'],
         content = json['content'],
+        imageUrl = json['imageUrl'],
         neuro = json['neuro'],
         alreadySolved = json['alreadySolved'];
 
   final int quizId;
   final String title;
   final String content;
+  final String? imageUrl;
   final int neuro;
   final bool alreadySolved;
 }
+
+
 
 class QuizDetailModel extends QuizModel {
   QuizDetailModel({
     required super.quizId,
     required super.title,
     required super.content,
+    required super.imageUrl,
     required super.neuro,
     required super.alreadySolved,
     required this.questionList,
@@ -40,6 +46,7 @@ class QuizDetailModel extends QuizModel {
           quizId: quizModel.quizId,
           title: quizModel.title,
           content: quizModel.content,
+          imageUrl: quizModel.imageUrl,
           neuro: quizModel.neuro,
           alreadySolved: quizModel.alreadySolved,
         );
@@ -52,6 +59,7 @@ class QuizDetailModel extends QuizModel {
           quizId: json['quizId'],
           title: json['title'],
           content: json['content'],
+          imageUrl: json['imageUrl'],
           neuro: json['neuro'],
           alreadySolved: json['alreadySolved'],
         );
@@ -65,12 +73,15 @@ class QuizDetailModel extends QuizModel {
           quizId: quizModel.quizId,
           title: quizModel.title,
           content: quizModel.content,
+          imageUrl: quizModel.imageUrl,
           neuro: quizModel.neuro,
           alreadySolved: quizModel.alreadySolved,
         );
 
-  final List<DataModel> questionList;
+  final List<QuestionModel> questionList;
 }
+
+
 
 class QuestionModel extends DataModel {
   QuestionModel({
@@ -92,10 +103,12 @@ class QuestionModel extends DataModel {
 
   final int questionId;
   final String question;
-  final String imageUrl;
-  final List<DataModel> answerList;
+  final String? imageUrl;
+  final List<AnswerModel> answerList;
   final bool subjective;
 }
+
+
 
 class AnswerModel extends DataModel {
   AnswerModel({
@@ -114,5 +127,5 @@ class AnswerModel extends DataModel {
   final int answerId;
   final String answer;
   final bool correctAnswer;
-  final String imageUrl;
+  final String? imageUrl;
 }

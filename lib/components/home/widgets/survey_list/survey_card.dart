@@ -1,5 +1,7 @@
 import 'package:BEAT/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../data/models/data_models.dart';
 import '../../../global/widgets/custom_rounded_bordered_container.dart';
@@ -14,15 +16,20 @@ class SurveyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomRoundedBorderedContainer(
-      color: context.appColors.background,
-      borderWidth: 0.3,
-      height: context.height * 0.12,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-        child: SurveyCardContents(
-          index: index,
-          surveyModel: surveyModel,
+    return GestureDetector(
+      onTap: () {
+        launchUrl(Uri.parse('${dotenv.env['SURVEY_URL']!}${surveyModel.surveyId}'));
+      },
+      child: CustomRoundedBorderedContainer(
+        color: context.appColors.background,
+        borderWidth: 0.3,
+        height: context.height * 0.12,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          child: SurveyCardContents(
+            index: index,
+            surveyModel: surveyModel,
+          ),
         ),
       ),
     );

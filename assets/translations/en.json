@@ -84,10 +84,14 @@
   "reward": "Reward",
   "quest_type": "Quest Type",
   "location": "Location",
+  "subjective": "Subjective",
+  "objective": "Objective",
+  "writing_answers": "Writing Answers",
   "settings": "Settings",
   "sign_out": "Sign Out",
   "next": "Next",
   "back": "Back",
   "confirm": "Confirm",
-  "done": "Done"
+  "done": "Done",
+  "retry": "Retry"
 }
