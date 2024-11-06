@@ -14,8 +14,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../controller/home/data_controller.dart';
-import '../../controller/home/data_events.dart';
+import '../../controller/home/controllers/data_controller.dart';
+import '../../controller/home/events/data_events.dart';
 import '../../data/provider/quiz_submit_grading_provider.dart';
 import '../../data/states/data_state.dart';
 import '../detail/detail_label_and_title.dart';
@@ -45,8 +45,7 @@ class QuizDetailScreen extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 16),
                       child: Column(
-                        // padding: const EdgeInsets.all(0),
-                        // physics: const NeverScrollableScrollPhysics(),
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           DetailLabelAndTItle(
                             labelText: 'Quiz',

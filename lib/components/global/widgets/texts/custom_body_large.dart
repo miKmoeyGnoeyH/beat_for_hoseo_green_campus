@@ -4,19 +4,15 @@ import 'package:flutter/material.dart';
 import '../../../../theme/texts/custom_texts.dart';
 
 class CustomBodyLarge extends StatelessWidget {
-  const CustomBodyLarge({
-    super.key,
-    this.text,
-    this.textColor,
-    this.maxLines
-  });
+  const CustomBodyLarge({super.key, this.text, this.textColor, this.maxLines});
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text ?? '',
-      style: CustomTexts.bodyLarge
-          .copyWith(color: textColor ?? context.appColors.onBackground),
+      style: CustomTexts.bodyLarge.copyWith(
+        color: textColor ?? context.appColors.onBackground,
+      ),
       maxLines: maxLines,
       overflow: maxLines == null ? null : TextOverflow.ellipsis,
     );

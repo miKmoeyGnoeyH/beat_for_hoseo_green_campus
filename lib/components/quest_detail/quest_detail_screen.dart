@@ -1,13 +1,13 @@
 import 'package:BEAT/components/global/widgets/appbars/custom_empty_appbar.dart';
 import 'package:BEAT/components/global/widgets/custom_scaffold.dart';
-import 'package:BEAT/controller/home/data_controller.dart';
+import 'package:BEAT/controller/home/controllers/data_controller.dart';
 import 'package:BEAT/data/models/data_models.dart';
 import 'package:BEAT/data/states/data_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-import '../../controller/home/data_events.dart';
+import '../../controller/home/events/data_events.dart';
 import '../detail/detail_desc.dart';
 import '../detail/detail_image.dart';
 import '../detail/detail_label_and_title.dart';

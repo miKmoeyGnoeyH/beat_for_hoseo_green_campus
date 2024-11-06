@@ -2,6 +2,7 @@ part of 'routes.dart';
 
 abstract class RouteNames {
   static const String home = '/home';
+  static const String neuroHistory = '/neuro_history';
   static const String questDetail = '/quest_detail';
   static const String quizDetail = '/quiz_detail';
   static const String signIn = '/signIn';

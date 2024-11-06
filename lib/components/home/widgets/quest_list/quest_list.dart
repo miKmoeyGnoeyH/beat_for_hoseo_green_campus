@@ -1,8 +1,8 @@
-import 'package:BEAT/controller/home/data_events.dart';
+import 'package:BEAT/controller/home/events/data_events.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../controller/home/quest_list_controller.dart';
+import '../../../../controller/home/controllers/quest_list_controller.dart';
 import '../../../../data/states/data_list_state.dart';
 import '../../../global/widgets/buttons/custom_refresh_button.dart';
 import '../../../global/widgets/custom_circular_progress_indicator.dart';

@@ -11,18 +11,16 @@ class QuestCardIconAndNeuro extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const BeatCoin(),
-            const SizedBox(height: 5),
-            CustomSubtitleLarge(
-              text: neuro.toString(),
-            ),
-          ],
-        ),
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const BeatCoin(),
+          const SizedBox(height: 5),
+          CustomSubtitleLarge(
+            text: neuro.toString(),
+          ),
+        ],
       ),
     );
   }

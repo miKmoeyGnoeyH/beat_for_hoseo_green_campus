@@ -22,7 +22,10 @@ class QuestCardContents extends StatelessWidget {
           descriptionShort: questModel.descriptionShort,
         ),
         const SizedBox(width: 20),
-        QuestCardIconAndNeuro(neuro: questModel.neuro),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: QuestCardIconAndNeuro(neuro: questModel.neuro),
+        ),
       ],
     );
   }

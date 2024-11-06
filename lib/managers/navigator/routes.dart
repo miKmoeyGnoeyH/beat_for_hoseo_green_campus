@@ -1,6 +1,8 @@
+import 'package:BEAT/components/history/neuro_history_screen.dart';
 import 'package:BEAT/components/quest_detail/quest_detail_screen.dart';
 import 'package:BEAT/components/quiz_detail/quiz_detail_screen.dart';
-import 'package:BEAT/controller/home/data_controller.dart';
+import 'package:BEAT/controller/home/controllers/data_controller.dart';
+import 'package:BEAT/controller/neuro_history/controllers/neuro_history_controller.dart';
 import 'package:BEAT/controller/register/register_college_controller.dart';
 import 'package:BEAT/controller/register/register_department_controller.dart';
 import 'package:BEAT/controller/register/register_organization_controller.dart';
@@ -31,10 +33,20 @@ abstract class Routes {
           builder: (context) => const HomeScreen(),
         );
 
+      case (RouteNames.neuroHistory):
+        {
+          final String authorization = settings.arguments as String;
+          return MaterialPageRoute(
+            builder: (context) => BlocProvider(
+              create: (context) => NeuroHistoryController(authorization),
+              child: const NeuroHistoryScreen(),
+            ),
+          );
+        }
+
       case RouteNames.questDetail:
         {
           final QuestModel arg = settings.arguments as QuestModel;
-
           return MaterialPageRoute(
             builder: (context) => BlocProvider(
               create: (context) => DataDetailModelController(arg),
@@ -46,7 +58,6 @@ abstract class Routes {
       case RouteNames.quizDetail:
         {
           final QuizModel arg = settings.arguments as QuizModel;
-
           return MaterialPageRoute(
             builder: (context) => BlocProvider(
               create: (context) => DataDetailModelController(arg),
