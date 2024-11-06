@@ -6,6 +6,7 @@ class QuizQuestionContents extends StatelessWidget {
   const QuizQuestionContents({
     super.key,
     this.title,
+    this.imageUrl,
     this.child,
   });
 
@@ -17,7 +18,14 @@ class QuizQuestionContents extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CustomSubtitleLarge(text: title),
-          const SizedBox(height: 5),
+          const SizedBox(height: 10),
+          imageUrl != null
+              ? Image.network(
+                  imageUrl!,
+                  fit: BoxFit.cover,
+                )
+              : const SizedBox(),
+          imageUrl != null ? const SizedBox(height: 10) : const SizedBox(),
           child ?? const SizedBox(),
         ],
       ),
@@ -25,5 +33,6 @@ class QuizQuestionContents extends StatelessWidget {
   }
 
   final String? title;
+  final String? imageUrl;
   final Widget? child;
 }

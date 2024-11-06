@@ -87,11 +87,16 @@
   "subjective": "Subjective",
   "objective": "Objective",
   "writing_answers": "Writing Answers",
+  "submit_and_grading": "Submit and Grading",
+  "submit_unanswered": "There are unanswered questions. Please respond to all questions.",
+  "submit_already_checked": "Quiz already answered.",
   "settings": "Settings",
   "sign_out": "Sign Out",
   "next": "Next",
   "back": "Back",
   "confirm": "Confirm",
   "done": "Done",
+  "warning": "Warning",
+  "error": "Error",
   "retry": "Retry"
 }

@@ -73,16 +73,16 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
           listener: (context, state) {
             if (state is EmailSent) {
               customShowDialog(
-                context,
-                context.tr('email_sent'),
-                context.tr('email_sent_message'),
+                context: context,
+                title: context.tr('email_sent'),
+                content: context.tr('email_sent_message'),
               );
             } else if (state is EmailError) {
               _isEmailButtonEnabled = true;
               customShowDialog(
-                context,
-                context.tr('email_sent_error'),
-                context.tr('email_sent_error_message'),
+                context: context,
+                title: context.tr('email_sent_error'),
+                content: context.tr('email_sent_error_message'),
               );
             }
           },
@@ -91,23 +91,23 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
           listener: (context, state) {
             if (state is NicknameChecked) {
               customShowDialog(
-                context,
-                context.tr('nickname_checked'),
-                context.tr('nickname_checked_message'),
+                context: context,
+                title: context.tr('nickname_checked'),
+                content: context.tr('nickname_checked_message'),
               );
             } else if (state is NicknameAlreadyTaken) {
               _isNicknameButtonEnabled = true;
               customShowDialog(
-                context,
-                context.tr('nickname_unchecked'),
-                context.tr('nickname_unchecked_message'),
+                context: context,
+                title: context.tr('nickname_unchecked'),
+                content: context.tr('nickname_unchecked_message'),
               );
             } else if (state is NicknameError) {
               _isNicknameButtonEnabled = true;
               customShowDialog(
-                context,
-                context.tr('nickname_check_error'),
-                context.tr('nickname_check_error_message'),
+                context: context,
+                title: context.tr('nickname_check_error'),
+                content: context.tr('nickname_check_error_message'),
               );
             }
           },
@@ -218,18 +218,18 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                                     // 닉네임에 초성이 포함된 경우
                                     if (RegExp(r'[ㅏ-ㅣㄱ-ㅎ]').hasMatch(text)) {
                                       customShowDialog(
-                                          context,
-                                          context.tr('inapropriate_nickname'),
-                                          context.tr(
+                                          context: context,
+                                          title: context.tr('inapropriate_nickname'),
+                                          content: context.tr(
                                               'nickname_has_initial_consonant'));
                                     }
                                     // 닉네임에 비속어가 포함된 경우
                                     else if (customProfanityFilter
                                         .hasMatch(text)) {
                                       customShowDialog(
-                                          context,
-                                          context.tr('inapropriate_nickname'),
-                                          context.tr(
+                                          context: context,
+                                          title: context.tr('inapropriate_nickname'),
+                                          content: context.tr(
                                               'inapropriate_nickname_message'));
                                     } else {
                                       _isNicknameButtonEnabled = false;
@@ -281,7 +281,6 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                       sidState is EmailSent &&
                       nicknameState is NicknameChecked &&
                       registerAgreementController.isAgreementChecked) {
-                    log('Sign Up Button Pressed');
                   } else {
                     return;
                   }

@@ -38,7 +38,6 @@ class _RegisterDepartmentScreenState extends State<RegisterDepartmentScreen> {
         items: registerDepartmentController.departments,
         onSelectedItemChanged: (index) => setState(
           () {
-            log('message');
             registerDepartmentController.add(
               RegisterBasicInformChangedByIndex(index),
             );

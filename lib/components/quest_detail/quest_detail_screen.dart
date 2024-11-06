@@ -3,8 +3,6 @@ import 'package:BEAT/components/global/widgets/custom_scaffold.dart';
 import 'package:BEAT/controller/home/data_controller.dart';
 import 'package:BEAT/data/models/data_models.dart';
 import 'package:BEAT/data/states/data_state.dart';
-import 'package:BEAT/extensions/buildcontext_extension.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -13,7 +11,7 @@ import '../../controller/home/data_events.dart';
 import '../detail/detail_desc.dart';
 import '../detail/detail_image.dart';
 import '../detail/detail_label_and_title.dart';
-import '../global/widgets/buttons/custom_wide_button.dart';
+import '../global/widgets/buttons/custom_retry_button.dart';
 import 'widgets/quest_detail_table.dart';
 import 'widgets/quest_detail_table_contents.dart';
 
@@ -58,19 +56,9 @@ class QuestDetailScreen extends StatelessWidget {
                 ),
               )
             : state is DataDetailModelLoadingError
-                ? Center(
-                    child: Column(
-                      children: [
-                        Text(context.tr('connection_error')),
-                        CustomWideButton(
-                          onTap: () {
-                            dataDetailModelController.add(DataDetailRequest());
-                          },
-                          buttonText: context.tr('retry'),
-                          buttonColor: context.appColors.primary,
-                        ),
-                      ],
-                    ),
+                ? CustomRetryButton(
+                    onTap: () =>
+                        dataDetailModelController.add(DataDetailRequest()),
                   )
                 : const Center(child: CircularProgressIndicator()),
       ),

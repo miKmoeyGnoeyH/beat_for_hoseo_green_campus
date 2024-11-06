@@ -28,9 +28,9 @@ class SignInScreen extends StatelessWidget {
       listener: (context, state) {
         if (state is ErrorUser) {
           customShowDialog(
-            context,
-            context.tr('sign_in_failed'),
-            state.studentId,
+            context: context,
+            title: context.tr('sign_in_failed'),
+            content: state.studentId,
           );
         }
       },

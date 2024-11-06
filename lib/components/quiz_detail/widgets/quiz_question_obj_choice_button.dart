@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:BEAT/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +14,7 @@ class QuizQuestionOBJChoiceButton extends StatelessWidget {
     required this.onTap,
     required this.answerController,
     required this.questionModel,
+    this.imageUrl,
   });
 
   @override
@@ -26,12 +29,27 @@ class QuizQuestionOBJChoiceButton extends StatelessWidget {
         borderColor: Colors.transparent,
         borderRadius: 10,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: CustomBodyLarge(
-            text: questionModel.answerList[jndex].answer,
-            textColor: jndex == answerController
-                ? context.appColors.background
-                : context.appColors.onBackground,
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomBodyLarge(
+                text: questionModel.answerList[jndex].answer,
+                textColor: jndex == answerController
+                    ? context.appColors.background
+                    : context.appColors.onBackground,
+              ),
+              imageUrl != null
+                  ? const SizedBox(height: 10) : const SizedBox(),
+              imageUrl != null
+                  ? Center(
+                      child: Image.network(
+                        imageUrl!,
+                        height: context.height * 0.3,
+                      ),
+                    )
+                  : const SizedBox(),
+            ],
           ),
         ),
       ),
@@ -42,4 +60,5 @@ class QuizQuestionOBJChoiceButton extends StatelessWidget {
   final void Function(int p1)? onTap;
   final int? answerController;
   final QuestionModel questionModel;
+  final String? imageUrl;
 }

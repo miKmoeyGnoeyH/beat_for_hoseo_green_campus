@@ -28,15 +28,9 @@ class DataDetailProvider {
           .get(Uri.parse(requestUrl))
           .timeout(const Duration(seconds: 5));
 
-      // log('DataDetailProvider: fetchData: response.statusCode: ${response.statusCode}');
-      // log('DataDetailProvider: fetchData: response.body: ${response.body}');
-
       if (response.statusCode == 200) {
         DataModel data;
         final body = jsonDecode(utf8.decode(response.bodyBytes));
-
-        // log('DataDetailProvider: fetchData: jsonBody: ${body.toString()}');
-        // log('DataDetailProvider: fetchData: dataModel.runtimeType: ${dataModel.runtimeType.toString()}');
 
         switch (dataModel.runtimeType) {
           case const (QuestModel):

@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:BEAT/managers/navigator/routes.dart';
 import 'package:flutter/material.dart';
 
 class NavigatorKeyManager {
@@ -12,14 +13,22 @@ class NavigatorKeyManager {
   factory NavigatorKeyManager() => _instance;
 
   NavigatorKeyManager._internal() {
-    log("NavigatorKeyManager created.");
+    log("navigator_key_manager : NavigatorKeyManager created.");
   }
 
   void pop() {
     navigatorState?.pop();
   }
 
+  void popUntil(String routeName) {
+    navigatorState?.popUntil((route) => route.settings.name == routeName);
+  }
+
   void pushNamed(String routeName, {Object? arguments}) {
     navigatorState?.pushNamed(routeName, arguments: arguments);
+  }
+
+  void pushNamedAndRemoveUntil(String routeName) {
+    navigatorState?.pushNamedAndRemoveUntil(routeName, (route) => false);
   }
 }

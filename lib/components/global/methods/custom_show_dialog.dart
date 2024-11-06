@@ -7,28 +7,28 @@ import '../../../theme/texts/custom_texts.dart';
 import '../widgets/custom_rounded_bordered_container.dart';
 
 Future<dynamic> customShowDialog(
-    BuildContext context, String title, String content) {
+    {required BuildContext context, required String? title, required String? content, String? routeName}) {
   return showDialog(
     context: context,
     builder: (context) => AlertDialog(
       backgroundColor: context.appColors.background,
       titlePadding: const EdgeInsets.only(left: 20, right: 20, top: 16),
-      title: Text(
+      title: title != null ? Text(
         title,
         style: CustomTexts.titleLarge
             .copyWith(color: context.appColors.onBackground),
-      ),
+      ) : null,
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-      content: Text(
+      content: content != null ? Text(
         content,
         style: CustomTexts.bodyLarge
             .copyWith(color: context.appColors.onBackground),
-      ),
+      ) : null,
       actionsAlignment: MainAxisAlignment.center,
       actionsPadding: const EdgeInsets.symmetric(horizontal:20, vertical: 16),
       actions: [
         GestureDetector(
-          onTap: () => NavigatorKeyManager().pop(),
+          onTap: () => routeName != null ? NavigatorKeyManager().popUntil(routeName) : NavigatorKeyManager().pop(),
           child: CustomRoundedBorderedContainer(
             child: Center(
               child: Padding(

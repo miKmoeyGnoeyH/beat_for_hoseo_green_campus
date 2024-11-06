@@ -87,11 +87,16 @@
   "subjective": "주관식",
   "objective": "객관식",
   "writing_answers": "답안 작성",
+  "submit_and_grading": "제출 및 채점",
+  "submit_unanswered": "응답하지 않은 문항이 있습니다. 모든 문항에 응답해주세요.",
+  "submit_already_checked": "이미 응답한 퀴즈입니다.",
   "settings": "설정",
   "sign_out": "로그아웃",
   "next": "다음",
   "back": "이전",
   "confirm": "확인",
   "done": "완료",
+  "warning": "경고",
+  "error": "오류",
   "retry": "재시도"
 }

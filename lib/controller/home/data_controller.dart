@@ -14,7 +14,6 @@ class DataDetailModelController extends Bloc<DataDetailEvent, DataDetailModelSta
   void _onDataDetailRequest(DataDetailEvent event, Emitter<DataDetailModelState> emit) async {
     emit(DataDetailModelLoading());
     final DataDetailModelState dataDetailModelState = await _dataDetailProvider.fetchData(dataModel);
-    // log(dataDetailModelState.toString());
     emit(dataDetailModelState);
   }
 

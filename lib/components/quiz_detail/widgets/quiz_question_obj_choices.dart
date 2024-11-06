@@ -23,6 +23,7 @@ class QuizQuestionOBJChoices extends StatelessWidget {
         onTap: onTap,
         answerController: answerController,
         questionModel: questionModel,
+        imageUrl: questionModel.answerList[jndex].imageUrl,
       ),
     );
   }

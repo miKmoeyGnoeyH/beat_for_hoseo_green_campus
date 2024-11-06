@@ -20,7 +20,6 @@ class EmailCheckProvider {
           .timeout(const Duration(seconds: 5));
 
       if (response.statusCode == 200) {
-        log(response.body);
         emailState = EmailSent();
       } else {
         emailState = EmailError();
@@ -29,7 +28,6 @@ class EmailCheckProvider {
       emailState = EmailError();
     }
 
-    // log(emailState.toString());
     return emailState;
   }
 }

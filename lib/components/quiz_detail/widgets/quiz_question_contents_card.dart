@@ -8,6 +8,7 @@ class QuizQuestionContentsCard extends StatelessWidget {
   const QuizQuestionContentsCard({
     super.key,
     required this.title,
+    this.imageUrl,
     required this.child,
   });
 
@@ -17,11 +18,13 @@ class QuizQuestionContentsCard extends StatelessWidget {
       color: context.appColors.background,
       child: QuizQuestionContents(
         title: title,
+        imageUrl: imageUrl,
         child: child,
       ),
     );
   }
 
   final String title;
+  final String? imageUrl;
   final Widget child;
 }

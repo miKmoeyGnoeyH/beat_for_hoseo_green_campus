@@ -35,7 +35,7 @@ class DataListProvider {
 
       if (response.statusCode == 200) {
         List<DataModel> dataList = [];
-        log(response.body);
+        log('data_list_provider : fetchDataList() : response.body : ${response.body}');
         final body = jsonDecode(utf8.decode(response.bodyBytes));
 
         switch (type) {
