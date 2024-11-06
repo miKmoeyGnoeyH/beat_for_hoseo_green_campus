@@ -5,9 +5,9 @@ import '../../../theme/texts/custom_texts.dart';
 import '../../global/beat/beat_logo_small.dart';
 import '../../global/widgets/appbars/custom_appbar.dart';
 import '../../global/widgets/texts/custom_body_large.dart';
-import 'home_leaderboard_button.dart';
-import 'home_notifications_button.dart';
-import 'home_settings_button.dart';
+import '../../home/widgets/home_leaderboard_button.dart';
+import '../../home/widgets/home_notifications_button.dart';
+import '../../home/widgets/home_settings_button.dart';
 
 class HomeAppbar extends StatelessWidget {
   const HomeAppbar({

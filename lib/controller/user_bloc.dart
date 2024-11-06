@@ -34,7 +34,7 @@ class UserBloc extends Bloc<UserEvent, User> {
 
     if(user is !ErrorUser) {
       NavigatorKeyManager()
-        .pushNamedAndRemoveUntil(RouteNames.home);
+        .pushNamedAndRemoveUntil(RouteNames.screenHolder);
     }
 
     emit(user);

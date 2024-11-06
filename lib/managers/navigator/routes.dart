@@ -1,17 +1,10 @@
-import 'package:BEAT/components/history/neuro_history_screen.dart';
-import 'package:BEAT/components/quest_detail/quest_detail_screen.dart';
-import 'package:BEAT/components/quiz_detail/quiz_detail_screen.dart';
-import 'package:BEAT/controller/home/controllers/data_controller.dart';
-import 'package:BEAT/controller/neuro_history/controllers/neuro_history_controller.dart';
-import 'package:BEAT/controller/register/register_college_controller.dart';
-import 'package:BEAT/controller/register/register_department_controller.dart';
-import 'package:BEAT/controller/register/register_organization_controller.dart';
-import 'package:BEAT/controller/register_fill_inform/register_nickname_controller.dart';
-import 'package:BEAT/controller/register_fill_inform/register_sid_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../components/history/neuro_history_screen.dart';
 import '../../components/home/home_screen.dart';
+import '../../components/quest_detail/quest_detail_screen.dart';
+import '../../components/quiz_detail/quiz_detail_screen.dart';
 import '../../components/register_affiliation/register_affiliation_screen.dart';
 import '../../components/register_college/register_college_screen.dart';
 import '../../components/register_department/register_department_screen.dart';
@@ -19,8 +12,16 @@ import '../../components/register_fill_inform/register_fill_inform_screen.dart';
 import '../../components/register_org_detail/register_org_detail_screen.dart';
 import '../../components/register_organization/register_organization_screen.dart';
 import '../../components/register_sign/register_sign_screen.dart';
+import '../../components/screen_holder/screen_holder.dart';
 import '../../components/settings/settings_screen.dart';
 import '../../components/sign_in/sign_in_screen.dart';
+import '../../controller/home/controllers/data_controller.dart';
+import '../../controller/neuro_history/controllers/neuro_history_controller.dart';
+import '../../controller/register/register_college_controller.dart';
+import '../../controller/register/register_department_controller.dart';
+import '../../controller/register/register_organization_controller.dart';
+import '../../controller/register_fill_inform/register_nickname_controller.dart';
+import '../../controller/register_fill_inform/register_sid_controller.dart';
 import '../../data/models/data_models.dart';
 
 part 'route_names.dart';
@@ -28,9 +29,9 @@ part 'route_names.dart';
 abstract class Routes {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case RouteNames.home:
+      case RouteNames.screenHolder:
         return MaterialPageRoute(
-          builder: (context) => const HomeScreen(),
+          builder: (context) => const ScreenHolder(),
         );
 
       case (RouteNames.neuroHistory):
