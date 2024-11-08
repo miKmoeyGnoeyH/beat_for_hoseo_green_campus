@@ -13,12 +13,13 @@ class HomeBottomNavigationBar extends StatelessWidget {
     return BottomNavigationBar(
       currentIndex: currentIndex,
       selectedItemColor: context.appColors.primary,
+      unselectedItemColor: context.appColors.onBackground,
       backgroundColor: context.appColors.background,
       onTap: onTap,
       items: const [
         BottomNavigationBarItem(
           icon: Icon(Icons.qr_code_rounded),
-          label: 'Comming soon',
+          label: 'QR',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.home_outlined),
@@ -26,7 +27,7 @@ class HomeBottomNavigationBar extends StatelessWidget {
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.how_to_vote_rounded),
-          label: 'Comming soon',
+          label: 'Vote',
         ),
       ],
     );

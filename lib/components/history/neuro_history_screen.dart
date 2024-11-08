@@ -1,14 +1,7 @@
-import 'package:BEAT/components/detail/detail_desc.dart';
-import 'package:BEAT/components/global/beat/beat_coin.dart';
 import 'package:BEAT/components/global/widgets/appbars/custom_empty_appbar.dart';
-import 'package:BEAT/components/global/widgets/custom_rounded_bordered_container.dart';
 import 'package:BEAT/components/global/widgets/custom_scaffold.dart';
 import 'package:BEAT/components/global/widgets/texts/custom_body_large.dart';
 import 'package:BEAT/components/global/widgets/texts/custom_display_medium.dart';
-import 'package:BEAT/components/global/widgets/texts/custom_headline_large.dart';
-import 'package:BEAT/components/global/widgets/texts/custom_label_large.dart';
-import 'package:BEAT/components/global/widgets/texts/custom_subtitle_large.dart';
-import 'package:BEAT/components/global/widgets/texts/custom_title_large.dart';
 import 'package:BEAT/controller/neuro_history/controllers/neuro_history_controller.dart';
 import 'package:BEAT/controller/neuro_history/events/neuro_history_event.dart';
 import 'package:BEAT/data/models/neuro_history_model.dart';
@@ -18,7 +11,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../controller/home/events/data_events.dart';
 import '../global/widgets/buttons/custom_refresh_button.dart';
 import '../global/widgets/custom_circular_progress_indicator.dart';
 import 'widgets/neuro_history_card.dart';

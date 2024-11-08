@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import '../../global/beat/beat_coin.dart';
+import '../../global/beat/neuro.dart';
 import '../../global/widgets/texts/custom_body_large.dart';
 import '../../global/widgets/texts/custom_subtitle_large.dart';
 
@@ -15,7 +15,7 @@ TableRow buildQuestDetailTableRewardRow({required String reward}) {
     TableCell(
       child: Row(
         children: [
-          const BeatCoin(width: 20),
+          const NeuroIcon(width: 20),
           const SizedBox(width: 5),
           CustomSubtitleLarge(
             text: reward,

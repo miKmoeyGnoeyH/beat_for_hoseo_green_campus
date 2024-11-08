@@ -1,5 +1,6 @@
 import 'package:BEAT/components/global/widgets/custom_scaffold.dart';
 import 'package:BEAT/components/home/home_screen.dart';
+import 'package:BEAT/components/vote/vote_screen.dart';
 import 'package:BEAT/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -48,7 +49,7 @@ class _ScreenHolderState extends State<ScreenHolder> {
   final List<Widget> _screens = [
     const SizedBox(),
     const HomeScreen(),
-    const SizedBox()
+    const VoteScreen()
   ];
   int _selectedIndex = 1;
 }

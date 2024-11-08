@@ -17,7 +17,7 @@ class CustomRoundedBorderedContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: width ?? double.infinity,
+      width: width,
       height: height,
       margin: margin,
       decoration: BoxDecoration(

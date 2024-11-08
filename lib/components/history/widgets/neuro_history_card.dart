@@ -8,9 +8,9 @@ import 'neuro_history_contents_desc.dart';
 
 class NeuroHistoryCard extends StatelessWidget {
   const NeuroHistoryCard(
-      this.neuroHistory, {
-        super.key,
-      });
+    this.neuroHistory, {
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,14 @@ class NeuroHistoryCard extends StatelessWidget {
               checkTime: neuroHistory.checkTime,
             ),
             const SizedBox(width: 16),
-            QuestCardIconAndNeuro(neuro: neuroHistory.neuro)
+            QuestCardIconAndNeuro(
+              neuro: neuroHistory.neuro >= 0
+                  ? '+${neuroHistory.neuro.toString()}'
+                  : neuroHistory.neuro.toString(),
+              textColor: neuroHistory.neuro >= 0
+                  ? Colors.redAccent
+                  : Colors.blueAccent,
+            )
           ],
         ),
       ),

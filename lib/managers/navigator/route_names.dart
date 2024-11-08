@@ -5,6 +5,8 @@ abstract class RouteNames {
   static const String neuroHistory = '/neuro_history';
   static const String questDetail = '/quest_detail';
   static const String quizDetail = '/quiz_detail';
+  static const String voteResult = '/vote_result';
+  static const String voteDetail = '/vote_detail';
   static const String signIn = '/signIn';
   static const String registerOrganization = '/register_organization';
   static const String registerCollege = '/register_college';

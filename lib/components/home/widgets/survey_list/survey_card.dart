@@ -23,7 +23,7 @@ class SurveyCard extends StatelessWidget {
       child: CustomRoundedBorderedContainer(
         color: context.appColors.background,
         borderWidth: 0.3,
-        height: context.height * 0.12,
+        // height: context.height * 0.12,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
           child: SurveyCardContents(

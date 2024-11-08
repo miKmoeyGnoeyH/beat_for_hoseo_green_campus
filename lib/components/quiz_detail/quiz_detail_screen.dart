@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'dart:developer';
 
 import 'package:BEAT/components/global/methods/custom_show_dialog.dart';
 import 'package:BEAT/components/global/widgets/buttons/custom_bottom_appbar_button.dart';
@@ -7,9 +5,6 @@ import 'package:BEAT/components/global/widgets/texts/custom_label_large.dart';
 import 'package:BEAT/controller/user_bloc.dart';
 import 'package:BEAT/data/models/data_models.dart';
 import 'package:BEAT/managers/navigator/navigator_key_manager.dart';
-import 'package:BEAT/managers/navigator/routes.dart';
-import 'package:BEAT/managers/navigator/routes.dart';
-import 'package:BEAT/managers/navigator/routes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

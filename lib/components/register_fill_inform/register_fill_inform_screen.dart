@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:BEAT/components/global/widgets/buttons/custom_bottom_appbar_button.dart';
 import 'package:BEAT/components/global/widgets/buttons/custom_wide_button.dart';

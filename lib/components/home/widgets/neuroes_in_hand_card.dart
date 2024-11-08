@@ -46,7 +46,7 @@ class NeuroesInHandCard extends StatelessWidget {
                   )
                 ],
               ),
-              Image.asset('assets/images/beat_coin_pile.png', width: 80,),
+              Image.asset('assets/images/neuroes_pile.png', width: 80,),
             ],
           ),
         ),

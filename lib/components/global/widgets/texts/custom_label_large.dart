@@ -8,6 +8,7 @@ class CustomLabelLarge extends StatelessWidget {
     super.key,
     this.text,
     this.textColor,
+    this.maxLines,
   });
 
   @override
@@ -17,9 +18,12 @@ class CustomLabelLarge extends StatelessWidget {
       style: CustomTexts.labelLarge.copyWith(
         color: textColor ?? context.appColors.onBackground.withOpacity(0.5),
       ),
+      maxLines: maxLines,
+      overflow: maxLines == null ? null : TextOverflow.ellipsis,
     );
   }
 
   final String? text;
   final Color? textColor;
+  final int? maxLines;
 }

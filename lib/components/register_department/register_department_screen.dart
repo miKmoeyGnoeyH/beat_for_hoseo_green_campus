@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:BEAT/controller/register/register_basic_events.dart';
 import 'package:easy_localization/easy_localization.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../global/beat/beat_coin.dart';
+import '../../../global/beat/neuro.dart';
 import '../../../global/widgets/texts/custom_subtitle_large.dart';
 
 class QuizCardIconAndNeuro extends StatelessWidget {
@@ -16,7 +16,7 @@ class QuizCardIconAndNeuro extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const BeatCoin(),
+            const NeuroIcon(),
             const SizedBox(height: 5),
             CustomSubtitleLarge(
               text: neuro.toString(),

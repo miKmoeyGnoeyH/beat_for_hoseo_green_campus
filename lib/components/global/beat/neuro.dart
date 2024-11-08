@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class BeatCoin extends StatelessWidget {
-  const BeatCoin({
+class NeuroIcon extends StatelessWidget {
+  const NeuroIcon({
     super.key,
     this.width,
   });
@@ -9,7 +9,7 @@ class BeatCoin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Image.asset(
-      'assets/images/beat_coin.png',
+      'assets/images/neuro.png',
       width: width ?? 25,
     );
   }

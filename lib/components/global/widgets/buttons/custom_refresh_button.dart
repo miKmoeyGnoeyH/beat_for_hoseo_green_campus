@@ -11,16 +11,19 @@ class CustomRefreshButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: GestureDetector(
-        onTap: onTap,
-        child: Column(
-          children: [
-            const Icon(Icons.refresh_rounded),
-            CustomBodyLarge(text: context.tr('connection_error')),
-          ],
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        GestureDetector(
+          onTap: onTap,
+          child: Column(
+            children: [
+              const Icon(Icons.refresh_rounded),
+              CustomBodyLarge(text: context.tr('connection_error')),
+            ],
+          ),
         ),
-      ),
+      ],
     );
   }
 

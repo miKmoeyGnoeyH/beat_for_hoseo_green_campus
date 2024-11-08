@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:BEAT/data/models/data_models.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -35,7 +34,6 @@ class DataListProvider {
 
       if (response.statusCode == 200) {
         List<DataModel> dataList = [];
-        log('data_list_provider : fetchDataList() : response.body : ${response.body}');
         final body = jsonDecode(utf8.decode(response.bodyBytes));
 
         switch (type) {

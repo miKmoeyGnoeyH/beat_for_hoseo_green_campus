@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'package:BEAT/managers/navigator/routes.dart';
 import 'package:flutter/material.dart';
 
 class NavigatorKeyManager {
