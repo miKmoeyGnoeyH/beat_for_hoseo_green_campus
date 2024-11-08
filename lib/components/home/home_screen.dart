@@ -10,7 +10,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final UserBloc userBloc = context.read<UserBloc>();
+    final UserBloc userBloc = context.read<UserBloc>()..add(GetMyNeuro());
 
     return Center(
       child: ListView(

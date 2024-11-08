@@ -113,10 +113,14 @@
   "retry": "재시도",
   "qr_scan_success": "QR 스캔 성공",
   "qr_scan_failed": "QR 스캔 실패",
+  "sign_success": "서명 성공",
+  "sign_failed": "서명 실패",
+  "already_signed": "이미 서명하셨습니다.",
   "not_enough_neuro": "보유 Neuro가 부족합니다.",
   "already_got_credit": "이미 획득한 보상입니다.",
   "reward_acquire_success": "보상 획득 완료",
   "reward_acquire_failed": "보상 획득 실패",
   "qr_scan_success_earned_neuro": "{} Neuro 획득",
-  "qr_scan_success_Deducted_neuro": "{} Neuro 차감"
+  "qr_scan_success_Deducted_neuro": "{} Neuro 차감",
+  "already_checked": "이미 참여하셨습니다."
 }

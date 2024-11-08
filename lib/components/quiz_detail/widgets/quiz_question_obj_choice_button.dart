@@ -35,7 +35,7 @@ class QuizQuestionOBJChoiceButton extends StatelessWidget {
               CustomBodyLarge(
                 text: questionModel.answerList[jndex].answer,
                 textColor: jndex == answerController
-                    ? context.appColors.background
+                    ? context.appColors.onPrimary
                     : context.appColors.onBackground,
               ),
               imageUrl != null

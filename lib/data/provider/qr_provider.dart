@@ -12,7 +12,7 @@ import '../../components/global/methods/custom_show_dialog.dart';
 class QRProvider {
   final http.Client client = http.Client();
 
-  Future<QRState> handleQRCreditRequest(
+  Future<QRState> handleQRCheckRequest(
       String requestUrl, String authorization) async {
     QRState qrState;
 
@@ -25,7 +25,6 @@ class QRProvider {
       );
 
       if (response.statusCode == 200) {
-        log('qr_provider : handleQRCreditRequest() : response.body : ${response.body}');
         int credit = int.parse(response.body);
 
         if (credit >= 0) {
@@ -40,7 +39,48 @@ class QRProvider {
           );
         }
       } else {
-        log(response.body);
+        qrState = QRFailure(
+          'qr_scan_failed'.tr(),
+          'already_checked'.tr(),
+        );
+      }
+    } catch (e) {
+      log(e.toString());
+      qrState = QRFailure(
+        'qr_scan_failed'.tr(),
+        'error_occured'.tr(),
+      );
+    }
+    return qrState;
+  }
+
+  Future<QRState> handleQRCreditRequest(
+      String requestUrl, String authorization) async {
+    QRState qrState;
+
+    try {
+      final http.Response response = await client.get(
+        Uri.parse(requestUrl),
+        headers: <String, String>{
+          'Authorization': authorization,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        int credit = int.parse(response.body);
+
+        if (credit >= 0) {
+          qrState = QRSuccess(
+            'reward_acquire_success'.tr(),
+            'qr_scan_success_earned_neuro'.tr(args: [credit.toString()]),
+          );
+        } else {
+          qrState = QRSuccess(
+            'qr_scan_success'.tr(),
+            'qr_scan_success_Deducted_neuro'.tr(args: [credit.toString()]),
+          );
+        }
+      } else {
         switch (response.body) {
           case "\"ALREADY_GOT_CREDIT\"":
             qrState = QRFailure(
@@ -61,6 +101,39 @@ class QRProvider {
             );
             break;
         }
+      }
+    } catch (e) {
+      log(e.toString());
+      qrState = QRFailure(
+        'qr_scan_failed'.tr(),
+        'error_occured'.tr(),
+      );
+    }
+    return qrState;
+  }
+
+  Future<QRState> handleQRSignRequest(
+      String requestUrl, String authorization) async {
+    QRState qrState;
+
+    try {
+      final http.Response response = await client.get(
+        Uri.parse(requestUrl),
+        headers: <String, String>{
+          'Authorization': authorization,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        qrState = QRSuccess(
+          'sign_success'.tr(),
+          response.body,
+        );
+      } else {
+        qrState = QRFailure(
+          'sign_failed'.tr(),
+          'already_signed'.tr(),
+        );
       }
     } catch (e) {
       log(e.toString());

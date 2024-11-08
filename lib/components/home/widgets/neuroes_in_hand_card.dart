@@ -20,6 +20,7 @@ class NeuroesInHandCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    userBloc.add(GetMyNeuro());
     return GestureDetector(
       onTap: () => NavigatorKeyManager().pushNamed(RouteNames.neuroHistory, arguments: userBloc.state.authorization),
       child: CustomRoundedBorderedContainer(

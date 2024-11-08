@@ -18,12 +18,15 @@ final class SignIn extends UserEvent {
 
 final class SignOut extends UserEvent {}
 
+final class GetMyNeuro extends UserEvent {}
+
 class UserBloc extends Bloc<UserEvent, User> {
   final UserProvider _userProvider = UserProvider();
 
   UserBloc() : super(Guest()) {
     on<SignIn>(_signIn);
     on<SignOut>(_signOut);
+    on<GetMyNeuro>(_getMyNeuro);
   }
 
   Future<void> _signIn(SignIn event, Emitter<User> emit) async {
@@ -46,5 +49,11 @@ class UserBloc extends Bloc<UserEvent, User> {
           (route) => false,
         );
     emit(Guest());
+  }
+
+  void _getMyNeuro(GetMyNeuro event, Emitter<User> emit) async {
+    final String neuroesInHand = await _userProvider.myNeuro(state.authorization);
+    final User user = Member(state.studentId, state.nickname, state.authorization, neuroesInHand);
+    emit(user);
   }
 }

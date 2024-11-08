@@ -113,10 +113,14 @@
   "retry": "Retry",
   "qr_scan_success": "QR Scan Success",
   "qr_scan_failed": "QR Scan Failed",
+  "sign_success": "Sign Success",
+  "sign_failed": "Sign Failed",
+  "already_signed": "Already Signed",
   "not_enough_neuro": "Not enough Neuro.",
   "already_got_credit": "Already got the reward.",
   "reward_acquire_success": "Reward acquired",
   "reward_acquire_failed": "Reward acquire failed",
   "qr_scan_success_earned_neuro": "Earned {} Neuro",
-  "qr_scan_success_Deducted_neuro": "Deducted {} Neuro"
+  "qr_scan_success_Deducted_neuro": "Deducted {} Neuro",
+  "already_checked": "Already Checked"
 }
