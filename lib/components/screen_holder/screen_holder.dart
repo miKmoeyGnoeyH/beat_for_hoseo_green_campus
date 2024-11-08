@@ -1,5 +1,6 @@
 import 'package:BEAT/components/global/widgets/custom_scaffold.dart';
 import 'package:BEAT/components/home/home_screen.dart';
+import 'package:BEAT/components/qr/qr_screen.dart';
 import 'package:BEAT/components/vote/vote_screen.dart';
 import 'package:BEAT/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,7 @@ class _ScreenHolderState extends State<ScreenHolder> {
   Widget build(BuildContext context) {
     final UserBloc userBloc = context.read<UserBloc>();
     return CustomScaffold(
+      isScrollable: false,
       appBar: HomeAppbar(userBloc: userBloc),
       body: _screens[_selectedIndex],
       bottomNavigationBar: Container(
@@ -47,7 +49,7 @@ class _ScreenHolderState extends State<ScreenHolder> {
   }
 
   final List<Widget> _screens = [
-    const SizedBox(),
+    const QrScreen(),
     const HomeScreen(),
     const VoteScreen()
   ];

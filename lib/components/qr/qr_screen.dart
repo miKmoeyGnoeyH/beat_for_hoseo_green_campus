@@ -1,7 +1,16 @@
-import 'dart:io';
-
+import 'package:BEAT/controller/qr/qr_controller.dart';
+import 'package:BEAT/managers/navigator/routes.dart';
+import 'package:BEAT/components/global/methods/custom_show_dialog.dart';
+import 'package:BEAT/components/global/widgets/custom_circular_progress_indicator.dart';
+import 'package:BEAT/components/global/widgets/regexp/qr_filter.dart';
+import 'package:BEAT/managers/navigator/navigator_key_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
+
+import '../../controller/qr/qr_event.dart';
+import '../../controller/user_bloc.dart';
+import '../../data/states/qr_state.dart';
 
 class QrScreen extends StatefulWidget {
   const QrScreen({super.key});
@@ -11,67 +20,71 @@ class QrScreen extends StatefulWidget {
 }
 
 class _QrScreenState extends State<QrScreen> {
+  final MobileScannerController mobileScannerController =
+      MobileScannerController();
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Expanded(
-          flex: 5,
-          child: QRView(
-            key: qrKey,
-            onQRViewCreated: _onQRViewCreated,
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: Center(
-            child: (result != null)
-                ? Text(
-                'Barcode Type: ${result!.format}   Data: ${result!.code}')
-                : const Text('Scan a code'),
-          ),
-        )
-      ],
+    final UserBloc userBloc = context.read<UserBloc>();
+
+    return BlocProvider(
+      create: (context) => QRController(),
+      child: Builder(
+        builder: (context) {
+          return BlocListener<QRController, QRState>(
+            listener: (context, state) async {
+              if (state is QRLoading) {
+                setState(() {
+                  isScanning = true;
+                });
+                showDialog(
+                    context: context,
+                    builder: (context) => const CustomCircularProgressIndicator());
+              } else if (state is QRSuccess) {
+                await customShowDialog(
+                    context: context, title: state.title, content: state.content);
+                NavigatorKeyManager().pop();
+                setState(() {
+                  isScanning = false;
+                });
+              } else if (state is QRFailure) {
+                await customShowDialog(
+                    context: context, title: state.title, content: state.content);
+                NavigatorKeyManager().pop();
+                setState(() {
+                  isScanning = false;
+                });
+              }
+            },
+            child: MobileScanner(
+              controller: mobileScannerController,
+              onDetect: (BarcodeCapture capture) {
+                if (isScanning) return;
+
+                final List<Barcode> barcodes = capture.barcodes;
+                final Barcode barcode = barcodes.first;
+
+                if (barcode.rawValue == null) return;
+
+                final String requestUrl = barcode.rawValue!;
+                final QRController qrController = context.read<QRController>();
+
+                if (qrRawValueFileterCheck.hasMatch(requestUrl)) {
+                } else if (qrRawValueFileterCredit.hasMatch(requestUrl)) {
+                  qrController.add(
+                    QRCredit(
+                      requestUrl,
+                      userBloc.state.authorization,
+                    ),
+                  );
+                } else if (qrRawValueFileterSign.hasMatch(requestUrl)) {}
+              },
+            ),
+          );
+        }
+      ),
     );
   }
 
-  void _onQRViewCreated(QRViewController controller) {
-    _qrViewController = controller;
-    controller.scannedDataStream.listen((scanData) {
-      setState(() {
-        result = scanData;
-      });
-    });
-  }
-
-  void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
-    //log('${DateTime.now().toIso8601String()}_onPermissionSet $p');
-    if (!p) { // 카메라 사용 권한이 없을 경우
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('no Permission')),
-      );
-    }
-  }
-
-  @override
-  void reassemble() {
-    super.reassemble();
-    if (Platform.isAndroid) {
-      _qrViewController!.pauseCamera();
-    } else if (Platform.isIOS) {
-      _qrViewController!.resumeCamera();
-    }
-  }
-
-  @override
-  void dispose() {
-    _qrViewController?.dispose();
-    super.dispose();
-  }
-
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-
-  QRViewController? _qrViewController;
-
-  Barcode? result;
+  bool isScanning = false;
 }

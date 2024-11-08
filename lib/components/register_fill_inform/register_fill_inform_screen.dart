@@ -22,7 +22,7 @@ import '../../data/states/nickname_state.dart';
 import '../global/methods/custom_input_formatters.dart';
 import '../global/methods/custom_show_dialog.dart';
 import '../global/widgets/texts/custom_body_large.dart';
-import '../global/widgets/custom_profanity_filter.dart';
+import '../global/widgets/regexp/custom_profanity_filter.dart';
 import '../global/widgets/custom_scaffold.dart';
 import '../global/widgets/custom_text_field.dart';
 import '../global/widgets/texts/custom_subtitle_large.dart';

@@ -2,6 +2,7 @@
   "sign_in": "Sign In",
   "sign_in_failed": "Sign In Failed",
   "sign_in_failed_message": "Please check your Student ID or Nickname.",
+  "error_occured": "An Error occured while processing your request. Please try again later.",
   "connection_error": "Please check your internet connection.",
   "student_id": "Student ID",
   "sid_hint": "Enter Your Student ID",
@@ -109,5 +110,13 @@
   "done": "Done",
   "warning": "Warning",
   "error": "Error",
-  "retry": "Retry"
+  "retry": "Retry",
+  "qr_scan_success": "QR Scan Success",
+  "qr_scan_failed": "QR Scan Failed",
+  "not_enough_neuro": "Not enough Neuro.",
+  "already_got_credit": "Already got the reward.",
+  "reward_acquire_success": "Reward acquired",
+  "reward_acquire_failed": "Reward acquire failed",
+  "qr_scan_success_earned_neuro": "Earned {} Neuro",
+  "qr_scan_success_Deducted_neuro": "Deducted {} Neuro"
 }

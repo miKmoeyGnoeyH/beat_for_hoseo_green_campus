@@ -1,3 +1,5 @@
+import 'package:BEAT/managers/navigator/navigator_key_manager.dart';
+import 'package:BEAT/managers/navigator/routes.dart';
 import 'package:flutter/material.dart';
 
 import '../../../data/models/data_models.dart';
@@ -18,10 +20,16 @@ class VoteResultNstWinners extends StatelessWidget {
         nstTitle,
         const SizedBox(height: 10),
         for (QuestVoteResultModel questVoteResultModel in voteResultWinners)
-          VoteResultWinnerAndMyVoteNeuro(
-            questVoteResultModel: questVoteResultModel,
-            eventName: questVoteResultModel.eventName,
-            voteNeuro: questVoteResultModel.voteNeuro.toString(),
+          GestureDetector(
+            onTap: () => NavigatorKeyManager().pushNamed(
+              RouteNames.questDetail,
+              arguments: questVoteResultModel,
+            ),
+            child: VoteResultWinnerAndMyVoteNeuro(
+              questVoteResultModel: questVoteResultModel,
+              eventName: questVoteResultModel.eventName,
+              voteNeuro: questVoteResultModel.voteNeuro.toString(),
+            ),
           ),
       ],
     );

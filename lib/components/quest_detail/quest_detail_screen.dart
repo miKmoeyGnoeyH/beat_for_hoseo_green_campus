@@ -1,4 +1,6 @@
 import 'package:BEAT/components/global/widgets/appbars/custom_empty_appbar.dart';
+import 'package:BEAT/components/global/widgets/buttons/custom_refresh_button.dart';
+import 'package:BEAT/components/global/widgets/custom_circular_progress_indicator.dart';
 import 'package:BEAT/components/global/widgets/custom_scaffold.dart';
 import 'package:BEAT/controller/home/controllers/data_controller.dart';
 import 'package:BEAT/data/models/data_models.dart';
@@ -15,9 +17,14 @@ import '../global/widgets/buttons/custom_retry_button.dart';
 import 'widgets/quest_detail_table.dart';
 import 'widgets/quest_detail_table_contents.dart';
 
-class QuestDetailScreen extends StatelessWidget {
+class QuestDetailScreen extends StatefulWidget {
   const QuestDetailScreen({super.key});
 
+  @override
+  State<QuestDetailScreen> createState() => _QuestDetailScreenState();
+}
+
+class _QuestDetailScreenState extends State<QuestDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final DataDetailModelController dataDetailModelController =
@@ -56,11 +63,11 @@ class QuestDetailScreen extends StatelessWidget {
                 ),
               )
             : state is DataDetailModelLoadingError
-                ? CustomRetryButton(
+                ? CustomRefreshButton(
                     onTap: () =>
                         dataDetailModelController.add(DataDetailRequest()),
                   )
-                : const Center(child: CircularProgressIndicator()),
+                : const CustomCircularProgressIndicator(),
       ),
     );
   }
