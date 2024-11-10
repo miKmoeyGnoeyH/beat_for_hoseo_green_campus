@@ -1,10 +1,9 @@
-
-import 'package:BEAT/controller/register/register_basic_events.dart';
 import 'package:BEAT/controller/register/register_college_controller.dart';
+import 'package:BEAT/controller/register/register_organization_controller.dart';
+import 'package:BEAT/managers/navigator/arguments/register_arguments.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../managers/navigator/navigator_key_manager.dart';
 import '../../managers/navigator/routes.dart';
@@ -14,7 +13,15 @@ import '../global/widgets/custom_scaffold.dart';
 import '../register_organization/widgets/register_organization_appbar.dart';
 
 class RegisterCollegeScreen extends StatefulWidget {
-  const RegisterCollegeScreen({super.key});
+  RegisterCollegeScreen(
+    this.registerArguments, {
+    super.key,
+  });
+
+  final RegisterArguments registerArguments;
+
+  final RegisterCollegeController registerCollegeController =
+      RegisterCollegeController();
 
   @override
   State<RegisterCollegeScreen> createState() => _RegisterCollegeScreenState();
@@ -23,9 +30,6 @@ class RegisterCollegeScreen extends StatefulWidget {
 class _RegisterCollegeScreenState extends State<RegisterCollegeScreen> {
   @override
   Widget build(BuildContext context) {
-    final RegisterCollegeController registerCollegeController =
-        context.read<RegisterCollegeController>();
-
     return CustomScaffold(
       top: false,
       isScrollable: false,
@@ -36,18 +40,28 @@ class _RegisterCollegeScreenState extends State<RegisterCollegeScreen> {
         items: registerCollegeController.colleges,
         onSelectedItemChanged: (index) => setState(
           () {
-            registerCollegeController.add(
-              RegisterBasicInformChangedByIndex(index),
-            );
+            registerCollegeController.college =
+                registerCollegeController.colleges[index];
           },
         ),
       ),
       bottomNavigationBar: CustomBottomAppbarButton(
-        onTap: () => NavigatorKeyManager()
-            .pushNamed(RouteNames.registerDepartment),
+        onTap: () => NavigatorKeyManager().pushNamed(
+          RouteNames.registerDepartment,
+          arguments: RegisterArguments(
+            registerOrganizationController: registerOrganizationController,
+            registerCollegeController: registerCollegeController,
+          ),
+        ),
         text: context
-            .tr('continue_with', args: [registerCollegeController.state.value]),
+            .tr('continue_with', args: [registerCollegeController.college]),
       ),
     );
   }
+
+  RegisterOrganizationController? get registerOrganizationController =>
+      widget.registerArguments.registerOrganizationController;
+
+  RegisterCollegeController get registerCollegeController =>
+      widget.registerCollegeController;
 }

@@ -91,6 +91,7 @@ class QuizDetailScreen extends StatelessWidget {
               quizDetailModel: (dataDetailModelController.state.dataModel
                   as QuizDetailModel),
             );
+            context.read<UserBloc>().add(GetMyNeuro());
           },
           text: context.tr('submit_and_grading'),
         ),

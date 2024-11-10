@@ -15,6 +15,7 @@ class QuizQuestionContentsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomRoundedBorderedContainer(
+      borderWidth: 0.5,
       color: context.appColors.background,
       child: QuizQuestionContents(
         title: title,

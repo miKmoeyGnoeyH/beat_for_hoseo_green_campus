@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:BEAT/controller/qr/qr_controller.dart';
-import 'package:BEAT/managers/navigator/routes.dart';
 import 'package:BEAT/components/global/methods/custom_show_dialog.dart';
 import 'package:BEAT/components/global/widgets/custom_circular_progress_indicator.dart';
 import 'package:BEAT/components/global/widgets/regexp/qr_filter.dart';
@@ -61,6 +60,13 @@ class _QrScreenState extends State<QrScreen> {
           },
           child: MobileScanner(
             controller: mobileScannerController,
+            // overlayBuilder: (context, boxConstraints) => Center(
+            //   child: Container(
+            //     decoration: BoxDecoration(
+            //
+            //     ),
+            //   ),
+            // ),
             onDetect: (BarcodeCapture capture) {
               if (isScanning) return;
 

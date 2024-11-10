@@ -11,6 +11,13 @@ Future<dynamic> customShowDialog(
   return showDialog(
     context: context,
     builder: (context) => AlertDialog(
+      shape: RoundedRectangleBorder(
+        side: BorderSide(
+          color: context.appColors.borderColor,
+          width: 0.1,
+        ),
+        borderRadius: BorderRadius.circular(16),
+      ),
       backgroundColor: context.appColors.background,
       titlePadding: const EdgeInsets.only(left: 20, right: 20, top: 16),
       title: title != null ? Text(

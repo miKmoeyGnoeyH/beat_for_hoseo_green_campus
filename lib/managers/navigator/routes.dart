@@ -1,5 +1,5 @@
-
 import 'package:BEAT/controller/vote/vote_detail_controller.dart';
+import 'package:BEAT/managers/navigator/arguments/register_arguments.dart';
 import 'package:BEAT/managers/navigator/arguments/vote_result_args.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,9 +21,6 @@ import '../../components/sign_in/sign_in_screen.dart';
 import '../../components/vote_result/vote_result_screen.dart';
 import '../../controller/home/controllers/data_controller.dart';
 import '../../controller/neuro_history/controllers/neuro_history_controller.dart';
-import '../../controller/register/register_college_controller.dart';
-import '../../controller/register/register_department_controller.dart';
-import '../../controller/register/register_organization_controller.dart';
 import '../../controller/register_fill_inform/register_nickname_controller.dart';
 import '../../controller/register_fill_inform/register_sid_controller.dart';
 import '../../controller/vote/vote_result_controller.dart';
@@ -73,13 +70,15 @@ abstract class Routes {
           );
         }
 
-        case RouteNames.voteResult:
+      case RouteNames.voteResult:
         {
           final VoteResultArguments voteResultArguments =
               settings.arguments as VoteResultArguments;
           return MaterialPageRoute(
             builder: (context) => BlocProvider(
-              create: (context) => VoteResultController(voteResultArguments.voteModel, voteResultArguments.authorization),
+              create: (context) => VoteResultController(
+                  voteResultArguments.voteModel,
+                  voteResultArguments.authorization),
               child: const VoteResultScreen(),
             ),
           );
@@ -104,79 +103,62 @@ abstract class Routes {
       case RouteNames.registerOrganization:
         return MaterialPageRoute(
           builder: (context) {
-            return BlocProvider(
-              create: (context) => RegisterOrganizationController(),
-              child: const RegisterOrganizationScreen(),
-            );
+            return RegisterOrganizationScreen();
           },
         );
 
       case RouteNames.registerCollege:
         {
+          final RegisterArguments arguments =
+              settings.arguments as RegisterArguments;
           return MaterialPageRoute(
             builder: (context) {
-              return BlocProvider(
-                create: (context) => RegisterCollegeController(),
-                child: const RegisterCollegeScreen(),
-              );
+              return RegisterCollegeScreen(arguments);
             },
           );
         }
 
       case RouteNames.registerDepartment:
         {
+          final RegisterArguments arguments =
+              settings.arguments as RegisterArguments;
+
           return MaterialPageRoute(
             builder: (context) {
-              return BlocProvider(
-                create: (context) => RegisterDepartmentController.fromOthers(),
-                child: const RegisterDepartmentScreen(),
-              );
+              return RegisterDepartmentScreen(arguments);
             },
           );
         }
 
       case RouteNames.registerAffiliation:
         {
+          final RegisterArguments arguments =
+              settings.arguments as RegisterArguments;
           return MaterialPageRoute(
-            builder: (context) => BlocProvider(
-              create: (context) =>
-                  RegisterDepartmentController.fromAffiliation(),
-              child: const RegisterAffiliationScreen(),
-            ),
+            builder: (context) => RegisterAffiliationScreen(arguments),
           );
         }
 
       case RouteNames.registerOrgDetail:
         {
+          final RegisterArguments arguments =
+              settings.arguments as RegisterArguments;
           return MaterialPageRoute(
-            builder: (context) => BlocProvider(
-              create: (context) => RegisterDepartmentController.fromOthers(),
-              child: const RegisterOrgDetailScreen(),
-            ),
+            builder: (context) => RegisterOrgDetailScreen(arguments),
           );
         }
 
       case RouteNames.registerFillInform:
         {
+          final RegisterArguments arguments =
+              settings.arguments as RegisterArguments;
           return MaterialPageRoute(
             builder: (context) => MultiBlocProvider(
               providers: [
-                // BlocProvider.value(
-                //   value: organizationContext!
-                //       .read<RegisterOrganizationController>(),
-                // ),
-                // BlocProvider.value(
-                //   value: BlocProvider.of<RegisterCollegeController>(
-                //       collegeContext!),
-                // ),
-                // BlocProvider.value(
-                //   value: BlocProvider.of<RegisterDepartmentController>(
-                //       departmentContext!),
-                // ),
                 BlocProvider(create: (context) => RegisterSidController()),
                 BlocProvider(create: (context) => RegisterNicknameController()),
               ],
-              child: const RegisterFillInformScreen(),
+              child: RegisterFillInformScreen(arguments),
             ),
           );
         }

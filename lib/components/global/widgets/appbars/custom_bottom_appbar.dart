@@ -14,15 +14,25 @@ class CustomBottomAppbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomAppBar(
-      height: context.width * 0.12,
-      color: backgroundColor ?? context.appColors.primary,
-      child: Center(
-        child: AutoSizeText(
-          maxLines: 1,
-          text ?? '',
-          style: CustomTexts.titleLarge.copyWith(
-            color: context.appColors.onPrimary,
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(
+            color: context.appColors.borderColor,
+            width: 0.1,
+          ),
+        ),
+      ),
+      child: BottomAppBar(
+        height: context.width * 0.12,
+        color: backgroundColor ?? context.appColors.primary,
+        child: Center(
+          child: AutoSizeText(
+            maxLines: 1,
+            text ?? '',
+            style: CustomTexts.titleLarge.copyWith(
+              color: context.appColors.onPrimary,
+            ),
           ),
         ),
       ),

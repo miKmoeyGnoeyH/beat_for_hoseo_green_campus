@@ -1,8 +1,7 @@
-import 'package:BEAT/controller/register/register_basic_events.dart';
+import 'package:BEAT/managers/navigator/arguments/register_arguments.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../controller/register/register_organization_controller.dart';
 import '../../managers/navigator/navigator_key_manager.dart';
@@ -13,7 +12,10 @@ import '../global/widgets/custom_scaffold.dart';
 import 'widgets/register_organization_appbar.dart';
 
 class RegisterOrganizationScreen extends StatefulWidget {
-  const RegisterOrganizationScreen({super.key});
+  RegisterOrganizationScreen({super.key});
+
+  final RegisterOrganizationController registerOrganizationController =
+      RegisterOrganizationController();
 
   @override
   State<RegisterOrganizationScreen> createState() =>
@@ -24,21 +26,38 @@ class _RegisterOrganizationScreenState
     extends State<RegisterOrganizationScreen> {
   void doSomethingDependsOnOrganization(String organization) {
     if (organization == 'student'.tr()) {
-      NavigatorKeyManager().pushNamed(RouteNames.registerCollege);
+      NavigatorKeyManager().pushNamed(
+        RouteNames.registerCollege,
+        arguments: RegisterArguments(
+          registerOrganizationController: registerOrganizationController,
+        ),
+      );
     } else if (organization == 'faculty_and_staff'.tr()) {
-      NavigatorKeyManager().pushNamed(RouteNames.registerAffiliation);
+      NavigatorKeyManager().pushNamed(
+        RouteNames.registerAffiliation,
+        arguments: RegisterArguments(
+          registerOrganizationController: registerOrganizationController,
+        ),
+      );
     } else if (organization == 'postgraduate_student'.tr()) {
-      NavigatorKeyManager().pushNamed(RouteNames.registerFillInform);
+      NavigatorKeyManager().pushNamed(
+        RouteNames.registerFillInform,
+        arguments: RegisterArguments(
+          registerOrganizationController: registerOrganizationController,
+        ),
+      );
     } else {
-      NavigatorKeyManager().pushNamed(RouteNames.registerOrgDetail);
+      NavigatorKeyManager().pushNamed(
+        RouteNames.registerOrgDetail,
+        arguments: RegisterArguments(
+          registerOrganizationController: registerOrganizationController,
+        ),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final RegisterOrganizationController registerOrganizationController =
-        context.read<RegisterOrganizationController>();
-
     return CustomScaffold(
       top: false,
       isScrollable: false,
@@ -48,16 +67,18 @@ class _RegisterOrganizationScreenState
       body: CustomCupertinoPicker(
           items: registerOrganizationController.organizations,
           onSelectedItemChanged: (index) => setState(() {
-                registerOrganizationController.add(
-                  RegisterBasicInformChangedByIndex(index),
-                );
+                registerOrganizationController.organization =
+                    registerOrganizationController.organizations[index];
               })),
       bottomNavigationBar: CustomBottomAppbarButton(
         onTap: () => doSomethingDependsOnOrganization(
-            registerOrganizationController.state.value),
+            registerOrganizationController.organization),
         text: context.tr('continue_with',
-            args: [registerOrganizationController.state.value]),
+            args: [registerOrganizationController.organization]),
       ),
     );
   }
+
+  RegisterOrganizationController get registerOrganizationController =>
+      widget.registerOrganizationController;
 }

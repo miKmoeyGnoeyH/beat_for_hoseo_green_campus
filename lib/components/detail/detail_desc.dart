@@ -13,6 +13,7 @@ class DetailDesc extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomRoundedBorderedContainer(
+      borderWidth: 0.5,
       color: context.appColors.background,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),

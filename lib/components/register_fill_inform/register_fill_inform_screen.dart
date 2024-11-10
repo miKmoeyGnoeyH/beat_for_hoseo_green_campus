@@ -1,4 +1,3 @@
-
 import 'package:BEAT/components/global/widgets/buttons/custom_bottom_appbar_button.dart';
 import 'package:BEAT/components/global/widgets/buttons/custom_wide_button.dart';
 import 'package:BEAT/components/register_organization/widgets/register_organization_appbar.dart';
@@ -8,6 +7,7 @@ import 'package:BEAT/controller/register_fill_inform/register_name_controller.da
 import 'package:BEAT/controller/register_fill_inform/register_sid_controller.dart';
 import 'package:BEAT/controller/register_fill_inform/register_sign_controller.dart';
 import 'package:BEAT/extensions/buildcontext_extension.dart';
+import 'package:BEAT/managers/navigator/arguments/register_arguments.dart';
 import 'package:BEAT/managers/navigator/navigator_key_manager.dart';
 import 'package:BEAT/managers/navigator/routes.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -32,7 +32,9 @@ import 'widgets/sign_preview.dart';
 import 'widgets/terms_of_agreement.dart';
 
 class RegisterFillInformScreen extends StatefulWidget {
-  const RegisterFillInformScreen({super.key});
+  const RegisterFillInformScreen(this.registerArguments, {super.key});
+
+  final RegisterArguments registerArguments;
 
   @override
   State<RegisterFillInformScreen> createState() =>
@@ -51,15 +53,6 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final RegisterOrganizationController registerOrganizationController =
-        context.read<RegisterOrganizationController>();
-
-    final RegisterCollegeController registerCollegeController =
-        context.read<RegisterCollegeController>();
-
-    final RegisterDepartmentController registerDepartmentController =
-        context.read<RegisterDepartmentController>();
-
     final RegisterSidController registerSidController =
         context.read<RegisterSidController>();
 
@@ -126,10 +119,19 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const OrgColDepIndicator(),
+                  OrgColDepIndicator(
+                    orgText: registerOrganizationController!.organization,
+                    colText: registerCollegeController != null
+                        ? registerCollegeController!.college
+                        : '',
+                    depText: registerDepartmentController != null
+                        ? registerDepartmentController!.department
+                        : '',
+                  ),
                   const SizedBox(height: 20),
                   RegisterFillInformTextField(
-                    textEditingController: registerNameController.nameController,
+                    textEditingController:
+                        registerNameController.nameController,
                     titleText: context.tr('register_name'),
                     hintText: context.tr("register_name_hint"),
                     onChanged: setIsNameValid,
@@ -218,7 +220,8 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                                     if (RegExp(r'[ㅏ-ㅣㄱ-ㅎ]').hasMatch(text)) {
                                       customShowDialog(
                                           context: context,
-                                          title: context.tr('inapropriate_nickname'),
+                                          title: context
+                                              .tr('inapropriate_nickname'),
                                           content: context.tr(
                                               'nickname_has_initial_consonant'));
                                     }
@@ -227,7 +230,8 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                                         .hasMatch(text)) {
                                       customShowDialog(
                                           context: context,
-                                          title: context.tr('inapropriate_nickname'),
+                                          title: context
+                                              .tr('inapropriate_nickname'),
                                           content: context.tr(
                                               'inapropriate_nickname_message'));
                                     } else {
@@ -312,6 +316,15 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
     }
     setState(() {});
   }
+
+  RegisterOrganizationController? get registerOrganizationController =>
+      widget.registerArguments.registerOrganizationController;
+
+  RegisterCollegeController? get registerCollegeController =>
+      widget.registerArguments.registerCollegeController;
+
+  RegisterDepartmentController? get registerDepartmentController =>
+      widget.registerArguments.registerDepartmentController;
 
   bool _isNameValid = false;
   bool _isEmailButtonEnabled = false;
