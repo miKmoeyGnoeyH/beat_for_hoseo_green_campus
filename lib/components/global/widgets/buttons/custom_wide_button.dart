@@ -1,3 +1,4 @@
+
 import 'package:BEAT/extensions/buildcontext_extension.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ class CustomWideButton extends StatelessWidget {
     this.buttonText,
     this.textColor,
     this.maxLines,
+    this.borderWidth
   });
 
   @override
@@ -22,7 +24,7 @@ class CustomWideButton extends StatelessWidget {
       child: CustomRoundedBorderedContainer(
         color: buttonColor ?? context.appColors.background,
         height: 56,
-        borderWidth: 0.5,
+        borderWidth: borderWidth ?? 0.2,
         child: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
@@ -44,4 +46,5 @@ class CustomWideButton extends StatelessWidget {
   final String? buttonText;
   final Color? textColor;
   final int? maxLines;
+  final double? borderWidth;
 }

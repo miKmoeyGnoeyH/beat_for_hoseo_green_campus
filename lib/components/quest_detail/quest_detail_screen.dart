@@ -13,7 +13,6 @@ import '../../controller/home/events/data_events.dart';
 import '../detail/detail_desc.dart';
 import '../detail/detail_image.dart';
 import '../detail/detail_label_and_title.dart';
-import '../global/widgets/buttons/custom_retry_button.dart';
 import 'widgets/quest_detail_table.dart';
 import 'widgets/quest_detail_table_contents.dart';
 

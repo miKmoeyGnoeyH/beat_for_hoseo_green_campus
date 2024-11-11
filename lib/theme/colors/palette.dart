@@ -8,6 +8,7 @@ abstract class Palette {
   static Color get hoseoWhite => const Color(0xffe5e5e5);
 
   static Color get pendingBackground => const Color(0xffF0F0F0);
+  static Color get pendingText => const Color(0xffF0F0F0);
 
   static Color get inProgressBackground => const Color(0xffEEF9EB);
   static Color get inProgressText => const Color(0xff2EAF0A);

@@ -1,13 +1,9 @@
 import 'dart:developer';
 
-import 'package:BEAT/app.dart';
 import 'package:BEAT/data/states/qr_state.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 
-import '../../components/global/methods/custom_show_dialog.dart';
 
 class QRProvider {
   final http.Client client = http.Client();

@@ -19,6 +19,7 @@ class SignInRegisterButton extends StatelessWidget {
       buttonColor: context.appColors.background,
       buttonText: context.tr('register'),
       textColor: context.appColors.onBackground,
+      borderWidth: 0.5,
     );
   }
 }

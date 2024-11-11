@@ -1,3 +1,4 @@
+
 import 'package:BEAT/components/global/widgets/buttons/custom_bottom_appbar_button.dart';
 import 'package:BEAT/components/global/widgets/buttons/custom_wide_button.dart';
 import 'package:BEAT/components/register_organization/widgets/register_organization_appbar.dart';
@@ -175,8 +176,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                             buttonText: context.tr('validate_mail'),
                             buttonColor: _isEmailButtonEnabled
                                 ? context.appColors.primary
-                                : context.appColors.onBackground
-                                    .withOpacity(0.3),
+                                : context.appColors.disabled,
                           ),
                         ),
                       ),
@@ -244,8 +244,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                             buttonText: context.tr('validate_nickname'),
                             buttonColor: _isNicknameButtonEnabled
                                 ? context.appColors.primary
-                                : context.appColors.onBackground
-                                    .withOpacity(0.3),
+                                : context.appColors.disabled,
                           ),
                         ),
                       ),
@@ -295,6 +294,12 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                     ? context.appColors.primary
                     : context.appColors.disabled,
                 text: context.tr('sign_up'),
+                textColor: _isNameValid &&
+                        sidState is EmailSent &&
+                        nicknameState is NicknameChecked &&
+                        registerAgreementController.isAgreementChecked
+                    ? context.appColors.onPrimary
+                    : context.appColors.onBackground,
               ),
             ),
           ),
