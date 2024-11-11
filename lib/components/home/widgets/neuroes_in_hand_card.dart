@@ -4,7 +4,7 @@ import 'package:BEAT/managers/navigator/navigator_key_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import '../../../controller/user_bloc.dart';
+import '../../../controller/user_controller.dart';
 import '../../../managers/navigator/routes.dart';
 import '../../global/widgets/custom_rounded_bordered_container.dart';
 import '../../global/widgets/texts/custom_headline_large.dart';
@@ -16,7 +16,7 @@ class NeuroesInHandCard extends StatelessWidget {
     required this.userBloc,
   });
 
-  final UserBloc userBloc;
+  final UserController userBloc;
 
   @override
   Widget build(BuildContext context) {
@@ -47,11 +47,22 @@ class NeuroesInHandCard extends StatelessWidget {
                   )
                 ],
               ),
-              Image.asset('assets/images/neuroes_pile.png', width: 80,),
+              const ALotOfNeuroes(),
             ],
           ),
         ),
       ),
     );
+  }
+}
+
+class ALotOfNeuroes extends StatelessWidget {
+  const ALotOfNeuroes({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Image.asset('assets/images/neuroes_pile.png', width: 80,);
   }
 }

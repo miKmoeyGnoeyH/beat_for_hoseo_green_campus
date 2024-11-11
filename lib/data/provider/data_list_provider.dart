@@ -4,9 +4,10 @@ import 'package:BEAT/data/models/data_models.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
+import '../models/rank_model.dart';
 import '../states/data_list_state.dart';
 
-enum DataListType { quest, quiz, survey }
+enum DataListType { quest, quiz, survey, rank }
 
 class DataListProvider {
   final http.Client _httpClient = http.Client();
@@ -20,6 +21,9 @@ class DataListProvider {
         break;
       case DataListType.quiz:
         requestUrl = dotenv.env['QUIZ_LIST']!;
+        break;
+      case DataListType.rank:
+        requestUrl = dotenv.env['RANK']!;
         break;
       case DataListType.survey:
       default:
@@ -50,6 +54,12 @@ class DataListProvider {
           case DataListType.survey:
             for (var data in body) {
               dataList.add(SurveyModel.fromJson(data));
+            }
+          case DataListType.rank:
+            {
+              for (var data in body) {
+                dataList.add(RankModel.fromJson(data));
+              }
             }
           default:
             break;

@@ -1,5 +1,8 @@
 import 'package:BEAT/extensions/buildcontext_extension.dart';
+import 'package:BEAT/managers/navigator/navigator_key_manager.dart';
 import 'package:flutter/material.dart';
+
+import '../../../managers/navigator/routes.dart';
 
 class HomeLeaderboardButton extends StatelessWidget {
   const HomeLeaderboardButton({
@@ -14,7 +17,9 @@ class HomeLeaderboardButton extends StatelessWidget {
         color: context.appColors.onSurface,
         size: 24,
       ),
-      onPressed: () {},
+      onPressed: () {
+        NavigatorKeyManager().pushNamed(RouteNames.ranking);
+      },
     );
   }
 }

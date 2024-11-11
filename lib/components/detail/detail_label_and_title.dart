@@ -37,7 +37,7 @@ class DetailLabelAndTItle extends StatelessWidget {
                         textColor: context.appColors.primary,
                       ),
                       const SizedBox(width: 5),
-                      const NeuroIcon(width: 25),
+                      const Neuro(width: 25),
                     ],
                   )
                 : const SizedBox(),

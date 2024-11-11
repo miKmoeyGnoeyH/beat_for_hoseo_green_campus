@@ -33,7 +33,7 @@ class VoteCardTitleAndDesc extends StatelessWidget {
           const SizedBox(height: 10),
           Row(
             children: [
-              const NeuroIcon(),
+              const Neuro(),
               const SizedBox(width: 5),
               CustomTitleLarge(text: gatheredNeuro ?? '0'),
             ],

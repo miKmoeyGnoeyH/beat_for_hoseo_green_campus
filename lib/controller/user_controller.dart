@@ -20,10 +20,10 @@ final class SignOut extends UserEvent {}
 
 final class GetMyNeuro extends UserEvent {}
 
-class UserBloc extends Bloc<UserEvent, User> {
+class UserController extends Bloc<UserEvent, User> {
   final UserProvider _userProvider = UserProvider();
 
-  UserBloc() : super(Guest()) {
+  UserController() : super(Guest()) {
     on<SignIn>(_signIn);
     on<SignOut>(_signOut);
     on<GetMyNeuro>(_getMyNeuro);

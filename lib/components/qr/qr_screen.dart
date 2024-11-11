@@ -10,7 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../controller/qr/qr_event.dart';
-import '../../controller/user_bloc.dart';
+import '../../controller/user_controller.dart';
 import '../../data/states/qr_state.dart';
 
 class QrScreen extends StatefulWidget {
@@ -26,7 +26,7 @@ class _QrScreenState extends State<QrScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final UserBloc userBloc = context.read<UserBloc>();
+    final UserController userBloc = context.read<UserController>();
 
     return BlocProvider(
       create: (context) => QRController(),

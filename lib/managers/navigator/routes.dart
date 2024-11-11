@@ -1,3 +1,4 @@
+import 'package:BEAT/controller/rank/rank_controller.dart';
 import 'package:BEAT/controller/vote/vote_detail_controller.dart';
 import 'package:BEAT/managers/navigator/arguments/register_arguments.dart';
 import 'package:BEAT/managers/navigator/arguments/vote_result_args.dart';
@@ -8,6 +9,7 @@ import '../../components/history/neuro_history_screen.dart';
 import '../../components/home/home_screen.dart';
 import '../../components/quest_detail/quest_detail_screen.dart';
 import '../../components/quiz_detail/quiz_detail_screen.dart';
+import '../../components/rank/ranking_screen.dart';
 import '../../components/register_affiliation/register_affiliation_screen.dart';
 import '../../components/register_college/register_college_screen.dart';
 import '../../components/register_department/register_department_screen.dart';
@@ -91,6 +93,16 @@ abstract class Routes {
             builder: (context) => BlocProvider(
               create: (context) => VoteDetailController(voteModel),
               child: const VoteResultScreen(),
+            ),
+          );
+        }
+
+      case RouteNames.ranking:
+        {
+          return MaterialPageRoute(
+            builder: (context) => BlocProvider(
+              create: (context) => RankController(),
+              child: const RankingScreen(),
             ),
           );
         }

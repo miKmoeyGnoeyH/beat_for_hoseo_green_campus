@@ -2,7 +2,7 @@
 import 'package:BEAT/components/global/methods/custom_show_dialog.dart';
 import 'package:BEAT/components/global/widgets/buttons/custom_bottom_appbar_button.dart';
 import 'package:BEAT/components/global/widgets/texts/custom_label_large.dart';
-import 'package:BEAT/controller/user_bloc.dart';
+import 'package:BEAT/controller/user_controller.dart';
 import 'package:BEAT/data/models/data_models.dart';
 import 'package:BEAT/managers/navigator/navigator_key_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -91,7 +91,7 @@ class QuizDetailScreen extends StatelessWidget {
               quizDetailModel: (dataDetailModelController.state.dataModel
                   as QuizDetailModel),
             );
-            context.read<UserBloc>().add(GetMyNeuro());
+            context.read<UserController>().add(GetMyNeuro());
           },
           text: context.tr('submit_and_grading'),
         ),
@@ -107,7 +107,7 @@ class QuizDetailScreen extends StatelessWidget {
     final QuizSubmitGradingProvider quizSubmitGradingProvider =
         QuizSubmitGradingProvider();
     List<Map<String, dynamic>> questionToMap = [];
-    final String authorization = context.read<UserBloc>().state.authorization;
+    final String authorization = context.read<UserController>().state.authorization;
 
     for (QuizQuestion question in questionList) {
       Map<String, dynamic> questionToJson = question.questionToJson!();

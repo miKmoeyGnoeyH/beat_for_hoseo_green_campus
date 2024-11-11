@@ -15,7 +15,7 @@ TableRow buildQuestDetailTableRewardRow({required String reward}) {
     TableCell(
       child: Row(
         children: [
-          const NeuroIcon(width: 20),
+          const Neuro(width: 20),
           const SizedBox(width: 5),
           CustomSubtitleLarge(
             text: reward,

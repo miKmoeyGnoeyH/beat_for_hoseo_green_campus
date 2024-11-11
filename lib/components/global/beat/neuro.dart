@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class NeuroIcon extends StatelessWidget {
-  const NeuroIcon({
+class Neuro extends StatelessWidget {
+  const Neuro({
     super.key,
     this.width,
   });

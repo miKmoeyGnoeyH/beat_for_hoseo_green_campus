@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../controller/user_bloc.dart';
+import '../../../controller/user_controller.dart';
 import '../../../theme/texts/custom_texts.dart';
 import '../../global/beat/beat_logo_small.dart';
 import '../../global/widgets/appbars/custom_appbar.dart';
@@ -15,7 +15,7 @@ class HomeAppbar extends StatelessWidget {
     required this.userBloc,
   });
 
-  final UserBloc userBloc;
+  final UserController userBloc;
 
   @override
   Widget build(BuildContext context) {

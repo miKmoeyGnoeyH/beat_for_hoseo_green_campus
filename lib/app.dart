@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'components/global/widgets/custom_theme_app.dart';
-import 'controller/user_bloc.dart';
+import 'controller/user_controller.dart';
 import 'managers/navigator/routes.dart';
 import 'managers/navigator/navigator_key_manager.dart';
 
@@ -21,7 +21,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return CustomThemeApp(
       child: BlocProvider(
-        create: (context) => UserBloc(),
+        create: (context) => UserController(),
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           localizationsDelegates: context.localizationDelegates,

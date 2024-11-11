@@ -1,4 +1,4 @@
-import 'package:BEAT/controller/user_bloc.dart';
+import 'package:BEAT/controller/user_controller.dart';
 import 'package:BEAT/data/models/vote_model.dart';
 import 'package:BEAT/extensions/buildcontext_extension.dart';
 import 'package:BEAT/managers/navigator/arguments/vote_result_args.dart';
@@ -26,7 +26,7 @@ class VoteCard extends StatelessWidget {
             RouteNames.voteResult,
             arguments: VoteResultArguments(
                 voteModel: voteModel,
-                authorization: context.read<UserBloc>().state.authorization),
+                authorization: context.read<UserController>().state.authorization),
           );
         }
       },

@@ -122,5 +122,7 @@
   "reward_acquire_failed": "보상 획득 실패",
   "qr_scan_success_earned_neuro": "{} Neuro 획득",
   "qr_scan_success_Deducted_neuro": "{} Neuro 차감",
-  "already_checked": "이미 참여하셨습니다."
+  "already_checked": "이미 참여하셨습니다.",
+  "ranking": "랭킹",
+  "ranking_desc": "뉴로 획득량과 사용량 합을 기준으로 순위가 결정됩니다."
 }

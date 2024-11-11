@@ -2,7 +2,7 @@ import 'package:BEAT/components/home/widgets/home_contents.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../controller/user_bloc.dart';
+import '../../controller/user_controller.dart';
 import 'widgets/neuroes_in_hand_card.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -10,7 +10,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final UserBloc userBloc = context.read<UserBloc>()..add(GetMyNeuro());
+    final UserController userBloc = context.read<UserController>()..add(GetMyNeuro());
 
     return Center(
       child: ListView(

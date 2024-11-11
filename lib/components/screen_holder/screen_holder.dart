@@ -6,7 +6,7 @@ import 'package:BEAT/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../controller/user_bloc.dart';
+import '../../controller/user_controller.dart';
 import 'widgets/home_appbar.dart';
 import 'widgets/home_bottom_navigation_bar.dart';
 
@@ -20,7 +20,7 @@ class ScreenHolder extends StatefulWidget {
 class _ScreenHolderState extends State<ScreenHolder> {
   @override
   Widget build(BuildContext context) {
-    final UserBloc userBloc = context.read<UserBloc>();
+    final UserController userBloc = context.read<UserController>();
     return CustomScaffold(
       isScrollable: false,
       appBar: HomeAppbar(userBloc: userBloc),

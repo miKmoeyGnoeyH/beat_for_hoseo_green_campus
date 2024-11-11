@@ -3,13 +3,13 @@ import 'package:BEAT/theme/texts/custom_texts.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import '../../controller/user_bloc.dart';
+import '../../controller/user_controller.dart';
 import '../global/widgets/appbars/custom_empty_appbar.dart';
 import '../global/widgets/custom_rounded_bordered_container.dart';
 import '../global/widgets/custom_scaffold.dart';
 
 class SettingsScreen extends StatelessWidget {
-  final UserBloc _userBloc = UserBloc();
+  final UserController _userBloc = UserController();
 
   @override
   Widget build(BuildContext context) {

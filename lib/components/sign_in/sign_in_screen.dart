@@ -3,7 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../controller/user_bloc.dart';
+import '../../controller/user_controller.dart';
 import '../../data/models/user_model.dart';
 import '../../managers/prefs/prefs_manager.dart';
 import '../global/beat/beat_full_logo.dart';
@@ -24,7 +24,7 @@ class SignInScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<UserBloc, User>(
+    return BlocListener<UserController, User>(
       listener: (context, state) {
         if (state is ErrorUser) {
           customShowDialog(

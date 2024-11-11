@@ -122,5 +122,7 @@
   "reward_acquire_failed": "Reward acquire failed",
   "qr_scan_success_earned_neuro": "Earned {} Neuro",
   "qr_scan_success_Deducted_neuro": "Deducted {} Neuro",
-  "already_checked": "Already Checked"
+  "already_checked": "Already Checked",
+  "ranking": "Ranking",
+  "ranking_desc": "The ranking is determined based on the total amount of Neuro acquired and used."
 }

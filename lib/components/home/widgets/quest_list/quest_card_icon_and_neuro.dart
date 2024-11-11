@@ -16,7 +16,7 @@ class QuestCardIconAndNeuro extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const NeuroIcon(),
+          const Neuro(),
           const SizedBox(height: 5),
           CustomSubtitleLarge(
             text: neuro,

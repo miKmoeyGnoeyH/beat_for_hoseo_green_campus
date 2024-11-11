@@ -1,3 +1,4 @@
+
 sealed class User {
   User(this.studentId, this.nickname, this.authorization, this.neuroesInHand);
 
@@ -12,7 +13,8 @@ final class Guest extends User {
 }
 
 final class Member extends User {
-  Member(super.studentId, super.nickname, super.authorization, super.neuroesInHand);
+  Member(super.studentId, super.nickname, super.authorization,
+      super.neuroesInHand);
 }
 
 final class IsLoading extends User {
