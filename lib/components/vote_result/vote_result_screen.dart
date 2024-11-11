@@ -2,7 +2,6 @@ import 'package:BEAT/components/global/widgets/appbars/custom_empty_appbar.dart'
 import 'package:BEAT/components/global/widgets/custom_scaffold.dart';
 import 'package:BEAT/controller/home/events/data_events.dart';
 import 'package:BEAT/data/models/data_models.dart';
-import 'package:BEAT/data/models/vote_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../controller/home/events/data_events.dart';
 import '../../controller/vote/vote_controller.dart';
-import '../../data/models/vote_model.dart';
+import '../../data/models/data_models.dart';
 import '../global/widgets/buttons/custom_refresh_button.dart';
 import '../global/widgets/custom_circular_progress_indicator.dart';
 

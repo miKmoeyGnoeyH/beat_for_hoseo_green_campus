@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../controller/user_controller.dart';
+import '../../../data/models/user_model.dart';
 import '../../../theme/texts/custom_texts.dart';
 import '../../global/beat/beat_logo_small.dart';
 import '../../global/widgets/appbars/custom_appbar.dart';
@@ -12,10 +14,7 @@ import '../../home/widgets/home_settings_button.dart';
 class HomeAppbar extends StatelessWidget {
   const HomeAppbar({
     super.key,
-    required this.userBloc,
   });
-
-  final UserController userBloc;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +23,11 @@ class HomeAppbar extends StatelessWidget {
         children: [
           const BeatLogoSmall(),
           const SizedBox(width: 12),
-          CustomBodyLarge(text: userBloc.state.nickname)
+          BlocBuilder<UserController, User>(
+            builder: (context, state) => CustomBodyLarge(
+              text: state is !Member ? '' : state.nickname,
+            ),
+          ),
         ],
       ),
       textStyle: CustomTexts.bodyMedium,

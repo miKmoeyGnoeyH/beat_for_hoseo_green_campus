@@ -1,5 +1,4 @@
 import 'package:BEAT/data/models/data_models.dart';
-import 'package:BEAT/data/models/rank_model.dart';
 import 'package:flutter/material.dart';
 
 import 'ranking_card.dart';

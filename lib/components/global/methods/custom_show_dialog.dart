@@ -7,7 +7,7 @@ import '../../../theme/texts/custom_texts.dart';
 import '../widgets/custom_rounded_bordered_container.dart';
 
 Future<dynamic> customShowDialog(
-    {required BuildContext context, required String? title, required String? content, String? routeName}) {
+    {required BuildContext context, required String? title, required String? content, String? buttonText, String? routeName}) {
   return showDialog(
     context: context,
     builder: (context) => AlertDialog(
@@ -41,7 +41,7 @@ Future<dynamic> customShowDialog(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Text(
-                  context.tr('confirm'),
+                  buttonText ?? context.tr('confirm'),
                   style: CustomTexts.subtitleLarge
                       .copyWith(color: context.appColors.onPrimary),
                 ),

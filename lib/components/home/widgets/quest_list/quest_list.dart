@@ -1,3 +1,4 @@
+
 import 'package:BEAT/controller/home/events/data_events.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,22 +16,20 @@ class HomeQuestList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => QuestListController(),
-      child: BlocBuilder<QuestListController, DataListState>(
-        builder: (context, state) {
-          final QuestListController questListController =
-              context.read<QuestListController>();
+    final QuestListController questListController =
+        context.read<QuestListController>();
 
-          if (state is DataListLoading) {
-            return const CustomCircularProgressIndicator();
-          } else if (state is DataListLoadingError) {
-            return CustomRefreshButton(onTap: () => questListController.add(DataListRequest()));
-          } else {
-            return CustomQuestListView(list: state.dataList);
-          }
-        },
-      ),
+    return BlocBuilder<QuestListController, DataListState>(
+      builder: (context, state) {
+        if (state is DataListLoading) {
+          return const CustomCircularProgressIndicator();
+        } else if (state is DataListLoadingError) {
+          return CustomRefreshButton(
+              onTap: () => questListController.add(DataListRequest()));
+        } else {
+          return CustomQuestListView(list: state.dataList);
+        }
+      },
     );
   }
 }

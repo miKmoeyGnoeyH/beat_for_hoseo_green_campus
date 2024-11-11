@@ -1,4 +1,4 @@
-import '../../../data/models/vote_model.dart';
+import '../../../data/models/data_models.dart';
 
 class VoteResultArguments {
   VoteResultArguments({

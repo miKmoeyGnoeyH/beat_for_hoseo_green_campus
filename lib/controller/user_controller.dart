@@ -1,3 +1,4 @@
+
 import 'package:bloc/bloc.dart';
 
 import '../data/models/user_model.dart';
@@ -35,9 +36,8 @@ class UserController extends Bloc<UserEvent, User> {
     User user;
     user = await _userProvider.signIn(event.studentId, event.nickname);
 
-    if(user is !ErrorUser) {
-      NavigatorKeyManager()
-        .pushNamedAndRemoveUntil(RouteNames.screenHolder);
+    if (user is! ErrorUser) {
+      NavigatorKeyManager().pushNamedAndRemoveUntil(RouteNames.screenHolder);
     }
 
     emit(user);
@@ -52,8 +52,24 @@ class UserController extends Bloc<UserEvent, User> {
   }
 
   void _getMyNeuro(GetMyNeuro event, Emitter<User> emit) async {
-    final String neuroesInHand = await _userProvider.myNeuro(state.authorization);
-    final User user = Member(state.studentId, state.nickname, state.authorization, neuroesInHand);
+    emit(
+      IsNeuroLoading(
+        state.studentId,
+        state.nickname,
+        state.neuroesInHand,
+        state.authorization,
+      ),
+    );
+
+    final String neuroesInHand =
+        await _userProvider.myNeuro(state.authorization);
+    final User user = Member(
+      state.studentId,
+      state.nickname,
+      neuroesInHand,
+      state.authorization,
+    );
+
     emit(user);
   }
 }

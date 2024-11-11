@@ -1,4 +1,4 @@
-import 'package:BEAT/data/models/data_models.dart';
+part of 'data_models.dart';
 
 class VoteModel extends DataModel {
   VoteModel(

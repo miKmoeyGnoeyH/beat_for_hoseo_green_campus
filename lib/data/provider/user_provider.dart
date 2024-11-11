@@ -29,7 +29,12 @@ class UserProvider {
         final String authorization = response.headers['authorization']!;
         final String neuroesInHand = await myNeuro(authorization);
 
-        user = Member(studentId, nickname, authorization, neuroesInHand);
+        user = Member(
+          studentId,
+          nickname,
+          neuroesInHand,
+          authorization,
+        );
       } else {
         user = ErrorUser('sign_in_failed_message'.tr());
       }
@@ -59,5 +64,28 @@ class UserProvider {
       ret = '';
     }
     return ret;
+  }
+
+  Future<int> signUp(
+      String studentId, String name, String nickname, String department) async {
+    final String requestUrl = dotenv.env['SIGN_UP']!;
+    int result = 0;
+
+    try {
+      final http.Response response = await _httpClient.post(
+        Uri.parse(requestUrl),
+        body: {
+          'studentId': studentId,
+          'name':name,
+          'nickname': nickname,
+          'department': department,
+        },
+      ).timeout(const Duration(seconds: 5));
+
+      return response.statusCode;
+    } catch (e) {
+      result = 400;
+    }
+    return result;
   }
 }

@@ -1,6 +1,9 @@
+import 'package:BEAT/controller/home/controllers/quiz_list_controller.dart';
+import 'package:BEAT/controller/home/controllers/survey_list_controller.dart';
 import 'package:BEAT/controller/rank/rank_controller.dart';
 import 'package:BEAT/controller/vote/vote_detail_controller.dart';
 import 'package:BEAT/managers/navigator/arguments/register_arguments.dart';
+import 'package:BEAT/managers/navigator/arguments/register_sign_arguments.dart';
 import 'package:BEAT/managers/navigator/arguments/vote_result_args.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,12 +25,12 @@ import '../../components/settings/settings_screen.dart';
 import '../../components/sign_in/sign_in_screen.dart';
 import '../../components/vote_result/vote_result_screen.dart';
 import '../../controller/home/controllers/data_controller.dart';
+import '../../controller/home/controllers/quest_list_controller.dart';
 import '../../controller/neuro_history/controllers/neuro_history_controller.dart';
 import '../../controller/register_fill_inform/register_nickname_controller.dart';
 import '../../controller/register_fill_inform/register_sid_controller.dart';
 import '../../controller/vote/vote_result_controller.dart';
 import '../../data/models/data_models.dart';
-import '../../data/models/vote_model.dart';
 
 part 'route_names.dart';
 
@@ -36,7 +39,11 @@ abstract class Routes {
     switch (settings.name) {
       case RouteNames.screenHolder:
         return MaterialPageRoute(
-          builder: (context) => const ScreenHolder(),
+          builder: (context) => MultiBlocProvider(providers: [
+            BlocProvider(create: (context) => QuestListController()),
+            BlocProvider(create: (context) => QuizListController()),
+            BlocProvider(create: (context) => SurveyListController()),
+          ], child: const ScreenHolder()),
         );
 
       case (RouteNames.neuroHistory):
@@ -176,8 +183,14 @@ abstract class Routes {
         }
 
       case RouteNames.registerSign:
-        return MaterialPageRoute(
-            builder: (context) => const RegisterSignScreen());
+        {
+          final RegisterSignArguments arguments =
+              settings.arguments as RegisterSignArguments;
+          return MaterialPageRoute(
+            builder: (context) =>
+                RegisterSignScreen(arguments.registerSignController),
+          );
+        }
 
       case RouteNames.settings:
         return MaterialPageRoute(builder: (context) => SettingsScreen());

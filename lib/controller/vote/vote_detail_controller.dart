@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:BEAT/data/models/vote_model.dart';
 import 'package:BEAT/data/provider/vote_provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

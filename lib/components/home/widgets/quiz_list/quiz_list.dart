@@ -15,22 +15,20 @@ class HomeQuizList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => QuizListController(),
-      child: BlocBuilder<QuizListController, DataListState>(
-        builder: (context, state) {
-          final QuizListController quizListController =
-              context.read<QuizListController>();
+    final QuizListController quizListController =
+        context.read<QuizListController>();
 
-          if (state is DataListLoading) {
-            return const CustomCircularProgressIndicator();
-          } else if (state is DataListLoadingError) {
-            return CustomRefreshButton(onTap: () => quizListController.add(DataListRequest()));
-          } else {
-            return CustomQuizListView(list: state.dataList);
-          }
-        },
-      ),
+    return BlocBuilder<QuizListController, DataListState>(
+      builder: (context, state) {
+        if (state is DataListLoading) {
+          return const CustomCircularProgressIndicator();
+        } else if (state is DataListLoadingError) {
+          return CustomRefreshButton(
+              onTap: () => quizListController.add(DataListRequest()));
+        } else {
+          return CustomQuizListView(list: state.dataList);
+        }
+      },
     );
   }
 }

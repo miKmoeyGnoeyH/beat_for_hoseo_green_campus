@@ -7,7 +7,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/data_models.dart';
-import '../models/vote_model.dart';
 import '../states/data_list_state.dart';
 
 class VoteProvider {

@@ -27,24 +27,23 @@ class _SignPreviewState extends State<SignPreview> {
       height: 200,
       borderWidth: 0.5,
       color: context.appColors.background,
-      child: FutureBuilder(
-        future: widget.registerSignController.signToImage(),
-        builder: (context, snapshot) => snapshot.hasData
-            ? Image.memory(snapshot.data!)
-            : Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: 20.0),
-            child: AutoSizeText(
-              maxLines: 1,
-              context.tr('sign_content'),
-              style: CustomTexts.bodyLarge.copyWith(
-                color: context.appColors.onBackground,
+      child: registerSignController.sign.isNotEmpty
+          ? Image.memory(registerSignController.sign)
+          : Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: AutoSizeText(
+                  context.tr('sign_content'),
+                  maxLines: 1,
+                  style: CustomTexts.bodyLarge.copyWith(
+                    color: context.appColors.onBackground,
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-      ),
     );
   }
+
+  RegisterSignController get registerSignController =>
+      widget.registerSignController;
 }

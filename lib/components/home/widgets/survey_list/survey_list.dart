@@ -15,22 +15,20 @@ class HomeSurveyList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => SurveyListController(),
-      child: BlocBuilder<SurveyListController, DataListState>(
-        builder: (context, state) {
-          final SurveyListController surveyListController =
-              context.read<SurveyListController>();
+    final SurveyListController surveyListController =
+        context.read<SurveyListController>();
 
-          if (state is DataListLoading) {
-            return const CustomCircularProgressIndicator();
-          } else if (state is DataListLoadingError) {
-            return CustomRefreshButton(onTap: () => surveyListController.add(DataListRequest()));
-          } else {
-            return CustomSurveyListView(list: state.dataList);
-          }
-        },
-      ),
+    return BlocBuilder<SurveyListController, DataListState>(
+      builder: (context, state) {
+        if (state is DataListLoading) {
+          return const CustomCircularProgressIndicator();
+        } else if (state is DataListLoadingError) {
+          return CustomRefreshButton(
+              onTap: () => surveyListController.add(DataListRequest()));
+        } else {
+          return CustomSurveyListView(list: state.dataList);
+        }
+      },
     );
   }
 }

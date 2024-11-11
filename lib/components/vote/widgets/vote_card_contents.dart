@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import '../../../data/models/vote_model.dart';
+import '../../../data/models/data_models.dart';
 import 'vote_card_icon_and_neuro.dart';
 import 'vote_card_title_and_desc.dart';
 

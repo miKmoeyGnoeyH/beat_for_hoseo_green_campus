@@ -14,6 +14,9 @@ class RegisterSignController {
 
   Future<Uint8List> signToImage() async {
     var image = await handSignatureControl.toImage();
-    return image!.buffer.asUint8List();
+    sign = image!.buffer.asUint8List();
+    return sign;
   }
+
+  Uint8List sign = Uint8List(0);
 }

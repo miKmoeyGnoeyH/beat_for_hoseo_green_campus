@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../data/models/rank_model.dart';
+import '../../../data/models/data_models.dart';
 import '../../global/beat/crown_bronze.dart';
 import '../../global/beat/crown_gold.dart';
 import '../../global/beat/crown_silver.dart';

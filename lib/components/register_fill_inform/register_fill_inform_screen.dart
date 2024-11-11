@@ -7,8 +7,10 @@ import 'package:BEAT/controller/register_fill_inform/register_agreement_controll
 import 'package:BEAT/controller/register_fill_inform/register_name_controller.dart';
 import 'package:BEAT/controller/register_fill_inform/register_sid_controller.dart';
 import 'package:BEAT/controller/register_fill_inform/register_sign_controller.dart';
+import 'package:BEAT/data/provider/user_provider.dart';
 import 'package:BEAT/extensions/buildcontext_extension.dart';
 import 'package:BEAT/managers/navigator/arguments/register_arguments.dart';
+import 'package:BEAT/managers/navigator/arguments/register_sign_arguments.dart';
 import 'package:BEAT/managers/navigator/navigator_key_manager.dart';
 import 'package:BEAT/managers/navigator/routes.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -20,15 +22,15 @@ import '../../controller/register_fill_inform/register_nickname_controller.dart'
 import '../../controller/register/register_organization_controller.dart';
 import '../../data/states/email_state.dart';
 import '../../data/states/nickname_state.dart';
-import '../global/methods/custom_input_formatters.dart';
 import '../global/methods/custom_show_dialog.dart';
 import '../global/widgets/texts/custom_body_large.dart';
 import '../global/widgets/regexp/custom_profanity_filter.dart';
 import '../global/widgets/custom_scaffold.dart';
-import '../global/widgets/custom_text_field.dart';
 import '../global/widgets/texts/custom_subtitle_large.dart';
+import 'register_nickname_textfield.dart';
+import 'register_sid_textfield.dart';
 import 'widgets/org_col_dep_indicator.dart';
-import 'widgets/register_fill_inform_text_field.dart';
+import 'widgets/register_name_text_field.dart';
 import 'widgets/sign_preview.dart';
 import 'widgets/terms_of_agreement.dart';
 
@@ -130,28 +132,16 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                         : '',
                   ),
                   const SizedBox(height: 20),
-                  RegisterFillInformTextField(
-                    textEditingController:
-                        registerNameController.nameController,
-                    titleText: context.tr('register_name'),
-                    hintText: context.tr("register_name_hint"),
-                    onChanged: setIsNameValid,
+                  RegisterNameTextField(
+                    registerNameController: registerNameController,
+                    onChanged: validateName,
                   ),
                   const SizedBox(height: 20),
                   CustomSubtitleLarge(text: context.tr('student_id')),
                   Row(
                     children: [
-                      Flexible(
-                        flex: 2,
-                        child: CustomTextField(
-                          textEditingController:
-                              registerSidController.sidController,
-                          keyboardType: TextInputType.number,
-                          hintText: context.tr("register_sid_hint"),
-                          maxLength: 8,
-                          inputFormatters: [
-                            onlyDigitsInputFormatter(),
-                          ],
+                      RegisterSIDTextField(
+                          registerSidController: registerSidController,
                           onChanged: (value) {
                             registerSidController.add(EmailChanged());
                             if (value.length >= 8) {
@@ -160,9 +150,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                               _isEmailButtonEnabled = false;
                             }
                             setState(() {});
-                          },
-                        ),
-                      ),
+                          }),
                       const SizedBox(width: 10),
                       BlocBuilder<RegisterSidController, EmailState>(
                         builder: (context, state) => Flexible(
@@ -186,26 +174,17 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                   CustomSubtitleLarge(text: context.tr('nickname')),
                   Row(
                     children: [
-                      Flexible(
-                        flex: 2,
-                        child: CustomTextField(
-                          textEditingController:
-                              registerNicknameController.nicknameController,
-                          hintText: context.tr("register_nickname_hint"),
-                          maxLength: 10,
-                          inputFormatters: [
-                            onlyEnglishAndKoreanInputFormatter()
-                          ],
-                          onChanged: (value) {
-                            registerNicknameController.add(NicknameChanged());
-                            if (value.length >= 2) {
-                              _isNicknameButtonEnabled = true;
-                            } else {
-                              _isNicknameButtonEnabled = false;
-                            }
-                            setState(() {});
-                          },
-                        ),
+                      RegisterNicknameTextField(
+                        registerNicknameController: registerNicknameController,
+                        onChanged: (value) {
+                          registerNicknameController.add(NicknameChanged());
+                          if (value.length >= 2) {
+                            _isNicknameButtonEnabled = true;
+                          } else {
+                            _isNicknameButtonEnabled = false;
+                          }
+                          setState(() {});
+                        },
                       ),
                       const SizedBox(width: 10),
                       BlocBuilder<RegisterNicknameController, NicknameState>(
@@ -257,8 +236,12 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                   CustomBodyLarge(text: context.tr('wdints_content')),
                   const SizedBox(height: 20),
                   CustomWideButton(
-                    onTap: () => NavigatorKeyManager()
-                        .pushNamed(RouteNames.registerSign),
+                    onTap: () => NavigatorKeyManager().pushNamed(
+                      RouteNames.registerSign,
+                      arguments: RegisterSignArguments(
+                        registerSignController,
+                      ),
+                    ),
                     buttonText: context.tr('sign'),
                     buttonColor: context.appColors.primary,
                   ),
@@ -277,30 +260,74 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
           bottomNavigationBar: BlocBuilder<RegisterSidController, EmailState>(
             builder: (context, sidState) =>
                 BlocBuilder<RegisterNicknameController, NicknameState>(
-              builder: (context, nicknameState) => CustomBottomAppbarButton(
-                onTap: () {
-                  if (_isNameValid &&
-                      sidState is EmailSent &&
-                      nicknameState is NicknameChecked &&
-                      registerAgreementController.isAgreementChecked) {
-                  } else {
-                    return;
-                  }
-                },
-                backgroundColor: _isNameValid &&
-                        sidState is EmailSent &&
-                        nicknameState is NicknameChecked &&
-                        registerAgreementController.isAgreementChecked
-                    ? context.appColors.primary
-                    : context.appColors.disabled,
-                text: context.tr('sign_up'),
-                textColor: _isNameValid &&
-                        sidState is EmailSent &&
-                        nicknameState is NicknameChecked &&
-                        registerAgreementController.isAgreementChecked
-                    ? context.appColors.onPrimary
-                    : context.appColors.onBackground,
-              ),
+              builder: (context, nicknameState) {
+                _isSignUpButtonEnabled = _isNameValid &&
+                    sidState is EmailSent &&
+                    nicknameState is NicknameChecked &&
+                    registerAgreementController.isAgreementChecked;
+
+                return CustomBottomAppbarButton(
+                  onTap: _isSignUpButtonEnabled
+                      ? () async {
+                          _isSignUpButtonEnabled = false;
+                          final UserProvider userProvider = UserProvider();
+                          final String studentId =
+                              registerSidController.sidController.text;
+                          final String name =
+                              registerNameController.nameController.text;
+                          final String nickname = registerNicknameController
+                              .nicknameController.text;
+                          final String department =
+                              context.deviceLocale.toString() == "ko_KR"
+                                  ? registerDepartmentController!.department
+                                  : context.tr(
+                                      registerDepartmentController!.department);
+                          await userProvider
+                              .signUp(studentId, name, nickname, department)
+                              .then(
+                                (result) => {
+                                  if (result == 200)
+                                    {
+                                      if (context.mounted)
+                                        {
+                                          customShowDialog(
+                                            context: context,
+                                            title:
+                                                context.tr('sign_up_success'),
+                                            content: context
+                                                .tr('sign_up_success_message'),
+                                            buttonText:
+                                                context.tr('to_sign_in_screen'),
+                                            routeName: RouteNames.signIn,
+                                          )
+                                        }
+                                    }
+                                  else
+                                    {
+                                      if (context.mounted)
+                                        {
+                                          customShowDialog(
+                                            context: context,
+                                            title: context.tr('sign_up_failed'),
+                                            content: context
+                                                .tr('sign_up_failed_message'),
+                                          ),
+                                          _isSignUpButtonEnabled = true,
+                                        }
+                                    }
+                                },
+                              );
+                        }
+                      : () {},
+                  backgroundColor: _isSignUpButtonEnabled
+                      ? context.appColors.primary
+                      : context.appColors.disabled,
+                  text: context.tr('sign_up'),
+                  textColor: _isSignUpButtonEnabled
+                      ? context.appColors.onPrimary
+                      : context.appColors.onBackground,
+                );
+              },
             ),
           ),
         ),
@@ -313,7 +340,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
     setState(() {});
   }
 
-  void setIsNameValid(String value) {
+  void validateName(String value) {
     if (!RegExp(r'[ㅏ-ㅣㄱ-ㅎ]').hasMatch(value)) {
       _isNameValid = true;
     } else {
@@ -334,4 +361,5 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
   bool _isNameValid = false;
   bool _isEmailButtonEnabled = false;
   bool _isNicknameButtonEnabled = false;
+  bool _isSignUpButtonEnabled = false;
 }

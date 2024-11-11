@@ -4,7 +4,6 @@ import 'package:BEAT/data/models/data_models.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
-import '../models/rank_model.dart';
 import '../states/data_list_state.dart';
 
 enum DataListType { quest, quiz, survey, rank }

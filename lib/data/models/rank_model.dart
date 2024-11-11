@@ -1,4 +1,4 @@
-import 'data_models.dart';
+part of 'data_models.dart';
 
 class RankModel extends DataModel{
   RankModel({required this.studentId, required this.nickname, required this.neuro});

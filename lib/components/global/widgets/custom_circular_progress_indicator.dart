@@ -11,8 +11,10 @@ class CustomCircularProgressIndicator extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        CircularProgressIndicator(
-          color: context.appColors.primary,
+        Center(
+          child: CircularProgressIndicator(
+            color: context.appColors.primary,
+          ),
         ),
       ],
     );

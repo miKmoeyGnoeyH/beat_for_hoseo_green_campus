@@ -11,14 +11,16 @@ import '../global/widgets/custom_rounded_bordered_container.dart';
 import '../global/widgets/custom_scaffold.dart';
 
 class RegisterSignScreen extends StatefulWidget {
-  const RegisterSignScreen({super.key});
+  const RegisterSignScreen(this.registerSignController, {super.key});
+
+  final RegisterSignController registerSignController;
 
   @override
   State<RegisterSignScreen> createState() => _RegisterSignScreenState();
 }
 
 class _RegisterSignScreenState extends State<RegisterSignScreen> {
-  final RegisterSignController registerSignController = RegisterSignController();
+  RegisterSignController get registerSignController => widget.registerSignController;
 
   @override
   void initState() {
@@ -32,6 +34,7 @@ class _RegisterSignScreenState extends State<RegisterSignScreen> {
   @override
   void dispose() {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    registerSignController.signToImage();
     super.dispose();
   }
 
@@ -60,7 +63,7 @@ class _RegisterSignScreenState extends State<RegisterSignScreen> {
                     ),
                     child: HandSignature(
                       control: registerSignController.handSignatureControl,
-                      color: Colors.black,
+                      color: context.appColors.onBackground,
                       width: 1.0,
                       maxWidth: 4.0,
                       type: SignatureDrawType.arc,
