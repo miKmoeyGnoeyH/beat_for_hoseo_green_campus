@@ -1,5 +1,8 @@
+import 'package:BEAT/components/info/info_screen.dart';
 import 'package:BEAT/controller/home/controllers/quiz_list_controller.dart';
 import 'package:BEAT/controller/home/controllers/survey_list_controller.dart';
+import 'package:BEAT/controller/info/controller/info_image_controller.dart';
+import 'package:BEAT/controller/info/controller/info_list_controller.dart';
 import 'package:BEAT/controller/rank/rank_controller.dart';
 import 'package:BEAT/controller/vote/vote_detail_controller.dart';
 import 'package:BEAT/managers/navigator/arguments/register_arguments.dart';
@@ -23,6 +26,7 @@ import '../../components/register_sign/register_sign_screen.dart';
 import '../../components/screen_holder/screen_holder.dart';
 import '../../components/settings/settings_screen.dart';
 import '../../components/sign_in/sign_in_screen.dart';
+import '../../components/vote_detail/vote_detail_screen.dart';
 import '../../components/vote_result/vote_result_screen.dart';
 import '../../controller/home/controllers/data_controller.dart';
 import '../../controller/home/controllers/quest_list_controller.dart';
@@ -99,7 +103,7 @@ abstract class Routes {
           return MaterialPageRoute(
             builder: (context) => BlocProvider(
               create: (context) => VoteDetailController(voteModel),
-              child: const VoteResultScreen(),
+              child: const VoteDetailScreen(),
             ),
           );
         }
@@ -110,6 +114,19 @@ abstract class Routes {
             builder: (context) => BlocProvider(
               create: (context) => RankController(),
               child: const RankingScreen(),
+            ),
+          );
+        }
+
+      case RouteNames.info:
+        {
+          return MaterialPageRoute(
+            builder: (context) => MultiBlocProvider(
+              providers: [
+                BlocProvider(create: (context) => InfoImageController()),
+                BlocProvider(create: (context) => InfoListController()),
+              ],
+              child: const InfoScreen(),
             ),
           );
         }

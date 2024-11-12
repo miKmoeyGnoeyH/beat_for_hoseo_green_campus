@@ -12,6 +12,7 @@ class HomeLeaderboardButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
+      visualDensity: const VisualDensity(horizontal: -4),
       icon: Icon(
         Icons.leaderboard_outlined,
         color: context.appColors.onSurface,

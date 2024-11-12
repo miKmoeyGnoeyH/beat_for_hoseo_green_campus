@@ -18,6 +18,7 @@ Future<dynamic> customShowDialog(
         ),
         borderRadius: BorderRadius.circular(16),
       ),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20),
       backgroundColor: context.appColors.background,
       titlePadding: const EdgeInsets.only(left: 20, right: 20, top: 16),
       title: title != null ? Text(
@@ -26,10 +27,13 @@ Future<dynamic> customShowDialog(
             .copyWith(color: context.appColors.onBackground),
       ) : null,
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-      content: content != null ? Text(
-        content,
-        style: CustomTexts.bodyLarge
-            .copyWith(color: context.appColors.onBackground),
+      content: content != null ? SizedBox(
+        width: context.width * 0.7,
+        child: Text(
+          content,
+          style: CustomTexts.bodyLarge
+              .copyWith(color: context.appColors.onBackground),
+        ),
       ) : null,
       actionsAlignment: MainAxisAlignment.center,
       actionsPadding: const EdgeInsets.symmetric(horizontal:20, vertical: 16),

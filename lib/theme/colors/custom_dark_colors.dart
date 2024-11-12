@@ -1,4 +1,3 @@
-
 import 'package:BEAT/theme/colors/if_custom_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -38,9 +37,9 @@ class CustomDarkColors implements CustomColors {
 
   @override
   Color get onError => const Color(0xffffffff);
-  
+
   @override
-  Color get disabled => const Color(0xff000000).withOpacity(0.5);
+  Color get disabled => const Color(0xff000000).withOpacity(0.3);
 
   @override
   Color get borderColor => const Color(0xffffffff).withOpacity(0.3);

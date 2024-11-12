@@ -28,6 +28,8 @@ class VoteCard extends StatelessWidget {
                 voteModel: voteModel,
                 authorization: context.read<UserController>().state.authorization),
           );
+        } else {
+          NavigatorKeyManager().pushNamed(RouteNames.voteDetail, arguments: voteModel);
         }
       },
       child: CustomRoundedBorderedContainer(

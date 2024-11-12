@@ -8,6 +8,7 @@ abstract class RouteNames {
   static const String voteResult = '/vote_result';
   static const String voteDetail = '/vote_detail';
   static const String ranking = '/ranking';
+  static const String info = '/info';
   static const String signIn = '/signIn';
   static const String registerOrganization = '/register_organization';
   static const String registerCollege = '/register_college';

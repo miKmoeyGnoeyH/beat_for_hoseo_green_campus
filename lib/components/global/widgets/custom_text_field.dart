@@ -16,20 +16,28 @@ class CustomTextField extends StatelessWidget {
     this.inputFormatters,
   });
 
-
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: textEditingController,
-      keyboardType: keyboardType,
-      maxLength: maxLength,
-      cursorColor: context.appColors.primary,
-      onChanged: onChanged,
-      inputFormatters: inputFormatters,
-      style: CustomTexts.bodyLarge.copyWith(
-        color: context.appColors.onBackground,
+    return Theme(
+      data: Theme.of(context).copyWith(
+        textSelectionTheme: TextSelectionThemeData(
+          cursorColor: context.appColors.primary,
+          selectionColor: context.appColors.primary,
+          selectionHandleColor: context.appColors.primary,
+        ),
       ),
-      decoration: buildCustomInputDecoration(context, hintText),
+      child: TextField(
+        controller: textEditingController,
+        keyboardType: keyboardType,
+        maxLength: maxLength,
+        cursorColor: context.appColors.primary,
+        onChanged: onChanged,
+        inputFormatters: inputFormatters,
+        style: CustomTexts.bodyLarge.copyWith(
+          color: context.appColors.onBackground,
+        ),
+        decoration: buildCustomInputDecoration(context, hintText),
+      ),
     );
   }
 

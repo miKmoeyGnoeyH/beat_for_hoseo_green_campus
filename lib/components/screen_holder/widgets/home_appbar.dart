@@ -1,3 +1,4 @@
+import 'package:BEAT/components/home/widgets/home_info_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -33,6 +34,7 @@ class HomeAppbar extends StatelessWidget {
       textStyle: CustomTexts.bodyMedium,
       actions: const [
         HomeLeaderboardButton(),
+        HomeInformationButton(),
         HomeNotificationsButton(),
         HomeSettingsButton(),
       ],

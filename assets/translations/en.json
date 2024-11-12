@@ -187,5 +187,16 @@
   "qr_scan_success_Deducted_neuro": "Deducted {} Neuro",
   "already_checked": "Already Checked",
   "ranking": "Ranking",
-  "ranking_desc": "The ranking is determined based on the total amount of Neuro acquired and used."
+  "ranking_desc": "The ranking is determined based on the total amount of Neuro acquired and used.",
+  "info": "Information",
+  "info_desc": "Here is the information on event locations, as well as details on Neuro acquisition and usage points.",
+  "acquisition" : "Acquisition",
+  "usage": "Usage",
+  "where_can_i_get_neuro": "Where can I get Neuro?",
+  "where_is_neuro_used": "Where is Neuro used?",
+  "vote_title": "Vote for your favorite candidate!",
+  "vote_rules" : {
+    "vote_rule_1": "1. You can vote up to 50 Neuro per candidate, up to two candidates.",
+    "vote_rule_2": "2. You cannot vote for the same candidate twice."
+  }
 }

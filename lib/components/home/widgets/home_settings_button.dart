@@ -10,6 +10,7 @@ class HomeSettingsButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
+      visualDensity: const VisualDensity(horizontal: -4),
       icon: const Icon(
         Icons.settings_outlined,
         size: 24,

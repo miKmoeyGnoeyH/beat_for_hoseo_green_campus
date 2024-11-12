@@ -1,4 +1,3 @@
-
 import 'package:BEAT/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -35,11 +34,13 @@ class CustomScaffold extends StatelessWidget {
               SliverFillRemaining(
                 hasScrollBody: hasScrollBody,
                 fillOverscroll: false,
-                child: RefreshIndicator(
-                  color: context.appColors.primary,
-                  onRefresh: onPullDown != null ? onPullDown! : () async {},
-                  child: body ?? const SizedBox(),
-                ),
+                child: onPullDown != null
+                    ? RefreshIndicator(
+                        color: context.appColors.primary,
+                        onRefresh: onPullDown!,
+                        child: body ?? const SizedBox(),
+                      )
+                    : body,
               ),
             ],
           ),

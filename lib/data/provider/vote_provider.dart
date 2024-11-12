@@ -65,7 +65,7 @@ class VoteProvider {
 
   Future<DataDetailModelState> fetchVoteDetail(VoteModel voteModel) async {
     final String requestUrl =
-        dotenv.env['VOTTING_RESULT']! + voteModel.bettingId.toString();
+        dotenv.env['VOTTING_DETAIL']! + voteModel.bettingId.toString();
 
     try {
       final http.Response response = await _httpClient

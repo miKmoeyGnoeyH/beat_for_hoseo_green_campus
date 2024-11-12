@@ -29,8 +29,6 @@
     "인문사회대학": "기독교학과, 미디어커뮤니케이션학과, 법경찰행정학과, 사회복지학부, 산업심리학과, 영어영문학과, 유아교육과, 인문사회과학연구소, 중국학과, 청소년문화·상담학과, 한국언어문화학과, 항공서비스학과"
   },
 
-
-
   "affiliation": "소속",
   "affiliation_hint": "소속을 입력해주세요(최소 3자 이상).",
   "continue_with": "{}(으)로 계속",
@@ -133,5 +131,16 @@
   "qr_scan_success_Deducted_neuro": "{} Neuro 차감",
   "already_checked": "이미 참여하셨습니다.",
   "ranking": "랭킹",
-  "ranking_desc": "뉴로 획득량과 사용량 합을 기준으로 순위가 결정됩니다."
+  "ranking_desc": "Neuro 획득량과 사용량 합을 기준으로 순위가 결정됩니다.",
+  "info": "정보",
+  "info_desc": "행사 진행 위치, Neuro 획득 및 사용처 정보들입니다.",
+  "acquisition" : "획득",
+  "usage": "사용",
+  "where_can_i_get_neuro": "Neuro는 어디서 얻을 수 있나요?",
+  "where_is_neuro_used": "Neuro는 어디에 사용되나요?",
+  "vote_title": "원하는 후보에 투표하세요!",
+  "vote_rules" : {
+    "vote_rule_1": "1. 한 후보 당 최대 50 Neuro씩, 두 후보까지 투표 가능합니다.",
+    "vote_rule_2": "2. 한 훙보에 중복 투표는 불가능합니다."
+  }
 }
