@@ -17,7 +17,7 @@ class InfoEarningList extends StatelessWidget {
       padding: EdgeInsets.zero,
       itemCount: earnings != null ? earnings!.length : 0,
       separatorBuilder: (context, index) => const SizedBox(
-        height: 10,
+        height: 16,
       ),
       itemBuilder: (context, index) {
         return InfoEarningListContents(earnings![index]);

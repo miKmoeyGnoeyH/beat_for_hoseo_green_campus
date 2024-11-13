@@ -2,38 +2,38 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:BEAT/data/states/data_state.dart';
+import 'package:BEAT/data/states/vote_list_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/data_models.dart';
-import '../states/data_list_state.dart';
 
 class VoteProvider {
   final http.Client _httpClient = http.Client();
 
-  Future<DataListState> fetchVoteList() async {
+  Future<VoteListState> fetchVoteList(String authorization) async {
     final String requestUrl = dotenv.env['VOTTING_LIST']!;
+    VoteListState voteListState = VoteListInitial();
+    ChoiceVoteModel.initCache();
 
     try {
       final http.Response response = await _httpClient
-          .get(Uri.parse(requestUrl))
-          .timeout(const Duration(seconds: 5));
+          .get(Uri.parse(requestUrl), headers: <String, String>{
+        'Authorization': authorization,
+      }).timeout(const Duration(seconds: 5));
 
       if (response.statusCode == 200) {
-        List<DataModel> dataList = [];
         final body = jsonDecode(utf8.decode(response.bodyBytes));
-        for (var data in body) {
-          dataList.add(VoteModel.fromJson(data));
-        }
-        return DataListLoadingSuccess(dataList);
+        voteListState = VoteListLoadingSuccess(VoteList.fromJson(body));
       } else {
-        return DataListLoadingError();
+        voteListState = VoteListLoadingError();
       }
     } catch (e) {
-      log(e.toString());
-      return DataListLoadingError();
+      log('vote_provider : ${e.toString()}');
+      voteListState = VoteListLoadingError();
     }
+    return voteListState;
   }
 
   Future<DataDetailModelState> fetchVoteResult(

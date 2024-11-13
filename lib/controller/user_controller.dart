@@ -1,8 +1,8 @@
-
 import 'package:bloc/bloc.dart';
 
 import '../data/models/user_model.dart';
 import '../data/provider/user_provider.dart';
+import '../managers/navigator/arguments/screen_holder_arguments.dart';
 import '../managers/navigator/navigator_key_manager.dart';
 import '../managers/navigator/routes.dart';
 
@@ -37,7 +37,8 @@ class UserController extends Bloc<UserEvent, User> {
     user = await _userProvider.signIn(event.studentId, event.nickname);
 
     if (user is! ErrorUser) {
-      NavigatorKeyManager().pushNamedAndRemoveUntil(RouteNames.screenHolder);
+      NavigatorKeyManager().pushNamedAndRemoveUntil(RouteNames.screenHolder,
+          arguments: ScreenHolderArguments(user.authorization));
     }
 
     emit(user);

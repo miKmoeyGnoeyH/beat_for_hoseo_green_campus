@@ -15,8 +15,8 @@ class NavigatorKeyManager {
     log("navigator_key_manager : NavigatorKeyManager created.");
   }
 
-  void pop() {
-    navigatorState?.pop();
+  void pop({dynamic result}) {
+    navigatorState?.pop(result);
   }
 
   void popUntil(String routeName) {
@@ -27,7 +27,7 @@ class NavigatorKeyManager {
     navigatorState?.pushNamed(routeName, arguments: arguments);
   }
 
-  void pushNamedAndRemoveUntil(String routeName) {
-    navigatorState?.pushNamedAndRemoveUntil(routeName, (route) => false);
+  void pushNamedAndRemoveUntil(String routeName, {Object? arguments}) {
+    navigatorState?.pushNamedAndRemoveUntil(routeName, (route) => false, arguments: arguments);
   }
 }

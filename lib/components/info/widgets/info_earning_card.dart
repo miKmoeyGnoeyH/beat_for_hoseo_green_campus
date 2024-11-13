@@ -23,6 +23,7 @@ class InfoListCard extends StatelessWidget {
         if (state is InfoListLoaded) {
           return CustomRoundedBorderedContainer(
             color: context.appColors.background,
+            borderWidth: 0.5,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
               child: selectedIndex == 0

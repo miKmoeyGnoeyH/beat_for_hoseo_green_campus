@@ -1,4 +1,3 @@
-
 import 'package:BEAT/controller/home/events/data_events.dart';
 import 'package:BEAT/data/provider/data_detail_provider.dart';
 import 'package:BEAT/data/states/data_state.dart';

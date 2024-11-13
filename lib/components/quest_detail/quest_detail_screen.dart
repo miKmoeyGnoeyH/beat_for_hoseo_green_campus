@@ -63,8 +63,9 @@ class _QuestDetailScreenState extends State<QuestDetailScreen> {
               )
             : state is DataDetailModelLoadingError
                 ? CustomRefreshButton(
-                    onTap: () =>
-                        dataDetailModelController.add(DataDetailRequest()),
+                    onTap: () => dataDetailModelController.add(
+                      DataDetailRequest(),
+                    ),
                   )
                 : const CustomCircularProgressIndicator(),
       ),

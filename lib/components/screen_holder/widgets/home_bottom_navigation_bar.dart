@@ -12,7 +12,12 @@ class HomeBottomNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: context.appColors.borderColor, width: 0.1),
+        border: Border(
+          top: BorderSide(
+            color: context.appColors.onBackground.withOpacity(0.1),
+            width: 0.1,
+          ),
+        ),
       ),
       child: BottomNavigationBar(
         currentIndex: currentIndex,

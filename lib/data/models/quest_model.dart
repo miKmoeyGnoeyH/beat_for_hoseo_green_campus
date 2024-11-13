@@ -102,20 +102,15 @@ class QuestVoteResultModel extends QuestModel {
 
 class QuestDetailModel extends QuestModel {
   QuestDetailModel({
-    required int eventId,
-    required String eventName,
-    required String descriptionShort,
-    required int neuro,
-    required String eventType,
+    required super.eventId,
+    required super.eventName,
+    required super.descriptionShort,
+    required super.neuro,
+    required String super.eventType,
     required this.eventLocation,
     required this.descriptionLong,
     required this.imageFilePath,
-  }) : super._internal(
-            eventId: eventId,
-            eventName: eventName,
-            descriptionShort: descriptionShort,
-            neuro: neuro,
-            eventType: eventType);
+  }) : super._internal();
 
   QuestDetailModel.fromQuestModel(
     QuestModel questModel, {

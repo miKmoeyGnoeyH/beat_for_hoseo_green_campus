@@ -7,6 +7,8 @@ import 'package:BEAT/controller/home/controllers/quest_list_controller.dart';
 import 'package:BEAT/controller/home/controllers/quiz_list_controller.dart';
 import 'package:BEAT/controller/home/controllers/survey_list_controller.dart';
 import 'package:BEAT/controller/home/events/data_events.dart';
+import 'package:BEAT/controller/vote/event/vote_list_event.dart';
+import 'package:BEAT/controller/vote/controllers/vote_list_controller.dart';
 import 'package:BEAT/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,12 +34,14 @@ class _ScreenHolderState extends State<ScreenHolder> {
         context.read<QuizListController>();
     final SurveyListController surveyListController =
         context.read<SurveyListController>();
+    final VoteListController voteController = context.read<VoteListController>();
 
     Future<void> onPullDown() {
       userController.add(GetMyNeuro());
       questListController.add(DataListRequest());
       quizListController.add(DataListRequest());
       surveyListController.add(DataListRequest());
+      voteController.add(VoteListRequest(userController.state.authorization));
       return Future.delayed(const Duration(seconds: 0));
     }
 

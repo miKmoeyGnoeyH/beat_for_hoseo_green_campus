@@ -1,5 +1,8 @@
 import 'package:BEAT/controller/user_controller.dart';
+import 'package:BEAT/controller/vote/controllers/vote_list_controller.dart';
+import 'package:BEAT/data/states/vote_list_state.dart';
 import 'package:BEAT/extensions/buildcontext_extension.dart';
+import 'package:BEAT/managers/navigator/arguments/vote_detail_arguments.dart';
 import 'package:BEAT/managers/navigator/arguments/vote_result_args.dart';
 import 'package:BEAT/managers/navigator/navigator_key_manager.dart';
 import 'package:BEAT/managers/navigator/routes.dart';
@@ -19,17 +22,39 @@ class VoteCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final VoteListController voteListController =
+        context.read<VoteListController>();
+
     return GestureDetector(
       onTap: () {
         if (voteModel.bettingStatus == '종료') {
           NavigatorKeyManager().pushNamed(
             RouteNames.voteResult,
             arguments: VoteResultArguments(
-                voteModel: voteModel,
-                authorization: context.read<UserController>().state.authorization),
+              voteModel: voteModel,
+              authorization: context.read<UserController>().state.authorization,
+            ),
           );
         } else {
-          NavigatorKeyManager().pushNamed(RouteNames.voteDetail, arguments: voteModel);
+          List<ChoiceVoteModel> choiceListFormList = [];
+
+          for (var element
+              in (voteListController.state as VoteListLoadingSuccess)
+                  .voteList
+                  .choiceListFormList) {
+            if (element.bettingId == voteModel.bettingId) {
+              choiceListFormList.add(element);
+            }
+          }
+
+          NavigatorKeyManager().pushNamed(
+            RouteNames.voteDetail,
+            arguments: VoteDetailArguments(
+              voteModel,
+              choiceListFormList,
+              voteListController
+            ),
+          );
         }
       },
       child: CustomRoundedBorderedContainer(

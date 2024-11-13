@@ -11,46 +11,46 @@ Widget buildVoteStatusBadgeDependsOnStatus(BuildContext context, String? betting
     case '진행중':
       return CustomRoundedBorderedContainer(
         borderRadius: 5,
-        color: Palette.inProgressText.withOpacity(0.2),
+        color: Palette.inProgress.withOpacity(0.2),
         width: null,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5),
           child: CustomBodyLarge(
             text: 'in_progress'.tr(),
-            textColor: Palette.inProgressText,
+            textColor: Palette.inProgress,
           ),
         ),
       );
     case '심사중':
       return CustomRoundedBorderedContainer(
         borderRadius: 5,
-        color: Palette.underReviewText.withOpacity(0.2),
+        color: Palette.underReview.withOpacity(0.2),
         width: null,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5),
           child: CustomBodyLarge(
             text: 'under_review'.tr(),
-            textColor: Palette.underReviewText,
+            textColor: Palette.underReview,
           ),
         ),
       );
     case '종료':
       return CustomRoundedBorderedContainer(
         borderRadius: 5,
-        color: Palette.endedText.withOpacity(0.2),
+        color: Palette.ended.withOpacity(0.2),
         width: null,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5),
           child: CustomBodyLarge(
             text: 'ended'.tr(),
-            textColor: Palette.endedText,
+            textColor: Palette.ended,
           ),
         ),
       );
     case '대기':
       return CustomRoundedBorderedContainer(
         borderRadius: 5,
-        color: Palette.pendingBackground.withOpacity(0.2),
+        color: Palette.pending.withOpacity(0.2),
         width: null,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5),

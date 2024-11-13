@@ -5,7 +5,7 @@ import 'package:BEAT/data/models/data_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../controller/vote/vote_result_controller.dart';
+import '../../controller/vote/controllers/vote_result_controller.dart';
 import '../../data/states/data_state.dart';
 import '../global/widgets/buttons/custom_refresh_button.dart';
 import '../global/widgets/custom_circular_progress_indicator.dart';

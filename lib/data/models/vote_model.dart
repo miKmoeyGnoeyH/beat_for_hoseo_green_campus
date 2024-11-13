@@ -1,5 +1,80 @@
 part of 'data_models.dart';
 
+class VoteList {
+  VoteList(
+      {required this.bettingListFormList, required this.choiceListFormList});
+
+  VoteList.fromJson(Map<String, dynamic> json)
+      : bettingListFormList = (json['bettingListFormList'] as List)
+            .map((info) => VoteModel.fromJson(info))
+            .toList(),
+        choiceListFormList = (json['choiceListFormList'] as List)
+            .map((info) => ChoiceVoteModel.fromJson(info))
+            .toSet();
+
+  final List<VoteModel> bettingListFormList;
+  final Set<ChoiceVoteModel> choiceListFormList;
+}
+
+class ChoiceVoteModel extends DataModel {
+  ChoiceVoteModel({
+    required this.bettingId,
+    required this.eventId,
+    required this.eventName,
+    required this.neuro,
+  });
+
+  factory ChoiceVoteModel.fromJson(Map<String, dynamic> json) {
+    int bettingId = json['bettingId'];
+    int eventId = json['eventId'];
+
+    if (_cache.containsKey(bettingId)) {
+      if (_cache[bettingId]!.containsKey(eventId)) {
+        log('1. ChoiceVoteModel.fromJson() : bettingId, eventId : $bettingId, $eventId');
+        _cache[bettingId]![eventId]!.neuro += json['neuro'] as int;
+        return _cache[bettingId]![eventId]!;
+      } else {
+        log('2. ChoiceVoteModel.fromJson() : bettingId, eventId : $bettingId, $eventId');
+        _cache[bettingId]!.putIfAbsent(
+          eventId,
+          () => ChoiceVoteModel(
+            bettingId: bettingId,
+            eventId: eventId,
+            eventName: json['eventName'],
+            neuro: json['neuro'],
+          ),
+        );
+        return _cache[bettingId]![eventId]!;
+      }
+    } else {
+      log('3. ChoiceVoteModel.fromJson() : bettingId, eventId : $bettingId, $eventId');
+      _cache.putIfAbsent(
+        bettingId,
+        () => {
+          eventId: ChoiceVoteModel(
+            bettingId: bettingId,
+            eventId: eventId,
+            eventName: json['eventName'],
+            neuro: json['neuro'],
+          )
+        },
+      );
+      return _cache[bettingId]![eventId]!;
+    }
+  }
+
+  static final Map<int, Map<int, ChoiceVoteModel>> _cache = {};
+
+  static void initCache() {
+    _cache.clear();
+  }
+
+  final int bettingId;
+  final int eventId;
+  final String eventName;
+  int neuro;
+}
+
 class VoteModel extends DataModel {
   VoteModel(
       {required this.bettingId,

@@ -4,9 +4,11 @@ import 'package:BEAT/controller/home/controllers/survey_list_controller.dart';
 import 'package:BEAT/controller/info/controller/info_image_controller.dart';
 import 'package:BEAT/controller/info/controller/info_list_controller.dart';
 import 'package:BEAT/controller/rank/rank_controller.dart';
-import 'package:BEAT/controller/vote/vote_detail_controller.dart';
+import 'package:BEAT/controller/vote/controllers/vote_detail_controller.dart';
 import 'package:BEAT/managers/navigator/arguments/register_arguments.dart';
 import 'package:BEAT/managers/navigator/arguments/register_sign_arguments.dart';
+import 'package:BEAT/managers/navigator/arguments/screen_holder_arguments.dart';
+import 'package:BEAT/managers/navigator/arguments/vote_detail_arguments.dart';
 import 'package:BEAT/managers/navigator/arguments/vote_result_args.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,7 +35,8 @@ import '../../controller/home/controllers/quest_list_controller.dart';
 import '../../controller/neuro_history/controllers/neuro_history_controller.dart';
 import '../../controller/register_fill_inform/register_nickname_controller.dart';
 import '../../controller/register_fill_inform/register_sid_controller.dart';
-import '../../controller/vote/vote_result_controller.dart';
+import '../../controller/vote/controllers/vote_list_controller.dart';
+import '../../controller/vote/controllers/vote_result_controller.dart';
 import '../../data/models/data_models.dart';
 
 part 'route_names.dart';
@@ -42,13 +45,18 @@ abstract class Routes {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case RouteNames.screenHolder:
-        return MaterialPageRoute(
-          builder: (context) => MultiBlocProvider(providers: [
-            BlocProvider(create: (context) => QuestListController()),
-            BlocProvider(create: (context) => QuizListController()),
-            BlocProvider(create: (context) => SurveyListController()),
-          ], child: const ScreenHolder()),
-        );
+        {
+          final ScreenHolderArguments arguments =
+              settings.arguments as ScreenHolderArguments;
+          return MaterialPageRoute(
+            builder: (context) => MultiBlocProvider(providers: [
+              BlocProvider(create: (context) => QuestListController()),
+              BlocProvider(create: (context) => QuizListController()),
+              BlocProvider(create: (context) => SurveyListController()),
+              BlocProvider(create: (context) => VoteListController(arguments.authorization))
+            ], child: const ScreenHolder()),
+          );
+        }
 
       case (RouteNames.neuroHistory):
         {
@@ -99,11 +107,12 @@ abstract class Routes {
 
       case RouteNames.voteDetail:
         {
-          final VoteModel voteModel = settings.arguments as VoteModel;
+          final VoteDetailArguments voteDetailArguments = settings.arguments as VoteDetailArguments;
+
           return MaterialPageRoute(
             builder: (context) => BlocProvider(
-              create: (context) => VoteDetailController(voteModel),
-              child: const VoteDetailScreen(),
+              create: (context) => VoteDetailController(voteDetailArguments.voteModel),
+              child: VoteDetailScreen(voteDetailArguments),
             ),
           );
         }

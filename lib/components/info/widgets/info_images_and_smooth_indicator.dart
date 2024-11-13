@@ -1,7 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
-import 'custom_smooth_indicator.dart';
+import '../../global/widgets/custom_smooth_indicator.dart';
 import 'info_images_carousel_slider.dart';
 
 class InfoImagesAndSmoothIndicator extends StatelessWidget {
