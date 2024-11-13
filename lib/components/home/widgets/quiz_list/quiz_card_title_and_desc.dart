@@ -24,8 +24,13 @@ class QuizCardTitleAndDesc extends StatelessWidget {
             text: 'Quiz ${(index + 1).toString().padLeft(2, '0')}',
             textColor: context.appColors.primary,
           ),
+          const SizedBox(height: 5),
           CustomSubtitleLarge(text: title),
-          CustomBodyLarge(text: content),
+          const SizedBox(height: 5),
+          CustomBodyLarge(
+              text: content,
+              textColor: context.appColors.onBackground.withOpacity(0.5),
+              maxLines: 2),
         ],
       ),
     );

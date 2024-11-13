@@ -1,4 +1,5 @@
 import 'package:BEAT/components/info/info_screen.dart';
+import 'package:BEAT/components/withdrawal/withdrawal_screen.dart';
 import 'package:BEAT/controller/home/controllers/quiz_list_controller.dart';
 import 'package:BEAT/controller/home/controllers/survey_list_controller.dart';
 import 'package:BEAT/controller/info/controller/info_image_controller.dart';
@@ -44,21 +45,20 @@ part 'route_names.dart';
 abstract class Routes {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case RouteNames.screenHolder:
+      case RouteNames.info:
         {
-          final ScreenHolderArguments arguments =
-              settings.arguments as ScreenHolderArguments;
           return MaterialPageRoute(
-            builder: (context) => MultiBlocProvider(providers: [
-              BlocProvider(create: (context) => QuestListController()),
-              BlocProvider(create: (context) => QuizListController()),
-              BlocProvider(create: (context) => SurveyListController()),
-              BlocProvider(create: (context) => VoteListController(arguments.authorization))
-            ], child: const ScreenHolder()),
+            builder: (context) => MultiBlocProvider(
+              providers: [
+                BlocProvider(create: (context) => InfoImageController()),
+                BlocProvider(create: (context) => InfoListController()),
+              ],
+              child: const InfoScreen(),
+            ),
           );
         }
 
-      case (RouteNames.neuroHistory):
+      case RouteNames.neuroHistory:
         {
           final String authorization = settings.arguments as String;
           return MaterialPageRoute(
@@ -91,32 +91,6 @@ abstract class Routes {
           );
         }
 
-      case RouteNames.voteResult:
-        {
-          final VoteResultArguments voteResultArguments =
-              settings.arguments as VoteResultArguments;
-          return MaterialPageRoute(
-            builder: (context) => BlocProvider(
-              create: (context) => VoteResultController(
-                  voteResultArguments.voteModel,
-                  voteResultArguments.authorization),
-              child: const VoteResultScreen(),
-            ),
-          );
-        }
-
-      case RouteNames.voteDetail:
-        {
-          final VoteDetailArguments voteDetailArguments = settings.arguments as VoteDetailArguments;
-
-          return MaterialPageRoute(
-            builder: (context) => BlocProvider(
-              create: (context) => VoteDetailController(voteDetailArguments.voteModel),
-              child: VoteDetailScreen(voteDetailArguments),
-            ),
-          );
-        }
-
       case RouteNames.ranking:
         {
           return MaterialPageRoute(
@@ -127,30 +101,14 @@ abstract class Routes {
           );
         }
 
-      case RouteNames.info:
+      case RouteNames.registerAffiliation:
         {
+          final RegisterArguments arguments =
+              settings.arguments as RegisterArguments;
           return MaterialPageRoute(
-            builder: (context) => MultiBlocProvider(
-              providers: [
-                BlocProvider(create: (context) => InfoImageController()),
-                BlocProvider(create: (context) => InfoListController()),
-              ],
-              child: const InfoScreen(),
-            ),
+            builder: (context) => RegisterAffiliationScreen(arguments),
           );
         }
-
-      case RouteNames.signIn:
-        return MaterialPageRoute(
-          builder: (context) => SignInScreen(),
-        );
-
-      case RouteNames.registerOrganization:
-        return MaterialPageRoute(
-          builder: (context) {
-            return RegisterOrganizationScreen();
-          },
-        );
 
       case RouteNames.registerCollege:
         {
@@ -175,24 +133,6 @@ abstract class Routes {
           );
         }
 
-      case RouteNames.registerAffiliation:
-        {
-          final RegisterArguments arguments =
-              settings.arguments as RegisterArguments;
-          return MaterialPageRoute(
-            builder: (context) => RegisterAffiliationScreen(arguments),
-          );
-        }
-
-      case RouteNames.registerOrgDetail:
-        {
-          final RegisterArguments arguments =
-              settings.arguments as RegisterArguments;
-          return MaterialPageRoute(
-            builder: (context) => RegisterOrgDetailScreen(arguments),
-          );
-        }
-
       case RouteNames.registerFillInform:
         {
           final RegisterArguments arguments =
@@ -208,6 +148,22 @@ abstract class Routes {
           );
         }
 
+      case RouteNames.registerOrganization:
+        return MaterialPageRoute(
+          builder: (context) {
+            return RegisterOrganizationScreen();
+          },
+        );
+
+      case RouteNames.registerOrgDetail:
+        {
+          final RegisterArguments arguments =
+              settings.arguments as RegisterArguments;
+          return MaterialPageRoute(
+            builder: (context) => RegisterOrgDetailScreen(arguments),
+          );
+        }
+
       case RouteNames.registerSign:
         {
           final RegisterSignArguments arguments =
@@ -218,8 +174,64 @@ abstract class Routes {
           );
         }
 
+      case RouteNames.screenHolder:
+        {
+          final ScreenHolderArguments arguments =
+              settings.arguments as ScreenHolderArguments;
+          return MaterialPageRoute(
+            builder: (context) => MultiBlocProvider(providers: [
+              BlocProvider(create: (context) => QuestListController()),
+              BlocProvider(create: (context) => QuizListController()),
+              BlocProvider(create: (context) => SurveyListController()),
+              BlocProvider(
+                  create: (context) =>
+                      VoteListController(arguments.authorization))
+            ], child: const ScreenHolder()),
+          );
+        }
+
       case RouteNames.settings:
         return MaterialPageRoute(builder: (context) => SettingsScreen());
+
+      case RouteNames.signIn:
+        return MaterialPageRoute(
+          builder: (context) => SignInScreen(),
+        );
+
+      case RouteNames.voteDetail:
+        {
+          final VoteDetailArguments voteDetailArguments =
+              settings.arguments as VoteDetailArguments;
+
+          return MaterialPageRoute(
+            builder: (context) => BlocProvider(
+              create: (context) =>
+                  VoteDetailController(voteDetailArguments.voteModel),
+              child: VoteDetailScreen(voteDetailArguments),
+            ),
+          );
+        }
+
+      case RouteNames.voteResult:
+        {
+          final VoteResultArguments voteResultArguments =
+              settings.arguments as VoteResultArguments;
+          return MaterialPageRoute(
+            builder: (context) => BlocProvider(
+              create: (context) => VoteResultController(
+                  voteResultArguments.voteModel,
+                  voteResultArguments.authorization),
+              child: const VoteResultScreen(),
+            ),
+          );
+        }
+
+      case RouteNames.withdrawal:
+        {
+          return MaterialPageRoute(
+            builder: (context) => const WithdrawalScreen(),
+          );
+        }
 
       default:
         return MaterialPageRoute(builder: (context) => const HomeScreen());

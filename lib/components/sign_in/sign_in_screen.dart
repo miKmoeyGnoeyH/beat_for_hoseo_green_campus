@@ -8,9 +8,7 @@ import '../../data/models/user_model.dart';
 import '../../managers/prefs/prefs_manager.dart';
 import '../global/beat/beat_full_logo.dart';
 import '../global/widgets/custom_scaffold.dart';
-import '../global/widgets/custom_vertical_divider.dart';
 import '../global/methods/custom_show_dialog.dart';
-import 'methods/build_forgot_button.dart';
 import 'widgets/sign_in_nickname_field.dart';
 import 'widgets/sign_in_register_button.dart';
 import 'widgets/sign_in_sid_field.dart';
@@ -59,14 +57,6 @@ class SignInScreen extends StatelessWidget {
                   const SizedBox(height: 12),
                   const SignInRegisterButton(),
                   const SizedBox(height: 24),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      buildSignInForgotSIDButton(context),
-                      const CustomVerticalDivider(height: 12.5),
-                      buildSignInForgotNicknameButton(context),
-                    ],
-                  )
                 ],
               ),
             ),

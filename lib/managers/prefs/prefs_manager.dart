@@ -12,6 +12,14 @@ class PrefsManager {
     _prefs = await SharedPreferences.getInstance();
   }
 
+  static bool containsKey(String key) {
+    return _prefs.containsKey(key);
+  }
+
+  static void remove(String key) {
+    _prefs.remove(key);
+  }
+
   static T getValueAs<T>(String key) {
     if (!_prefs.containsKey(key)) return defaultValue<T>();
 

@@ -24,9 +24,12 @@ class SurveyCardTitleAndDesc extends StatelessWidget {
             text: 'Survey ${(index + 1).toString().padLeft(2, '0')}',
             textColor: context.appColors.primary,
           ),
+          const SizedBox(height: 5),
           CustomSubtitleLarge(text: title),
+          const SizedBox(height: 5),
           CustomBodyLarge(
             text: content,
+            textColor: context.appColors.onBackground.withOpacity(0.5),
             maxLines: 2,
           ),
         ],

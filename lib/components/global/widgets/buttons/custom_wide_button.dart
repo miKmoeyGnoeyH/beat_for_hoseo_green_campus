@@ -14,7 +14,8 @@ class CustomWideButton extends StatelessWidget {
     this.buttonText,
     this.textColor,
     this.maxLines,
-    this.borderWidth
+    this.borderWidth,
+    this.borderColor
   });
 
   @override
@@ -24,6 +25,7 @@ class CustomWideButton extends StatelessWidget {
       child: CustomRoundedBorderedContainer(
         color: buttonColor ?? context.appColors.background,
         height: 56,
+        borderColor: borderColor,
         borderWidth: borderWidth ?? 0.2,
         child: Center(
           child: Padding(
@@ -47,4 +49,5 @@ class CustomWideButton extends StatelessWidget {
   final Color? textColor;
   final int? maxLines;
   final double? borderWidth;
+  final Color? borderColor;
 }

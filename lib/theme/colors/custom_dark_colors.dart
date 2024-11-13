@@ -21,13 +21,13 @@ class CustomDarkColors implements CustomColors {
   Color get onTertiary => Colors.transparent;
 
   @override
-  Color get surface => const Color(0xff020415);
+  Color get surface => const Color(0xff00000c);
 
   @override
   Color get onSurface => const Color(0xffffffff);
 
   @override
-  Color get background => const Color(0xff020415);
+  Color get background => const Color(0xff00000c);
 
   @override
   Color get onBackground => const Color(0xffffffff);

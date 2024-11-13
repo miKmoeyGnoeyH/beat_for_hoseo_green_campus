@@ -1,4 +1,6 @@
 
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -77,13 +79,16 @@ class UserProvider {
         body: {
           'studentId': studentId,
           'name':name,
-          'nickname': nickname,
           'department': department,
+          'nickname': nickname,
+          'encodedSignFile': '',
+          'category' : '',
         },
       ).timeout(const Duration(seconds: 5));
 
       return response.statusCode;
     } catch (e) {
+      log(e.toString());
       result = 400;
     }
     return result;

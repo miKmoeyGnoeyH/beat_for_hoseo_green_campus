@@ -7,14 +7,14 @@ import '../../../theme/texts/custom_texts.dart';
 import '../widgets/custom_rounded_bordered_container.dart';
 
 Future<dynamic> customShowDialog(
-    {required BuildContext context, required String? title, required String? content, String? buttonText, String? routeName}) {
+    {required BuildContext context, required String? title, required String? content, String? buttonText, String? routeName, Function()? onTap}) {
   return showDialog(
     context: context,
     builder: (context) => AlertDialog(
       shape: RoundedRectangleBorder(
         side: BorderSide(
           color: context.appColors.borderColor,
-          width: 0.1,
+          width: 0.3,
         ),
         borderRadius: BorderRadius.circular(16),
       ),
@@ -39,7 +39,7 @@ Future<dynamic> customShowDialog(
       actionsPadding: const EdgeInsets.symmetric(horizontal:20, vertical: 16),
       actions: [
         GestureDetector(
-          onTap: () => routeName != null ? NavigatorKeyManager().popUntil(routeName) : NavigatorKeyManager().pop(),
+          onTap: onTap ?? () => routeName != null ? NavigatorKeyManager().popUntil(routeName) : NavigatorKeyManager().pop(),
           child: CustomRoundedBorderedContainer(
             child: Center(
               child: Padding(

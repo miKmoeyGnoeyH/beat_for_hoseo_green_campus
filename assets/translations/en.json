@@ -1,4 +1,15 @@
 {
+  "withdrawal": "Withdrawal",
+  "notes": "Notes",
+  "withdrawal_notes": {
+    "1": "All activity records, Neuros in possession and personal information will be deleted upon withdrawal. Deleted activity records, Neuros in possession, and personal information cannot be recovered.",
+    "2": "Deleted activity records, Neuros in possession, and personal information cannot be recovered.",
+    "3": "In accordance with the data processing policy, some information may be retained for a certain period of time.",
+    "4": "After withdrawal, you can rejoin with the same email address."
+  },
+  "withdrawal_success": "Withdrawal Completed",
+  "withdrawal_success_message": "Withdrawal completed. Moving to the Sign-in screen.",
+
   "1st": "1st",
   "2nd": "2nd",
   "3rd": "3rd",

@@ -15,7 +15,7 @@ class CustomHeadlineLarge extends StatelessWidget {
     return Text(
       text ?? '',
       style: CustomTexts.headlineLarge.copyWith(
-        color: textColor ?? context.appColors.onBackground.withOpacity(0.5),
+        color: textColor ?? context.appColors.onBackground,
       ),
     );
   }

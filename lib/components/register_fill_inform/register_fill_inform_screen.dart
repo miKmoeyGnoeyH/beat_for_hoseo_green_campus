@@ -298,7 +298,9 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                                                 .tr('sign_up_success_message'),
                                             buttonText:
                                                 context.tr('to_sign_in_screen'),
-                                            routeName: RouteNames.signIn,
+                                              onTap: () {
+                                                NavigatorKeyManager().pushNamedAndRemoveUntil(RouteNames.signIn);
+                                              }
                                           )
                                         }
                                     }
