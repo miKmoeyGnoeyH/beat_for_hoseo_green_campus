@@ -1,4 +1,6 @@
 {
+  "notifications": "Notifications",
+
   "withdrawal": "Withdrawal",
   "notes": "Notes",
   "withdrawal_notes": {

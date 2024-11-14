@@ -55,9 +55,10 @@ class _QuestDetailScreenState extends State<QuestDetailScreen> {
                     ),
                     const SizedBox(height: 20),
                     QuestDetailTable(
-                        child: QuestDetailTableContents(
-                      state.dataModel! as QuestDetailModel,
-                    )),
+                      child: QuestDetailTableContents(
+                        state.dataModel! as QuestDetailModel,
+                      ),
+                    ),
                   ],
                 ),
               )

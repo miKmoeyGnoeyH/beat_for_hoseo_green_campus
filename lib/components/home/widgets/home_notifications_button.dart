@@ -1,3 +1,5 @@
+import 'package:BEAT/managers/navigator/navigator_key_manager.dart';
+import 'package:BEAT/managers/navigator/routes.dart';
 import 'package:flutter/material.dart';
 
 class HomeNotificationsButton extends StatelessWidget {
@@ -13,7 +15,9 @@ class HomeNotificationsButton extends StatelessWidget {
         Icons.notifications_none_rounded,
         size: 24,
       ),
-      onPressed: () {},
+      onPressed: () {
+        NavigatorKeyManager().pushNamed(RouteNames.notifications);
+      },
     );
   }
 }

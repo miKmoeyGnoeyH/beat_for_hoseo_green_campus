@@ -19,4 +19,5 @@ abstract class RouteNames {
   static const String voteDetail = '/vote_detail';
   static const String voteResult = '/vote_result';
   static const String withdrawal = '/withdrawal';
+  static const String notifications = '/notifications';
 }

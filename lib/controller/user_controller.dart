@@ -1,4 +1,8 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import '../data/models/user_model.dart';
 import '../data/provider/user_provider.dart';
@@ -36,9 +40,22 @@ class UserController extends Bloc<UserEvent, User> {
     User user;
     user = await _userProvider.signIn(event.studentId, event.nickname);
 
-    if (user is! ErrorUser) {
-      NavigatorKeyManager().pushNamedAndRemoveUntil(RouteNames.screenHolder,
-          arguments: ScreenHolderArguments(user.authorization));
+    if (user is Member) {
+      final fcmToken = await FirebaseMessaging.instance.getToken();
+      log('user_controller.dart : _signIn : fcmToken : $fcmToken');
+
+      if (fcmToken == null) {
+        user = ErrorUser('connection_error'.tr());
+      } else {
+        if (await _userProvider.registerToken(user.authorization, fcmToken)) {
+          NavigatorKeyManager().pushNamedAndRemoveUntil(
+            RouteNames.screenHolder,
+            arguments: ScreenHolderArguments(user.authorization),
+          );
+        } else {
+          user = ErrorUser('connection_error'.tr());
+        }
+      }
     }
 
     emit(user);

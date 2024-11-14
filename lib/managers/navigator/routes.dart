@@ -1,9 +1,11 @@
 import 'package:BEAT/components/info/info_screen.dart';
+import 'package:BEAT/components/notifications/notifications_screen.dart';
 import 'package:BEAT/components/withdrawal/withdrawal_screen.dart';
 import 'package:BEAT/controller/home/controllers/quiz_list_controller.dart';
 import 'package:BEAT/controller/home/controllers/survey_list_controller.dart';
 import 'package:BEAT/controller/info/controller/info_image_controller.dart';
 import 'package:BEAT/controller/info/controller/info_list_controller.dart';
+import 'package:BEAT/controller/notification/notification_controller.dart';
 import 'package:BEAT/controller/rank/rank_controller.dart';
 import 'package:BEAT/controller/vote/controllers/vote_detail_controller.dart';
 import 'package:BEAT/managers/navigator/arguments/register_arguments.dart';
@@ -230,6 +232,16 @@ abstract class Routes {
         {
           return MaterialPageRoute(
             builder: (context) => const WithdrawalScreen(),
+          );
+        }
+
+      case RouteNames.notifications:
+        {
+          return MaterialPageRoute(
+            builder: (context) => BlocProvider(
+              create: (context) => NotificationsController(),
+              child: const NotificationsScreen(),
+            ),
           );
         }
 

@@ -1,4 +1,6 @@
 {
+  "notifications": "알림",
+
   "withdrawal": "회원 탈퇴",
   "notes": "유의 사항",
   "withdrawal_notes": {

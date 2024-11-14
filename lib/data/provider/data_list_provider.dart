@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 
 import '../states/data_list_state.dart';
 
-enum DataListType { quest, quiz, survey, rank }
+enum DataListType { quest, quiz, survey, rank, notification }
 
 class DataListProvider {
   final http.Client _httpClient = http.Client();
@@ -25,6 +25,11 @@ class DataListProvider {
         requestUrl = dotenv.env['RANK']!;
         break;
       case DataListType.survey:
+        requestUrl = dotenv.env['SURVEY_LIST']!;
+        break;
+      case DataListType.notification:
+        requestUrl = dotenv.env['NOTICE_LIST']!;
+        break;
       default:
         requestUrl = dotenv.env['SURVEY_LIST']!;
         break;
@@ -58,6 +63,12 @@ class DataListProvider {
             {
               for (var data in body) {
                 dataList.add(RankModel.fromJson(data));
+              }
+            }
+          case DataListType.notification:
+            {
+              for (var data in body) {
+                dataList.add(NotificationModel.fromJson(data));
               }
             }
           default:

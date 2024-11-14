@@ -1,4 +1,3 @@
-
 import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
@@ -47,6 +46,29 @@ class UserProvider {
     return user;
   }
 
+  Future<bool> registerToken(String authorization, String token) async {
+    final String requestUrl = '${dotenv.env['REGISTER_TOKEN']!}?token=$token';
+
+    log('user_provider.dart : registerToken() : authorization : $authorization');
+
+    bool ret = false;
+
+    try {
+      final http.Response response = await _httpClient.get(
+        Uri.parse(requestUrl),
+        headers: {
+          'Authorization': authorization,
+        },
+      );
+
+      ret = response.statusCode == 200;
+    } catch (e) {
+      log(e.toString());
+    }
+
+    return ret;
+  }
+
   Future<String> myNeuro(String authorization) async {
     final String requestUrl = dotenv.env['MY_NEURO']!;
     String ret = '';
@@ -78,11 +100,11 @@ class UserProvider {
         Uri.parse(requestUrl),
         body: {
           'studentId': studentId,
-          'name':name,
+          'name': name,
           'department': department,
           'nickname': nickname,
           'encodedSignFile': '',
-          'category' : '',
+          'category': '',
         },
       ).timeout(const Duration(seconds: 5));
 
