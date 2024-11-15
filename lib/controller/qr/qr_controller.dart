@@ -1,7 +1,9 @@
-import 'package:BEAT/controller/qr/qr_event.dart';
-import 'package:BEAT/data/provider/qr_provider.dart';
-import 'package:BEAT/data/states/qr_state.dart';
+
 import 'package:bloc/bloc.dart';
+
+import '../../data/provider/qr_provider.dart';
+import '../../data/states/qr_state.dart';
+import 'qr_event.dart';
 
 class QRController extends Bloc<QREvent, QRState> {
   QRController() :super(QRInitial()) {

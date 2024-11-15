@@ -1,4 +1,4 @@
-import 'package:BEAT/extensions/buildcontext_extension.dart';
+import 'package:Beat/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
 
 import '../../../controller/register_fill_inform/register_agreement_controller.dart';

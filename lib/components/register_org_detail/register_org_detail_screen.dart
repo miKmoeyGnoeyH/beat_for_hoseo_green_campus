@@ -1,5 +1,5 @@
-import 'package:BEAT/controller/register/register_department_controller.dart';
-import 'package:BEAT/managers/navigator/arguments/register_arguments.dart';
+import 'package:Beat/controller/register/register_department_controller.dart';
+import 'package:Beat/managers/navigator/arguments/register_arguments.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

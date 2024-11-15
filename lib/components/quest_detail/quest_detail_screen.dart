@@ -1,18 +1,19 @@
-import 'package:BEAT/components/global/widgets/appbars/custom_empty_appbar.dart';
-import 'package:BEAT/components/global/widgets/buttons/custom_refresh_button.dart';
-import 'package:BEAT/components/global/widgets/custom_circular_progress_indicator.dart';
-import 'package:BEAT/components/global/widgets/custom_scaffold.dart';
-import 'package:BEAT/controller/home/controllers/data_controller.dart';
-import 'package:BEAT/data/models/data_models.dart';
-import 'package:BEAT/data/states/data_state.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+import '../../controller/home/controllers/data_controller.dart';
 import '../../controller/home/events/data_events.dart';
+import '../../data/models/data_models.dart';
+import '../../data/states/data_state.dart';
 import '../detail/detail_desc.dart';
 import '../detail/detail_image.dart';
 import '../detail/detail_label_and_title.dart';
+import '../global/widgets/appbars/custom_empty_appbar.dart';
+import '../global/widgets/buttons/custom_refresh_button.dart';
+import '../global/widgets/custom_circular_progress_indicator.dart';
+import '../global/widgets/custom_scaffold.dart';
 import 'widgets/quest_detail_table.dart';
 import 'widgets/quest_detail_table_contents.dart';
 

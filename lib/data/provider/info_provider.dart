@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:BEAT/data/models/data_models.dart';
-import 'package:BEAT/data/states/info_image_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
+import '../models/data_models.dart';
+import '../states/info_image_state.dart';
 import '../states/info_list_state.dart';
 
 class InfoProvider {

@@ -1,13 +1,14 @@
-import 'package:BEAT/components/vote/widgets/vote_card.dart';
-import 'package:BEAT/controller/user_controller.dart';
-import 'package:BEAT/controller/vote/event/vote_list_event.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../controller/user_controller.dart';
 import '../../controller/vote/controllers/vote_list_controller.dart';
+import '../../controller/vote/event/vote_list_event.dart';
 import '../../data/states/vote_list_state.dart';
 import '../global/widgets/buttons/custom_refresh_button.dart';
 import '../global/widgets/custom_circular_progress_indicator.dart';
+import 'widgets/vote_card.dart';
 
 class VoteScreen extends StatefulWidget {
   const VoteScreen({super.key});

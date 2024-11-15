@@ -1,4 +1,6 @@
-import 'package:BEAT/data/models/data_models.dart';
+
+
+import '../models/data_models.dart';
 
 sealed class VoteListState {}
 

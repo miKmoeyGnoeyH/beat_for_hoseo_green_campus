@@ -1,5 +1,5 @@
-import 'package:BEAT/components/info/widgets/info_spending_list.dart';
-import 'package:BEAT/extensions/buildcontext_extension.dart';
+
+import 'package:Beat/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -9,6 +9,7 @@ import '../../global/widgets/buttons/custom_refresh_button.dart';
 import '../../global/widgets/custom_circular_progress_indicator.dart';
 import '../../global/widgets/custom_rounded_bordered_container.dart';
 import 'info_earning_list.dart';
+import 'info_spending_list.dart';
 
 class InfoListCard extends StatelessWidget {
   const InfoListCard(

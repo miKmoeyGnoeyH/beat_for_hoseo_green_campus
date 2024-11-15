@@ -1,15 +1,16 @@
-import 'package:BEAT/controller/user_controller.dart';
-import 'package:BEAT/controller/vote/controllers/vote_list_controller.dart';
-import 'package:BEAT/data/states/vote_list_state.dart';
-import 'package:BEAT/extensions/buildcontext_extension.dart';
-import 'package:BEAT/managers/navigator/arguments/vote_detail_arguments.dart';
-import 'package:BEAT/managers/navigator/arguments/vote_result_args.dart';
-import 'package:BEAT/managers/navigator/navigator_key_manager.dart';
-import 'package:BEAT/managers/navigator/routes.dart';
+
+import 'package:Beat/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../controller/user_controller.dart';
+import '../../../controller/vote/controllers/vote_list_controller.dart';
 import '../../../data/models/data_models.dart';
+import '../../../data/states/vote_list_state.dart';
+import '../../../managers/navigator/arguments/vote_detail_arguments.dart';
+import '../../../managers/navigator/arguments/vote_result_args.dart';
+import '../../../managers/navigator/navigator_key_manager.dart';
+import '../../../managers/navigator/routes.dart';
 import '../../global/widgets/custom_rounded_bordered_container.dart';
 import 'vote_card_contents.dart';
 

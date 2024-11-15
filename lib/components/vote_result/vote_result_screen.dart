@@ -1,14 +1,15 @@
-import 'package:BEAT/components/global/widgets/appbars/custom_empty_appbar.dart';
-import 'package:BEAT/components/global/widgets/custom_scaffold.dart';
-import 'package:BEAT/controller/home/events/data_events.dart';
-import 'package:BEAT/data/models/data_models.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../controller/home/events/data_events.dart';
 import '../../controller/vote/controllers/vote_result_controller.dart';
+import '../../data/models/data_models.dart';
 import '../../data/states/data_state.dart';
+import '../global/widgets/appbars/custom_empty_appbar.dart';
 import '../global/widgets/buttons/custom_refresh_button.dart';
 import '../global/widgets/custom_circular_progress_indicator.dart';
+import '../global/widgets/custom_scaffold.dart';
 import 'widgets/vote_result_card.dart';
 import 'widgets/vote_result_title.dart';
 

@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:BEAT/data/states/data_state.dart';
-import 'package:BEAT/data/states/vote_list_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/data_models.dart';
+import '../states/data_state.dart';
+import '../states/vote_list_state.dart';
 
 class VoteProvider {
   final http.Client _httpClient = http.Client();

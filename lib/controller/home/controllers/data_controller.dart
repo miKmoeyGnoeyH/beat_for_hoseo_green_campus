@@ -1,9 +1,10 @@
-import 'package:BEAT/controller/home/events/data_events.dart';
-import 'package:BEAT/data/provider/data_detail_provider.dart';
-import 'package:BEAT/data/states/data_state.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../data/models/data_models.dart';
+import '../../../data/provider/data_detail_provider.dart';
+import '../../../data/states/data_state.dart';
+import '../events/data_events.dart';
 
 class DataDetailModelController extends Bloc<DataDetailEvent, DataDetailModelState> {
   DataDetailModelController(this.dataModel) : super(DataDetailModelInitial()) {

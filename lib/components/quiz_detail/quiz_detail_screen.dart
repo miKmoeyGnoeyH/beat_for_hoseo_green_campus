@@ -1,22 +1,23 @@
 
-import 'package:BEAT/components/global/methods/custom_show_dialog.dart';
-import 'package:BEAT/components/global/widgets/buttons/custom_bottom_appbar_button.dart';
-import 'package:BEAT/components/global/widgets/texts/custom_label_large.dart';
-import 'package:BEAT/controller/user_controller.dart';
-import 'package:BEAT/data/models/data_models.dart';
-import 'package:BEAT/managers/navigator/navigator_key_manager.dart';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../controller/home/controllers/data_controller.dart';
 import '../../controller/home/events/data_events.dart';
+import '../../controller/user_controller.dart';
+import '../../data/models/data_models.dart';
 import '../../data/provider/quiz_submit_grading_provider.dart';
 import '../../data/states/data_state.dart';
+import '../../managers/navigator/navigator_key_manager.dart';
 import '../detail/detail_label_and_title.dart';
+import '../global/methods/custom_show_dialog.dart';
 import '../global/widgets/appbars/custom_empty_appbar.dart';
+import '../global/widgets/buttons/custom_bottom_appbar_button.dart';
 import '../global/widgets/buttons/custom_retry_button.dart';
 import '../global/widgets/custom_scaffold.dart';
+import '../global/widgets/texts/custom_label_large.dart';
 import 'widgets/quiz_question.dart';
 
 class QuizDetailScreen extends StatelessWidget {

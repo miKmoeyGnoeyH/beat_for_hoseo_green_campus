@@ -1,7 +1,8 @@
-import 'package:BEAT/controller/neuro_history/events/neuro_history_event.dart';
-import 'package:BEAT/data/provider/neuro_history_provider.dart';
-import 'package:BEAT/data/states/neuro_history_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../data/provider/neuro_history_provider.dart';
+import '../../../data/states/neuro_history_state.dart';
+import '../events/neuro_history_event.dart';
 
 class NeuroHistoryController extends Bloc<NeuroHistoryEvent, NeuroHistoryState> {
   NeuroHistoryController(this._authorization): super(NeuroHistoryInitial()) {

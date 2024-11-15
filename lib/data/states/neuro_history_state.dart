@@ -1,4 +1,6 @@
-import 'package:BEAT/data/models/neuro_history_model.dart';
+
+
+import '../models/neuro_history_model.dart';
 
 sealed class NeuroHistoryState {
   NeuroHistoryState(this.neuroHistoryList);

@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:BEAT/data/states/email_state.dart';
-import 'package:BEAT/data/provider/email_check_provider.dart';
+import 'package:Beat/data/states/email_state.dart';
+import 'package:Beat/data/provider/email_check_provider.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 

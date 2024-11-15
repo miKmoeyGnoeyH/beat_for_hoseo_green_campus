@@ -1,9 +1,10 @@
-import 'package:BEAT/controller/user_controller.dart';
-import 'package:BEAT/extensions/buildcontext_extension.dart';
+
+import 'package:Beat/extensions/buildcontext_extension.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../controller/user_controller.dart';
 import '../../../managers/navigator/navigator_key_manager.dart';
 import '../../../theme/texts/custom_texts.dart';
 import '../../global/widgets/buttons/custom_wide_button.dart';

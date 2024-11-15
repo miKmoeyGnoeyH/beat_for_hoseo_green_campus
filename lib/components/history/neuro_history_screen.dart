@@ -1,17 +1,18 @@
-import 'package:BEAT/components/global/widgets/appbars/custom_empty_appbar.dart';
-import 'package:BEAT/components/global/widgets/custom_scaffold.dart';
-import 'package:BEAT/components/global/widgets/texts/custom_body_large.dart';
-import 'package:BEAT/components/global/widgets/texts/custom_display_medium.dart';
-import 'package:BEAT/controller/neuro_history/controllers/neuro_history_controller.dart';
-import 'package:BEAT/controller/neuro_history/events/neuro_history_event.dart';
-import 'package:BEAT/data/states/neuro_history_state.dart';
-import 'package:BEAT/extensions/buildcontext_extension.dart';
+
+import 'package:Beat/extensions/buildcontext_extension.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../controller/neuro_history/controllers/neuro_history_controller.dart';
+import '../../controller/neuro_history/events/neuro_history_event.dart';
+import '../../data/states/neuro_history_state.dart';
+import '../global/widgets/appbars/custom_empty_appbar.dart';
 import '../global/widgets/buttons/custom_refresh_button.dart';
 import '../global/widgets/custom_circular_progress_indicator.dart';
+import '../global/widgets/custom_scaffold.dart';
+import '../global/widgets/texts/custom_body_large.dart';
+import '../global/widgets/texts/custom_display_medium.dart';
 import 'widgets/neuro_history_list_view.dart';
 
 class NeuroHistoryScreen extends StatefulWidget {

@@ -1,6 +1,7 @@
-import 'package:BEAT/data/models/data_models.dart';
+
 import 'package:flutter/material.dart';
 
+import '../../../data/models/data_models.dart';
 import 'notification_card.dart';
 
 class NotificationsListView extends StatelessWidget {

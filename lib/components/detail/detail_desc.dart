@@ -1,8 +1,9 @@
-import 'package:BEAT/components/global/widgets/texts/custom_body_large.dart';
-import 'package:BEAT/extensions/buildcontext_extension.dart';
+
+import 'package:Beat/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
 
 import '../global/widgets/custom_rounded_bordered_container.dart';
+import '../global/widgets/texts/custom_body_large.dart';
 
 class DetailDesc extends StatelessWidget {
   const DetailDesc({

@@ -1,5 +1,6 @@
 
-import 'package:BEAT/extensions/buildcontext_extension.dart';
+
+import 'package:Beat/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
 
 import '../../../data/models/data_models.dart';

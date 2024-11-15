@@ -1,8 +1,8 @@
-import 'package:BEAT/controller/vote/event/vote_list_event.dart';
-import 'package:BEAT/data/states/vote_list_state.dart';
 import 'package:bloc/bloc.dart';
 
 import '../../../data/provider/vote_provider.dart';
+import '../../../data/states/vote_list_state.dart';
+import '../event/vote_list_event.dart';
 
 class VoteListController extends Bloc<VoteListEvent, VoteListState> {
   VoteListController(String authorization) : super(VoteListInitial()) {

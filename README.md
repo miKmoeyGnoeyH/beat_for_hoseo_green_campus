@@ -1,4 +1,4 @@
-# BEAT
+# Beat
 
 A new Flutter project.
 

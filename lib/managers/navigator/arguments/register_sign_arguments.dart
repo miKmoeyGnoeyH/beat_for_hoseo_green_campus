@@ -1,4 +1,6 @@
-import 'package:BEAT/controller/register_fill_inform/register_sign_controller.dart';
+
+
+import '../../../controller/register_fill_inform/register_sign_controller.dart';
 
 class RegisterSignArguments {
   const RegisterSignArguments(this.registerSignController);

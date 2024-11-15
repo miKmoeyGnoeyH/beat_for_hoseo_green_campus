@@ -1,8 +1,9 @@
-import 'package:BEAT/controller/info/events/info_list_event.dart';
-import 'package:BEAT/data/states/info_list_state.dart';
+
 import 'package:bloc/bloc.dart';
 
 import '../../../data/provider/info_provider.dart';
+import '../../../data/states/info_list_state.dart';
+import '../events/info_list_event.dart';
 
 class InfoListController extends Bloc<InfoListEvent, InfoListState> {
   InfoListController() : super(InfoListInitial()) {

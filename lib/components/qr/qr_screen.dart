@@ -1,17 +1,17 @@
 import 'dart:developer';
 
-import 'package:BEAT/controller/qr/qr_controller.dart';
-import 'package:BEAT/components/global/methods/custom_show_dialog.dart';
-import 'package:BEAT/components/global/widgets/custom_circular_progress_indicator.dart';
-import 'package:BEAT/components/global/widgets/regexp/qr_filter.dart';
-import 'package:BEAT/managers/navigator/navigator_key_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
+import '../../controller/qr/qr_controller.dart';
 import '../../controller/qr/qr_event.dart';
 import '../../controller/user_controller.dart';
 import '../../data/states/qr_state.dart';
+import '../../managers/navigator/navigator_key_manager.dart';
+import '../global/methods/custom_show_dialog.dart';
+import '../global/widgets/custom_circular_progress_indicator.dart';
+import '../global/widgets/regexp/qr_filter.dart';
 
 class QrScreen extends StatefulWidget {
   const QrScreen({super.key});

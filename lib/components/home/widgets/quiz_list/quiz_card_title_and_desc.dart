@@ -1,4 +1,5 @@
-import 'package:BEAT/extensions/buildcontext_extension.dart';
+
+import 'package:Beat/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
 
 import '../../../global/widgets/texts/custom_body_large.dart';

@@ -1,8 +1,9 @@
-import 'package:BEAT/managers/navigator/navigator_key_manager.dart';
-import 'package:BEAT/managers/navigator/routes.dart';
+
 import 'package:flutter/material.dart';
 
 import '../../../data/models/data_models.dart';
+import '../../../managers/navigator/navigator_key_manager.dart';
+import '../../../managers/navigator/routes.dart';
 import 'vote_result_winner_and_my_vote_neuro.dart';
 
 class VoteResultNstWinners extends StatelessWidget {

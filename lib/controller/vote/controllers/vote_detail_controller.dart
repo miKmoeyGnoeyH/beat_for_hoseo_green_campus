@@ -1,8 +1,8 @@
 
-import 'package:BEAT/data/provider/vote_provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../data/models/data_models.dart';
+import '../../../data/provider/vote_provider.dart';
 import '../../../data/states/data_state.dart';
 import '../../home/events/data_events.dart';
 

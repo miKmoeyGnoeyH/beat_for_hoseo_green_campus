@@ -1,6 +1,6 @@
-import 'package:BEAT/theme/colors/if_custom_colors.dart';
-import 'package:BEAT/theme/custom_theme_holder.dart';
-import 'package:BEAT/theme/theme_factory.dart';
+import 'package:Beat/theme/colors/if_custom_colors.dart';
+import 'package:Beat/theme/custom_theme_holder.dart';
+import 'package:Beat/theme/theme_factory.dart';
 import 'package:flutter/material.dart';
 
 class CustomThemeApp extends StatefulWidget {

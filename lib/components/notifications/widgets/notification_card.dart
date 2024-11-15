@@ -1,9 +1,10 @@
-import 'package:BEAT/components/notifications/widgets/notification_content.dart';
-import 'package:BEAT/extensions/buildcontext_extension.dart';
+
+import 'package:Beat/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
 
 import '../../../data/models/data_models.dart';
 import '../../global/widgets/custom_rounded_bordered_container.dart';
+import 'notification_content.dart';
 
 class NotificationCard extends StatelessWidget {
   const NotificationCard(

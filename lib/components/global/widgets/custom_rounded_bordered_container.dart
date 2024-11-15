@@ -1,6 +1,5 @@
-import 'dart:developer';
 
-import 'package:BEAT/extensions/buildcontext_extension.dart';
+import 'package:Beat/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
 
 class CustomRoundedBorderedContainer extends StatelessWidget {

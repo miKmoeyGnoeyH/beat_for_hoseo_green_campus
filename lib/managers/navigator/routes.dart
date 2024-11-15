@@ -1,23 +1,11 @@
-import 'package:BEAT/components/info/info_screen.dart';
-import 'package:BEAT/components/notifications/notifications_screen.dart';
-import 'package:BEAT/components/withdrawal/withdrawal_screen.dart';
-import 'package:BEAT/controller/home/controllers/quiz_list_controller.dart';
-import 'package:BEAT/controller/home/controllers/survey_list_controller.dart';
-import 'package:BEAT/controller/info/controller/info_image_controller.dart';
-import 'package:BEAT/controller/info/controller/info_list_controller.dart';
-import 'package:BEAT/controller/notification/notification_controller.dart';
-import 'package:BEAT/controller/rank/rank_controller.dart';
-import 'package:BEAT/controller/vote/controllers/vote_detail_controller.dart';
-import 'package:BEAT/managers/navigator/arguments/register_arguments.dart';
-import 'package:BEAT/managers/navigator/arguments/register_sign_arguments.dart';
-import 'package:BEAT/managers/navigator/arguments/screen_holder_arguments.dart';
-import 'package:BEAT/managers/navigator/arguments/vote_detail_arguments.dart';
-import 'package:BEAT/managers/navigator/arguments/vote_result_args.dart';
+import 'package:Beat/components/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../components/history/neuro_history_screen.dart';
 import '../../components/home/home_screen.dart';
+import '../../components/info/info_screen.dart';
+import '../../components/notifications/notifications_screen.dart';
 import '../../components/quest_detail/quest_detail_screen.dart';
 import '../../components/quiz_detail/quiz_detail_screen.dart';
 import '../../components/rank/ranking_screen.dart';
@@ -33,20 +21,40 @@ import '../../components/settings/settings_screen.dart';
 import '../../components/sign_in/sign_in_screen.dart';
 import '../../components/vote_detail/vote_detail_screen.dart';
 import '../../components/vote_result/vote_result_screen.dart';
+import '../../components/withdrawal/withdrawal_screen.dart';
 import '../../controller/home/controllers/data_controller.dart';
 import '../../controller/home/controllers/quest_list_controller.dart';
+import '../../controller/home/controllers/quiz_list_controller.dart';
+import '../../controller/home/controllers/survey_list_controller.dart';
+import '../../controller/info/controller/info_image_controller.dart';
+import '../../controller/info/controller/info_list_controller.dart';
 import '../../controller/neuro_history/controllers/neuro_history_controller.dart';
+import '../../controller/notification/notification_controller.dart';
+import '../../controller/rank/rank_controller.dart';
 import '../../controller/register_fill_inform/register_nickname_controller.dart';
 import '../../controller/register_fill_inform/register_sid_controller.dart';
+import '../../controller/vote/controllers/vote_detail_controller.dart';
 import '../../controller/vote/controllers/vote_list_controller.dart';
 import '../../controller/vote/controllers/vote_result_controller.dart';
 import '../../data/models/data_models.dart';
+import 'arguments/register_arguments.dart';
+import 'arguments/register_sign_arguments.dart';
+import 'arguments/screen_holder_arguments.dart';
+import 'arguments/vote_detail_arguments.dart';
+import 'arguments/vote_result_args.dart';
 
 part 'route_names.dart';
 
 abstract class Routes {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case RouteNames.splash:
+        {
+          return MaterialPageRoute(
+            builder: (context) => const SplashScreen(),
+          );
+        }
+
       case RouteNames.info:
         {
           return MaterialPageRoute(

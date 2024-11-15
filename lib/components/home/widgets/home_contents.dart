@@ -1,9 +1,10 @@
-import 'package:BEAT/components/home/widgets/quest_list/quest_list.dart';
-import 'package:BEAT/extensions/buildcontext_extension.dart';
+
+import 'package:Beat/extensions/buildcontext_extension.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'home_contents_tab_button.dart';
+import 'quest_list/quest_list.dart';
 import 'quiz_list/quiz_list.dart';
 import 'survey_list/survey_list.dart';
 

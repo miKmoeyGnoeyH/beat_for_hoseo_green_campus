@@ -1,7 +1,8 @@
-import 'package:BEAT/extensions/buildcontext_extension.dart';
-import 'package:BEAT/managers/navigator/navigator_key_manager.dart';
+
+import 'package:Beat/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
 
+import '../../../managers/navigator/navigator_key_manager.dart';
 import '../../../managers/navigator/routes.dart';
 
 class HomeInformationButton extends StatelessWidget {

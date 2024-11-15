@@ -1,6 +1,7 @@
-import 'package:BEAT/data/models/data_models.dart';
+
 import 'package:flutter/material.dart';
 
+import '../../../data/models/data_models.dart';
 import 'ranking_card.dart';
 
 class RankingListView extends StatelessWidget {

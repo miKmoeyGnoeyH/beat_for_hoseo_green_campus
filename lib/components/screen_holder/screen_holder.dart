@@ -1,19 +1,18 @@
-
-import 'package:BEAT/components/global/widgets/custom_scaffold.dart';
-import 'package:BEAT/components/home/home_screen.dart';
-import 'package:BEAT/components/qr/qr_screen.dart';
-import 'package:BEAT/components/vote/vote_screen.dart';
-import 'package:BEAT/controller/home/controllers/quest_list_controller.dart';
-import 'package:BEAT/controller/home/controllers/quiz_list_controller.dart';
-import 'package:BEAT/controller/home/controllers/survey_list_controller.dart';
-import 'package:BEAT/controller/home/events/data_events.dart';
-import 'package:BEAT/controller/vote/event/vote_list_event.dart';
-import 'package:BEAT/controller/vote/controllers/vote_list_controller.dart';
-import 'package:BEAT/extensions/buildcontext_extension.dart';
+import 'package:Beat/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../controller/home/controllers/quest_list_controller.dart';
+import '../../controller/home/controllers/quiz_list_controller.dart';
+import '../../controller/home/controllers/survey_list_controller.dart';
+import '../../controller/home/events/data_events.dart';
 import '../../controller/user_controller.dart';
+import '../../controller/vote/controllers/vote_list_controller.dart';
+import '../../controller/vote/event/vote_list_event.dart';
+import '../global/widgets/custom_scaffold.dart';
+import '../home/home_screen.dart';
+import '../qr/qr_screen.dart';
+import '../vote/vote_screen.dart';
 import 'widgets/home_appbar.dart';
 import 'widgets/home_bottom_navigation_bar.dart';
 

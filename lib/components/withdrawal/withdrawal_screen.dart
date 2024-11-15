@@ -1,14 +1,5 @@
 import 'dart:developer';
 
-import 'package:BEAT/components/global/methods/custom_show_dialog.dart';
-import 'package:BEAT/components/global/widgets/appbars/custom_empty_appbar.dart';
-import 'package:BEAT/components/global/widgets/custom_scaffold.dart';
-import 'package:BEAT/components/global/widgets/texts/custom_body_large.dart';
-import 'package:BEAT/components/global/widgets/texts/custom_headline_medium.dart';
-import 'package:BEAT/components/global/widgets/texts/custom_title_large.dart';
-import 'package:BEAT/managers/navigator/navigator_key_manager.dart';
-import 'package:BEAT/managers/navigator/routes.dart';
-import 'package:BEAT/managers/prefs/prefs_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,7 +7,16 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 import '../../controller/user_controller.dart';
+import '../../managers/navigator/navigator_key_manager.dart';
+import '../../managers/navigator/routes.dart';
+import '../../managers/prefs/prefs_manager.dart';
+import '../global/methods/custom_show_dialog.dart';
+import '../global/widgets/appbars/custom_empty_appbar.dart';
 import '../global/widgets/buttons/custom_wide_button.dart';
+import '../global/widgets/custom_scaffold.dart';
+import '../global/widgets/texts/custom_body_large.dart';
+import '../global/widgets/texts/custom_headline_medium.dart';
+import '../global/widgets/texts/custom_title_large.dart';
 
 class WithdrawalScreen extends StatelessWidget {
   const WithdrawalScreen({super.key});

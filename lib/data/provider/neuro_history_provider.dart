@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:BEAT/data/models/neuro_history_model.dart';
-import 'package:BEAT/data/states/neuro_history_state.dart';
+
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+
+import '../models/neuro_history_model.dart';
+import '../states/neuro_history_state.dart';
 
 class NeuroHistoryProvider {
   final http.Client _httpClient = http.Client();

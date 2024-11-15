@@ -1,6 +1,7 @@
-import 'package:BEAT/data/provider/info_provider.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../data/provider/info_provider.dart';
 import '../../../data/states/info_image_state.dart';
 import '../events/info_image_event.dart';
 

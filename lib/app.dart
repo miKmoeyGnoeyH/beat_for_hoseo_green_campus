@@ -33,7 +33,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
           supportedLocales: context.supportedLocales,
           navigatorKey: NavigatorKeyManager().navigatorKey,
           onGenerateRoute: Routes.onGenerateRoute,
-          initialRoute: RouteNames.signIn,
+          initialRoute: RouteNames.splash,
         ),
       ),
     );

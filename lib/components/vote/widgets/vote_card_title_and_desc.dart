@@ -1,9 +1,10 @@
-import 'package:BEAT/components/global/beat/neuro.dart';
-import 'package:BEAT/components/global/widgets/texts/custom_title_large.dart';
+
 import 'package:flutter/material.dart';
 
+import '../../global/beat/neuro.dart';
 import '../../global/widgets/texts/custom_label_large.dart';
 import '../../global/widgets/texts/custom_subtitle_large.dart';
+import '../../global/widgets/texts/custom_title_large.dart';
 
 class VoteCardTitleAndDesc extends StatelessWidget {
   const VoteCardTitleAndDesc({

@@ -1,14 +1,15 @@
-import 'package:BEAT/components/global/widgets/texts/custom_body_large.dart';
-import 'package:BEAT/extensions/buildcontext_extension.dart';
-import 'package:BEAT/managers/navigator/navigator_key_manager.dart';
+
+import 'package:Beat/extensions/buildcontext_extension.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../controller/user_controller.dart';
 import '../../../data/models/user_model.dart';
+import '../../../managers/navigator/navigator_key_manager.dart';
 import '../../../managers/navigator/routes.dart';
 import '../../global/widgets/custom_rounded_bordered_container.dart';
+import '../../global/widgets/texts/custom_body_large.dart';
 import '../../global/widgets/texts/custom_headline_large.dart';
 import '../../global/widgets/texts/custom_subtitle_large.dart';
 

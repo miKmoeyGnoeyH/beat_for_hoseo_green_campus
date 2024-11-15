@@ -1,6 +1,8 @@
-import 'package:BEAT/data/states/nickname_state.dart';
+
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+
+import '../states/nickname_state.dart';
 
 class NicknameCheckProvider {
   final http.Client _httpClient = http.Client();

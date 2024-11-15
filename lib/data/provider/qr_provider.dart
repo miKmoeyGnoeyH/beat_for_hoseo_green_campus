@@ -1,8 +1,9 @@
 import 'dart:developer';
 
-import 'package:BEAT/data/states/qr_state.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
+
+import '../states/qr_state.dart';
 
 
 class QRProvider {

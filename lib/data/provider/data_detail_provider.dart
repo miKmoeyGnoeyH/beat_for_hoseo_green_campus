@@ -1,10 +1,12 @@
 import 'dart:convert';
 
-import 'package:BEAT/data/models/data_models.dart';
-import 'package:BEAT/data/states/data_state.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+
+import '../models/data_models.dart';
+import '../states/data_state.dart';
 
 class DataDetailProvider {
   final http.Client _httpClient = http.Client();
