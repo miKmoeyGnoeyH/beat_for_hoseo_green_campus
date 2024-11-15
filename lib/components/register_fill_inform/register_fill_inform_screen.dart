@@ -1,4 +1,3 @@
-
 import 'package:BEAT/components/global/widgets/buttons/custom_bottom_appbar_button.dart';
 import 'package:BEAT/components/global/widgets/buttons/custom_wide_button.dart';
 import 'package:BEAT/components/register_organization/widgets/register_organization_appbar.dart';
@@ -291,17 +290,18 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                                       if (context.mounted)
                                         {
                                           customShowDialog(
-                                            context: context,
-                                            title:
-                                                context.tr('sign_up_success'),
-                                            content: context
-                                                .tr('sign_up_success_message'),
-                                            buttonText:
-                                                context.tr('to_sign_in_screen'),
+                                              context: context,
+                                              title:
+                                                  context.tr('sign_up_success'),
+                                              content: context.tr(
+                                                  'sign_up_success_message'),
+                                              buttonText: context
+                                                  .tr('to_sign_in_screen'),
                                               onTap: () {
-                                                NavigatorKeyManager().pushNamedAndRemoveUntil(RouteNames.signIn);
-                                              }
-                                          )
+                                                NavigatorKeyManager()
+                                                    .pushNamedAndRemoveUntil(
+                                                        RouteNames.signIn);
+                                              })
                                         }
                                     }
                                   else

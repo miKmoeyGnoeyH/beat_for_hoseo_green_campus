@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -45,13 +46,18 @@ Future<void> main() async {
     sound: true,
   );
 
-  log(settings.authorizationStatus.toString());
-
-  // final fcmAPNSToken = await FirebaseMessaging.instance.getAPNSToken();
-  // log(fcmAPNSToken.toString());
-
-  // final fcmToken = await FirebaseMessaging.instance.getToken();
-  // log('main : main() : fcmToken : ${fcmToken.toString()}');
+  if (Platform.isIOS) {
+    String? apnsToken = await messaging.getAPNSToken();
+    if (apnsToken != null) {
+    } else {
+      await Future<void>.delayed(
+        const Duration(
+          seconds: 3,
+        ),
+      );
+      apnsToken = await messaging.getAPNSToken();
+    }
+  }
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {

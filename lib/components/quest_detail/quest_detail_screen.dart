@@ -30,38 +30,39 @@ class _QuestDetailScreenState extends State<QuestDetailScreen> {
         context.read<DataDetailModelController>();
 
     return CustomScaffold(
+      bottom: true,
       appBar: const CustomEmptyAppBar(),
       body: BlocBuilder<DataDetailModelController, DataDetailModelState>(
         builder: (context, state) => state is DataDetailModelLoadingSuccess
-            ? Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                child: ListView(
-                  padding: const EdgeInsets.all(0),
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: [
-                    DetailLabelAndTItle(
-                      labelText: 'Quest',
-                      title: (state.dataModel! as QuestDetailModel).eventName,
-                    ),
-                    const SizedBox(height: 20),
-                    DetailImage(
-                        imageUrl:
-                            '${dotenv.env['QUEST_IMAGE']!}${(state.dataModel! as QuestDetailModel).eventId}'),
-                    const SizedBox(height: 20),
-                    DetailDesc(
-                      description: (state.dataModel! as QuestDetailModel)
-                          .descriptionLong,
-                    ),
-                    const SizedBox(height: 20),
-                    QuestDetailTable(
-                      child: QuestDetailTableContents(
-                        state.dataModel! as QuestDetailModel,
+            ? SingleChildScrollView(
+              child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                  child: Column(
+                    children: [
+                      DetailLabelAndTItle(
+                        labelText: 'Quest',
+                        title: (state.dataModel! as QuestDetailModel).eventName,
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 20),
+                      DetailImage(
+                          imageUrl:
+                              '${dotenv.env['QUEST_IMAGE']!}${(state.dataModel! as QuestDetailModel).eventId}'),
+                      const SizedBox(height: 20),
+                      DetailDesc(
+                        description: (state.dataModel! as QuestDetailModel)
+                            .descriptionLong,
+                      ),
+                      const SizedBox(height: 20),
+                      QuestDetailTable(
+                        child: QuestDetailTableContents(
+                          state.dataModel! as QuestDetailModel,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              )
+            )
             : state is DataDetailModelLoadingError
                 ? CustomRefreshButton(
                     onTap: () => dataDetailModelController.add(

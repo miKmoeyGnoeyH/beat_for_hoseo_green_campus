@@ -49,7 +49,7 @@ class UserProvider {
   Future<bool> registerToken(String authorization, String token) async {
     final String requestUrl = '${dotenv.env['REGISTER_TOKEN']!}?token=$token';
 
-    log('user_provider.dart : registerToken() : authorization : $authorization');
+    log(requestUrl);
 
     bool ret = false;
 

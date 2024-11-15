@@ -11,6 +11,7 @@ class DetailImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomRoundedBorderedContainer(
+      width: double.infinity,
       child: imageUrl != null
           ? Image.network(
         imageUrl!,

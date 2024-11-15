@@ -26,8 +26,10 @@ class DetailLabelAndTItle extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            CustomTitleLarge(
-              text: title,
+            Flexible(
+              child: CustomTitleLarge(
+                text: title,
+              ),
             ),
             neuro != null
                 ? Row(

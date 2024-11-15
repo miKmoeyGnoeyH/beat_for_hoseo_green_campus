@@ -26,6 +26,8 @@ class _AppState extends State<App> with WidgetsBindingObserver {
       child: BlocProvider(
         create: (context) => UserController(),
         child: MaterialApp(
+          theme: ThemeData.light(),
+          darkTheme: ThemeData.dark(),
           debugShowCheckedModeBanner: false,
           localizationsDelegates: context.localizationDelegates,
           supportedLocales: context.supportedLocales,

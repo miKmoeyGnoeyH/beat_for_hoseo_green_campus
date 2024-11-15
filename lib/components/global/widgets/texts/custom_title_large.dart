@@ -8,14 +8,15 @@ class CustomTitleLarge extends StatelessWidget {
     super.key,
     this.text,
     this.textColor,
+    this.maxLines
   });
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text ?? '',
-      maxLines: 2,
-      overflow: TextOverflow.ellipsis,
+      maxLines: maxLines,
+      // overflow: TextOverflow.ellipsis,
       style: CustomTexts.titleLarge.copyWith(
         color: textColor ?? context.appColors.onBackground,
       ),
@@ -24,4 +25,5 @@ class CustomTitleLarge extends StatelessWidget {
 
   final String? text;
   final Color? textColor;
+  final int? maxLines;
 }
