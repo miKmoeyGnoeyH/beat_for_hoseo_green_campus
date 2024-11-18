@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../controller/user_controller.dart';
 import '../../../managers/navigator/navigator_key_manager.dart';
 import '../../../theme/texts/custom_texts.dart';
+import '../../global/methods/custom_show_dialog.dart';
 import '../../global/widgets/buttons/custom_wide_button.dart';
 import '../../global/widgets/custom_rounded_bordered_container.dart';
 import '../../global/widgets/texts/custom_subtitle_large.dart';
@@ -127,6 +128,16 @@ class _VoteNeuroSelectBottomSheetState
               buttonText: context.tr('vote'),
               buttonColor: context.appColors.primary,
               onTap: () {
+                if(_votedNeuro == null) {
+                  NavigatorKeyManager().pop(result: _votedNeuro);
+                } else if(int.parse(userController.state.neuroesInHand) < _votedNeuro!.toInt()) {
+                  customShowDialog(
+                    context: context,
+                    title: context.tr('vote_failed'),
+                    content: context.tr('not_enough_neuro'),
+                  );
+                  return;
+                }
                 NavigatorKeyManager().pop(result: _votedNeuro);
               },
             ),

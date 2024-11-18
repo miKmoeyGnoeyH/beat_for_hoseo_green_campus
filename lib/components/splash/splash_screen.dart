@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:Beat/components/global/widgets/custom_scaffold.dart';
 import 'package:Beat/managers/navigator/navigator_key_manager.dart';
 import 'package:Beat/managers/navigator/routes.dart';
 import 'package:flutter/material.dart';
@@ -20,12 +21,15 @@ class _SplashScreenState extends State<SplashScreen> {
     Permission.notification,
   ];
 
-  @override
-  void initState() async {
+  Future<void> requestPermissions() async {
     Map<Permission, PermissionStatus> status = await permissions.request();
 
     log(status.map((key, value) => MapEntry(key, value.toString())).toString());
+  }
 
+  @override
+  void initState() {
+    requestPermissions();
     Timer(
       const Duration(seconds: 1),
       () => NavigatorKeyManager().pushNamedAndRemoveUntil(RouteNames.signIn),
@@ -36,8 +40,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Image.asset('assets/images/beat_splash'),
+    return CustomScaffold(
+      body: Image.asset('assets/images/beat_splash.png', fit: BoxFit.fitHeight),
     );
   }
 }
