@@ -6,54 +6,61 @@ import '../../global/widgets/texts/custom_body_large.dart';
 import '../../global/widgets/texts/custom_subtitle_large.dart';
 
 TableRow buildQuestDetailTableRewardRow({required String reward}) {
-  return TableRow(children: [
-    TableCell(
-      child: CustomSubtitleLarge(
-        text: 'reward'.tr(),
+  return TableRow(
+    children: [
+      TableCell(
+        child: CustomSubtitleLarge(
+          text: 'reward'.tr(),
+        ),
       ),
-    ),
-    TableCell(
-      child: Row(
-        children: [
-          const Neuro(width: 20),
-          const SizedBox(width: 5),
-          CustomSubtitleLarge(
-            text: reward,
-          ),
-        ],
+      TableCell(
+        child: Row(
+          children: [
+            const Neuro(width: 20),
+            const SizedBox(width: 5),
+            CustomSubtitleLarge(
+              text: reward,
+            ),
+          ],
+        ),
       ),
-    ),
-  ]);
+    ],
+  );
 }
 
 TableRow buildQuestDetailTableQuestTypeRow({required String? questType}) {
-  return TableRow(children: [
-    TableCell(
-      child: CustomSubtitleLarge(
-        text: 'quest_type'.tr(),
+  return TableRow(
+    children: [
+      TableCell(
+        child: CustomSubtitleLarge(
+          text: 'quest_type'.tr(),
+        ),
       ),
-    ),
-    TableCell(
-      child: Column(
-        children: [
-          const SizedBox(height: 10),
-          CustomBodyLarge(text: questType),
-          const SizedBox(height: 10),
-        ],
+      TableCell(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 10),
+            CustomBodyLarge(text: questType),
+            const SizedBox(height: 10),
+          ],
+        ),
       ),
-    ),
-  ]);
+    ],
+  );
 }
 
 TableRow buildQuestDetailTableLocationRow({required String? questLocation}) {
-  return TableRow(children: [
-    TableCell(
-      child: CustomSubtitleLarge(
-        text: 'location'.tr(),
+  return TableRow(
+    children: [
+      TableCell(
+        child: CustomSubtitleLarge(
+          text: 'location'.tr(),
+        ),
       ),
-    ),
-    TableCell(
-      child: CustomBodyLarge(text: questLocation),
-    ),
-  ]);
+      TableCell(
+        child: CustomBodyLarge(text: questLocation),
+      ),
+    ],
+  );
 }

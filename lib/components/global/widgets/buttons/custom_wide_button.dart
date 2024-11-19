@@ -16,7 +16,8 @@ class CustomWideButton extends StatelessWidget {
     this.textColor,
     this.maxLines,
     this.borderWidth,
-    this.borderColor
+    this.borderColor,
+    this.padding,
   });
 
   @override
@@ -30,7 +31,7 @@ class CustomWideButton extends StatelessWidget {
         borderWidth: borderWidth ?? 0.2,
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
+            padding: padding ?? const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
             child: AutoSizeText(
               buttonText ?? '',
               style: CustomTexts.subtitleLarge.copyWith(
@@ -51,4 +52,5 @@ class CustomWideButton extends StatelessWidget {
   final int? maxLines;
   final double? borderWidth;
   final Color? borderColor;
+  final EdgeInsetsGeometry? padding;
 }

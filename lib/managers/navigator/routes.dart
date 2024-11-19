@@ -1,4 +1,3 @@
-import 'package:Beat/components/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -48,13 +47,6 @@ part 'route_names.dart';
 abstract class Routes {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case RouteNames.splash:
-        {
-          return MaterialPageRoute(
-            builder: (context) => const SplashScreen(),
-          );
-        }
-
       case RouteNames.info:
         {
           return MaterialPageRoute(
@@ -189,14 +181,18 @@ abstract class Routes {
           final ScreenHolderArguments arguments =
               settings.arguments as ScreenHolderArguments;
           return MaterialPageRoute(
-            builder: (context) => MultiBlocProvider(providers: [
-              BlocProvider(create: (context) => QuestListController()),
-              BlocProvider(create: (context) => QuizListController()),
-              BlocProvider(create: (context) => SurveyListController()),
-              BlocProvider(
+            builder: (context) => MultiBlocProvider(
+              providers: [
+                BlocProvider(create: (context) => QuestListController()),
+                BlocProvider(create: (context) => QuizListController()),
+                BlocProvider(create: (context) => SurveyListController()),
+                BlocProvider(
                   create: (context) =>
-                      VoteListController(arguments.authorization))
-            ], child: const ScreenHolder()),
+                      VoteListController(arguments.authorization),
+                ),
+              ],
+              child: const ScreenHolder(),
+            ),
           );
         }
 

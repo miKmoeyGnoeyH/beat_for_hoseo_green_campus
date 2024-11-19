@@ -154,6 +154,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                       BlocBuilder<RegisterSidController, EmailState>(
                         builder: (context, state) => Flexible(
                           child: CustomWideButton(
+                            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                             onTap: _isEmailButtonEnabled
                                 ? () {
                                     _isEmailButtonEnabled = false;
@@ -189,6 +190,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                       BlocBuilder<RegisterNicknameController, NicknameState>(
                         builder: (context, state) => Flexible(
                           child: CustomWideButton(
+                            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                             onTap: _isNicknameButtonEnabled
                                 ? () async {
                                     final String text =

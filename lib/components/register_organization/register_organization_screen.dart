@@ -65,16 +65,22 @@ class _RegisterOrganizationScreenState
         text: context.tr('organization'),
       ),
       body: CustomCupertinoPicker(
-          items: registerOrganizationController.organizations,
-          onSelectedItemChanged: (index) => setState(() {
-                registerOrganizationController.organization =
-                    registerOrganizationController.organizations[index];
-              })),
+        items: registerOrganizationController.organizations,
+        onSelectedItemChanged: (index) => setState(
+          () {
+            registerOrganizationController.organization =
+                registerOrganizationController.organizations[index];
+          },
+        ),
+      ),
       bottomNavigationBar: CustomBottomAppbarButton(
         onTap: () => doSomethingDependsOnOrganization(
-            registerOrganizationController.organization),
-        text: context.tr('continue_with',
-            args: [registerOrganizationController.organization]),
+          registerOrganizationController.organization,
+        ),
+        text: context.tr(
+          'continue_with',
+          args: [registerOrganizationController.organization],
+        ),
       ),
     );
   }

@@ -15,8 +15,14 @@ class CustomCupertinoPickerBuilder extends StatelessWidget {
       itemExtent: 50,
       childCount: items.length,
       onSelectedItemChanged: onSelectedItemChanged,
-      itemBuilder: (context, index) => Center(
-        child: CustomDisplayMedium(text: items[index].toString()),
+      itemBuilder: (context, index) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Center(
+          child: CustomDisplayMedium(
+            text: items[index].toString(),
+            maxLines: 1,
+          ),
+        ),
       ),
     );
   }

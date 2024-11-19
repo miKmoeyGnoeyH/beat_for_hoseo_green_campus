@@ -9,12 +9,14 @@ class CustomDisplayMedium extends StatelessWidget {
     super.key,
     this.text,
     this.textColor,
+    this.maxLines
   });
 
   @override
   Widget build(BuildContext context) {
     return AutoSizeText(
       text ?? '',
+      maxLines: maxLines,
       style: CustomTexts.displayMedium
           .copyWith(color: textColor ?? context.appColors.onBackground),
     );
@@ -22,4 +24,5 @@ class CustomDisplayMedium extends StatelessWidget {
 
   final String? text;
   final Color? textColor;
+  final int? maxLines;
 }
