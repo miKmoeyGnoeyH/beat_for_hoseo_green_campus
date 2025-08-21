@@ -1,4 +1,4 @@
-import 'package:Beat/extensions/buildcontext_extension.dart';
+import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
@@ -50,7 +50,7 @@ Widget buildVoteStatusBadgeDependsOnStatus(BuildContext context, String? betting
     case '대기':
       return CustomRoundedBorderedContainer(
         borderRadius: 5,
-        color: Palette.pending.withOpacity(0.2),
+        color: Palette.pending.withValues(alpha: 0.2),
         width: null,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5),

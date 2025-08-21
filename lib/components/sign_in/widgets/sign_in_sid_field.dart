@@ -14,8 +14,8 @@ class SignInSIDField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SignInTextField(
-      title: context.tr('student_id'),
-      hintText: context.tr("sid_hint"),
+      title: context.tr('sign_in_sid_or_id'),
+      hintText: context.tr("sign_in_id_hint"),
       textEditingController: _studentIdController,
       keyboardType: TextInputType.number,
       maxLength: 8,

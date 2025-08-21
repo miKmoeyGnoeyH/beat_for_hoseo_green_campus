@@ -6,12 +6,13 @@ class CustomLabelLargeButton extends StatelessWidget {
   const CustomLabelLargeButton({
     super.key,
     this.labelText,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: onTap,
       child: CustomLabelLarge(
         text: labelText,
       ),
@@ -19,4 +20,5 @@ class CustomLabelLargeButton extends StatelessWidget {
   }
 
   final String? labelText;
+  final void Function()? onTap;
 }

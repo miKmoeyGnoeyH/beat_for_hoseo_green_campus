@@ -144,6 +144,7 @@
   "quest": "Quest",
   "quest_type": "Quest Type",
   "quiz": "Quiz",
+  "there_is_no_quiz_yet": "There is no quiz yet.",
   "ranking": "Ranking",
   "ranking_desc": "The ranking is determined based on the total amount of Neuro acquired and used.",
   "register": "Register",
@@ -153,6 +154,7 @@
   "register_name_hint": "Enter Your Name.",
   "register_nickname_hint": "Enter Nickname to use.",
   "register_sid_hint": "Enter Student ID to use.",
+  "register_4digit_hint": "Enter 4-digit number to use as an ID.",
   "result": "Result",
   "retry": "Retry",
   "reward": "Reward",
@@ -177,6 +179,7 @@
   "sign_up_success_message": "Sign Up Success. Please Sign in to use.",
   "student": "Student",
   "student_id": "Student ID",
+  "id": "ID",
   "subjective": "Subjective",
   "submit_already_checked": "Quiz already answered.",
   "submit_and_grading": "Submit and Grading",
@@ -220,5 +223,10 @@
   "where_can_i_get_neuro": "Where can I get Neuro?",
   "where_is_neuro_used": "Where is Neuro used?",
   "why_do_i_need_to_sign": "Why do I need to sign?",
-  "writing_answers": "Writing Answers"
+  "writing_answers": "Writing Answers",
+  "oss_licenses": "Open Source Licenses",
+  "app_inquiry": "Inquiry about the app",
+  "view_detail": "View Detail",
+  "sign_in_sid_or_id": "Student ID or ID",
+  "sign_in_id_hint": "Please enter your Student ID or ID."
 }

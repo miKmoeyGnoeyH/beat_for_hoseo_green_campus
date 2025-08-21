@@ -1,4 +1,4 @@
-import 'package:Beat/extensions/buildcontext_extension.dart';
+import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
@@ -7,7 +7,10 @@ import '../../../theme/texts/custom_texts.dart';
 import '../../global/widgets/custom_rounded_bordered_container.dart';
 
 class StatefulBottomSheet extends StatefulWidget {
-  const StatefulBottomSheet({super.key, required this.registerAgreementProvider, required this.setIsAgreementChecked});
+  const StatefulBottomSheet(
+      {super.key,
+      required this.registerAgreementProvider,
+      required this.setIsAgreementChecked});
 
   final RegisterAgreementController registerAgreementProvider;
   final Function(bool) setIsAgreementChecked;
@@ -17,7 +20,8 @@ class StatefulBottomSheet extends StatefulWidget {
 }
 
 class _StatefulBottomSheetState extends State<StatefulBottomSheet> {
-  RegisterAgreementController get registerAgreementProvider => widget.registerAgreementProvider;
+  RegisterAgreementController get registerAgreementProvider =>
+      widget.registerAgreementProvider;
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +33,7 @@ class _StatefulBottomSheetState extends State<StatefulBottomSheet> {
       width: double.infinity,
       color: context.appColors.background,
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-            horizontal: 20.0, vertical: 36),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 36),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -38,23 +41,17 @@ class _StatefulBottomSheetState extends State<StatefulBottomSheet> {
               TextSpan(
                 children: [
                   TextSpan(
-                    text: context
-                        .tr('terms_of_agreement_title'),
+                    text: context.tr('terms_of_agreement_title'),
                     style: CustomTexts.subtitleLarge
-                        .copyWith(
-                        color: context.appColors
-                            .onBackground),
+                        .copyWith(color: context.appColors.onBackground),
                   ),
                   WidgetSpan(child: Container()),
                   TextSpan(
                     children: [
                       TextSpan(
                         text: '1.',
-                        style: CustomTexts
-                            .subtitleMedium
-                            .copyWith(
-                            color: context.appColors
-                                .onBackground),
+                        style: CustomTexts.subtitleMedium
+                            .copyWith(color: context.appColors.onBackground),
                       ),
                       TextSpan(
                         children: [
@@ -63,14 +60,11 @@ class _StatefulBottomSheetState extends State<StatefulBottomSheet> {
                           ),
                           TextSpan(
                             text: context.tr(
-                                'terms_of_agreement_content',
-                                gender: 'purpose'),
-                            style: CustomTexts
-                                .subtitleMedium
-                                .copyWith(
-                                color: context
-                                    .appColors
-                                    .onBackground),
+                              'terms_of_agreement_content',
+                              gender: 'purpose',
+                            ),
+                            style: CustomTexts.subtitleMedium.copyWith(
+                                color: context.appColors.onBackground),
                           ),
                         ],
                       ),
@@ -78,17 +72,11 @@ class _StatefulBottomSheetState extends State<StatefulBottomSheet> {
                   ),
                   TextSpan(
                     children: [
-                      const WidgetSpan(
-                        child: SizedBox(width: 20),
-                      ),
                       TextSpan(
-                        text: context.tr(
-                            'terms_of_agreement_content',
+                        text: context.tr('terms_of_agreement_content',
                             gender: 'purpose_content'),
                         style: CustomTexts.bodyLarge
-                            .copyWith(
-                            color: context.appColors
-                                .onBackground),
+                            .copyWith(color: context.appColors.onBackground),
                       ),
                     ],
                   ),
@@ -97,11 +85,8 @@ class _StatefulBottomSheetState extends State<StatefulBottomSheet> {
                     children: [
                       TextSpan(
                         text: '2.',
-                        style: CustomTexts
-                            .subtitleMedium
-                            .copyWith(
-                            color: context.appColors
-                                .onBackground),
+                        style: CustomTexts.subtitleMedium
+                            .copyWith(color: context.appColors.onBackground),
                       ),
                       TextSpan(
                         children: [
@@ -109,45 +94,42 @@ class _StatefulBottomSheetState extends State<StatefulBottomSheet> {
                             child: SizedBox(width: 5),
                           ),
                           TextSpan(
-                            text: context.tr(
-                                'terms_of_agreement_content',
+                            text: context.tr('terms_of_agreement_content',
                                 gender: 'items'),
-                            style: CustomTexts
-                                .subtitleMedium
-                                .copyWith(
-                                color: context
-                                    .appColors
-                                    .onBackground),
+                            style: CustomTexts.subtitleMedium.copyWith(
+                                color: context.appColors.onBackground),
                           ),
                         ],
                       ),
                     ],
                   ),
-                  WidgetSpan(
-                    child: Container(
-                      padding: const EdgeInsets.only(
-                          left: 20),
-                      child: Text(
-                        context.tr(
-                            'terms_of_agreement_content',
-                            gender: 'items_content'),
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: context.tr(
+                          'terms_of_agreement_content',
+                          gender: 'items_content_student',
+                        ),
                         style: CustomTexts.bodyLarge
-                            .copyWith(
-                            color: context.appColors
-                                .onBackground),
+                            .copyWith(color: context.appColors.onBackground),
                       ),
-                    ),
+                      TextSpan(
+                        text: context.tr(
+                          'terms_of_agreement_content',
+                          gender: 'items_content_other',
+                        ),
+                        style: CustomTexts.bodyLarge
+                            .copyWith(color: context.appColors.onBackground),
+                      ),
+                    ],
                   ),
                   WidgetSpan(child: Container()),
                   TextSpan(
                     children: [
                       TextSpan(
                         text: '3.',
-                        style: CustomTexts
-                            .subtitleMedium
-                            .copyWith(
-                            color: context.appColors
-                                .onBackground),
+                        style: CustomTexts.subtitleMedium
+                            .copyWith(color: context.appColors.onBackground),
                       ),
                       TextSpan(
                         children: [
@@ -155,46 +137,32 @@ class _StatefulBottomSheetState extends State<StatefulBottomSheet> {
                             child: SizedBox(width: 5),
                           ),
                           TextSpan(
-                            text: context.tr(
-                                'terms_of_agreement_content',
+                            text: context.tr('terms_of_agreement_content',
                                 gender: 'retention'),
-                            style: CustomTexts
-                                .subtitleMedium
-                                .copyWith(
-                                color: context
-                                    .appColors
-                                    .onBackground),
+                            style: CustomTexts.subtitleMedium.copyWith(
+                                color: context.appColors.onBackground),
                           ),
                         ],
                       ),
                     ],
                   ),
-                  WidgetSpan(
-                    child: Container(
-                      padding: const EdgeInsets.only(
-                          left: 20),
-                      child: Text(
-                        context.tr(
-                            'terms_of_agreement_content',
-                            gender:
-                            'retention_content'),
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: context.tr('terms_of_agreement_content',
+                            gender: 'retention_content'),
                         style: CustomTexts.bodyLarge
-                            .copyWith(
-                            color: context.appColors
-                                .onBackground),
+                            .copyWith(color: context.appColors.onBackground),
                       ),
-                    ),
+                    ],
                   ),
                   WidgetSpan(child: Container()),
                   TextSpan(
                     children: [
                       TextSpan(
                         text: '4.',
-                        style: CustomTexts
-                            .subtitleMedium
-                            .copyWith(
-                            color: context.appColors
-                                .onBackground),
+                        style: CustomTexts.subtitleMedium
+                            .copyWith(color: context.appColors.onBackground),
                       ),
                       TextSpan(
                         children: [
@@ -202,68 +170,59 @@ class _StatefulBottomSheetState extends State<StatefulBottomSheet> {
                             child: SizedBox(width: 5),
                           ),
                           TextSpan(
-                            text: context.tr(
-                                'terms_of_agreement_content',
-                                gender:
-                                'right_to_refusal'),
-                            style: CustomTexts
-                                .subtitleMedium
-                                .copyWith(
-                                color: context
-                                    .appColors
-                                    .onBackground),
+                            text: context.tr('terms_of_agreement_content',
+                                gender: 'right_to_refusal'),
+                            style: CustomTexts.subtitleMedium.copyWith(
+                                color: context.appColors.onBackground),
                           ),
                         ],
                       ),
                     ],
                   ),
-                  WidgetSpan(
-                    child: Container(
-                      padding: const EdgeInsets.only(
-                          left: 20),
-                      child: Text(
-                        context.tr(
-                            'terms_of_agreement_content',
-                            gender:
-                            'right_to_refusal_content'),
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: context.tr('terms_of_agreement_content',
+                            gender: 'right_to_refusal_content'),
                         style: CustomTexts.bodyLarge
-                            .copyWith(
-                            color: context.appColors
-                                .onBackground),
+                            .copyWith(color: context.appColors.onBackground),
                       ),
-                    ),
+                    ],
                   ),
+                  // WidgetSpan(
+                  //   child: Container(
+                  //     padding: const EdgeInsets.only(left: 20),
+                  //     child: Text(
+                  //       context.tr('terms_of_agreement_content',
+                  //           gender: 'right_to_refusal_content'),
+                  //       style: CustomTexts.bodyLarge
+                  //           .copyWith(color: context.appColors.onBackground),
+                  //     ),
+                  //   ),
+                  // ),
                   WidgetSpan(child: Container()),
                   TextSpan(
                     text: context.tr('do_you_agree'),
                     style: CustomTexts.subtitleLarge
-                        .copyWith(
-                        color: context.appColors
-                            .onBackground),
+                        .copyWith(color: context.appColors.onBackground),
                   ),
                   WidgetSpan(child: Container()),
                 ],
               ),
             ),
             Row(
-              mainAxisAlignment:
-              MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   context.tr('i_agree'),
                   style: CustomTexts.subtitleLarge
-                      .copyWith(
-                      color: context
-                          .appColors.onBackground),
+                      .copyWith(color: context.appColors.onBackground),
                 ),
                 Checkbox(
-                  value: registerAgreementProvider
-                      .isAgreementChecked,
-                  activeColor:
-                  context.appColors.primary,
+                  value: registerAgreementProvider.isAgreementChecked,
+                  activeColor: context.appColors.primary,
                   shape: RoundedRectangleBorder(
-                    borderRadius:
-                    BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   onChanged: (value) {
                     setState(() {

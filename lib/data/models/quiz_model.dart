@@ -5,7 +5,6 @@ class QuizModel extends DataModel {
     required this.quizId,
     required this.title,
     required this.content,
-    required this.imageUrl,
     required this.neuro,
     required this.alreadySolved,
   });
@@ -14,14 +13,12 @@ class QuizModel extends DataModel {
       : quizId = json['quizId'],
         title = json['title'],
         content = json['content'],
-        imageUrl = json['imageUrl'],
         neuro = json['neuro'],
         alreadySolved = json['alreadySolved'];
 
   final int quizId;
   final String title;
   final String content;
-  final String? imageUrl;
   final int neuro;
   final bool alreadySolved;
 }
@@ -33,7 +30,7 @@ class QuizDetailModel extends QuizModel {
     required super.quizId,
     required super.title,
     required super.content,
-    required super.imageUrl,
+    // required super.imageUrl,
     required super.neuro,
     required super.alreadySolved,
     required this.questionList,
@@ -46,7 +43,7 @@ class QuizDetailModel extends QuizModel {
           quizId: quizModel.quizId,
           title: quizModel.title,
           content: quizModel.content,
-          imageUrl: quizModel.imageUrl,
+          // imageUrl: quizModel.imageUrl,
           neuro: quizModel.neuro,
           alreadySolved: quizModel.alreadySolved,
         );
@@ -59,7 +56,7 @@ class QuizDetailModel extends QuizModel {
           quizId: json['quizId'],
           title: json['title'],
           content: json['content'],
-          imageUrl: json['imageUrl'],
+          // imageUrl: json['imageUrl'],
           neuro: json['neuro'],
           alreadySolved: json['alreadySolved'],
         );
@@ -73,7 +70,7 @@ class QuizDetailModel extends QuizModel {
           quizId: quizModel.quizId,
           title: quizModel.title,
           content: quizModel.content,
-          imageUrl: quizModel.imageUrl,
+          // imageUrl: quizModel.imageUrl,
           neuro: quizModel.neuro,
           alreadySolved: quizModel.alreadySolved,
         );

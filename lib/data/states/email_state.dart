@@ -1,9 +1,9 @@
-sealed class EmailState {}
+sealed class IDState {}
 
-final class EmailNotSent extends EmailState {}
+final class IDNotSent extends IDState {}
 
-final class EmailSending extends EmailState {}
+final class IDSending extends IDState {}
 
-final class EmailSent extends EmailState {}
+final class IDSent extends IDState {}
 
-final class EmailError extends EmailState {}
+final class IDError extends IDState {}

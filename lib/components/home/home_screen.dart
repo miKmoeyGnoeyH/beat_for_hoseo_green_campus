@@ -1,4 +1,4 @@
-import 'package:Beat/components/home/widgets/home_contents.dart';
+import 'package:beat_flutter/components/home/widgets/home_contents.dart';
 import 'package:flutter/material.dart';
 
 import 'widgets/neuroes_in_hand_card.dart';

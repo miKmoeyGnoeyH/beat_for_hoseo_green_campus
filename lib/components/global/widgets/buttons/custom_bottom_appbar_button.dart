@@ -15,7 +15,7 @@ class CustomBottomAppbarButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log('custom_bottom_appbar_button.dart : build() : backgroundColor : $backgroundColor');
+    // log('custom_bottom_appbar_button.dart : build() : backgroundColor : $backgroundColor');
     return GestureDetector(
       onTap: onTap,
       child: CustomBottomAppbar(

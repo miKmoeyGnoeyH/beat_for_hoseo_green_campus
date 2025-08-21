@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:Beat/extensions/buildcontext_extension.dart';
+import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +16,7 @@ class CustomBottomAppbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log('custom_bottom_appbar.dart : build() : backgroundColor : $backgroundColor');
+    // log('custom_bottom_appbar.dart : build() : backgroundColor : $backgroundColor');
     return Container(
       decoration: BoxDecoration(
         border: Border(

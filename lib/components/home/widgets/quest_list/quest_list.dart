@@ -24,8 +24,11 @@ class HomeQuestList extends StatelessWidget {
         if (state is DataListLoading) {
           return const CustomCircularProgressIndicator();
         } else if (state is DataListLoadingError) {
-          return CustomRefreshButton(
-              onTap: () => questListController.add(DataListRequest()));
+          return SizedBox(
+            height: 400,
+            child: CustomRefreshButton(
+                onTap: () => questListController.add(DataListRequest())),
+          );
         } else {
           return CustomQuestListView(list: state.dataList);
         }

@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'dart:developer';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -37,13 +37,15 @@ class DataListProvider {
     }
 
     try {
-      final http.Response response = await _httpClient
-          .get(Uri.parse(requestUrl))
-          .timeout(const Duration(seconds: 5));
+      final http.Response response =
+          await _httpClient.get(Uri.parse(requestUrl)).timeout(
+                const Duration(seconds: 5),
+              );
 
       if (response.statusCode == 200) {
         List<DataModel> dataList = [];
         final body = jsonDecode(utf8.decode(response.bodyBytes));
+        // final body = jsonDecode(response.body);
 
         switch (type) {
           case DataListType.quest:
@@ -53,6 +55,7 @@ class DataListProvider {
             break;
           case DataListType.quiz:
             for (var data in body) {
+              log("DataListProvider : fetchDataList : body.toString : ${body.toString()}");
               dataList.add(QuizModel.fromJson(data));
             }
             break;
@@ -79,7 +82,9 @@ class DataListProvider {
       } else {
         return DataListLoadingError();
       }
-    } catch (e) {
+    } catch (e, s) {
+      log(e.toString());
+      // log(s.toString());
       return DataListLoadingError();
     }
   }

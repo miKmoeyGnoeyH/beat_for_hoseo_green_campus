@@ -1,5 +1,5 @@
-import 'package:Beat/managers/navigator/navigator_key_manager.dart';
-import 'package:Beat/managers/navigator/routes.dart';
+import 'package:beat_flutter/managers/navigator/navigator_key_manager.dart';
+import 'package:beat_flutter/managers/navigator/routes.dart';
 import 'package:flutter/material.dart';
 
 class HomeNotificationsButton extends StatelessWidget {

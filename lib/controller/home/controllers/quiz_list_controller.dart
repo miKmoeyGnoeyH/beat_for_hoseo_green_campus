@@ -1,4 +1,6 @@
 
+import 'dart:developer';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../data/provider/data_list_provider.dart';
@@ -7,6 +9,7 @@ import '../events/data_events.dart';
 
 class QuizListController extends Bloc<DataEvent, DataListState> {
   QuizListController() : super(DataListInitial()) {
+    log("QuizListController created.");
     on<DataListRequest>(_onDataListRequest);
     add(DataListRequest());
   }

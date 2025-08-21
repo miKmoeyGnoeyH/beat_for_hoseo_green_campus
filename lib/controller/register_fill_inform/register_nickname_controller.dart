@@ -1,5 +1,5 @@
-import 'package:Beat/data/states/nickname_state.dart';
-import 'package:Beat/data/provider/nickname_check_provider.dart';
+import 'package:beat_flutter/data/states/nickname_state.dart';
+import 'package:beat_flutter/data/provider/nickname_check_provider.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 

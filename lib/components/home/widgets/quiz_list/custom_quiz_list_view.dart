@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../data/models/data_models.dart';
@@ -12,7 +13,12 @@ class CustomQuizListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
+    return list.isEmpty ? SizedBox(
+      height: 400,
+      child: Center(
+        child: Text("there_is_no_quiz_yet".tr()),
+      ),
+    ) : ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: list.length,

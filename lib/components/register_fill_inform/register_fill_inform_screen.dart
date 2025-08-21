@@ -1,4 +1,4 @@
-import 'package:Beat/extensions/buildcontext_extension.dart';
+import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -53,25 +53,34 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
   final RegisterAgreementController registerAgreementController =
       RegisterAgreementController();
 
+  late final int maxIDLength;
+
+  @override
+  void initState() {
+    maxIDLength =
+        registerOrganizationController!.organization == "student".tr() ? 8 : 4;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final RegisterSidController registerSidController =
-        context.read<RegisterSidController>();
+    final RegisterIDController registerSidController =
+        context.read<RegisterIDController>();
 
     final RegisterNicknameController registerNicknameController =
         context.read<RegisterNicknameController>();
 
     return MultiBlocListener(
       listeners: [
-        BlocListener<RegisterSidController, EmailState>(
+        BlocListener<RegisterIDController, IDState>(
           listener: (context, state) {
-            if (state is EmailSent) {
+            if (state is IDSent) {
               customShowDialog(
                 context: context,
                 title: context.tr('email_sent'),
                 content: context.tr('email_sent_message'),
               );
-            } else if (state is EmailError) {
+            } else if (state is IDError) {
               _isEmailButtonEnabled = true;
               customShowDialog(
                 context: context,
@@ -136,14 +145,24 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                     onChanged: validateName,
                   ),
                   const SizedBox(height: 20),
-                  CustomSubtitleLarge(text: context.tr('student_id')),
+                  CustomSubtitleLarge(
+                    text: registerOrganizationController!.organization ==
+                            "student".tr()
+                        ? context.tr('student_id')
+                        : context.tr('id'),
+                  ),
                   Row(
                     children: [
                       RegisterSIDTextField(
                           registerSidController: registerSidController,
+                          hintText:
+                              registerOrganizationController!.organization ==
+                                      "student".tr()
+                                  ? context.tr("register_sid_hint")
+                                  : context.tr("register_4digit_hint"),
                           onChanged: (value) {
-                            registerSidController.add(EmailChanged());
-                            if (value.length >= 8) {
+                            registerSidController.add(IDChanged());
+                            if (value.length >= maxIDLength) {
                               _isEmailButtonEnabled = true;
                             } else {
                               _isEmailButtonEnabled = false;
@@ -151,17 +170,28 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                             setState(() {});
                           }),
                       const SizedBox(width: 10),
-                      BlocBuilder<RegisterSidController, EmailState>(
+                      BlocBuilder<RegisterIDController, IDState>(
                         builder: (context, state) => Flexible(
                           child: CustomWideButton(
-                            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 5, vertical: 5),
                             onTap: _isEmailButtonEnabled
                                 ? () {
                                     _isEmailButtonEnabled = false;
-                                    registerSidController.add(EmailRequest());
+                                    if (registerOrganizationController!
+                                            .organization ==
+                                        "student".tr()) {
+                                      registerSidController.add(EmailRequest());
+                                    } else {
+                                      registerSidController.add(IDRequest());
+                                    }
                                   }
                                 : () {},
-                            buttonText: context.tr('validate_mail'),
+                            buttonText:
+                                registerOrganizationController!.organization ==
+                                        "student".tr()
+                                    ? context.tr('validate_mail')
+                                    : context.tr("validate_nickname"),
                             buttonColor: _isEmailButtonEnabled
                                 ? context.appColors.primary
                                 : context.appColors.disabled,
@@ -190,7 +220,8 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                       BlocBuilder<RegisterNicknameController, NicknameState>(
                         builder: (context, state) => Flexible(
                           child: CustomWideButton(
-                            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 5, vertical: 5),
                             onTap: _isNicknameButtonEnabled
                                 ? () async {
                                     final String text =
@@ -258,12 +289,12 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
               ),
             ),
           ),
-          bottomNavigationBar: BlocBuilder<RegisterSidController, EmailState>(
+          bottomNavigationBar: BlocBuilder<RegisterIDController, IDState>(
             builder: (context, sidState) =>
                 BlocBuilder<RegisterNicknameController, NicknameState>(
               builder: (context, nicknameState) {
                 _isSignUpButtonEnabled = _isNameValid &&
-                    sidState is EmailSent &&
+                    sidState is IDSent &&
                     nicknameState is NicknameChecked &&
                     registerAgreementController.isAgreementChecked;
 
@@ -273,7 +304,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                           _isSignUpButtonEnabled = false;
                           final UserProvider userProvider = UserProvider();
                           final String studentId =
-                              registerSidController.sidController.text;
+                              registerSidController.idController.text;
                           final String name =
                               registerNameController.nameController.text;
                           final String nickname = registerNicknameController

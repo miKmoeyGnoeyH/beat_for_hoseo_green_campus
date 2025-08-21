@@ -1,6 +1,5 @@
 {
   "notifications": "알림",
-
   "withdrawal": "회원 탈퇴",
   "notes": "유의 사항",
   "withdrawal_notes": {
@@ -87,6 +86,7 @@
   "quest": "퀘스트",
   "quest_type": "퀘스트 타입",
   "quiz": "퀴즈",
+  "there_is_no_quiz_yet": "아직 퀴즈가 없습니다.",
   "ranking": "랭킹",
   "ranking_desc": "Neuro 획득량과 사용량 합을 기준으로 순위가 결정됩니다.",
   "register": "회원가입",
@@ -95,7 +95,8 @@
   "register_name": "이름",
   "register_name_hint": "이름을 입력해주세요.",
   "register_nickname_hint": "사용할 닉네임을 입력해 주세요.",
-  "register_sid_hint": "사용할 학번을 입력해 주세요.",
+  "register_sid_hint": "학번을 입력해 주세요.",
+  "register_4digit_hint": "ID로 사용할 4자리 숫자를 입력해 주세요.",
   "result": "결과",
   "retry": "재시도",
   "reward": "보상",
@@ -120,6 +121,7 @@
   "sign_up_success_message": "회원가입이 완료되었습니다. 로그인 후 이용해주세요.",
   "student": "학생",
   "student_id": "학번",
+  "id": "ID",
   "subjective": "주관식",
   "submit_already_checked": "이미 응답한 퀴즈입니다.",
   "submit_and_grading": "제출 및 채점",
@@ -129,14 +131,16 @@
   "tap_to_check_your_history": "기록을 확인하시려면 터치하세요!",
   "terms_of_agreement": "개인정보 수집 및 이용 동의",
   "terms_of_agreement_content": {
-    "items": "수집·이용 항목",
-    "items_content": "재학생: 이름, 대학, 학과, 학번, 서명 이미지\n기타: 이름, 서명 이미지.",
+    "items": "수집·이용 항목\n",
+    "items_content": "재학생: 이름, 대학, 학과, 학번, 서명 이미지\n기타: 이름, 서명 이미지.\n",
+    "items_content_student": "재학생: 이름, 대학, 학과, 학번, 서명 이미지\n",
+    "items_content_other": "기타: 이름, 서명 이미지.\n",
     "purpose": "수집·이용 목적\n",
-    "purpose_content": "2024 Hoseo AI Week 행사 참석 확인.",
-    "retention": "보유·이용 기간",
-    "retention_content": "행사 종료 시까지, 종료 후 즉시 폐기(본인 요청 시 즉시 폐기).",
-    "right_to_refusal": "동의를 거부할 권리 및 동의를 거부할 경우의 불이익",
-    "right_to_refusal_content": "동의를 거부할 권리가 있으며, 동의를 거부할 경우 서비스 이용이 제한됩니다."
+    "purpose_content": "2024 Hoseo AI Week 행사 참석 확인.\n",
+    "retention": "보유·이용 기간\n",
+    "retention_content": "행사 종료 시까지, 종료 후 즉시 폐기(본인 요청 시 즉시 폐기).\n",
+    "right_to_refusal": "동의를 거부할 권리 및 동의를 거부할 경우의 불이익\n",
+    "right_to_refusal_content": "동의를 거부할 권리가 있으며, 동의를 거부할 경우 서비스 이용이 제한됩니다.\n"
   },
   "terms_of_agreement_title": "개인정보 수집·이용에 대한 동의 (개인정보보호법 제 15조)",
   "to_sign_in_screen": "로그인하러 가기",
@@ -151,7 +155,7 @@
   "vote_is_not_in_progress": "투표가 진행중이지 않습니다.",
   "vote_rules": {
     "vote_rule_1": "1. 한 후보 당 최대 50 Neuro씩, 두 후보까지 투표 가능합니다.",
-    "vote_rule_2": "2. 한 훙보에 중복 투표는 불가능합니다."
+    "vote_rule_2": "2. 한 후보에 중복 투표는 불가능합니다."
   },
   "vote_success": "투표 완료",
   "vote_success_message": "투표가 완료되었습니다.",
@@ -163,5 +167,10 @@
   "where_can_i_get_neuro": "Neuro는 어디서 얻을 수 있나요?",
   "where_is_neuro_used": "Neuro는 어디에 사용되나요?",
   "why_do_i_need_to_sign": "서명을 왜 해야 하나요?",
-  "writing_answers": "답안 작성"
+  "writing_answers": "답안 작성",
+  "oss_licenses": "오픈소스 라이선스",
+  "app_inquiry": "앱 관련 문의",
+  "view_detail": "상세 보기",
+  "sign_in_sid_or_id": "학번 또는 ID",
+  "sign_in_id_hint": "학번 또는 ID를 입력해주세요."
 }

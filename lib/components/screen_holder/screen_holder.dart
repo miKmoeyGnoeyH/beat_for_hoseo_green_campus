@@ -1,4 +1,6 @@
-import 'package:Beat/extensions/buildcontext_extension.dart';
+import 'dart:developer';
+
+import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -26,21 +28,14 @@ class ScreenHolder extends StatefulWidget {
 class _ScreenHolderState extends State<ScreenHolder> {
   @override
   Widget build(BuildContext context) {
-    final UserController userController = context.read<UserController>();
-    final QuestListController questListController =
-        context.read<QuestListController>();
-    final QuizListController quizListController =
-        context.read<QuizListController>();
-    final SurveyListController surveyListController =
-        context.read<SurveyListController>();
-    final VoteListController voteController = context.read<VoteListController>();
-
     Future<void> onPullDown() {
+      log("onPullDown");
+      final UserController userController = context.read<UserController>();
       userController.add(GetMyNeuro());
-      questListController.add(DataListRequest());
-      quizListController.add(DataListRequest());
-      surveyListController.add(DataListRequest());
-      voteController.add(VoteListRequest(userController.state.authorization));
+      context.read<QuestListController>().add(DataListRequest());
+      context.read<QuizListController>().add(DataListRequest());
+      context.read<SurveyListController>().add(DataListRequest());
+      context.read<VoteListController>().add(VoteListRequest(userController.state.authorization));
       return Future.delayed(const Duration(seconds: 0));
     }
 

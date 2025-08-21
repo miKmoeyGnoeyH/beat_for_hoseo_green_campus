@@ -11,6 +11,7 @@ class UserProvider {
   final http.Client _httpClient = http.Client();
 
   Future<User> signIn(String studentId, String nickname) async {
+    log("UserProvider : signIn : studentId : $studentId, nickname : $nickname");
     final String requestUrl = dotenv.env['SIGN_IN']!;
     User user = Guest();
 
@@ -22,6 +23,8 @@ class UserProvider {
           'nickname': nickname,
         },
       ).timeout(const Duration(seconds: 5));
+
+      log(response.toString());
 
       if (response.statusCode == 200) {
         PrefsManager.setValue<String>('saved_studentId', studentId);
@@ -40,6 +43,7 @@ class UserProvider {
         user = ErrorUser('sign_in_failed_message'.tr());
       }
     } catch (e) {
+      log("UserProvider : signIn : error : ${e.toString()}");
       user = ErrorUser('connection_error'.tr());
     }
 

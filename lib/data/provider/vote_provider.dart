@@ -25,12 +25,13 @@ class VoteProvider {
 
       if (response.statusCode == 200) {
         final body = jsonDecode(utf8.decode(response.bodyBytes));
+
+
         voteListState = VoteListLoadingSuccess(VoteList.fromJson(body));
       } else {
         voteListState = VoteListLoadingError();
       }
     } catch (e) {
-      log('vote_provider : ${e.toString()}');
       voteListState = VoteListLoadingError();
     }
     return voteListState;

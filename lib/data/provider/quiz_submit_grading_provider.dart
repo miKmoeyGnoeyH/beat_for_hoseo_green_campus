@@ -47,6 +47,8 @@ class QuizSubmitGradingProvider {
 
     // "ALREADY_CHECKED"
 
+    log(result);
+
     return result;
   }
 }

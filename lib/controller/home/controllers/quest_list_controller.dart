@@ -1,6 +1,6 @@
 
-import 'package:Beat/controller/home/events/data_events.dart';
-import 'package:Beat/data/provider/data_list_provider.dart';
+import 'package:beat_flutter/controller/home/events/data_events.dart';
+import 'package:beat_flutter/data/provider/data_list_provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../data/states/data_list_state.dart';

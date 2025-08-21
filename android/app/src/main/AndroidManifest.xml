@@ -5,7 +5,7 @@
                   android:required="true"/>
 
     <application
-            android:label="Beat"
+            android:label="BEAT: Event and Activity"
             android:name="${applicationName}"
             android:icon="@mipmap/ic_launcher">
         <activity

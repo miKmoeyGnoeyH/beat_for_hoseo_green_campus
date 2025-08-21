@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:Beat/components/vote_detail/widgets/vote_desc.dart';
-import 'package:Beat/extensions/buildcontext_extension.dart';
+import 'package:beat_flutter/components/vote_detail/widgets/vote_desc.dart';
+import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

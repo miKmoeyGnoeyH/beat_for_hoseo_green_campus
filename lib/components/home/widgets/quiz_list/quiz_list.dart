@@ -23,8 +23,11 @@ class HomeQuizList extends StatelessWidget {
         if (state is DataListLoading) {
           return const CustomCircularProgressIndicator();
         } else if (state is DataListLoadingError) {
-          return CustomRefreshButton(
-              onTap: () => quizListController.add(DataListRequest()));
+          return SizedBox(
+            height: 400,
+            child: CustomRefreshButton(
+                onTap: () => quizListController.add(DataListRequest())),
+          );
         } else {
           return CustomQuizListView(list: state.dataList);
         }

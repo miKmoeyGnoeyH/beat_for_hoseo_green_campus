@@ -1,3 +1,4 @@
+// TODO: 비속어필터는 추가로 업데이트 해야됨
 const String rPrefix = r'[개갸씹좆]';
 const String rSib = r'[씹]+';
 const String rSibal = r'[시씨씹씌슈쓔쉬쉽쒸쓉]([a-zA-Z0-9ㄱ-ㅎ가-힣]*)[바발벌빠빡빨뻘파팔펄창]';
@@ -12,7 +13,7 @@ const String rAbi = r'[아애에]([a-zA-Z0-9ㄱ-ㅎ가-힣]*)[비]';
 const String rSex = r'[섹섻색샋]([a-zA-Z0-9ㄱ-ㅎ가-힣]*)[스]';
 const String rJazi = r'[자쥬]([a-zA-Z0-9ㄱ-ㅎ가-힣]*)[지]';
 const String rBozi = r'[보뷰]([a-zA-Z0-9ㄱ-ㅎ가-힣]*)[지]';
-const String rOthers = r'(코드 ㅈ같이 짜놨네 씨발럼 ㅋㅋ|진짜 이 씨발새끼 코드를 좀 깔끔하게 짜지 개좆같이 지저분하게 싸질러놔가지고 뭐 건드리기도 좆같고 개병신같은새끼가 진짜 이 씨발럼|)';
+const String rOthers = r'()';
 const String rSuffix = r'(같은|가튼|그튼|같네|같다|가따|가타|가테|가태|놈|넘|럼|람|년|련)';
 
 final RegExp customProfanityFilter = RegExp('$rPrefix*($rSib|$rSaeggi|$rJot|$rSibal|$rByeonshin|$rJotbap|$rJonna|$rAmAb|$rAmi|$rAbi|$rSex|$rJazi|$rBozi$rOthers)+$rSuffix*');

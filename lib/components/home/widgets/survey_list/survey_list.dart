@@ -23,8 +23,11 @@ class HomeSurveyList extends StatelessWidget {
         if (state is DataListLoading) {
           return const CustomCircularProgressIndicator();
         } else if (state is DataListLoadingError) {
-          return CustomRefreshButton(
-              onTap: () => surveyListController.add(DataListRequest()));
+          return SizedBox(
+            height: 400,
+            child: CustomRefreshButton(
+                onTap: () => surveyListController.add(DataListRequest())),
+          );
         } else {
           return CustomSurveyListView(list: state.dataList);
         }

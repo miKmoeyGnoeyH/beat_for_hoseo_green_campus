@@ -1,3 +1,4 @@
+import 'package:beat_flutter/components/oss_licenses/oss_licenses.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -142,7 +143,7 @@ abstract class Routes {
           return MaterialPageRoute(
             builder: (context) => MultiBlocProvider(
               providers: [
-                BlocProvider(create: (context) => RegisterSidController()),
+                BlocProvider(create: (context) => RegisterIDController()),
                 BlocProvider(create: (context) => RegisterNicknameController()),
               ],
               child: RegisterFillInformScreen(arguments),
@@ -246,6 +247,13 @@ abstract class Routes {
               create: (context) => NotificationsController(),
               child: const NotificationsScreen(),
             ),
+          );
+        }
+
+      case RouteNames.ossLicenses:
+        {
+          return MaterialPageRoute(
+            builder: (context) => const OSSLicenses(),
           );
         }
 

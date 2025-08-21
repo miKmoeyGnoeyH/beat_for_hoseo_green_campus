@@ -1,5 +1,6 @@
 
-import 'package:Beat/extensions/buildcontext_extension.dart';
+import 'package:beat_flutter/extensions/buildcontext_extension.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../data/models/neuro_history_model.dart';
@@ -25,7 +26,7 @@ class NeuroHistoryCard extends StatelessWidget {
             NeuroHistoryContentsDesc(
               type: neuroHistory.type,
               historyName: neuroHistory.historyName,
-              checkTime: neuroHistory.checkTime,
+              checkTime: DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.parse(neuroHistory.checkTime)),
             ),
             const SizedBox(width: 16),
             QuestCardIconAndNeuro(

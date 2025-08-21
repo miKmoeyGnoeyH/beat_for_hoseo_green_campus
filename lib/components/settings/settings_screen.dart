@@ -1,8 +1,12 @@
-import 'package:Beat/components/global/widgets/buttons/custom_wide_button.dart';
-import 'package:Beat/components/global/widgets/texts/custom_headline_medium.dart';
-import 'package:Beat/extensions/buildcontext_extension.dart';
-import 'package:Beat/managers/navigator/navigator_key_manager.dart';
-import 'package:Beat/managers/navigator/routes.dart';
+import 'package:beat_flutter/components/global/widgets/buttons/custom_label_large_button.dart';
+import 'package:beat_flutter/components/global/widgets/buttons/custom_wide_button.dart';
+import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.dart';
+import 'package:beat_flutter/components/global/widgets/texts/custom_headline_medium.dart';
+import 'package:beat_flutter/components/global/widgets/texts/custom_headline_small.dart';
+import 'package:beat_flutter/components/global/widgets/texts/custom_title_medium.dart';
+import 'package:beat_flutter/extensions/buildcontext_extension.dart';
+import 'package:beat_flutter/managers/navigator/navigator_key_manager.dart';
+import 'package:beat_flutter/managers/navigator/routes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,6 +42,37 @@ class SettingsScreen extends StatelessWidget {
               },
               buttonText: context.tr('withdrawal'),
               buttonColor: Colors.redAccent,
+            ),
+            const SizedBox(height: 20),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CustomTitleMedium(
+                  text: "oss_licenses".tr(),
+                ),
+                const SizedBox(height: 5),
+                GestureDetector(
+                  onTap: () {
+                    NavigatorKeyManager().pushNamed(RouteNames.ossLicenses);
+                  },
+                  child: CustomBodyLarge(
+                    text: "view_detail".tr(),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CustomTitleMedium(
+                  text: "app_inquiry".tr(),
+                ),
+                const SizedBox(height: 5),
+                CustomBodyLarge(
+                  text: "20255720@vision.hoseo.edu".tr(),
+                ),
+              ],
             ),
           ],
         ),

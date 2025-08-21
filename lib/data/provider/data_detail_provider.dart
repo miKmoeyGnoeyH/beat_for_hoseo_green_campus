@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 
 import 'package:flutter/cupertino.dart';
@@ -32,6 +33,7 @@ class DataDetailProvider {
 
       if (response.statusCode == 200) {
         DataModel data;
+        log(response.body.toString());
         final body = jsonDecode(utf8.decode(response.bodyBytes));
 
         switch (dataModel.runtimeType) {
@@ -49,7 +51,7 @@ class DataDetailProvider {
         return DataDetailModelLoadingError();
       }
     } catch (e) {
-      debugPrint(e.toString());
+      log("DataDetailProvider : fetchData : error : ${e.toString()}");
       return DataDetailModelLoadingError();
     }
   }

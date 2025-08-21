@@ -28,24 +28,23 @@ class _VoteScreenState extends State<VoteScreen> {
         builder: (context, state) {
       if (state is VoteListLoading) {
         return const CustomCircularProgressIndicator();
+      } else if (state is VoteListInitial) {
+        return const CustomCircularProgressIndicator();
       } else if (state is VoteListLoadingError) {
         return CustomRefreshButton(
             onTap: () => voteController
                 .add(VoteListRequest(userController.state.authorization)));
       } else {
-        return Center(
-          child: ListView.separated(
-            shrinkWrap: true,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            itemCount: (state as VoteListLoadingSuccess)
-                .voteList
-                .bettingListFormList
-                .length,
-            separatorBuilder: (context, index) => const SizedBox(height: 20),
-            itemBuilder: (context, index) => VoteCard(
-              index: index,
-              voteModel: (state).voteList.bettingListFormList[index],
-            ),
+        return ListView.separated(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          itemCount: (state as VoteListLoadingSuccess)
+              .voteList
+              .bettingListFormList
+              .length,
+          separatorBuilder: (context, index) => const SizedBox(height: 20),
+          itemBuilder: (context, index) => VoteCard(
+            index: index,
+            voteModel: (state).voteList.bettingListFormList[index],
           ),
         );
       }

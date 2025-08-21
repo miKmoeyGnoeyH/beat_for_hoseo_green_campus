@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:Beat/managers/prefs/prefs_manager.dart';
+import 'package:beat_flutter/managers/prefs/prefs_manager.dart';
 import 'package:bloc/bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -44,6 +44,7 @@ class UserController extends Bloc<UserEvent, User> {
   }
 
   Future<void> _signIn(SignIn event, Emitter<User> emit) async {
+    log("UserController : _signIn");
     emit(IsLoading());
 
     User user;

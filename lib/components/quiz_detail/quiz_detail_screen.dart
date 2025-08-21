@@ -1,5 +1,3 @@
-
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,7 +37,9 @@ class QuizDetailScreen extends StatelessWidget {
                 ? SingleChildScrollView(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 16),
+                        horizontal: 20,
+                        vertical: 16,
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -104,18 +104,20 @@ class QuizDetailScreen extends StatelessWidget {
       {required BuildContext context,
       required List<QuizQuestion> questionList,
       required QuizDetailModel quizDetailModel}) async {
-
     final QuizSubmitGradingProvider quizSubmitGradingProvider =
         QuizSubmitGradingProvider();
     List<Map<String, dynamic>> questionToMap = [];
-    final String authorization = context.read<UserController>().state.authorization;
+    final String authorization =
+        context.read<UserController>().state.authorization;
 
     for (QuizQuestion question in questionList) {
       Map<String, dynamic> questionToJson = question.questionToJson!();
 
       if (questionToJson.isEmpty) {
         customShowDialog(
-            context: context, title: context.tr('error'), content: context.tr('submit_unanswered'));
+            context: context,
+            title: context.tr('error'),
+            content: context.tr('submit_unanswered'));
         return;
       }
       questionToMap.add(questionToJson);
@@ -135,13 +137,20 @@ class QuizDetailScreen extends StatelessWidget {
     if (context.mounted) {
       if (result.isEmpty) {
         await customShowDialog(
-            context: context, title: context.tr('error'), content: context.tr('connection_error'));
+            context: context,
+            title: context.tr('error'),
+            content: context.tr('connection_error'));
       } else if (result == "\"ALREADY_CHECKED\"") {
         await customShowDialog(
-            context: context, title: context.tr('error'), content: context.tr('submit_already_checked'));
+            context: context,
+            title: context.tr('error'),
+            content: context.tr('submit_already_checked'));
       } else {
         List<String> resultSplit = result.split('\n');
-        await customShowDialog(context: context, title: resultSplit.length > 1 ? resultSplit[0] : null, content: resultSplit.length > 1 ? resultSplit[1] : resultSplit[0]);
+        await customShowDialog(
+            context: context,
+            title: resultSplit.length > 1 ? resultSplit[0] : null,
+            content: resultSplit.length > 1 ? resultSplit[1] : resultSplit[0]);
       }
     }
     NavigatorKeyManager().pop();

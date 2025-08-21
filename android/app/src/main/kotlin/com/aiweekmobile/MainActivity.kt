@@ -1,4 +1,4 @@
-package com.dclab.beat
+package com.aiweekmobile
 
 import io.flutter.embedding.android.FlutterActivity
 

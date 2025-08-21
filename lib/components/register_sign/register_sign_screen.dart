@@ -1,6 +1,6 @@
-import 'package:Beat/controller/register_fill_inform/register_sign_controller.dart';
-import 'package:Beat/extensions/buildcontext_extension.dart';
-import 'package:Beat/managers/navigator/navigator_key_manager.dart';
+import 'package:beat_flutter/controller/register_fill_inform/register_sign_controller.dart';
+import 'package:beat_flutter/extensions/buildcontext_extension.dart';
+import 'package:beat_flutter/managers/navigator/navigator_key_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
