@@ -1,6 +1,7 @@
  import 'dart:developer';
 import 'dart:io';
 
+import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,7 @@ Future<void> main() async {
 
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await EasyLocalization.ensureInitialized();
-  await dotenv.load(fileName: "assets/config/.env");
+  await DotEnvManager().init();
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

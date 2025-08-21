@@ -1,5 +1,3 @@
-
-
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +16,8 @@ class CustomWideButton extends StatelessWidget {
     this.borderWidth,
     this.borderColor,
     this.padding,
+    this.autoSizeText = true,
+    this.buttonTextStyle,
   });
 
   @override
@@ -31,14 +31,31 @@ class CustomWideButton extends StatelessWidget {
         borderWidth: borderWidth ?? 0.2,
         child: Center(
           child: Padding(
-            padding: padding ?? const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
-            child: AutoSizeText(
-              buttonText ?? '',
-              style: CustomTexts.subtitleLarge.copyWith(
-                color: textColor ?? context.appColors.onPrimary,
-              ),
-              maxLines: maxLines ?? 1,
-            ),
+            padding: padding ??
+                const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
+            child: autoSizeText
+                ? AutoSizeText(
+                    buttonText ?? '',
+                    style: buttonTextStyle != null
+                        ? buttonTextStyle!.copyWith(
+                            color: textColor ?? context.appColors.onPrimary,
+                          )
+                        : CustomTexts.subtitleLarge.copyWith(
+                            color: textColor ?? context.appColors.onPrimary,
+                          ),
+                    maxLines: maxLines ?? 1,
+                  )
+                : Text(
+                    buttonText ?? '',
+                    style: buttonTextStyle != null
+                        ? buttonTextStyle!.copyWith(
+                            color: textColor ?? context.appColors.onPrimary,
+                          )
+                        : CustomTexts.subtitleLarge.copyWith(
+                            color: textColor ?? context.appColors.onPrimary,
+                          ),
+                    maxLines: maxLines ?? 1,
+                  ),
           ),
         ),
       ),
@@ -53,4 +70,6 @@ class CustomWideButton extends StatelessWidget {
   final double? borderWidth;
   final Color? borderColor;
   final EdgeInsetsGeometry? padding;
+  final bool autoSizeText;
+  final TextStyle? buttonTextStyle;
 }

@@ -26,6 +26,13 @@ class LocalizationManager {
   String homeSteps(String arg) => "home".tr(gender: "steps", args: [arg]);
   String homeTotalSteps(String arg) => "home".tr(gender: "total_steps", args: [arg]);
 
+  // ranking
+  String get rankingRanking => "rank".tr(gender: "ranking");
+  String get rankingPoint => "rank".tr(gender: "point");
+  String get rankingStepCount => "rank".tr(gender: "step_count");
+  String get rankingRankingDescPoint => "rank".tr(gender: "ranking_desc_point");
+  String get rankingRankingDescStepCount => "rank".tr(gender: "ranking_desc_step_count");
+
   // bottom navigation bar
   String get bnbQR => "bottom_navigation_bar".tr(gender: "qr");
   String get bnbHome => "bottom_navigation_bar".tr(gender: "home");

@@ -13,14 +13,14 @@ class RankingListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
-      padding: const EdgeInsets.symmetric(vertical: 16),
+      padding: EdgeInsets.zero,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: rankingList.length,
       separatorBuilder: (BuildContext context, int index) =>
       const SizedBox(height: 10),
       itemBuilder: (BuildContext context, int index) =>
-          RankingCard(rankingList[index] as RankModel, index + 1),
+          RankingCard(rankingList[index] as RankItemModelTest, index + 1),
     );
   }
 

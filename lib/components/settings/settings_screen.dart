@@ -1,8 +1,6 @@
-import 'package:beat_flutter/components/global/widgets/buttons/custom_label_large_button.dart';
 import 'package:beat_flutter/components/global/widgets/buttons/custom_wide_button.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_headline_medium.dart';
-import 'package:beat_flutter/components/global/widgets/texts/custom_headline_small.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_title_medium.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/navigator/navigator_key_manager.dart';
@@ -80,5 +78,5 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  SettingsScreen({super.key});
+  const SettingsScreen({super.key});
 }

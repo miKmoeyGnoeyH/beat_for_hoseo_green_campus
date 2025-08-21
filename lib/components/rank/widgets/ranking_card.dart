@@ -32,6 +32,6 @@ class RankingCard extends StatelessWidget {
     );
   }
 
-  final RankModel ranking;
+  final RankItemModelTest ranking;
   final int rank;
 }

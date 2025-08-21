@@ -55,7 +55,7 @@ class DataListProvider {
             break;
           case DataListType.quiz:
             for (var data in body) {
-              log("DataListProvider : fetchDataList : body.toString : ${body.toString()}");
+              // log("DataListProvider : fetchDataList : body.toString : ${body.toString()}");
               dataList.add(QuizModel.fromJson(data));
             }
             break;
@@ -65,6 +65,7 @@ class DataListProvider {
             }
           case DataListType.rank:
             {
+              log("DataListProvider : fetchDataList : DataListType.rank : body.toString() : ${body.toString()}");
               for (var data in body) {
                 dataList.add(RankModel.fromJson(data));
               }
@@ -82,7 +83,7 @@ class DataListProvider {
       } else {
         return DataListLoadingError();
       }
-    } catch (e, s) {
+    } catch (e) {
       log(e.toString());
       // log(s.toString());
       return DataListLoadingError();

@@ -14,6 +14,13 @@
     "steps": "{} 걸음",
     "total_steps": "총 {} 걸음"
   },
+  "rank": {
+    "ranking": "랭킹",
+    "point": "포인트",
+    "step_count": "누적 걸음",
+    "ranking_desc_point": "포인트 획득량과 사용량 합을 기준으로 순위가 결정됩니다.",
+    "ranking_desc_step_count": "순위는 매 시 정각에 갱신됩니다."
+  },
   "bottom_navigation_bar": {
     "qr": "QR",
     "home": "Home"

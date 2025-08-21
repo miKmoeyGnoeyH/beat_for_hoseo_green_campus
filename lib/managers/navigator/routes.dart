@@ -99,7 +99,7 @@ abstract class Routes {
           return MaterialPageRoute(
             builder: (context) => BlocProvider(
               create: (context) => RankController(),
-              child: const RankingScreen(),
+              child: RankingScreen(),
             ),
           );
         }
@@ -198,7 +198,7 @@ abstract class Routes {
         }
 
       case RouteNames.settings:
-        return MaterialPageRoute(builder: (context) => SettingsScreen());
+        return MaterialPageRoute(builder: (context) => const SettingsScreen());
 
       case RouteNames.signIn:
         return MaterialPageRoute(

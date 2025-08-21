@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
@@ -9,12 +8,9 @@ import '../../controller/home/controllers/quiz_list_controller.dart';
 import '../../controller/home/controllers/survey_list_controller.dart';
 import '../../controller/home/events/data_events.dart';
 import '../../controller/user_controller.dart';
-import '../../controller/vote/controllers/vote_list_controller.dart';
-import '../../controller/vote/event/vote_list_event.dart';
 import '../global/widgets/custom_scaffold.dart';
 import '../home/home_screen.dart';
 import '../qr/qr_screen.dart';
-import '../vote/vote_screen.dart';
 import 'widgets/home_appbar.dart';
 import 'widgets/home_bottom_navigation_bar.dart';
 

@@ -15,7 +15,7 @@ class RankAndNickname extends StatelessWidget {
   });
 
   final int rank;
-  final RankModel ranking;
+  final RankItemModelTest ranking;
 
   @override
   Widget build(BuildContext context) {

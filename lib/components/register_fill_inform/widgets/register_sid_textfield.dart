@@ -1,6 +1,4 @@
-import 'dart:developer';
 
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../controller/register_fill_inform/register_sid_controller.dart';
