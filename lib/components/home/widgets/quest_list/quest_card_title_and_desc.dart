@@ -1,5 +1,6 @@
 
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
+import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:flutter/material.dart';
 
 import '../../../global/widgets/texts/custom_body_large.dart';
@@ -7,12 +8,14 @@ import '../../../global/widgets/texts/custom_label_large.dart';
 import '../../../global/widgets/texts/custom_subtitle_large.dart';
 
 class QuestCardTitleAndDesc extends StatelessWidget {
-  const QuestCardTitleAndDesc({
+  QuestCardTitleAndDesc({
     super.key,
     required this.index,
     required this.eventName,
     this.descriptionShort,
   });
+
+  final LocalizationManager localizationManager = LocalizationManager();
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +25,7 @@ class QuestCardTitleAndDesc extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CustomLabelLarge(
-            text: 'Quest ${(index + 1).toString().padLeft(2, '0')}',
+            text: localizationManager.homeQuestNo((index + 1).toString().padLeft(2, '0')),
             textColor: context.appColors.primary,
           ),
           const SizedBox(height: 5),

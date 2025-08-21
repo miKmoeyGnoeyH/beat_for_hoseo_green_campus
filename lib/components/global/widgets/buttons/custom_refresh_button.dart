@@ -1,14 +1,16 @@
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
-import 'package:easy_localization/easy_localization.dart';
+import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:flutter/material.dart';
 
 import '../texts/custom_body_large.dart';
 
 class CustomRefreshButton extends StatelessWidget {
-  const CustomRefreshButton({
+  CustomRefreshButton({
     super.key,
     this.onTap,
   });
+
+  final LocalizationManager localizationManager = LocalizationManager();
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +26,8 @@ class CustomRefreshButton extends StatelessWidget {
                   Icons.refresh_rounded,
                   color: context.appColors.onBackground,
                 ),
-                SizedBox(height: 10),
-                CustomBodyLarge(text: context.tr('connection_error')),
+                const SizedBox(height: 10),
+                CustomBodyLarge(text: localizationManager.errorsConnectionError),
               ],
             ),
           ),

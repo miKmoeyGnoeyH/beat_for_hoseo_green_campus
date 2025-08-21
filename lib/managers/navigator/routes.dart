@@ -258,7 +258,7 @@ abstract class Routes {
         }
 
       default:
-        return MaterialPageRoute(builder: (context) => const HomeScreen());
+        return MaterialPageRoute(builder: (context) => HomeScreen());
     }
   }
 }

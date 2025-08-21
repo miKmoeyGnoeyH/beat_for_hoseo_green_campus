@@ -1,5 +1,6 @@
 
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
+import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
@@ -24,9 +25,9 @@ class HomeContents extends StatefulWidget {
 
 class _HomeContentsState extends State<HomeContents> {
   final List<HomeContentsItem> _contents = [
-    HomeContentsItem('quest'.tr(), const HomeQuestList()),
-    HomeContentsItem('quiz'.tr(), const HomeQuizList()),
-    HomeContentsItem('survey'.tr(), const HomeSurveyList()),
+    HomeContentsItem(LocalizationManager().homeQuest, const HomeQuestList()),
+    HomeContentsItem(LocalizationManager().homeQuiz, const HomeQuizList()),
+    HomeContentsItem(LocalizationManager().homeSurvey, const HomeSurveyList()),
   ];
   int _currentIndex = 0;
 

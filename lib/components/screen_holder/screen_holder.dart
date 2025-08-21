@@ -29,13 +29,12 @@ class _ScreenHolderState extends State<ScreenHolder> {
   @override
   Widget build(BuildContext context) {
     Future<void> onPullDown() {
-      log("onPullDown");
       final UserController userController = context.read<UserController>();
       userController.add(GetMyNeuro());
       context.read<QuestListController>().add(DataListRequest());
       context.read<QuizListController>().add(DataListRequest());
       context.read<SurveyListController>().add(DataListRequest());
-      context.read<VoteListController>().add(VoteListRequest(userController.state.authorization));
+      // context.read<VoteListController>().add(VoteListRequest(userController.state.authorization));
       return Future.delayed(const Duration(seconds: 0));
     }
 
@@ -68,8 +67,8 @@ class _ScreenHolderState extends State<ScreenHolder> {
 
   final List<Widget> _screens = [
     const QrScreen(),
-    const HomeScreen(),
-    const VoteScreen()
+    HomeScreen(),
+    // const VoteScreen()
   ];
   int _selectedIndex = 1;
 }

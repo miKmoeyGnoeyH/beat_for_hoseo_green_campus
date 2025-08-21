@@ -1,4 +1,28 @@
 {
+  "home": {
+    "points_in_hand": "보유 포인트",
+    "tap_to_check_your_history": "기록을 확인하시려면 터치하세요!",
+    "quest": "퀘스트",
+    "quest_no": "Quest {}",
+    "quiz": "퀴즈",
+    "quiz_no": "Quiz {}",
+    "survey": "설문",
+    "survey_no": "Survey {}",
+    "survey_desc": "클릭 시 설문 웹페이지로 이동합니다.",
+    "there_is_no_quiz_yet": "아직 퀴즈가 없습니다.",
+    "step_count": "걸음 수",
+    "steps": "{} 걸음",
+    "total_steps": "총 {} 걸음"
+  },
+  "bottom_navigation_bar": {
+    "qr": "QR",
+    "home": "Home"
+  },
+  "errors": {
+    "connection_error": "인터넷 연결상태를 확인해 주세요."
+  },
+
+  "__comment__": "------------------Old-------------------",
   "notifications": "알림",
   "withdrawal": "회원 탈퇴",
   "notes": "유의 사항",

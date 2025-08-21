@@ -36,7 +36,7 @@ class _InfoImagesState extends State<InfoImages> {
         } else if (state is InfoImageLoading) {
           return const CustomCircularProgressIndicator();
         } else {
-          return const CustomRefreshButton();
+          return CustomRefreshButton();
         }
       },
     );

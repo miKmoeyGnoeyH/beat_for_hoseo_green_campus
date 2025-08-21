@@ -39,7 +39,7 @@ class InfoListCard extends StatelessWidget {
         } else if (state is InfoListLoading) {
           return const CustomCircularProgressIndicator();
         } else {
-          return const CustomRefreshButton();
+          return CustomRefreshButton();
         }
       },
     );
