@@ -28,7 +28,13 @@ class _SignPreviewState extends State<SignPreview> {
       borderWidth: 0.5,
       color: context.appColors.background,
       child: registerSignController.sign.isNotEmpty
-          ? Image.memory(registerSignController.sign)
+          ? Center(
+              child: Image.memory(
+                registerSignController.sign,
+                fit: BoxFit.contain,
+                // alignment: Alignment.center,
+              ),
+            )
           : Center(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),

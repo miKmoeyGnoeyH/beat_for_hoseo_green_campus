@@ -1,8 +1,8 @@
 import 'package:flutter/services.dart';
 
-FilteringTextInputFormatter onlyEnglishAndKoreanInputFormatter() {
+FilteringTextInputFormatter onlyEnglishAndKoreanAndNumberInputFormatter() {
   return FilteringTextInputFormatter.allow(
-      RegExp(r'[a-zA-Zㄱ-ㅎ가-힣]'));
+      RegExp(r'[a-zA-Zㄱ-ㅎ가-힣0-9]'));
 }
 
 FilteringTextInputFormatter onlyDigitsInputFormatter() => FilteringTextInputFormatter.allow(RegExp(r'[0-9]'));

@@ -1,4 +1,5 @@
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
+import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -53,6 +54,8 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
   final RegisterAgreementController registerAgreementController =
       RegisterAgreementController();
 
+  final LocalizationManager localizationManager = LocalizationManager();
+
   late final int maxIDLength;
 
   @override
@@ -77,15 +80,27 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
             if (state is IDSent) {
               customShowDialog(
                 context: context,
-                title: context.tr('email_sent'),
-                content: context.tr('email_sent_message'),
+                title: registerOrganizationController!.organization ==
+                        "student".tr()
+                    ? localizationManager.rfiEmailSentTitle
+                    : localizationManager.rfiIdCheckTitle,
+                content: registerOrganizationController!.organization ==
+                        "student".tr()
+                    ? localizationManager.rfiEmailSentMessage
+                    : localizationManager.rfiIdCheckMessage,
               );
             } else if (state is IDError) {
               _isEmailButtonEnabled = true;
               customShowDialog(
                 context: context,
-                title: context.tr('email_sent_error'),
-                content: context.tr('email_sent_error_message'),
+                title: registerOrganizationController!.organization ==
+                        "student".tr()
+                    ? localizationManager.rfiEmailSentErrorTitle
+                    : localizationManager.rfiIdCheckErrorTitle,
+                content: registerOrganizationController!.organization ==
+                        "student".tr()
+                    ? localizationManager.rfiEmailSentErrorMessage
+                    : localizationManager.rfiIdCheckErrorMessage,
               );
             }
           },
@@ -95,22 +110,22 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
             if (state is NicknameChecked) {
               customShowDialog(
                 context: context,
-                title: context.tr('nickname_checked'),
-                content: context.tr('nickname_checked_message'),
+                title: localizationManager.rfiNicknameCheckedTitle,
+                content: localizationManager.rfiNicknameCheckedMessage,
               );
             } else if (state is NicknameAlreadyTaken) {
               _isNicknameButtonEnabled = true;
               customShowDialog(
                 context: context,
-                title: context.tr('nickname_unchecked'),
-                content: context.tr('nickname_unchecked_message'),
+                title: localizationManager.rfiNicknameUncheckedTitle,
+                content: localizationManager.rfiNicknameUncheckedMessage,
               );
             } else if (state is NicknameError) {
               _isNicknameButtonEnabled = true;
               customShowDialog(
                 context: context,
-                title: context.tr('nickname_check_error'),
-                content: context.tr('nickname_check_error_message'),
+                title: localizationManager.rfiNicknameCheckErrorTitle,
+                content: localizationManager.rfiNicknameCheckErrorMessage,
               );
             }
           },
@@ -122,7 +137,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
         child: CustomScaffold(
           backgroundColor: context.appColors.background,
           appBar: RegisterBasicAppbar(
-            text: context.tr('register_fill_inform'),
+            text: localizationManager.rfiAppbarTitle,
           ),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
@@ -148,8 +163,8 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                   CustomSubtitleLarge(
                     text: registerOrganizationController!.organization ==
                             "student".tr()
-                        ? context.tr('student_id')
-                        : context.tr('id'),
+                        ? localizationManager.rfiStudentId
+                        : localizationManager.rfiId,
                   ),
                   Row(
                     children: [
@@ -158,8 +173,8 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                           hintText:
                               registerOrganizationController!.organization ==
                                       "student".tr()
-                                  ? context.tr("register_sid_hint")
-                                  : context.tr("register_4digit_hint"),
+                                  ? localizationManager.rfiStudentIdHint
+                                  : localizationManager.rfiIdHint,
                           onChanged: (value) {
                             registerSidController.add(IDChanged());
                             if (value.length >= maxIDLength) {
@@ -190,8 +205,8 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                             buttonText:
                                 registerOrganizationController!.organization ==
                                         "student".tr()
-                                    ? context.tr('validate_mail')
-                                    : context.tr("validate_nickname"),
+                                    ? localizationManager.rfiValidateMail
+                                    : localizationManager.rfiValidateId,
                             buttonColor: _isEmailButtonEnabled
                                 ? context.appColors.primary
                                 : context.appColors.disabled,
@@ -201,7 +216,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                     ],
                   ),
                   const SizedBox(height: 20),
-                  CustomSubtitleLarge(text: context.tr('nickname')),
+                  CustomSubtitleLarge(text: localizationManager.rfiNickname),
                   Row(
                     children: [
                       RegisterNicknameTextField(
@@ -230,21 +245,23 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                                     // 닉네임에 초성이 포함된 경우
                                     if (RegExp(r'[ㅏ-ㅣㄱ-ㅎ]').hasMatch(text)) {
                                       customShowDialog(
-                                          context: context,
-                                          title: context
-                                              .tr('inapropriate_nickname'),
-                                          content: context.tr(
-                                              'nickname_has_initial_consonant'));
+                                        context: context,
+                                        title: localizationManager
+                                            .rfiInappropriateNickname,
+                                        content: localizationManager
+                                            .rfiNicknameHasInitialConsonant,
+                                      );
                                     }
                                     // 닉네임에 비속어가 포함된 경우
                                     else if (customProfanityFilter
                                         .hasMatch(text)) {
                                       customShowDialog(
-                                          context: context,
-                                          title: context
-                                              .tr('inapropriate_nickname'),
-                                          content: context.tr(
-                                              'inapropriate_nickname_message'));
+                                        context: context,
+                                        title: localizationManager
+                                            .rfiInappropriateNickname,
+                                        content: localizationManager
+                                            .rfiInappropriateNicknameMessage,
+                                      );
                                     } else {
                                       _isNicknameButtonEnabled = false;
                                       registerNicknameController
@@ -252,7 +269,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                                     }
                                   }
                                 : () {},
-                            buttonText: context.tr('validate_nickname'),
+                            buttonText: localizationManager.rfiValidateNickname,
                             buttonColor: _isNicknameButtonEnabled
                                 ? context.appColors.primary
                                 : context.appColors.disabled,
@@ -263,9 +280,9 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                   ),
                   const SizedBox(height: 20),
                   CustomSubtitleLarge(
-                      text: context.tr('why_do_i_need_to_sign')),
+                      text: localizationManager.rfiWhyDoINeedToSign),
                   const SizedBox(height: 10),
-                  CustomBodyLarge(text: context.tr('wdints_content')),
+                  CustomBodyLarge(text: localizationManager.rfiWdintsContent),
                   const SizedBox(height: 20),
                   CustomWideButton(
                     onTap: () => NavigatorKeyManager().pushNamed(
@@ -274,7 +291,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                         registerSignController,
                       ),
                     ),
-                    buttonText: context.tr('sign'),
+                    buttonText: localizationManager.rfiSign,
                     buttonColor: context.appColors.primary,
                   ),
                   const SizedBox(height: 20),
@@ -325,11 +342,9 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                                           customShowDialog(
                                               context: context,
                                               title:
-                                                  context.tr('sign_up_success'),
-                                              content: context.tr(
-                                                  'sign_up_success_message'),
-                                              buttonText: context
-                                                  .tr('to_sign_in_screen'),
+                                                  localizationManager.rfiSignUpSuccess,
+                                              content: localizationManager.rfiSignUpSuccessMessage,
+                                              buttonText: localizationManager.rfiToSignInScreen,
                                               onTap: () {
                                                 NavigatorKeyManager()
                                                     .pushNamedAndRemoveUntil(
@@ -343,9 +358,8 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                                         {
                                           customShowDialog(
                                             context: context,
-                                            title: context.tr('sign_up_failed'),
-                                            content: context
-                                                .tr('sign_up_failed_message'),
+                                            title: localizationManager.rfiSignUpFailed,
+                                            content: localizationManager.rfiSignUpFailedMessage,
                                           ),
                                           _isSignUpButtonEnabled = true,
                                         }
@@ -357,7 +371,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                   backgroundColor: _isSignUpButtonEnabled
                       ? context.appColors.primary
                       : context.appColors.disabled,
-                  text: context.tr('sign_up'),
+                  text: localizationManager.rfiSignUp,
                   textColor: _isSignUpButtonEnabled
                       ? context.appColors.onPrimary
                       : context.appColors.onBackground,

@@ -15,6 +15,7 @@ class TermsOfAgreementCheckbox extends StatelessWidget {
     return Checkbox(
       value: registerAgreementController.isAgreementChecked,
       activeColor: context.appColors.primary,
+      checkColor: context.appColors.onPrimary,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),

@@ -23,7 +23,7 @@ class RegisterFillInformTextField extends StatelessWidget {
           textEditingController: textEditingController,
           maxLength: 6,
           onChanged: onChanged,
-          inputFormatters: [onlyEnglishAndKoreanInputFormatter()],
+          inputFormatters: [onlyEnglishAndKoreanAndNumberInputFormatter()],
           hintText: hintText,
         ),
       ],

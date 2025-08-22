@@ -22,7 +22,7 @@ class RegisterNicknameTextField extends StatelessWidget {
         textEditingController: registerNicknameController.nicknameController,
         hintText: context.tr("register_nickname_hint"),
         maxLength: 10,
-        inputFormatters: [onlyEnglishAndKoreanInputFormatter()],
+        inputFormatters: [onlyEnglishAndKoreanAndNumberInputFormatter()],
         onChanged: onChanged,
       ),
     );

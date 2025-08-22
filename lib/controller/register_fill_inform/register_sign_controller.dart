@@ -2,12 +2,13 @@ import 'dart:typed_data';
 
 import 'package:hand_signature/signature.dart';
 
-
 class RegisterSignController {
   final HandSignatureControl handSignatureControl = HandSignatureControl(
-    threshold: 5.0,
-    smoothRatio: 1,
-    velocityRange: 5.0,
+    initialSetup: const SignaturePathSetup(
+      threshold: 5.0,
+      smoothRatio: 1,
+      velocityRange: 5.0,
+    ),
   );
 
   RegisterSignController();

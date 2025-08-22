@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
@@ -21,7 +23,7 @@ class IDCheckProvider {
       if (response.statusCode == 200) {
         emailState = IDSent();
       } else {
-        emailState = IDError();
+        throw Exception();
       }
     } catch (e) {
       emailState = IDError();
@@ -42,10 +44,12 @@ class IDCheckProvider {
       }))
           .timeout(const Duration(seconds: 5));
 
+      log("IDCheckProvider : idRequest : response : $response");
+
       if (response.statusCode == 200) {
         idState = IDSent();
       } else {
-        idState = IDError();
+        throw Exception();
       }
     } catch (e) {
       idState = IDError();

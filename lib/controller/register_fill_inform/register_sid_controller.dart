@@ -22,7 +22,7 @@ class RegisterIDController extends Bloc<IDRequestEvent, IDState> {
   RegisterIDController() : super(IDNotSent()) {
     on<IDChanged>((event, emit) => emit(IDNotSent()));
     on<EmailRequest>(_emailRequest);
-    on<IDRequestEvent>(_idRequest);
+    on<IDRequest>(_idRequest);
   }
 
   Future<void> _emailRequest(
@@ -45,7 +45,7 @@ class RegisterIDController extends Bloc<IDRequestEvent, IDState> {
 
     final String id = idController.text;
 
-    IDState idState = await _idCheckProvider.emailRequest(id);
+    IDState idState = await _idCheckProvider.idRequest(id);
     emit(idState);
 
     if (idState is! IDSent) {
