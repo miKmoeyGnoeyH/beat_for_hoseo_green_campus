@@ -1,4 +1,3 @@
-
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:flutter/material.dart';
@@ -38,15 +37,16 @@ class _HomeContentsState extends State<HomeContents> {
           children: [
             for (int i = 0; i < _contents.length; i++)
               HomeContentsTabButton(
-                  onTap: () {
-                    setState(() {
-                      _currentIndex = i;
-                    });
-                  },
-                  title: _contents[i].title,
-                  textColor: i == _currentIndex
-                      ? context.appColors.primary
-                      : context.appColors.onBackground),
+                onTap: () {
+                  setState(() {
+                    _currentIndex = i;
+                  });
+                },
+                title: _contents[i].title,
+                textColor: i == _currentIndex
+                    ? context.appColors.primary
+                    : context.appColors.onBackground,
+              ),
           ],
         ),
         _contents[_currentIndex].content,

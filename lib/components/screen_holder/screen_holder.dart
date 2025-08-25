@@ -1,14 +1,12 @@
-
+import 'package:beat_flutter/controller/home/controllers/quest_list_controller.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../controller/home/controllers/quest_list_controller.dart';
 import '../../controller/home/controllers/quiz_list_controller.dart';
 import '../../controller/home/controllers/survey_list_controller.dart';
 import '../../controller/home/events/data_events.dart';
 import '../../controller/user_controller.dart';
-import '../global/widgets/custom_scaffold.dart';
 import '../home/home_screen.dart';
 import '../qr/qr_screen.dart';
 import 'widgets/home_appbar.dart';
@@ -34,24 +32,45 @@ class _ScreenHolderState extends State<ScreenHolder> {
       return Future.delayed(const Duration(seconds: 0));
     }
 
-    return CustomScaffold(
-      onPullDown: onPullDown,
-      appBar: const HomeAppbar(),
-      body: _screens[_selectedIndex],
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(
-              color: context.appColors.borderColor,
-              width: 0.1,
+    return Scaffold(
+      body: Container(
+        color: context.appColors.surface,
+        child: SafeArea(
+          top: false,
+          bottom: false,
+          child: NestedScrollView(
+            headerSliverBuilder: (context, innerBoxIsScrolled) => const [
+              HomeAppbar(),
+            ],
+            body: RefreshIndicator(
+              color: context.appColors.primary,
+              onRefresh: onPullDown,
+              notificationPredicate: (n) => true,
+              child: ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: EdgeInsets.zero,
+                children: [
+                  _screens[_selectedIndex],
+                ],
+              ),
             ),
           ),
         ),
-        child: HomeBottomNavigationBar(
-          onTap: _setIndex,
-          selectedIndex: _selectedIndex,
-        ),
       ),
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            border: Border(
+              top: BorderSide(
+                color: context.appColors.borderColor,
+                width: 0.1,
+              ),
+            ),
+          ),
+          child: HomeBottomNavigationBar(
+            onTap: _setIndex,
+            selectedIndex: _selectedIndex,
+          ),
+        ),
     );
   }
 

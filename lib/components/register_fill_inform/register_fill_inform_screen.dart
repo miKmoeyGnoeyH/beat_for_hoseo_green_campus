@@ -169,6 +169,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                   Row(
                     children: [
                       RegisterSIDTextField(
+                        maxLength: maxIDLength,
                           registerSidController: registerSidController,
                           hintText:
                               registerOrganizationController!.organization ==

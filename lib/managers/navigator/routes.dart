@@ -1,4 +1,5 @@
 import 'package:beat_flutter/components/oss_licenses/oss_licenses.dart';
+import 'package:beat_flutter/controller/home/controllers/quest_list_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -23,7 +24,6 @@ import '../../components/vote_detail/vote_detail_screen.dart';
 import '../../components/vote_result/vote_result_screen.dart';
 import '../../components/withdrawal/withdrawal_screen.dart';
 import '../../controller/home/controllers/data_controller.dart';
-import '../../controller/home/controllers/quest_list_controller.dart';
 import '../../controller/home/controllers/quiz_list_controller.dart';
 import '../../controller/home/controllers/survey_list_controller.dart';
 import '../../controller/info/controller/info_image_controller.dart';
@@ -187,10 +187,10 @@ abstract class Routes {
                 BlocProvider(create: (context) => QuestListController()),
                 BlocProvider(create: (context) => QuizListController()),
                 BlocProvider(create: (context) => SurveyListController()),
-                BlocProvider(
-                  create: (context) =>
-                      VoteListController(arguments.authorization),
-                ),
+                // BlocProvider(
+                //   create: (context) =>
+                //       VoteListController(arguments.authorization),
+                // ),
               ],
               child: const ScreenHolder(),
             ),
@@ -258,7 +258,7 @@ abstract class Routes {
         }
 
       default:
-        return MaterialPageRoute(builder: (context) => HomeScreen());
+        return MaterialPageRoute(builder: (context) => SignInScreen());
     }
   }
 }

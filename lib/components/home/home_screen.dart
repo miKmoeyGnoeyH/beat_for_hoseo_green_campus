@@ -15,29 +15,27 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: ListView(
-        shrinkWrap: true,
-        padding: EdgeInsets.zero,
-        children: [
-          SizedBox(
-            height: 160,
-            child: PageView(
-              controller: pageController,
-              children: widgets,
-            ),
+    return Column(
+      // shrinkWrap: true,
+      // padding: EdgeInsets.zero,
+      children: [
+        SizedBox(
+          height: 160,
+          child: PageView(
+            controller: pageController,
+            children: widgets,
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              children: [
-                HomeContents(),
-                SizedBox(height: 20)
-              ],
-            ),
-          )
-        ],
-      ),
+        ),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            children: [
+              HomeContents(),
+              SizedBox(height: 20)
+            ],
+          ),
+        )
+      ],
     );
   }
 }

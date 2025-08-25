@@ -10,6 +10,7 @@ class RegisterSIDTextField extends StatelessWidget {
     super.key,
     required this.registerSidController,
     this.onChanged,
+    this.maxLength = 8,
     this.hintText = "",
   });
 
@@ -23,7 +24,7 @@ class RegisterSIDTextField extends StatelessWidget {
         textEditingController: registerSidController.idController,
         keyboardType: TextInputType.number,
         hintText: hintText,
-        maxLength: 8,
+        maxLength: maxLength,
         inputFormatters: [
           onlyDigitsInputFormatter(),
         ],
@@ -34,4 +35,5 @@ class RegisterSIDTextField extends StatelessWidget {
 
   final Function(String)? onChanged;
   final String? hintText;
+  final int maxLength;
 }
