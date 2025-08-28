@@ -1,3 +1,4 @@
+import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,7 +35,16 @@ class _InfoImagesState extends State<InfoImages> {
             onPageChanged: widget.onPageChanged,
           );
         } else if (state is InfoImageLoading) {
-          return const CustomCircularProgressIndicator();
+          // return const CustomCircularProgressIndicator();
+          return Container(
+            width: double.infinity,
+            height: 200,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              color: context.appColors.disabled,
+            ),
+            child: const CustomCircularProgressIndicator(),
+          );
         } else {
           return CustomRefreshButton();
         }

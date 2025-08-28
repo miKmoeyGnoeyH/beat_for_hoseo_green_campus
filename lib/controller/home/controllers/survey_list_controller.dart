@@ -14,7 +14,8 @@ class SurveyListController extends Bloc<DataEvent, DataListState> {
   Future<void> _onDataListRequest(DataEvent event, Emitter<DataListState> emit) async {
     emit(DataListLoading());
 
-    final DataListState eventState = await dataListProvider.fetchDataList(DataListType.survey);
+    // final DataListState eventState = await dataListProvider.fetchDataList(DataListType.survey);
+    final DataListState eventState = await dataListProvider.fetchSurveyListTest();
 
     emit(eventState);
   }

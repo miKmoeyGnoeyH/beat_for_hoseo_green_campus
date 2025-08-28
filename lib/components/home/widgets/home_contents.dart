@@ -24,7 +24,7 @@ class HomeContents extends StatefulWidget {
 class _HomeContentsState extends State<HomeContents> {
   final List<HomeContentsItem> _contents = [
     HomeContentsItem(LocalizationManager().homeQuest, const HomeQuestList()),
-    HomeContentsItem(LocalizationManager().homeQuiz, const HomeQuizList()),
+    // HomeContentsItem(LocalizationManager().homeQuiz, const HomeQuizList()),
     HomeContentsItem(LocalizationManager().homeSurvey, const HomeSurveyList()),
   ];
   int _currentIndex = 0;

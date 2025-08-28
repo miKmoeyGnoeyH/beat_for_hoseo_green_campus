@@ -1,4 +1,5 @@
 
+import 'package:beat_flutter/components/global/beat/gc_point.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -40,7 +41,8 @@ class DetailLabelAndTItle extends StatelessWidget {
                         textColor: context.appColors.primary,
                       ),
                       const SizedBox(width: 5),
-                      const Neuro(width: 25),
+                      // const Neuro(width: 25),
+                      const GreenCampusPoint(width: 25),
                     ],
                   )
                 : const SizedBox(),

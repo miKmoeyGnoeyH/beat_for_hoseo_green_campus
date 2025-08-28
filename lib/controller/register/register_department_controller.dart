@@ -1,9 +1,18 @@
+import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class RegisterDepartmentController {
   RegisterDepartmentController.fromCollege(String college) {
-    departments = 'departments'.tr(gender: college).split(',');
-    department = 'departments'.tr(gender: college).split(',').first;
+    localizationManager = LocalizationManager();
+
+    // departments = 'departments'.tr(gender: college).split(',');
+    // department = 'departments'.tr(gender: college).split(',').first;
+
+    // departments = 'departments_old'.tr(gender: college).split(',');
+    // department = 'departments_old'.tr(gender: college).split(',').first;
+
+    departments = localizationManager.departmentsOldFromCollege(college);
+    department = departments.first;
   }
 
   RegisterDepartmentController.fromAffiliation();
@@ -13,6 +22,7 @@ class RegisterDepartmentController {
     department = 'organization_details'.tr().split(',').first;
   }
 
+  late final LocalizationManager localizationManager;
   late final List<String> departments;
   String department = '';
 }

@@ -16,6 +16,7 @@ class InfoImagesCarouselSlider extends StatelessWidget {
       itemBuilder: (context, index, _) {
         return CustomRoundedBorderedContainer(
           width: double.infinity,
+          height: 200,
           color: context.appColors.disabled,
           child: list![index],
         );

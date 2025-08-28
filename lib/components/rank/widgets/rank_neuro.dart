@@ -19,8 +19,8 @@ class RankNeuro extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Neuro(),
-        const SizedBox(width: 8),
+        // const Neuro(),
+        // const SizedBox(width: 8),
         CustomTitleLarge(
           text: NumberFormat("###,###,###,###").format(ranking.neuro),
           textColor: context.appColors.primary,

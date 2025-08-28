@@ -30,12 +30,12 @@ class SurveyCardTitleAndDesc extends StatelessWidget {
           ),
           const SizedBox(height: 5),
           CustomSubtitleLarge(text: title),
-          const SizedBox(height: 5),
-          CustomBodyLarge(
-            text: content,
-            textColor: context.appColors.onBackground.withOpacity(0.5),
-            maxLines: 2,
-          ),
+          // const SizedBox(height: 5),
+          // CustomBodyLarge(
+          //   text: content,
+          //   textColor: context.appColors.onBackground.withOpacity(0.5),
+          //   maxLines: 2,
+          // ),
         ],
       ),
     );

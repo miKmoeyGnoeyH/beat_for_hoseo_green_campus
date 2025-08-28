@@ -1,76 +1,250 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
+import 'package:beat_flutter/managers/prefs/prefs_manager.dart';
 import 'package:get/get.dart';
 import 'package:pedometer/pedometer.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:http/http.dart' as http;
 
+/// 자정 초기화를 구현하는 방법
+/// 1. 앱이 백그라운드 -> 포어그라운드로 전환될 때마다 날짜를 비교, 날짜가 다르다면 초기화
+///    앱이 백그라운드에 있는 상태에서 날짜가 변경됐을 때 -> 앱 생명주기가 변경되지 않아 날짜 초기화 안됨
+///    자정 이후 걸음 수가 "어제" 걸음 수로 계산됨
+/// 2. 앱 실행 시 현재 시각부터 자정까지의 차를 계산, 타이머 실행. 타이머가 종료되면 초기화
+///    타이머로 인한 자원 낭비? 자정에 정확히 앱을 실행시켰을 때 -> 86400번의 타이머
+///    iOS의 경우 백그라운드에서 앱이 일시정지됐을 때 타이머가 정지됨
+///
+/// flutter health 패키지 사용, 각 플랫폼 별 헬스 앱 연동하여 걸음 수 측정
+///
 class PedometerController extends GetxController {
-  late Stream<StepCount> _stepCountStream;
-  late Stream<PedestrianStatus> _pedestrianStatusStream;
-  String _status = '?';
-      // _steps = '?';
-  final Rx<int?> _steps = 0.obs;
-  int? get steps => _steps.value;
-  set steps(int? value) => _steps.value = value;
+  // 토큰
+  String _authorization = '';
 
-  PedometerController() {
-    // initPlatformState();
+  void setAuthorization(String authorization) {
+    _authorization = authorization;
   }
 
+  // 걸음 수 이벤트 스트림
+  late Stream<StepCount> _stepCountStream;
+
+  // 보행 상테 이벤트 스트림
+  late Stream<PedestrianStatus> _pedestrianStatusStream;
+
+  // 반응형 보행 상태 문자열
+  final Rx<String> _status = ''.obs;
+
+  String get status => _status.value;
+
+  set status(String value) => _status.value = value;
+
+  // 앱이 마지막으로 부팅된 이후의 걸음 수
+  // View에서 보여지지 않음
+  int? _stepsAfterLastBoot;
+
+  // 반응형 앱 실행 이후 걸음 수(_stepsAfterLastBoot + 앱 실행 이후 걸음수)
+  // View에서 보여지지 않음
+  final Rx<int> _totalSteps = 0.obs;
+
+  int get totalSteps => _totalSteps.value;
+
+  set totalSteps(int value) => _totalSteps.value = value;
+
+  // 반응형 앱 실행 이후 걸음 수 - 부팅 이후 걸음 수
+  // 앱 실행 이후 걸음 수 = 부팅 이후 걸음 수 + 앱 실행 이후 걸음 수이므로
+  // 순수한 앱 실행 이후 걸음 수만을 나타냄
+  // View에서 보여질 걸음 수
+  final Rx<int> _steps = 0.obs;
+
+  int get steps => _steps.value;
+
+  set steps(int value) => _steps.value = value;
+
+  // 반응형 걸음 수
+  final RxInt _todayWalkCount = 0.obs;
+
+  int get todayWalkCount => _todayWalkCount.value;
+
+  set todayWalkCount(int value) => _todayWalkCount.value = value;
+  final RxInt _weeklyWalkCount = 0.obs;
+
+  int get weeklyWalkCount => _weeklyWalkCount.value;
+
+  set weeklyWalkCount(int value) => _weeklyWalkCount.value = value;
+  final RxInt _monthlyWalkCount = 0.obs;
+
+  int get monthlyWalkCount => _monthlyWalkCount.value;
+
+  set monthlyWalkCount(int value) => _monthlyWalkCount.value = value;
+  final RxInt _totalWalkCount = 0.obs;
+
+  int get totalWalkCount => _totalWalkCount.value;
+
+  set totalWalkCount(int value) => _totalWalkCount.value = value;
+
+  // 이전 전송 걸음 수
+  int _lastReportedSteps = 0;
+
+  // 일정 주기로 서버에 걸음 수를 보고할 때 사용하는 반응형 리스트
+  final RxList<Map<String, dynamic>> _walkReports =
+      <Map<String, dynamic>>[].obs;
+
+  Timer? _reportTimer;
+
+  PedometerController() {
+    initPlatformState();
+
+    _lastReportedSteps = PrefsManager().getLastReportedSteps();
+    _walkReports.assignAll(PrefsManager().getUnsentStepsList());
+
+    ever<List<Map<String, dynamic>>>(_walkReports, (reports) async {
+      if (reports.isEmpty) return;
+
+      final String requestUrl = DotEnvManager().walkRecordUrl;
+
+      log(jsonEncode(_walkReports));
+
+      try {
+        final http.Response response = await http.post(Uri.parse(requestUrl),
+            headers: {
+              "Authorization": _authorization,
+              "Content-Type": "application/json",
+            },
+            body: jsonEncode(_walkReports));
+
+        final String responseBody = response.body;
+        final Map<String, dynamic> bodyToJson = jsonDecode(responseBody);
+
+        if (response.statusCode == 200) {
+          todayWalkCount = bodyToJson['todayWalkCount'];
+          weeklyWalkCount = bodyToJson['weeklyWalkCount'];
+          monthlyWalkCount = bodyToJson['monthlyWalkCount'];
+          totalWalkCount = bodyToJson['totalWalkCount'];
+          steps = todayWalkCount;
+
+          log("PedometerController : getWalkHistory : todayWalkCount : $todayWalkCount");
+          log("PedometerController : getWalkHistory : weeklyWalkCount : $weeklyWalkCount");
+          log("PedometerController : getWalkHistory : monthlyWalkCount : $monthlyWalkCount");
+          log("PedometerController : getWalkHistory : totalWalkCount : $totalWalkCount");
+
+          _walkReports.clear();
+        } else {
+          throw Exception();
+        }
+      } catch (e) {
+        log("PedometerController : ever : ${e.toString()}");
+      } finally {
+        PrefsManager().setUnsentStepsList(reports);
+      }
+    });
+  }
+
+  // 생성자에서 실행할 메소드.
+  // 이벤트 스트림 구독, 걸음 수 초기값 설정.
+  Future<void> initPlatformState() async {
+    log("PedometerController : initPlatformState");
+
+    _pedestrianStatusStream = Pedometer.pedestrianStatusStream;
+    (_pedestrianStatusStream.listen(onPedestrianStatusChanged))
+        .onError(onPedestrianStatusError);
+
+    _stepCountStream = Pedometer.stepCountStream;
+    _stepCountStream.listen(onStepCount).onError(onStepCountError);
+  }
+
+  // 1시간에 한 번씩 걸음 수 동기화
+  void _addWalkReport() async {
+    final DateTime now = DateTime.now();
+
+    _walkReports.add({
+      "historyDateTime":
+          DateTime(now.year, now.month, now.day, now.hour + 1, 0, 0)
+              .toIso8601String(),
+      "walkCount": steps - _lastReportedSteps,
+    });
+
+    _lastReportedSteps = steps;
+    PrefsManager().setLastReportedSteps(_lastReportedSteps);
+
+    // log("PedometerController : _addWalkReport : _walkReports : ${_walkReports.toString()}");
+  }
+
+  void startReportTimer() {
+    _reportTimer?.cancel();
+    _reportTimer = Timer.periodic(const Duration(hours: 1), (_) {
+      _addWalkReport();
+    });
+  }
+
+  // 서버로부터 걸음 수 받아오기
+  Future<void> getWalkHitory() async {
+    final String requestURL = DotEnvManager().walkHistoryUrl;
+
+    try {
+      final http.Response response = await http.get(
+        Uri.parse(requestURL),
+        headers: {"Authorization": _authorization},
+      );
+
+      final String responseBody = response.body;
+      final Map<String, dynamic> bodyToJson = jsonDecode(responseBody);
+
+      if (response.statusCode == 200) {
+        todayWalkCount = bodyToJson['todayWalkCount'];
+        weeklyWalkCount = bodyToJson['weeklyWalkCount'];
+        monthlyWalkCount = bodyToJson['monthlyWalkCount'];
+        totalWalkCount = bodyToJson['totalWalkCount'];
+        steps = todayWalkCount;
+
+        log("PedometerController : getWalkHistory : todayWalkCount : $todayWalkCount");
+        log("PedometerController : getWalkHistory : weeklyWalkCount : $weeklyWalkCount");
+        log("PedometerController : getWalkHistory : monthlyWalkCount : $monthlyWalkCount");
+        log("PedometerController : getWalkHistory : totalWalkCount : $totalWalkCount");
+      } else {
+        throw Exception();
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+
+    return;
+  }
+
+  // 걸음 수가 변경될 때마다 호출되는 이벤트 핸들러
   void onStepCount(StepCount event) {
-    print(event);
-    // setState(() {
-    //   _steps = event.steps.toString();
-    // });
-    steps = event.steps;
+    // 부팅 이후 걸음 수가 null이라면 초기화
+    if (_stepsAfterLastBoot == null) {
+      _stepsAfterLastBoot = event.steps;
+      steps = 0;
+    }
+
+    // 이전 걸음 수를 저장하고, 앱 실행 이후 전체 걸음 수를 업데이트
+    //
+    final int oldSteps = totalSteps;
+    totalSteps = event.steps;
+
+    final int stepsDiff = totalSteps - oldSteps;
+    steps += stepsDiff;
+    todayWalkCount += stepsDiff;
+    weeklyWalkCount += stepsDiff;
+    monthlyWalkCount += stepsDiff;
+    totalWalkCount += stepsDiff;
   }
 
   void onPedestrianStatusChanged(PedestrianStatus event) {
-    print('onPedestrianStatusChanged $event');
-    // setState(() {
-    //   _status = event.status;
-    // });
-    _status = event.status;
+    log('onPedestrianStatusChanged $event');
+    status = event.status;
   }
 
   void onPedestrianStatusError(error) {
-    print('onPedestrianStatusError: $error');
-    _status = 'Pedestrian Status not available';
-    // setState(() {
-    //   _status = 'Pedestrian Status not available';
-    // });
-    print(_status);
+    log('onPedestrianStatusError: $error');
+    status = 'Pedestrian Status not available';
+    log(_status.toString());
   }
 
   void onStepCountError(error) {
-    print('onStepCountError: $error');
-    steps = null;
-    // setState(() {
-    //   _steps = 'Step Count not available';
-    // });
+    log('onStepCountError: $error');
   }
-
-  // Future<bool> _checkActivityRecognitionPermission() async {
-  //   bool granted = await Permission.activityRecognition.isGranted;
-  //
-  //   if (!granted) {
-  //     granted = await Permission.activityRecognition.request() ==
-  //         PermissionStatus.granted;
-  //   }
-  //
-  //   return granted;
-  // }
-
-  // Future<void> initPlatformState() async {
-  //   bool granted = await _checkActivityRecognitionPermission();
-  //   if (!granted) {
-  //     // tell user, the app will not work
-  //   }
-  //
-  //   _pedestrianStatusStream = Pedometer.pedestrianStatusStream;
-  //   (await _pedestrianStatusStream.listen(onPedestrianStatusChanged))
-  //       .onError(onPedestrianStatusError);
-  //
-  //   _stepCountStream = Pedometer.stepCountStream;
-  //   _stepCountStream.listen(onStepCount).onError(onStepCountError);
-  //
-  //   if (!mounted) return;
-  // }
 }

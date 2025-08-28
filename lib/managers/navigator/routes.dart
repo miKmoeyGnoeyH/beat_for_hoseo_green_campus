@@ -1,7 +1,12 @@
+import 'dart:developer';
+
 import 'package:beat_flutter/components/oss_licenses/oss_licenses.dart';
 import 'package:beat_flutter/controller/home/controllers/quest_list_controller.dart';
+import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
+import 'package:beat_flutter/controller/user_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 
 import '../../components/history/neuro_history_screen.dart';
 import '../../components/home/home_screen.dart';
@@ -182,18 +187,26 @@ abstract class Routes {
           final ScreenHolderArguments arguments =
               settings.arguments as ScreenHolderArguments;
           return MaterialPageRoute(
-            builder: (context) => MultiBlocProvider(
-              providers: [
-                BlocProvider(create: (context) => QuestListController()),
-                BlocProvider(create: (context) => QuizListController()),
-                BlocProvider(create: (context) => SurveyListController()),
-                // BlocProvider(
-                //   create: (context) =>
-                //       VoteListController(arguments.authorization),
-                // ),
-              ],
-              child: const ScreenHolder(),
-            ),
+            builder: (context)
+            {
+              final UserController userController = context.read<UserController>();
+              Get.find<PedometerController>().setAuthorization(userController.state.authorization);
+              Get.find<PedometerController>().getWalkHitory();
+              Get.find<PedometerController>().startReportTimer();
+
+              return MultiBlocProvider(
+                providers: [
+                  BlocProvider(create: (context) => QuestListController()),
+                  BlocProvider(create: (context) => QuizListController()),
+                  BlocProvider(create: (context) => SurveyListController()),
+                  // BlocProvider(
+                  //   create: (context) =>
+                  //       VoteListController(arguments.authorization),
+                  // ),
+                ],
+                child: const ScreenHolder(),
+              );
+            },
           );
         }
 
@@ -258,7 +271,10 @@ abstract class Routes {
         }
 
       default:
-        return MaterialPageRoute(builder: (context) => SignInScreen());
+        {
+          log("Routes: default case");
+          return MaterialPageRoute(builder: (context) => SignInScreen());
+        }
     }
   }
 }

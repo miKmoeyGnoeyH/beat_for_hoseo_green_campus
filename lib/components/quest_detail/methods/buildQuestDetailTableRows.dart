@@ -1,3 +1,4 @@
+import 'package:beat_flutter/components/global/beat/gc_point.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
@@ -15,8 +16,10 @@ TableRow buildQuestDetailTableRewardRow({required String reward}) {
       ),
       TableCell(
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Neuro(width: 20),
+            // const Neuro(width: 20),
+            const GreenCampusPoint(width: 25),
             const SizedBox(width: 5),
             CustomSubtitleLarge(
               text: reward,

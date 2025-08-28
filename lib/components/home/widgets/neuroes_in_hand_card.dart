@@ -1,4 +1,5 @@
-
+import 'package:beat_flutter/components/global/beat/gc_points.dart';
+import 'package:beat_flutter/components/global/beat/neuroes.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -47,7 +48,10 @@ class PointsInHandCard extends StatelessWidget {
                     ),
                     BlocBuilder<UserController, User>(
                       builder: (context, state) => CustomHeadlineLarge(
-                        text: state is Member ? NumberFormat("###,###,###,###").format(int.parse(state.neuroesInHand)) : '',
+                        text: state is Member
+                            ? NumberFormat("###,###,###,###")
+                                .format(int.parse(state.neuroesInHand))
+                            : '',
                         textColor: context.appColors.onPrimary,
                       ),
                     ),
@@ -57,26 +61,36 @@ class PointsInHandCard extends StatelessWidget {
                     )
                   ],
                 ),
-                const ALotOfNeuroes(),
+                // const Neuroes(),
+                Stack(
+                  children: [
+                    Container(
+                      width: 80,
+                      decoration: BoxDecoration(
+                        // color: Colors.red,
+                        borderRadius: BorderRadius.circular(100),
+                        // shape: BoxShape.circle,
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Color(0xff00000c),
+                            blurRadius: 55,
+                            spreadRadius: -25,
+                          ),
+                          // BoxShadow(color: context.appColors.primary)
+                        ],
+                      ),
+                    ),
+                    const Align(
+                      alignment: Alignment.center,
+                      child: GreenCampusPoints(),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
         ),
       ),
-    );
-  }
-}
-
-class ALotOfNeuroes extends StatelessWidget {
-  const ALotOfNeuroes({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Image.asset(
-      'assets/images/neuroes_pile.png',
-      width: 80,
     );
   }
 }

@@ -10,8 +10,8 @@ import '../models/user_model.dart';
 class UserProvider {
   final http.Client _httpClient = http.Client();
 
-  Future<User> signIn(String studentId, String nickname) async {
-    log("UserProvider : signIn : studentId : $studentId, nickname : $nickname");
+  Future<User> signIn(String studentId, String password) async {
+    log("UserProvider : signIn : studentId : $studentId, nickname : $password");
     final String requestUrl = dotenv.env['SIGN_IN']!;
     User user = Guest();
 
@@ -20,22 +20,23 @@ class UserProvider {
         Uri.parse(requestUrl),
         body: {
           'studentId': studentId,
-          'nickname': nickname,
+          // 'nickname': password,
+          'password': password,
         },
       ).timeout(const Duration(seconds: 5));
 
       log(response.toString());
 
       if (response.statusCode == 200) {
-        PrefsManager.setValue<String>('saved_studentId', studentId);
-        PrefsManager.setValue<String>('saved_nickname', nickname);
+        PrefsManager().setValue<String>('saved_studentId', studentId);
+        PrefsManager().setValue<String>('saved_nickname', password);
 
         final String authorization = response.headers['authorization']!;
         final String neuroesInHand = await myNeuro(authorization);
 
         user = Member(
           studentId,
-          nickname,
+          password,
           neuroesInHand,
           authorization,
         );

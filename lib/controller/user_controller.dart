@@ -16,10 +16,10 @@ sealed class UserEvent {}
 final class Init extends UserEvent {}
 
 final class SignIn extends UserEvent {
-  SignIn(this.studentId, this.nickname);
+  SignIn(this.studentId, this.password);
 
   final String studentId;
-  final String nickname;
+  final String password;
 }
 
 final class SignOut extends UserEvent {}
@@ -30,14 +30,15 @@ class UserController extends Bloc<UserEvent, User> {
   final UserProvider _userProvider = UserProvider();
 
   UserController() : super(Guest()) {
+    log("UserController : init");
     on<SignIn>(_signIn);
     on<SignOut>(_signOut);
     on<GetMyNeuro>(_getMyNeuro);
-    if(PrefsManager.containsKey('saved_studentId') && PrefsManager.containsKey('saved_nickname')) {
+    if(PrefsManager().containsKey('saved_studentId') && PrefsManager().containsKey('saved_nickname')) {
       add(
         SignIn(
-          PrefsManager.getValueAs<String>('saved_studentId'),
-          PrefsManager.getValueAs<String>('saved_nickname'),
+          PrefsManager().getValueAs<String>('saved_studentId'),
+          PrefsManager().getValueAs<String>('saved_nickname'),
         ),
       );
     }
@@ -48,7 +49,7 @@ class UserController extends Bloc<UserEvent, User> {
     emit(IsLoading());
 
     User user;
-    user = await _userProvider.signIn(event.studentId, event.nickname);
+    user = await _userProvider.signIn(event.studentId, event.password);
 
     if (user is Member) {
       final fcmToken = await FirebaseMessaging.instance.getToken();

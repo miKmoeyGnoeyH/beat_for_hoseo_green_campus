@@ -1,5 +1,6 @@
 import 'package:beat_flutter/controller/register/register_college_controller.dart';
 import 'package:beat_flutter/controller/register/register_organization_controller.dart';
+import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/managers/navigator/arguments/register_arguments.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -28,6 +29,8 @@ class RegisterDepartmentScreen extends StatefulWidget {
 }
 
 class _RegisterDepartmentScreenState extends State<RegisterDepartmentScreen> {
+  final LocalizationManager localizationManager = LocalizationManager();
+
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(

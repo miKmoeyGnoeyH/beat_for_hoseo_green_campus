@@ -87,10 +87,23 @@ class LocalizationManager {
   String get rankingRankingDescPoint => "rank".tr(gender: "ranking_desc_point");
   String get rankingRankingDescStepCount => "rank".tr(gender: "ranking_desc_step_count");
 
+  // register collage
+  String get rcAppbarTitle => "register_college".tr(gender: "appbar_title");
+  String rcContinueWith(String arg) => "register_college".tr(gender: "continue_with", args: [arg]);
+
+  // register department
+  String get rdAppbarTitle => "register_department".tr(gender: "appbar_title");
+  String rdContinueWith(String arg) => "register_department".tr(gender: "continue_with", args: [arg]);
+
   // bottom navigation bar
   String get bnbQR => "bottom_navigation_bar".tr(gender: "qr");
   String get bnbHome => "bottom_navigation_bar".tr(gender: "home");
 
   // errors
   String get errorsConnectionError => "errors".tr(gender: "connection_error");
+
+  // others
+  List<String> get colleges => "colleges".tr().split(", ");
+  List<String> get departmentsOld => "departments_old".tr().split(", ");
+  List<String> departmentsOldFromCollege(String college) => "departments_old".tr(gender: college).split(", ");
 }

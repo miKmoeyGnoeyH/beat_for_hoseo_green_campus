@@ -10,8 +10,16 @@ class DotEnvManager {
   DotEnvManager._internal();
 
   Future<void> init() async {
-    await dotenv.load(fileName: "assets/config/.env");
+    const currentEnv =
+        String.fromEnvironment('ENV', defaultValue: 'development');
+    const envFile = currentEnv == 'production'
+        ? 'assets/config/.env.production'
+        : 'assets/config/.env.development';
+
+    await dotenv.load(fileName: envFile);
   }
 
   String get rankListUrl => dotenv.env['RANK'] ?? "";
+  String get walkHistoryUrl => dotenv.env['WALK_HISTORY'] ?? "";
+  String get walkRecordUrl => dotenv.env['WALK_RECORD'] ?? "";
 }

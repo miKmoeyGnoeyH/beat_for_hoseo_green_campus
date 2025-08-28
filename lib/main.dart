@@ -7,8 +7,10 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:get/get.dart' hide Trans;
 
 import 'app.dart';
+import 'controller/pedometer/pedometer_controller.dart';
 import 'firebase_options.dart';
 import 'managers/prefs/prefs_manager.dart';
 
@@ -24,7 +26,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 // TODO : 전체적으로 리팩토링 한 번 싹 조져주기
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  PrefsManager.init();
+  PrefsManager().init();
 
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await EasyLocalization.ensureInitialized();
@@ -67,6 +69,9 @@ Future<void> main() async {
       log('main.dart : main() : message.notification.body : ${message.notification!.body.toString()}');
     }
   });
+
+  // Pedometer
+  Get.put<PedometerController>(PedometerController(), permanent: true);
 
   runApp(
     EasyLocalization(

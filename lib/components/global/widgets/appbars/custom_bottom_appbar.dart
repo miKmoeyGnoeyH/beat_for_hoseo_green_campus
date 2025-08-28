@@ -26,7 +26,7 @@ class CustomBottomAppbar extends StatelessWidget {
         ),
       ),
       child: BottomAppBar(
-        height: context.width * 0.12,
+        height: context.width * 0.15,
         color: backgroundColor ?? context.appColors.primary,
         child: Center(
           child: AutoSizeText(

@@ -22,7 +22,8 @@ class InfoSpendingListContents extends StatelessWidget {
           text: infoModel != null ? infoModel!.location : '',
         ),
         CustomBodyLarge(
-          text: infoModel != null ? '${infoModel!.neuro_points} Neuro' : '',
+          // text: infoModel != null ? '${infoModel!.neuro_points} Neuro' : '',
+          text: infoModel != null ? '${infoModel!.neuro_points} Points' : '',
           textColor: Colors.blueAccent,
         )
       ],

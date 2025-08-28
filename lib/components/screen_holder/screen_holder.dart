@@ -1,7 +1,9 @@
 import 'package:beat_flutter/controller/home/controllers/quest_list_controller.dart';
+import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 
 import '../../controller/home/controllers/quiz_list_controller.dart';
 import '../../controller/home/controllers/survey_list_controller.dart';
@@ -28,6 +30,7 @@ class _ScreenHolderState extends State<ScreenHolder> {
       context.read<QuestListController>().add(DataListRequest());
       context.read<QuizListController>().add(DataListRequest());
       context.read<SurveyListController>().add(DataListRequest());
+      Get.find<PedometerController>().getWalkHitory();
       // context.read<VoteListController>().add(VoteListRequest(userController.state.authorization));
       return Future.delayed(const Duration(seconds: 0));
     }

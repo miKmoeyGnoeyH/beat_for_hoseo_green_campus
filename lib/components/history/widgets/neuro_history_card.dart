@@ -29,7 +29,7 @@ class NeuroHistoryCard extends StatelessWidget {
               checkTime: DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.parse(neuroHistory.checkTime)),
             ),
             const SizedBox(width: 16),
-            QuestCardIconAndNeuro(
+            QuestCardIconAndPoint(
               neuro: neuroHistory.neuro >= 0
                   ? '+${neuroHistory.neuro.toString()}'
                   : neuroHistory.neuro.toString(),

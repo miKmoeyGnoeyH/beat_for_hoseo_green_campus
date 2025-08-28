@@ -22,7 +22,7 @@ class QuizCardContents extends StatelessWidget {
           content: quizModel.content,
         ),
         const SizedBox(width: 20),
-        QuizCardIconAndNeuro(neuro: quizModel.neuro),
+        QuizCardIconAndPoint(neuro: quizModel.neuro),
       ],
     );
   }

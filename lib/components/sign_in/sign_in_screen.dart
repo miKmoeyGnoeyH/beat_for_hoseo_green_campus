@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -16,14 +18,16 @@ import 'widgets/sign_in_sign_in_button.dart';
 
 class SignInScreen extends StatelessWidget {
   final TextEditingController _studentIdController = TextEditingController(
-      text: PrefsManager.getValueAs<String>('saved_studentId'));
+      text: PrefsManager().getValueAs<String>('saved_studentId'));
   final TextEditingController _nicknameController = TextEditingController(
-      text: PrefsManager.getValueAs<String>('saved_nickname'));
+      text: PrefsManager().getValueAs<String>('saved_nickname'));
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<UserController, User>(
+      // listenWhen: (prev, curr) => prev is! ErrorUser && curr is ErrorUser,
       listener: (context, state) {
+        log("SignInScreen: BlocListener: $state");
         if (state is ErrorUser) {
           customShowDialog(
             context: context,
@@ -55,7 +59,7 @@ class SignInScreen extends StatelessWidget {
                     nicknameController: _nicknameController,
                   ),
                   const SizedBox(height: 12),
-                  const SignInRegisterButton(),
+                  SignInRegisterButton(),
                   const SizedBox(height: 24),
                 ],
               ),

@@ -70,8 +70,8 @@ class WithdrawalScreen extends StatelessWidget {
                           NavigatorKeyManager().pushNamedAndRemoveUntil(RouteNames.signIn);
                         }
                       );
-                      PrefsManager.remove('saved_studentId');
-                      PrefsManager.remove('saved_nickname');
+                      PrefsManager().remove('saved_studentId');
+                      PrefsManager().remove('saved_nickname');
                     }
                   } else {
                     if (context.mounted) {

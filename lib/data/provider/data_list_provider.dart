@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
@@ -46,6 +47,7 @@ class DataListProvider {
         List<DataModel> dataList = [];
         final body = jsonDecode(utf8.decode(response.bodyBytes));
         // final body = jsonDecode(response.body);
+        log(body.toString());
 
         switch (type) {
           case DataListType.quest:
@@ -88,5 +90,29 @@ class DataListProvider {
       // log(s.toString());
       return DataListLoadingError();
     }
+  }
+
+  Future<DataListState> fetchQuestListTest() async {
+    List<DataModel> questList = [];
+    final json = await rootBundle.loadString("assets/dummy/event_list_dummy.json");
+    final body = jsonDecode(json);
+
+    for (var data in body) {
+      questList.add(QuestModel.fromJson(data));
+    }
+
+    return DataListLoadingSuccess(questList);
+  }
+
+  Future<DataListState> fetchSurveyListTest() async {
+    List<DataModel> questList = [];
+    final json = await rootBundle.loadString("assets/dummy/survey_list_dummy.json");
+    final body = jsonDecode(json);
+
+    for (var data in body) {
+      questList.add(SurveyModel.fromJson(data));
+    }
+
+    return DataListLoadingSuccess(questList);
   }
 }

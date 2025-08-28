@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:beat_flutter/components/sign_in/sign_in_screen.dart';
+import 'package:beat_flutter/managers/permission/permission_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -21,16 +23,18 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> with WidgetsBindingObserver {
-  final List<Permission> permissions = [
-    Permission.storage,
-    Permission.camera,
-    Permission.notification,
-  ];
+  // final List<Permission> permissions = [
+  //   Permission.storage,
+  //   Permission.camera,
+  //   Permission.notification,
+  // ];
+  //
+  // Future<void> requestPermissions() async {
+  //   Map<Permission, PermissionStatus> status = await permissions.request();
+  //   log(status.map((key, value) => MapEntry(key, value.toString())).toString());
+  // }
 
-  Future<void> requestPermissions() async {
-    Map<Permission, PermissionStatus> status = await permissions.request();
-    log(status.map((key, value) => MapEntry(key, value.toString())).toString());
-  }
+  final PermissionManager permissionManager = PermissionManager();
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +57,8 @@ class _AppState extends State<App> with WidgetsBindingObserver {
           supportedLocales: context.supportedLocales,
           navigatorKey: NavigatorKeyManager().navigatorKey,
           onGenerateRoute: Routes.onGenerateRoute,
-          initialRoute: RouteNames.signIn,
+          home: SignInScreen(),
+          // initialRoute: RouteNames.signIn,
         ),
       ),
     );
@@ -63,7 +68,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    requestPermissions();
+    permissionManager.requestPermissions();
   }
 
   Future<void> setupInteractedMessage() async {
