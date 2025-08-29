@@ -87,6 +87,8 @@ class LocalizationManager {
   String get homeNoQuests => "home".tr(gender: "no_quests");
   String get homeClaim => "home".tr(gender: "claim");
   String get homeClaimed => "home".tr(gender: "claimed");
+  String get homeRewardAcquisitionComplete => "home".tr(gender: "reward_acquisition_complete");
+  String get homeRewardAcquisitionFailed => "home".tr(gender: "reward_acquisition_failed");
 
   // Quest Detail
   String get qdNoImage => "quest_detail".tr(gender: "no_image");
@@ -119,7 +121,10 @@ class LocalizationManager {
   String get bnbHome => "bottom_navigation_bar".tr(gender: "home");
 
   // errors
+  String get errorsTimeout => "errors".tr(gender: "timeout");
   String get errorsConnectionError => "errors".tr(gender: "connection_error");
+  String get errorsUnknown => "errors".tr(gender: "unknown");
+  String get errorsUnknownDetail => "errors".tr(gender: "unknown_detail");
 
   // others
   List<String> get colleges => "colleges".tr().split(", ");

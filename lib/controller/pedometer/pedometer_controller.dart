@@ -23,6 +23,8 @@ class PedometerController extends GetxController {
   // 토큰
   String _authorization = '';
 
+  String get authorization => _authorization;
+
   void setAuthorization(String authorization) {
     _authorization = authorization;
   }

@@ -74,7 +74,9 @@
     "monthly": "월간",
     "no_quests": "퀘스트가 없습니다.",
     "claim": "보상 받기",
-    "claimed": "획득 완료"
+    "claimed": "획득 완료",
+    "reward_acquisition_complete": "보상 획득 완료",
+    "reward_acquisition_failed": "보상 획득 실패"
   },
   "quest_detail": {
     "no_image": "이미지가 없습니다.",
@@ -106,7 +108,10 @@
     "home": "Home"
   },
   "errors": {
-    "connection_error": "인터넷 연결상태를 확인해 주세요."
+    "timeout": "요청 시간이 초과되었습니다.",
+    "connection_error": "인터넷 연결상태를 확인해 주세요.",
+    "unknown": "알 수 없는 오류",
+    "unknown_detail": "알 수 없는 오류가 발생했습니다. 잠시 후 다시 시도해주세요."
   },
   "colleges": "AI융합대학, 경영대학, 공과대학, 생명보건대학, 예체능대학, 인문사회대학",
   "departments": {

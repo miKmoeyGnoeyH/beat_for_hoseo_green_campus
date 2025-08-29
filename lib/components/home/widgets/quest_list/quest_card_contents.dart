@@ -1,12 +1,22 @@
+import 'dart:async';
 import 'dart:developer';
 
+import 'package:beat_flutter/components/global/methods/custom_show_dialog.dart';
 import 'package:beat_flutter/components/global/widgets/buttons/custom_text_button.dart';
+import 'package:beat_flutter/components/global/widgets/custom_circular_progress_indicator.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.dart';
+import 'package:beat_flutter/controller/home/controllers/quest_list_controller.dart';
+import 'package:beat_flutter/controller/home/events/data_events.dart';
 import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
+import 'package:beat_flutter/controller/user_controller.dart';
+import 'package:beat_flutter/data/models/user_model.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
+import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 
 import '../../../../data/models/data_models.dart';
 import 'quest_card_icon_and_neuro.dart';
@@ -26,6 +36,10 @@ class QuestCardContents extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final UserController userController = context.read<UserController>();
+    final QuestListController questListController =
+        context.read<QuestListController>();
+
     // 보상 수령 가능 조건 달성 여부 확인
     // 해당 퀘스트가 QR 퀘스트인 경우
     if (questModel.eventType == EventType.qr) {
@@ -96,7 +110,55 @@ class QuestCardContents extends StatelessWidget {
                           borderRadius: 5,
                           padding: const EdgeInsets.symmetric(
                               horizontal: 5, vertical: 5),
-                          onTap: onClaimButtonTap,
+                          onTap: isQuestRequirementSatisfied
+                              ? () async {
+                                  try {
+                                    final http.Response response =
+                                        await Get.showOverlay(
+                                            asyncFunction: () =>
+                                                onClaimButtonTap(userController
+                                                    .state.authorization),
+                                            loadingWidget:
+                                                CustomCircularProgressIndicator());
+
+                                    log(response.statusCode.toString());
+
+                                    if (response.statusCode == 200) {
+                                      customShowDialog(
+                                          context: context,
+                                          title: localizationManager
+                                              .homeRewardAcquisitionComplete,
+                                          content: response.body);
+                                    } else {
+                                      customShowDialog(
+                                          context: context,
+                                          title: localizationManager
+                                              .homeRewardAcquisitionFailed,
+                                          content: response.body);
+                                    }
+                                  } on TimeoutException {
+                                    customShowDialog(
+                                        context: context,
+                                        title:
+                                            localizationManager.errorsTimeout,
+                                        content: localizationManager
+                                            .errorsConnectionError);
+                                  } catch (e) {
+                                    log("QuestCardContents : onClaimButtonTap error : $e");
+                                    customShowDialog(
+                                        context: context,
+                                        title:
+                                            localizationManager.errorsUnknown,
+                                        content: localizationManager
+                                            .errorsUnknownDetail);
+                                  } finally {
+                                    userController.add(GetMyNeuro());
+                                    context
+                                        .read<QuestListController>()
+                                        .add(DataListRequest());
+                                  }
+                                }
+                              : () {},
                         ),
                 ],
               )
@@ -179,7 +241,56 @@ class QuestCardContents extends StatelessWidget {
                               borderRadius: 5,
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 5, vertical: 5),
-                              onTap: onClaimButtonTap,
+                              onTap: isQuestRequirementSatisfied
+                                  ? () async {
+                                      try {
+                                        final http.Response response =
+                                            await Get.showOverlay(
+                                                asyncFunction: () =>
+                                                    onClaimButtonTap(
+                                                        userController.state
+                                                            .authorization),
+                                                loadingWidget:
+                                                    CustomCircularProgressIndicator());
+
+                                        log(response.statusCode.toString());
+
+                                        if (response.statusCode == 200) {
+                                          customShowDialog(
+                                              context: context,
+                                              title: localizationManager
+                                                  .homeRewardAcquisitionComplete,
+                                              content: response.body);
+                                        } else {
+                                          customShowDialog(
+                                              context: context,
+                                              title: localizationManager
+                                                  .homeRewardAcquisitionFailed,
+                                              content: response.body);
+                                        }
+                                      } on TimeoutException {
+                                        customShowDialog(
+                                            context: context,
+                                            title: localizationManager
+                                                .errorsTimeout,
+                                            content: localizationManager
+                                                .errorsConnectionError);
+                                      } catch (e) {
+                                        log("QuestCardContents : onClaimButtonTap error : $e");
+                                        customShowDialog(
+                                            context: context,
+                                            title: localizationManager
+                                                .errorsUnknown,
+                                            content: localizationManager
+                                                .errorsUnknownDetail);
+                                      } finally {
+                                        userController.add(GetMyNeuro());
+                                        context
+                                            .read<QuestListController>()
+                                            .add(DataListRequest());
+                                      }
+                                    }
+                                  : () {},
                             ),
                     ],
                   );
@@ -189,8 +300,18 @@ class QuestCardContents extends StatelessWidget {
     );
   }
 
-  void onClaimButtonTap() {
-    log("onClaimButtonTap");
+  Future<http.Response> onClaimButtonTap(String authorization) async {
+    log("QuestCardContents : onClaimButtonTap");
+    final String authorization = pedometerController.authorization;
+    final int eventId = questModel.eventId;
+    const bool hasSuccess = true;
+    final String requestUrl = questModel.eventType == EventType.qr
+        ? "${DotEnvManager().questQRCheckUrl}$eventId"
+        : "${DotEnvManager().questWalkCheckUrl}$eventId?hasSuccess=$hasSuccess";
+
+    return await http.get(Uri.parse(requestUrl), headers: {
+      'Authorization': authorization,
+    }).timeout(const Duration(seconds: 5));
   }
 
   bool isQuestRequirementSatisfied = false;

@@ -6,6 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'components/global/widgets/custom_theme_app.dart';
@@ -41,7 +42,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     return CustomThemeApp(
       child: BlocProvider(
         create: (context) => UserController(),
-        child: MaterialApp(
+        child: GetMaterialApp(
           builder: (context, child) {
             return MediaQuery(
               data: MediaQuery.of(context).copyWith(
