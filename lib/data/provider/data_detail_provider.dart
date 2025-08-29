@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
-
+import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
@@ -12,35 +12,48 @@ class DataDetailProvider {
   final http.Client _httpClient = http.Client();
 
   Future<DataDetailModelState> fetchData(DataModel dataModel) async {
+    // log("DataDetailProvider : fetchData()");
+    // log("DataDetailProvider : fetchData() : dataModel.toString() : ${dataModel.toString()}");
+
     final String requestUrl;
 
-    switch (dataModel.runtimeType) {
-      case const (QuestModel):
-        requestUrl = '${dotenv.env['QUEST_DETAIL']!}${(dataModel as QuestModel).eventId}';
-        break;
-      case const (QuizModel):
-        requestUrl = '${dotenv.env['QUIZ_DETAIL']!}${(dataModel as QuizModel).quizId}';
-        break;
-      default:
-        return DataDetailModelLoadingError();
+    if (dataModel.runtimeType == QuestQRModel) {
+      requestUrl =
+          '${DotEnvManager().questQRDetailUrl}/${(dataModel as QuestQRModel).eventId}';
+    } else if (dataModel.runtimeType == QuestWalkModel) {
+      requestUrl =
+          '${DotEnvManager().questWalkDetailUrl}/${(dataModel as QuestQRModel).eventId}';
+    } else if (dataModel.runtimeType == QuizModel) {
+      requestUrl =
+          '${dotenv.env['QUIZ_DETAIL']!}${(dataModel as QuizModel).quizId}';
+    } else {
+      return DataDetailModelLoadingError();
     }
+
+    // log("DataDetailProvider : fetchData() : requestUrl : $requestUrl");
 
     try {
       final http.Response response = await _httpClient
           .get(Uri.parse(requestUrl))
           .timeout(const Duration(seconds: 5));
 
+      log("DataDetailProvider : fetchData() : response.body : ${response.body.toString()}");
+
       if (response.statusCode == 200) {
         DataModel data;
-        log(response.body.toString());
+        // log(response.body.toString());
         final body = jsonDecode(utf8.decode(response.bodyBytes));
 
         switch (dataModel.runtimeType) {
-          case const (QuestModel):
-            data = QuestDetailModel.fromModelAndJson(dataModel as QuestModel, body);
+          case const (QuestQRModel):
+            data = QuestDetailModel.fromJson(body);
+            break;
+          case const (QuestWalkModel):
+            data = QuestDetailModel.fromJson(body);
             break;
           case const (QuizModel):
-            data = QuizDetailModel.fromModelAndJson(dataModel as QuizModel, body);
+            data =
+                QuizDetailModel.fromModelAndJson(dataModel as QuizModel, body);
             break;
           default:
             return DataDetailModelLoadingError();

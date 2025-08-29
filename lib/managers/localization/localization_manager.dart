@@ -79,6 +79,25 @@ class LocalizationManager {
   String get homeStepCount => "home".tr(gender: "step_count");
   String homeSteps(String arg) => "home".tr(gender: "steps", args: [arg]);
   String homeTotalSteps(String arg) => "home".tr(gender: "total_steps", args: [arg]);
+  String get homeQRQuest => "home".tr(gender: "qr_quest");
+  String get homeWalkQuest => "home".tr(gender: "walk_quest");
+  String get homeDaily => "home".tr(gender: "daily");
+  String get homeWeekly => "home".tr(gender: "weekly");
+  String get homeMonthly => "home".tr(gender: "monthly");
+  String get homeNoQuests => "home".tr(gender: "no_quests");
+  String get homeClaim => "home".tr(gender: "claim");
+  String get homeClaimed => "home".tr(gender: "claimed");
+
+  // Quest Detail
+  String get qdNoImage => "quest_detail".tr(gender: "no_image");
+  String get qdDescription => "quest_detail".tr(gender: "quest_description");
+  String get qdTotalReward => "quest_detail".tr(gender: "total_reward");
+  String get qdQuestType => "quest_detail".tr(gender: "quest_type");
+  String get qdQuestRequirement => "quest_detail".tr(gender: "quest_requirement");
+  String get qdBonusReward => "quest_detail".tr(gender: "bonus_reward");
+  String get qdProgress => "quest_detail".tr(gender: "progress");
+  String get qdAdditionalInformation => "quest_detail".tr(gender: "additional_information");
+
 
   // ranking
   String get rankingRanking => "rank".tr(gender: "ranking");

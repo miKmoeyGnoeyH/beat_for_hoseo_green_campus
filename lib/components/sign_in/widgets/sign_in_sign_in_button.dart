@@ -26,12 +26,15 @@ class SignInSignInButton extends StatelessWidget {
       builder: (context, state) => CustomWideButton(
         onTap: state is IsLoading
             ? () {}
-            : () => userBloc.add(
-          SignIn(
-            _studentIdController.text,
-            _nicknameController.text,
-          ),
-        ),
+            : () {
+          FocusScope.of(context).unfocus();
+          userBloc.add(
+            SignIn(
+              _studentIdController.text,
+              _nicknameController.text,
+            ),
+          );
+        },
         buttonColor: state is IsLoading
             ? context.appColors.disabled
             : context.appColors.primary,

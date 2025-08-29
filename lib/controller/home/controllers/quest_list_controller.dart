@@ -18,7 +18,7 @@ class QuestListController extends Bloc<DataEvent, DataListState> {
 
     final DataListState eventState = await dataListProvider.fetchDataList(DataListType.quest);
     // final DataListState eventState = await dataListProvider.fetchQuestListTest();
-    log("QuestListController : _onDataListRequest : eventState : ${eventState.dataList.toString()}");
+    // log("QuestListController : _onDataListRequest : eventState : ${eventState.dataList.toString()}");
 
     emit(eventState);
   }

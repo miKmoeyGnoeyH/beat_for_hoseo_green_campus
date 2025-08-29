@@ -47,7 +47,7 @@ class DataListProvider {
         List<DataModel> dataList = [];
         final body = jsonDecode(utf8.decode(response.bodyBytes));
         // final body = jsonDecode(response.body);
-        log(body.toString());
+        // log(body.toString());
 
         switch (type) {
           case DataListType.quest:
@@ -67,7 +67,7 @@ class DataListProvider {
             }
           case DataListType.rank:
             {
-              log("DataListProvider : fetchDataList : DataListType.rank : body.toString() : ${body.toString()}");
+              // log("DataListProvider : fetchDataList : DataListType.rank : body.toString() : ${body.toString()}");
               for (var data in body) {
                 dataList.add(RankModel.fromJson(data));
               }

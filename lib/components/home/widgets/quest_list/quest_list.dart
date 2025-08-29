@@ -21,7 +21,12 @@ class HomeQuestList extends StatelessWidget {
     return BlocBuilder<QuestListController, DataListState>(
       builder: (context, state) {
         if (state is DataListLoading) {
-          return const CustomCircularProgressIndicator();
+          return const SizedBox(
+            height: 400,
+            child: Center(
+              child: CustomCircularProgressIndicator(),
+            ),
+          );
         } else if (state is DataListLoadingError) {
           return SizedBox(
             height: 400,
@@ -31,6 +36,7 @@ class HomeQuestList extends StatelessWidget {
         } else {
           // return const CustomCircularProgressIndicator();
           return CustomQuestListView(list: state.dataList);
+          // return CustomQuestListView(list: []);
         }
       },
     );

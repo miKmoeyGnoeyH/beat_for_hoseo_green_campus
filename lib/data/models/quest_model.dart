@@ -1,51 +1,130 @@
 part of 'data_models.dart';
 
-class QuestModel extends DataModel {
-  factory QuestModel({
-    required int eventId,
-    required String eventName,
-    required String descriptionShort,
-    required int neuro,
-    required String eventType,
-  }) {
-    return _cache.putIfAbsent(
-        eventId,
-        () => QuestModel._internal(
-            eventId: eventId,
-            eventName: eventName,
-            descriptionShort: descriptionShort,
-            neuro: neuro,
-            eventType: eventType));
+enum EventType {
+  qr("QR"),
+  walk("WALK");
+
+  const EventType(this.eventType);
+
+  static EventType fromString(String eventType) {
+    return EventType.values.firstWhere(
+      (e) => e.eventType == eventType,
+      orElse: () => throw ArgumentError('Invalid event type: $eventType'),
+    );
   }
 
-  factory QuestModel.fromJson(Map<String, dynamic> json) {
-    return _cache.putIfAbsent(
-        json['eventId'],
-        () => QuestModel._internal(
-            eventId: json['eventId'],
-            eventName: json['eventName'],
-            descriptionShort: json['descriptionShort'],
-            neuro: json['neuro'],
-            eventType: json['eventType']));
+  final String eventType;
+}
+
+enum EventPeriodType {
+  // json 필드값 변경
+  daily("DAILY"),
+  weekly("WEEKLY"),
+  monthly("MONTHLY");
+
+  const EventPeriodType(this.eventPeriodType);
+
+  static EventPeriodType fromString(String eventPeriodType) {
+    return EventPeriodType.values.firstWhere(
+      (e) => e.eventPeriodType == eventPeriodType,
+      orElse: () =>
+          throw ArgumentError('Invalid event period type: $eventPeriodType'),
+    );
   }
 
-  QuestModel._internal({
+  final String eventPeriodType;
+}
+
+// 퀘스트 모델(홈에서 보여짐)
+sealed class QuestModel extends DataModel {
+  QuestModel({
     required this.eventId,
     required this.eventName,
     required this.descriptionShort,
     required this.neuro,
     required this.eventType,
+    required this.hasSuccess,
   });
 
-  static final Map<int, QuestModel> _cache = {};
+  factory QuestModel.fromJson(Map<String, dynamic> json) {
+    final EventType eventType = EventType.fromString(json['eventType']);
+    switch (eventType) {
+      case EventType.qr:
+        return QuestQRModel.fromJson(json);
+      case EventType.walk:
+        return QuestWalkModel.fromJson(json);
+    }
+  }
 
   final int eventId;
   final String eventName;
   final String descriptionShort;
   final int neuro;
-  final String? eventType;
+  final EventType eventType;
+  final bool hasSuccess;
 }
 
+class QuestQRModel extends QuestModel {
+  QuestQRModel({
+    required super.eventId,
+    required super.eventName,
+    required super.descriptionShort,
+    required super.neuro,
+    required super.eventType,
+    required super.hasSuccess,
+    required this.requiredCount,
+    required this.successCount,
+    required this.totalCount,
+  });
+
+  QuestQRModel.fromJson(Map<String, dynamic> json)
+      : requiredCount = json['requiredCount'],
+        successCount = json['successCount'],
+        totalCount = json['totalCount'],
+        super(
+          eventId: json['eventId'],
+          eventName: json['eventName'],
+          descriptionShort: json['descriptionShort'],
+          neuro: json['neuro'],
+          eventType: EventType.fromString(json['eventType']),
+          hasSuccess: json['hasSuccess'] ?? false,
+        );
+
+  final int requiredCount;
+  final int successCount;
+  final int totalCount;
+}
+
+class QuestWalkModel extends QuestModel {
+  QuestWalkModel({
+    required super.eventId,
+    required super.eventName,
+    required super.descriptionShort,
+    required super.neuro,
+    required super.eventType,
+    required super.hasSuccess,
+    required this.requiredWalkCount,
+    required this.eventPeriodType,
+  });
+
+  QuestWalkModel.fromJson(Map<String, dynamic> json)
+      : requiredWalkCount = json['requiredWalkCount'],
+        // json 필드명 변경
+        eventPeriodType = EventPeriodType.fromString(json['period']),
+        super(
+          eventId: json['eventId'],
+          eventName: json['eventName'],
+          descriptionShort: json['descriptionShort'],
+          neuro: json['neuro'],
+          eventType: EventType.fromString(json['eventType']),
+          hasSuccess: json['hasSuccess'] ?? false,
+        );
+
+  final int requiredWalkCount;
+  final EventPeriodType eventPeriodType;
+}
+
+// 투표 결과 퀘스트 모델(안씀)
 class QuestVoteResultModel extends QuestModel {
   QuestVoteResultModel({
     required super.eventId,
@@ -54,32 +133,33 @@ class QuestVoteResultModel extends QuestModel {
     required this.result,
     required this.voteNeuro,
     required this.earnedNeuro,
-    required String super.eventType,
-  }) : super._internal(
-            neuro: 0);
+    required super.eventType,
+  }) : super(neuro: 0, hasSuccess: false);
 
   QuestVoteResultModel.fromJson(Map<String, dynamic> json)
       : result = json['result'],
         voteNeuro = json['VoteNeuro'] ?? 0,
         earnedNeuro = json['earnedNeuro'],
-        super._internal(
+        super(
           eventId: json['eventId'],
           eventName: json['eventName'],
           descriptionShort: json['descriptionShort'],
           neuro: 0,
           eventType: json['eventType'],
+          hasSuccess: false,
         );
 
   QuestVoteResultModel.fromQuestModel(QuestModel questModel,
       {required this.result,
       required this.voteNeuro,
       required this.earnedNeuro})
-      : super._internal(
+      : super(
           eventId: questModel.eventId,
           eventName: questModel.eventName,
           descriptionShort: questModel.descriptionShort,
           neuro: questModel.neuro,
           eventType: questModel.eventType,
+          hasSuccess: questModel.hasSuccess,
         );
 
   QuestVoteResultModel.fromModelAndJson(
@@ -87,12 +167,13 @@ class QuestVoteResultModel extends QuestModel {
       : result = json['result'],
         voteNeuro = json['VoteNeuro'],
         earnedNeuro = json['earnedNeuro'],
-        super._internal(
+        super(
           eventId: questModel.eventId,
           eventName: questModel.eventName,
           descriptionShort: questModel.descriptionShort,
           neuro: questModel.neuro,
           eventType: questModel.eventType,
+          hasSuccess: questModel.hasSuccess,
         );
 
   final String result;
@@ -100,57 +181,95 @@ class QuestVoteResultModel extends QuestModel {
   final int earnedNeuro;
 }
 
+class QRMissionDTO {
+  QRMissionDTO({
+    required this.qrMissionID,
+    required this.eventQRName,
+    required this.qrLocation,
+    required this.qrRewardPoint,
+  });
+
+  QRMissionDTO.fromJson(Map<String, dynamic> json)
+      : qrMissionID = json['qrMissionId'],
+        eventQRName = json['eventQrName'],
+        qrLocation = json['qrLocation'],
+        qrRewardPoint = json['qrRewardNeuro'];
+
+  final int qrMissionID;
+  final String eventQRName;
+  final String qrLocation;
+  final int qrRewardPoint;
+}
+
+class QRMissionLongDTO {
+  QRMissionLongDTO({
+    required this.successCondition,
+    required this.successPoint,
+    required this.qrMissionDTOList,
+  });
+
+  QRMissionLongDTO.fronJson(Map<String, dynamic> json)
+      : successCondition = json['successCondition'],
+        successPoint = json['successNeuro'],
+        qrMissionDTOList = (json['qrMissionDtoList'] as List)
+            .map((e) => QRMissionDTO.fromJson(e))
+            .toList();
+
+  final int successCondition;
+  final int successPoint;
+  final List<QRMissionDTO> qrMissionDTOList;
+}
+
+class EventLongDTO {
+  EventLongDTO({
+    required this.hasReward,
+    required this.qrMissionLongDTO,
+  });
+
+  EventLongDTO.fromJson(Map<String, dynamic> json)
+      : hasReward = json['hasReward'],
+        qrMissionLongDTO = QRMissionLongDTO.fronJson(json['qrMissionLongDto']);
+
+  final bool hasReward;
+  final QRMissionLongDTO qrMissionLongDTO;
+}
+
 class QuestDetailModel extends QuestModel {
   QuestDetailModel({
     required super.eventId,
     required super.eventName,
-    required super.descriptionShort,
+    required this.descriptionLong,
     required super.neuro,
-    required String super.eventType,
-    required this.eventLocation,
-    required this.descriptionLong,
+    required super.eventType,
+    required this.startDate,
+    required this.endDate,
+    // required this.eventLocation,
     required this.imageFilePath,
-  }) : super._internal();
-
-  QuestDetailModel.fromQuestModel(
-    QuestModel questModel, {
-    required this.eventLocation,
-    required this.descriptionLong,
-    required this.imageFilePath,
-  }) : super._internal(
-          eventId: questModel.eventId,
-          eventName: questModel.eventName,
-          descriptionShort: questModel.descriptionShort,
-          neuro: questModel.neuro,
-          eventType: questModel.eventType,
-        );
+    required this.eventLongDTO,
+  }) : super(descriptionShort: "", hasSuccess: false);
 
   QuestDetailModel.fromJson(Map<String, dynamic> json)
-      : eventLocation = json['eventLocation'],
-        descriptionLong = json['descriptionLong'],
+      : descriptionLong = json['descriptionLong'],
+        startDate = DateTime.parse(json['startDate']),
+        endDate = DateTime.parse(json['endDate']),
         imageFilePath = json['imageFilePath'],
-        super._internal(
+        eventLongDTO = EventLongDTO.fromJson(json['eventLongDto']),
+        super(
           eventId: json['eventId'],
           eventName: json['eventName'],
-          descriptionShort: json['descriptionShort'],
+          descriptionShort: json['descriptionShort'] ?? "",
           neuro: json['neuro'],
-          eventType: json['eventType'],
+          eventType: EventType.fromString(json['eventType']),
+          hasSuccess: json['hasSuccess'] ?? false,
         );
 
-  QuestDetailModel.fromModelAndJson(
-      QuestModel questModel, Map<String, dynamic> json)
-      : eventLocation = json['eventLocation'],
-        descriptionLong = json['descriptionLong'],
-        imageFilePath = json['imageFilePath'],
-        super._internal(
-          eventId: questModel.eventId,
-          eventName: questModel.eventName,
-          descriptionShort: questModel.descriptionShort,
-          neuro: questModel.neuro,
-          eventType: questModel.eventType,
-        );
+  // eventLocation = json['eventLocation'],
+  // eventLocation = json['eventLocation'],
 
-  final String eventLocation;
+  // final String eventLocation;
   final String descriptionLong;
+  final DateTime startDate;
+  final DateTime endDate;
   final String? imageFilePath;
+  final EventLongDTO eventLongDTO;
 }

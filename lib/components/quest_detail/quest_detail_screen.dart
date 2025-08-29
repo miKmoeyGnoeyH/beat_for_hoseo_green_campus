@@ -1,4 +1,12 @@
-
+import 'package:beat_flutter/components/global/widgets/custom_rounded_bordered_container.dart';
+import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.dart';
+import 'package:beat_flutter/components/global/widgets/texts/custom_subtitle_large.dart';
+import 'package:beat_flutter/components/global/widgets/texts/custom_title_large.dart';
+import 'package:beat_flutter/components/home/widgets/quest_list/quest_card_icon_and_neuro.dart';
+import 'package:beat_flutter/components/quest_detail/widgets/quest_detail_additional_info_card.dart';
+import 'package:beat_flutter/extensions/buildcontext_extension.dart';
+import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
+import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -25,6 +33,8 @@ class QuestDetailScreen extends StatefulWidget {
 }
 
 class _QuestDetailScreenState extends State<QuestDetailScreen> {
+  final LocalizationManager localizationManager = LocalizationManager();
+
   @override
   Widget build(BuildContext context) {
     final DataDetailModelController dataDetailModelController =
@@ -36,7 +46,7 @@ class _QuestDetailScreenState extends State<QuestDetailScreen> {
       body: BlocBuilder<DataDetailModelController, DataDetailModelState>(
         builder: (context, state) => state is DataDetailModelLoadingSuccess
             ? SingleChildScrollView(
-              child: Padding(
+                child: Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                   child: Column(
@@ -46,9 +56,20 @@ class _QuestDetailScreenState extends State<QuestDetailScreen> {
                         title: (state.dataModel! as QuestDetailModel).eventName,
                       ),
                       const SizedBox(height: 20),
-                      DetailImage(
-                          imageUrl:
-                              '${dotenv.env['QUEST_IMAGE']!}${(state.dataModel! as QuestDetailModel).eventId}'),
+                      (state.dataModel! as QuestDetailModel).imageFilePath !=
+                              null
+                          ? DetailImage(
+                              imageUrl:
+                                  '${DotEnvManager().questImage}${(state.dataModel! as QuestDetailModel).eventId}')
+                          : SizedBox(
+                              height: 150,
+                              child: Center(
+                                child: CustomBodyLarge(
+                                  text: localizationManager.qdNoImage,
+                                  textColor: context.appColors.disabled,
+                                ),
+                              ),
+                            ),
                       const SizedBox(height: 20),
                       DetailDesc(
                         description: (state.dataModel! as QuestDetailModel)
@@ -60,10 +81,44 @@ class _QuestDetailScreenState extends State<QuestDetailScreen> {
                           state.dataModel! as QuestDetailModel,
                         ),
                       ),
+                      const SizedBox(height: 20),
+                      SizedBox(
+                        width: double.infinity,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CustomTitleLarge(
+                              text: localizationManager.qdAdditionalInformation,
+                            ),
+                            ListView.separated(
+                              padding: const EdgeInsets.symmetric(vertical: 20),
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                return QuestDetailAdditionalInfoCard(
+                                  qrMissionDTO:
+                                      (state.dataModel! as QuestDetailModel)
+                                          .eventLongDTO
+                                          .qrMissionLongDTO
+                                          .qrMissionDTOList[index],
+                                );
+                              },
+                              separatorBuilder: (context, index) {
+                                return const SizedBox(height: 20);
+                              },
+                              itemCount: (state.dataModel! as QuestDetailModel)
+                                  .eventLongDTO
+                                  .qrMissionLongDTO
+                                  .qrMissionDTOList
+                                  .length,
+                            )
+                          ],
+                        ),
+                      )
                     ],
                   ),
                 ),
-            )
+              )
             : state is DataDetailModelLoadingError
                 ? CustomRefreshButton(
                     onTap: () => dataDetailModelController.add(

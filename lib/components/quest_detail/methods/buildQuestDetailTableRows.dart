@@ -1,4 +1,5 @@
 import 'package:beat_flutter/components/global/beat/gc_point.dart';
+import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
@@ -10,19 +11,21 @@ TableRow buildQuestDetailTableRewardRow({required String reward}) {
   return TableRow(
     children: [
       TableCell(
-        child: CustomSubtitleLarge(
-          text: 'reward'.tr(),
-        ),
-      ),
-      TableCell(
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // const Neuro(width: 20),
-            const GreenCampusPoint(width: 25),
-            const SizedBox(width: 5),
             CustomSubtitleLarge(
-              text: reward,
+              text: LocalizationManager().qdTotalReward,
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const GreenCampusPoint(width: 25),
+                const SizedBox(width: 5),
+                CustomSubtitleLarge(
+                  text: reward,
+                ),
+              ],
             ),
           ],
         ),
@@ -35,20 +38,25 @@ TableRow buildQuestDetailTableQuestTypeRow({required String? questType}) {
   return TableRow(
     children: [
       TableCell(
-        child: CustomSubtitleLarge(
-          text: 'quest_type'.tr(),
-        ),
-      ),
-      TableCell(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const SizedBox(height: 10),
-            CustomBodyLarge(text: questType),
-            const SizedBox(height: 10),
+            CustomSubtitleLarge(
+              text: LocalizationManager().qdQuestType,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 10),
+                CustomBodyLarge(text: questType),
+                const SizedBox(height: 10),
+              ],
+            ),
           ],
         ),
       ),
+      // TableCell(
+      // ),
     ],
   );
 }
@@ -62,8 +70,86 @@ TableRow buildQuestDetailTableLocationRow({required String? questLocation}) {
         ),
       ),
       TableCell(
-        child: CustomBodyLarge(text: questLocation),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 10),
+            CustomBodyLarge(text: questLocation),
+            const SizedBox(height: 10),
+          ],
+        ),
       ),
+    ],
+  );
+}
+
+TableRow buildQuestDetailTableQuestRequirementRow(
+    {required String? questRequirement}) {
+  return TableRow(
+    children: [
+      TableCell(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            CustomSubtitleLarge(
+              text: LocalizationManager().qdQuestRequirement,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 10),
+                CustomBodyLarge(text: questRequirement),
+                const SizedBox(height: 10),
+              ],
+            )
+          ],
+        ),
+      ),
+      // TableCell(
+      //   child: Column(
+      //     crossAxisAlignment: CrossAxisAlignment.start,
+      //     children: [
+      //       const SizedBox(height: 10),
+      //       CustomBodyLarge(text: questRequirement),
+      //       const SizedBox(height: 10),
+      //     ],
+      //   ),
+      // ),
+    ],
+  );
+}
+
+TableRow buildQuestDetailTableBonusRewardRow({required String? bonusReward}) {
+  return TableRow(
+    children: [
+      TableCell(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            CustomSubtitleLarge(
+              text: LocalizationManager().qdBonusReward,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 10),
+                CustomBodyLarge(text: bonusReward),
+                const SizedBox(height: 10),
+              ],
+            )
+          ],
+        ),
+      ),
+      // TableCell(
+      //   child: Column(
+      //     crossAxisAlignment: CrossAxisAlignment.start,
+      //     children: [
+      //       // const SizedBox(height: 10),
+      //       CustomBodyLarge(text: bonusReward),
+      //       // const SizedBox(height: 10),
+      //     ],
+      //   ),
+      // ),
     ],
   );
 }

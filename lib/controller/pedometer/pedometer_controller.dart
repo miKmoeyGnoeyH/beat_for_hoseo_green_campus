@@ -144,7 +144,7 @@ class PedometerController extends GetxController {
   // 생성자에서 실행할 메소드.
   // 이벤트 스트림 구독, 걸음 수 초기값 설정.
   Future<void> initPlatformState() async {
-    log("PedometerController : initPlatformState");
+    // log("PedometerController : initPlatformState");
 
     _pedestrianStatusStream = Pedometer.pedestrianStatusStream;
     (_pedestrianStatusStream.listen(onPedestrianStatusChanged))

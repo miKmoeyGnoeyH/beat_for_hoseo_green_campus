@@ -66,7 +66,25 @@
     "there_is_no_quiz_yet": "아직 퀴즈가 없습니다.",
     "step_count": "오늘의 걸음 수",
     "steps": "{} 걸음",
-    "total_steps": "이번 달에 총 {} 걸음"
+    "total_steps": "이번 달에 총 {} 걸음",
+    "qr_quest": "QR 퀘스트",
+    "walk_quest": "걸음 수 퀘스트",
+    "daily": "일일",
+    "weekly": "주간",
+    "monthly": "월간",
+    "no_quests": "퀘스트가 없습니다.",
+    "claim": "보상 받기",
+    "claimed": "획득 완료"
+  },
+  "quest_detail": {
+    "no_image": "이미지가 없습니다.",
+    "quest_description": "퀘스트 설명",
+    "total_reward": "총 보상",
+    "quest_type": "퀘스트 타입",
+    "quest_requirement": "퀘스트 완료 조건",
+    "bonus_reward": "퀘스트 완료 시 추가 보상",
+    "progress": "진행도",
+    "additional_information": "부가 정보"
   },
   "rank": {
     "ranking": "랭킹",
