@@ -28,11 +28,12 @@ class _SignPreviewState extends State<SignPreview> {
       borderWidth: 0.5,
       color: context.appColors.background,
       child: registerSignController.sign.isNotEmpty
-          ? Center(
+          ? AspectRatio(
+              aspectRatio: (MediaQuery.of(context).size.height) /
+                  (MediaQuery.of(context).size.width),
               child: Image.memory(
                 registerSignController.sign,
                 fit: BoxFit.contain,
-                // alignment: Alignment.center,
               ),
             )
           : Center(

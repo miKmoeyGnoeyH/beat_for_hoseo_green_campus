@@ -12,6 +12,7 @@ class SignInTextField extends StatelessWidget {
     this.textEditingController,
     this.keyboardType,
     this.maxLength,
+    this.obscureText = false,
   });
 
   @override
@@ -30,6 +31,7 @@ class SignInTextField extends StatelessWidget {
           keyboardType: keyboardType,
           maxLength: maxLength,
           hintText: hintText,
+          obscureText: obscureText,
         ),
       ],
     );
@@ -40,4 +42,5 @@ class SignInTextField extends StatelessWidget {
   final TextEditingController? textEditingController;
   final TextInputType? keyboardType;
   final int? maxLength;
+  final bool obscureText;
 }

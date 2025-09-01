@@ -8,7 +8,7 @@ class NicknameCheckProvider {
   final http.Client _httpClient = http.Client();
 
   Future<NicknameState> emailRequest(String nickname) async {
-    await Future.delayed(const Duration(seconds: 3));
+    // await Future.delayed(const Duration(seconds: 3));
     NicknameState nicknameState = NicknameNotChecked();
     final String requestUrl = dotenv.env['NICKNAME_CHECK']!;
 

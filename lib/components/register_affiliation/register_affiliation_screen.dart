@@ -31,45 +31,51 @@ class RegisterAffiliationScreen extends StatefulWidget {
 class _RegisterAffiliationScreenState extends State<RegisterAffiliationScreen> {
   @override
   Widget build(BuildContext context) {
-    return CustomScaffold(
-      top: false,
-      isScrollable: false,
-      appBar: RegisterBasicAppbar(
-        text: context.tr('affiliation'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        child: Center(
-          child: CustomTextField(
-            maxLength: 10,
-            hintText: context.tr('affiliation_hint'),
-            onChanged: (value) {
-              registerDepartmentController.department = value;
-              isLengthValid = value.length >= minLength;
-              setState(() {});
-            },
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: CustomScaffold(
+        top: false,
+        isScrollable: false,
+        appBar: RegisterBasicAppbar(
+          text: context.tr('affiliation'),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: Center(
+            child: CustomTextField(
+              maxLength: 10,
+              hintText: context.tr('affiliation_hint'),
+              onChanged: (value) {
+                registerDepartmentController.department = value;
+                isLengthValid = value.length >= minLength;
+                setState(() {});
+              },
+            ),
           ),
         ),
-      ),
-      bottomNavigationBar: CustomBottomAppbarButton(
-        onTap: isLengthValid
-            ? () => NavigatorKeyManager().pushNamed(
-                  RouteNames.registerFillInform,
-                  arguments: RegisterArguments(
-                    registerOrganizationController:
-                        registerOrganizationController,
-                    registerCollegeController: registerCollegeController,
-                    registerDepartmentController: registerDepartmentController,
-                  ),
-                )
-            : () {},
-        text: context.tr(
-          'continue_with',
-          args: [registerDepartmentController.department],
+        bottomNavigationBar: CustomBottomAppbarButton(
+          onTap: isLengthValid
+              ? () => NavigatorKeyManager().pushNamed(
+                    RouteNames.registerFillInform,
+                    arguments: RegisterArguments(
+                      registerOrganizationController:
+                          registerOrganizationController,
+                      registerCollegeController: registerCollegeController,
+                      registerDepartmentController:
+                          registerDepartmentController,
+                    ),
+                  )
+              : () {},
+          text: context.tr(
+            'continue_with',
+            args: [registerDepartmentController.department],
+          ),
+          backgroundColor: isLengthValid
+              ? context.appColors.primary
+              : context.appColors.disabled,
         ),
-        backgroundColor: isLengthValid
-            ? context.appColors.primary
-            : context.appColors.disabled,
       ),
     );
   }

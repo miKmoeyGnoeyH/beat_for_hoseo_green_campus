@@ -1,4 +1,5 @@
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
+import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,7 +9,7 @@ import '../../../data/models/user_model.dart';
 import '../../global/widgets/buttons/custom_wide_button.dart';
 
 class SignInSignInButton extends StatelessWidget {
-  const SignInSignInButton({
+  SignInSignInButton({
     super.key,
     required TextEditingController studentIdController,
     required TextEditingController nicknameController,
@@ -17,6 +18,8 @@ class SignInSignInButton extends StatelessWidget {
 
   final TextEditingController _studentIdController;
   final TextEditingController _nicknameController;
+
+  final LocalizationManager localizationManager = LocalizationManager();
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +41,7 @@ class SignInSignInButton extends StatelessWidget {
         buttonColor: state is IsLoading
             ? context.appColors.disabled
             : context.appColors.primary,
-        buttonText: context.tr('sign_in'),
+        buttonText: localizationManager.signInSignIn,
       ),
     );
   }

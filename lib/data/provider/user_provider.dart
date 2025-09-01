@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -95,29 +96,31 @@ class UserProvider {
     return ret;
   }
 
-  Future<int> signUp(
-      String studentId, String name, String nickname, String department) async {
-    final String requestUrl = dotenv.env['SIGN_UP']!;
-    int result = 0;
+  Future<http.Response> signUp(
+      String category,
+      String department,
+      String studentId,
+      String email,
+      String name,
+      String nickname,
+      String password,
+      String encodedSignFile) async {
+    final String requestUrl = DotEnvManager().signUp;
 
-    try {
-      final http.Response response = await _httpClient.post(
-        Uri.parse(requestUrl),
-        body: {
-          'studentId': studentId,
-          'name': name,
-          'department': department,
-          'nickname': nickname,
-          'encodedSignFile': '',
-          'category': '',
-        },
-      ).timeout(const Duration(seconds: 5));
+    final http.Response response = await _httpClient.post(
+      Uri.parse(requestUrl),
+      body: {
+        'category': category,
+        'department': department,
+        'studentId': studentId,
+        'email': email,
+        'name': name,
+        'nickname': nickname,
+        'password': password,
+        'encodedSignFile': encodedSignFile,
+      },
+    ).timeout(const Duration(seconds: 5));
 
-      return response.statusCode;
-    } catch (e) {
-      log(e.toString());
-      result = 400;
-    }
-    return result;
+    return response;
   }
 }

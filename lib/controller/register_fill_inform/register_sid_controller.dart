@@ -9,7 +9,12 @@ sealed class IDRequestEvent {}
 
 final class IDChanged extends IDRequestEvent {}
 
-final class EmailRequest extends IDRequestEvent {}
+final class EmailRequest extends IDRequestEvent {
+  EmailRequest(this.email, this.category);
+
+  final String email;
+  final String category;
+}
 
 final class IDRequest extends IDRequestEvent {}
 
@@ -29,9 +34,10 @@ class RegisterIDController extends Bloc<IDRequestEvent, IDState> {
       IDRequestEvent event, Emitter<IDState> emit) async {
     emit(IDSending());
 
-    final String studentId = idController.text;
+    // final String studentId = idController.text;
+    final EmailRequest emailEvent = event as EmailRequest;
 
-    IDState emailState = await _idCheckProvider.emailRequest(studentId);
+    IDState emailState = await _idCheckProvider.emailRequest(emailEvent.email, emailEvent.category);
     emit(emailState);
 
     if (emailState is! IDSent) {

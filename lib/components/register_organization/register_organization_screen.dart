@@ -1,3 +1,4 @@
+import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/managers/navigator/arguments/register_arguments.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -24,21 +25,24 @@ class RegisterOrganizationScreen extends StatefulWidget {
 
 class _RegisterOrganizationScreenState
     extends State<RegisterOrganizationScreen> {
+  final LocalizationManager localizationManager = LocalizationManager();
+
   void doSomethingDependsOnOrganization(String organization) {
-    if (organization == 'student'.tr()) {
+    if (organization == localizationManager.roStudent) {
       NavigatorKeyManager().pushNamed(
         RouteNames.registerCollege,
         arguments: RegisterArguments(
           registerOrganizationController: registerOrganizationController,
         ),
       );
-    } else if (organization == 'faculty_and_staff'.tr()) {
+    } else if (organization == localizationManager.roFacultyAndStaff) {
       NavigatorKeyManager().pushNamed(
         RouteNames.registerAffiliation,
         arguments: RegisterArguments(
           registerOrganizationController: registerOrganizationController,
         ),
       );
+      // TODO: 이후 요구사항에 따라 다른 소속 추가
     } else if (organization == 'postgraduate_student'.tr()) {
       NavigatorKeyManager().pushNamed(
         RouteNames.registerFillInform,
@@ -62,7 +66,7 @@ class _RegisterOrganizationScreenState
       top: false,
       isScrollable: false,
       appBar: RegisterBasicAppbar(
-        text: context.tr('organization'),
+        text: localizationManager.roAppbarTitle,
       ),
       body: CustomCupertinoPicker(
         items: registerOrganizationController.organizations,
@@ -74,13 +78,15 @@ class _RegisterOrganizationScreenState
         ),
       ),
       bottomNavigationBar: CustomBottomAppbarButton(
-        onTap: () => doSomethingDependsOnOrganization(
-          registerOrganizationController.organization,
-        ),
-        text: context.tr(
-          'continue_with',
-          args: [registerOrganizationController.organization],
-        ),
+        onTap: ()
+        {
+          FocusScope.of(context).unfocus();
+          doSomethingDependsOnOrganization(
+            registerOrganizationController.organization,
+          );
+        },
+        text: localizationManager
+            .roContinueWith(registerOrganizationController.organization),
       ),
     );
   }

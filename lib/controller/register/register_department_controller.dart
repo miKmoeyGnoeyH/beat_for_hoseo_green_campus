@@ -11,7 +11,7 @@ class RegisterDepartmentController {
     // departments = 'departments_old'.tr(gender: college).split(',');
     // department = 'departments_old'.tr(gender: college).split(',').first;
 
-    departments = localizationManager.departmentsOldFromCollege(college);
+    departments = localizationManager.departmentsFromCollage(college);
     department = departments.first;
   }
 

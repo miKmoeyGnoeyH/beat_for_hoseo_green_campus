@@ -5,4 +5,9 @@ FilteringTextInputFormatter onlyEnglishAndKoreanAndNumberInputFormatter() {
       RegExp(r'[a-zA-Zㄱ-ㅎ가-힣0-9]'));
 }
 
+FilteringTextInputFormatter onlyEnglishAndKoreanInputFormatter() {
+  return FilteringTextInputFormatter.allow(
+      RegExp(r'[a-zA-Zㄱ-ㅎ가-힣]'));
+}
+
 FilteringTextInputFormatter onlyDigitsInputFormatter() => FilteringTextInputFormatter.allow(RegExp(r'[0-9]'));

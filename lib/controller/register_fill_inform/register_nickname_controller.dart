@@ -1,8 +1,9 @@
+import 'package:beat_flutter/components/global/widgets/custom_circular_progress_indicator.dart';
 import 'package:beat_flutter/data/states/nickname_state.dart';
 import 'package:beat_flutter/data/provider/nickname_check_provider.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
-
+import 'package:get/get.dart';
 
 sealed class NicknameEvent {}
 
@@ -22,7 +23,10 @@ class RegisterNicknameController extends Bloc<NicknameEvent, NicknameState> {
 
     final String studentId = nicknameController.text;
 
-    NicknameState nicknameState = await _nicknameCheckProvider.emailRequest(studentId);
+    NicknameState nicknameState = await Get.showOverlay(
+      asyncFunction: () => _nicknameCheckProvider.emailRequest(studentId),
+      loadingWidget: const CustomCircularProgressIndicator(),
+    );
     emit(nicknameState);
 
     if (nicknameState is! NicknameChecked) {

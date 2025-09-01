@@ -6,4 +6,7 @@ final class IDSending extends IDState {}
 
 final class IDSent extends IDState {}
 
-final class IDError extends IDState {}
+final class IDError extends IDState {
+  IDError(this.msg);
+  final String msg;
+}

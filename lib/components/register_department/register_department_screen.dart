@@ -37,7 +37,7 @@ class _RegisterDepartmentScreenState extends State<RegisterDepartmentScreen> {
       top: false,
       isScrollable: false,
       appBar: RegisterBasicAppbar(
-        text: context.tr('department'),
+        text: localizationManager.rdAppbarTitle,
       ),
       body: CustomCupertinoPicker(
         items: registerDepartmentController.departments,
@@ -57,8 +57,7 @@ class _RegisterDepartmentScreenState extends State<RegisterDepartmentScreen> {
             registerDepartmentController: registerDepartmentController,
           ),
         ),
-        text: context.tr('continue_with',
-            args: [registerDepartmentController.department]),
+        text: localizationManager.rdContinueWith(registerDepartmentController.department),
       ),
     );
   }

@@ -27,4 +27,6 @@ class DotEnvManager {
   String get questWalkDetailUrl => dotenv.env['QUEST_WALK_DETAIL'] ?? "";
   String get questWalkCheckUrl => dotenv.env['QUEST_WALK_CHECK'] ?? "";
   String get questImage => dotenv.env['QUEST_IMAGE'] ?? "";
+  String get signUp => dotenv.env['SIGN_UP'] ?? "";
+  String get emailRequest => dotenv.env['EMAIL_REQUEST'] ?? "";
 }

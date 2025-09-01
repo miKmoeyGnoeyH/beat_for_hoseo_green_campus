@@ -20,7 +20,8 @@ class RegisterSignScreen extends StatefulWidget {
 }
 
 class _RegisterSignScreenState extends State<RegisterSignScreen> {
-  RegisterSignController get registerSignController => widget.registerSignController;
+  RegisterSignController get registerSignController =>
+      widget.registerSignController;
 
   @override
   void initState() {
@@ -34,7 +35,7 @@ class _RegisterSignScreenState extends State<RegisterSignScreen> {
   @override
   void dispose() {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    registerSignController.signToImage();
+    // registerSignController.signToImage();
     super.dispose();
   }
 
@@ -73,13 +74,15 @@ class _RegisterSignScreenState extends State<RegisterSignScreen> {
                     top: 0,
                     right: 0,
                     child: GestureDetector(
-                      onTap: () => registerSignController.handSignatureControl.clear(),
+                      onTap: () =>
+                          registerSignController.handSignatureControl.clear(),
                       child: SizedBox(
                         child: Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: Icon(
                             Icons.refresh_rounded,
-                            color: context.appColors.onBackground.withOpacity(0.5),
+                            color:
+                                context.appColors.onBackground.withOpacity(0.5),
                           ),
                         ),
                       ),
@@ -90,7 +93,10 @@ class _RegisterSignScreenState extends State<RegisterSignScreen> {
             ),
             const SizedBox(height: 16),
             GestureDetector(
-              onTap: () => NavigatorKeyManager().pop(),
+              onTap: () async {
+                await registerSignController.signToImage();
+                NavigatorKeyManager().pop();
+              },
               child: CustomRoundedBorderedContainer(
                 color: context.appColors.primary,
                 child: Center(

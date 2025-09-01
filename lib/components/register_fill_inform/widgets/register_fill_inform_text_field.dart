@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../global/methods/custom_input_formatters.dart';
 import '../../global/widgets/custom_text_field.dart';
@@ -11,6 +12,9 @@ class RegisterFillInformTextField extends StatelessWidget {
     this.titleText,
     this.hintText,
     this.onChanged,
+    this.obscureText = false,
+    this.maxLength,
+    this.inputFormatter,
   });
 
   @override
@@ -21,10 +25,11 @@ class RegisterFillInformTextField extends StatelessWidget {
         CustomSubtitleLarge(text: titleText),
         CustomTextField(
           textEditingController: textEditingController,
-          maxLength: 6,
+          maxLength: maxLength,
           onChanged: onChanged,
-          inputFormatters: [onlyEnglishAndKoreanAndNumberInputFormatter()],
+          inputFormatters: inputFormatter,
           hintText: hintText,
+          obscureText: obscureText,
         ),
       ],
     );
@@ -34,4 +39,7 @@ class RegisterFillInformTextField extends StatelessWidget {
   final String? hintText;
   final TextEditingController textEditingController;
   final Function(String)? onChanged;
+  final bool obscureText;
+  final int? maxLength;
+  final List<FilteringTextInputFormatter>? inputFormatter;
 }

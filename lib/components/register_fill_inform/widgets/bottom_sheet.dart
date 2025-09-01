@@ -1,4 +1,5 @@
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
+import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
@@ -23,6 +24,9 @@ class _StatefulBottomSheetState extends State<StatefulBottomSheet> {
   RegisterAgreementController get registerAgreementProvider =>
       widget.registerAgreementProvider;
 
+  final LocalizationManager localizationManager = LocalizationManager();
+
+  // TODO: 전부 Text로 바꾸기
   @override
   Widget build(BuildContext context) {
     return CustomRoundedBorderedContainer(
@@ -41,7 +45,7 @@ class _StatefulBottomSheetState extends State<StatefulBottomSheet> {
               TextSpan(
                 children: [
                   TextSpan(
-                    text: context.tr('terms_of_agreement_title'),
+                    text: localizationManager.rfiTermsOfAgreement,
                     style: CustomTexts.subtitleLarge
                         .copyWith(color: context.appColors.onBackground),
                   ),
@@ -59,10 +63,7 @@ class _StatefulBottomSheetState extends State<StatefulBottomSheet> {
                             child: SizedBox(width: 5),
                           ),
                           TextSpan(
-                            text: context.tr(
-                              'terms_of_agreement_content',
-                              gender: 'purpose',
-                            ),
+                            text: localizationManager.rfiToaPurpose,
                             style: CustomTexts.subtitleMedium.copyWith(
                                 color: context.appColors.onBackground),
                           ),
@@ -73,8 +74,7 @@ class _StatefulBottomSheetState extends State<StatefulBottomSheet> {
                   TextSpan(
                     children: [
                       TextSpan(
-                        text: context.tr('terms_of_agreement_content',
-                            gender: 'purpose_content'),
+                        text: localizationManager.rfiToaPurposeContent,
                         style: CustomTexts.bodyLarge
                             .copyWith(color: context.appColors.onBackground),
                       ),
@@ -94,8 +94,7 @@ class _StatefulBottomSheetState extends State<StatefulBottomSheet> {
                             child: SizedBox(width: 5),
                           ),
                           TextSpan(
-                            text: context.tr('terms_of_agreement_content',
-                                gender: 'items'),
+                            text: localizationManager.rfiToaItems,
                             style: CustomTexts.subtitleMedium.copyWith(
                                 color: context.appColors.onBackground),
                           ),
@@ -106,18 +105,7 @@ class _StatefulBottomSheetState extends State<StatefulBottomSheet> {
                   TextSpan(
                     children: [
                       TextSpan(
-                        text: context.tr(
-                          'terms_of_agreement_content',
-                          gender: 'items_content_student',
-                        ),
-                        style: CustomTexts.bodyLarge
-                            .copyWith(color: context.appColors.onBackground),
-                      ),
-                      TextSpan(
-                        text: context.tr(
-                          'terms_of_agreement_content',
-                          gender: 'items_content_other',
-                        ),
+                        text: localizationManager.rfiToaItemsContent,
                         style: CustomTexts.bodyLarge
                             .copyWith(color: context.appColors.onBackground),
                       ),
@@ -137,8 +125,7 @@ class _StatefulBottomSheetState extends State<StatefulBottomSheet> {
                             child: SizedBox(width: 5),
                           ),
                           TextSpan(
-                            text: context.tr('terms_of_agreement_content',
-                                gender: 'retention'),
+                            text: localizationManager.rfiToaRetention,
                             style: CustomTexts.subtitleMedium.copyWith(
                                 color: context.appColors.onBackground),
                           ),
@@ -149,8 +136,7 @@ class _StatefulBottomSheetState extends State<StatefulBottomSheet> {
                   TextSpan(
                     children: [
                       TextSpan(
-                        text: context.tr('terms_of_agreement_content',
-                            gender: 'retention_content'),
+                        text: localizationManager.rfiToaRetentionContent,
                         style: CustomTexts.bodyLarge
                             .copyWith(color: context.appColors.onBackground),
                       ),
@@ -170,8 +156,7 @@ class _StatefulBottomSheetState extends State<StatefulBottomSheet> {
                             child: SizedBox(width: 5),
                           ),
                           TextSpan(
-                            text: context.tr('terms_of_agreement_content',
-                                gender: 'right_to_refusal'),
+                            text: localizationManager.rfiToaRightToRefusal,
                             style: CustomTexts.subtitleMedium.copyWith(
                                 color: context.appColors.onBackground),
                           ),
@@ -182,8 +167,7 @@ class _StatefulBottomSheetState extends State<StatefulBottomSheet> {
                   TextSpan(
                     children: [
                       TextSpan(
-                        text: context.tr('terms_of_agreement_content',
-                            gender: 'right_to_refusal_content'),
+                        text: localizationManager.rfiToaRightToRefusalContent,
                         style: CustomTexts.bodyLarge
                             .copyWith(color: context.appColors.onBackground),
                       ),
@@ -202,7 +186,7 @@ class _StatefulBottomSheetState extends State<StatefulBottomSheet> {
                   // ),
                   WidgetSpan(child: Container()),
                   TextSpan(
-                    text: context.tr('do_you_agree'),
+                    text: localizationManager.rfiDoYouAgree,
                     style: CustomTexts.subtitleLarge
                         .copyWith(color: context.appColors.onBackground),
                   ),
@@ -214,7 +198,7 @@ class _StatefulBottomSheetState extends State<StatefulBottomSheet> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  context.tr('i_agree'),
+                  localizationManager.rfiIAgree,
                   style: CustomTexts.subtitleLarge
                       .copyWith(color: context.appColors.onBackground),
                 ),

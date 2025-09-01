@@ -1,5 +1,6 @@
 import 'package:beat_flutter/controller/register/register_organization_controller.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
+import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/managers/navigator/arguments/register_arguments.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -16,15 +17,17 @@ class SignInRegisterButton extends StatelessWidget {
   final RegisterOrganizationController registerOrganizationController =
       RegisterOrganizationController();
 
+  final LocalizationManager localizationManager = LocalizationManager();
+
   @override
   Widget build(BuildContext context) {
     return CustomWideButton(
       onTap: () {
         FocusScope.of(context).unfocus();
-        onTapTmp;
+        onTap();
       },
       buttonColor: context.appColors.background,
-      buttonText: context.tr('register'),
+      buttonText: localizationManager.signInRegister,
       textColor: context.appColors.onBackground,
       borderWidth: 0.5,
     );

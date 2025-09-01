@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
+import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,6 +23,8 @@ class SignInScreen extends StatelessWidget {
   final TextEditingController _nicknameController = TextEditingController(
       text: PrefsManager().getValueAs<String>('saved_nickname'));
 
+  final LocalizationManager localizationManager = LocalizationManager();
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<UserController, User>(
@@ -31,7 +34,7 @@ class SignInScreen extends StatelessWidget {
         if (state is ErrorUser) {
           customShowDialog(
             context: context,
-            title: context.tr('sign_in_failed'),
+            title: localizationManager.signInSignInFailed,
             content: state.studentId,
           );
         }

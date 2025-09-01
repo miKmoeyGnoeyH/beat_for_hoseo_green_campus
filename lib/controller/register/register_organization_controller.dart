@@ -1,13 +1,15 @@
+import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class RegisterOrganizationController {
-  RegisterOrganizationController();
-
-  final List<String> organizations = [
-    'student'.tr(),
-    'faculty_and_staff'.tr(),
-    'postgraduate_student'.tr(),
-    'other'.tr()
-  ];
-  String organization = 'student'.tr();
+  RegisterOrganizationController() {
+    final LocalizationManager localizationManager = LocalizationManager();
+    organizations = [
+      localizationManager.roStudent,
+      localizationManager.roFacultyAndStaff
+    ];
+    organization = organizations.first;
+  }
+  late final List<String> organizations;
+  String organization = "";
 }

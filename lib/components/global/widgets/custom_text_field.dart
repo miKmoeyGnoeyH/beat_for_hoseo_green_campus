@@ -14,6 +14,7 @@ class CustomTextField extends StatelessWidget {
     this.hintText,
     this.onChanged,
     this.inputFormatters,
+    this.obscureText = false,
   });
 
   @override
@@ -37,6 +38,7 @@ class CustomTextField extends StatelessWidget {
           color: context.appColors.onBackground,
         ),
         decoration: buildCustomInputDecoration(context, hintText),
+        obscureText: obscureText,
       ),
     );
   }
@@ -47,4 +49,5 @@ class CustomTextField extends StatelessWidget {
   final String? hintText;
   final Function(String)? onChanged;
   final List<TextInputFormatter>? inputFormatters;
+  final bool obscureText;
 }
