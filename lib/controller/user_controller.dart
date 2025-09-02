@@ -34,14 +34,14 @@ class UserController extends Bloc<UserEvent, User> {
     on<SignIn>(_signIn);
     on<SignOut>(_signOut);
     on<GetMyNeuro>(_getMyNeuro);
-    if(PrefsManager().containsKey('saved_studentId') && PrefsManager().containsKey('saved_nickname')) {
-      add(
-        SignIn(
-          PrefsManager().getValueAs<String>('saved_studentId'),
-          PrefsManager().getValueAs<String>('saved_nickname'),
-        ),
-      );
-    }
+    // if(PrefsManager().containsKey('saved_studentId') && PrefsManager().containsKey('saved_nickname')) {
+    //   add(
+    //     SignIn(
+    //       PrefsManager().getValueAs<String>('saved_studentId'),
+    //       PrefsManager().getValueAs<String>('saved_nickname'),
+    //     ),
+    //   );
+    // }
   }
 
   Future<void> _signIn(SignIn event, Emitter<User> emit) async {
@@ -61,7 +61,7 @@ class UserController extends Bloc<UserEvent, User> {
         if (await _userProvider.registerToken(user.authorization, fcmToken)) {
           NavigatorKeyManager().pushNamedAndRemoveUntil(
             RouteNames.screenHolder,
-            arguments: ScreenHolderArguments(user.authorization),
+            arguments: ScreenHolderArguments(user.authorization, user.sendToTime),
           );
         } else {
           user = ErrorUser('connection_error'.tr());
@@ -87,6 +87,7 @@ class UserController extends Bloc<UserEvent, User> {
         state.nickname,
         state.neuroesInHand,
         state.authorization,
+        state.sendToTime,
       ),
     );
 
@@ -97,6 +98,7 @@ class UserController extends Bloc<UserEvent, User> {
       state.nickname,
       neuroesInHand,
       state.authorization,
+      state.sendToTime,
     );
 
     emit(user);

@@ -33,13 +33,18 @@ class UserProvider {
         PrefsManager().setValue<String>('saved_nickname', password);
 
         final String authorization = response.headers['authorization']!;
+        
+        log("UserProvider: signIn: response.headers: ${response.headers.toString()}");
+        final int sendToTime = int.parse(response.headers["send_to_time"]!);
         final String neuroesInHand = await myNeuro(authorization);
 
+        // TODO: 나중에 서버에서 사용자 정보를 응답으로 줄건데, 그때 그걸로 바꾸기
         user = Member(
           studentId,
-          password,
+          studentId,
           neuroesInHand,
           authorization,
+          sendToTime,
         );
       } else {
         user = ErrorUser('sign_in_failed_message'.tr());
@@ -113,7 +118,7 @@ class UserProvider {
         'category': category,
         'department': department,
         'studentId': studentId,
-        'email': email,
+        // 'email': email,
         'name': name,
         'nickname': nickname,
         'password': password,

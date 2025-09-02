@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:beat_flutter/components/forgot_password/reset_password.dart';
 import 'package:beat_flutter/components/oss_licenses/oss_licenses.dart';
 import 'package:beat_flutter/controller/home/controllers/quest_list_controller.dart';
 import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
@@ -190,9 +191,10 @@ abstract class Routes {
             builder: (context)
             {
               final UserController userController = context.read<UserController>();
-              Get.find<PedometerController>().setAuthorization(userController.state.authorization);
+              Get.find<PedometerController>().setAuthorization(arguments.authorization);
+              Get.find<PedometerController>().setSendToTime(arguments.sendToTime);
               Get.find<PedometerController>().getWalkHitory();
-              Get.find<PedometerController>().startReportTimer();
+              Get.find<PedometerController>().startTimer();
 
               return MultiBlocProvider(
                 providers: [
@@ -267,6 +269,13 @@ abstract class Routes {
         {
           return MaterialPageRoute(
             builder: (context) => const OSSLicenses(),
+          );
+        }
+
+      case RouteNames.resetPassword:
+        {
+          return MaterialPageRoute(
+            builder: (context) => const ResetPassword(),
           );
         }
 

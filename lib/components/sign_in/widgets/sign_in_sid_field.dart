@@ -20,7 +20,7 @@ class SignInSIDField extends StatelessWidget {
       hintText: localizationManager.signInSidOrIdHint,
       textEditingController: _studentIdController,
       keyboardType: TextInputType.number,
-      maxLength: 8,
+      // maxLength: 8,
     );
   }
 }

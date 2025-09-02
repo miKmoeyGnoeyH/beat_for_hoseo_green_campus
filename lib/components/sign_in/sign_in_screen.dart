@@ -1,7 +1,11 @@
 import 'dart:developer';
 
+import 'package:beat_flutter/components/global/widgets/buttons/custom_text_button.dart';
+import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
+import 'package:beat_flutter/managers/navigator/navigator_key_manager.dart';
+import 'package:beat_flutter/managers/navigator/routes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,10 +22,8 @@ import 'widgets/sign_in_sid_field.dart';
 import 'widgets/sign_in_sign_in_button.dart';
 
 class SignInScreen extends StatelessWidget {
-  final TextEditingController _studentIdController = TextEditingController(
-      text: PrefsManager().getValueAs<String>('saved_studentId'));
-  final TextEditingController _nicknameController = TextEditingController(
-      text: PrefsManager().getValueAs<String>('saved_nickname'));
+  final TextEditingController _studentIdController = TextEditingController();
+  final TextEditingController _nicknameController = TextEditingController();
 
   final LocalizationManager localizationManager = LocalizationManager();
 
@@ -55,7 +57,7 @@ class SignInScreen extends StatelessWidget {
                   const BeatFullLogo(),
                   SignInSIDField(studentIdController: _studentIdController),
                   const SizedBox(height: 24),
-                  SignInNicknameField(nicknameController: _nicknameController),
+                  SignInPasswordField(nicknameController: _nicknameController),
                   const SizedBox(height: 36),
                   SignInSignInButton(
                     studentIdController: _studentIdController,
@@ -64,6 +66,13 @@ class SignInScreen extends StatelessWidget {
                   const SizedBox(height: 12),
                   SignInRegisterButton(),
                   const SizedBox(height: 24),
+                  GestureDetector(
+                    onTap: onForgotPasswordTap,
+                    child: CustomBodyLarge(
+                      text: localizationManager.signInForgotPassword,
+                      // textColor: context.appColors.disabled,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -71,6 +80,12 @@ class SignInScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void onForgotPasswordTap() {
+    log("forgot password");
+    NavigatorKeyManager()
+        .pushNamed(RouteNames.resetPassword);
   }
 
   SignInScreen({super.key});

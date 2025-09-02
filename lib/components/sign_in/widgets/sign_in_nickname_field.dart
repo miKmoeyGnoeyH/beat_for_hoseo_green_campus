@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'sign_in_text_field.dart';
 
 
-class SignInNicknameField extends StatelessWidget {
-  SignInNicknameField({
+class SignInPasswordField extends StatelessWidget {
+  SignInPasswordField({
     super.key,
     required TextEditingController nicknameController,
   }) : _nicknameController = nicknameController;
@@ -21,7 +21,7 @@ class SignInNicknameField extends StatelessWidget {
       title: localizationManager.signInPassword,
       hintText: localizationManager.signInPasswordHint,
       textEditingController: _nicknameController,
-      maxLength: 10,
+      // maxLength: 10,
       obscureText: true,
     );
   }

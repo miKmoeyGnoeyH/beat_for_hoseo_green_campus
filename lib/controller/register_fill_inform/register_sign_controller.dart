@@ -21,13 +21,13 @@ class RegisterSignController {
   }
 
   // TODO: 이미지 리사이즈 기능
-  Uint8List resizeImage(Uint8List data) {
-    Uint8List resizedData = data;
-    IMG.Image img = IMG.decodeImage(data);
-    IMG.Image resized = IMG.copyResize(img, width: img.width*2, height: img.height*2);
-    resizedData = IMG.encodeJpg(resized);
-    return resizedData;
-  }
+  // Uint8List resizeImage(Uint8List data) {
+  //   Uint8List resizedData = data;
+  //   IMG.Image img = IMG.decodeImage(data);
+  //   IMG.Image resized = IMG.copyResize(img, width: img.width*2, height: img.height*2);
+  //   resizedData = IMG.encodeJpg(resized);
+  //   return resizedData;
+  // }
 
   Uint8List sign = Uint8List(0);
 }

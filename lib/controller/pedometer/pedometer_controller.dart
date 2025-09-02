@@ -25,6 +25,14 @@ class PedometerController extends GetxController {
 
   String get authorization => _authorization;
 
+  // 랭킹 집계를 위해 서버에 걸음 수를 전송할 때 몇 초에 전송할 것인지
+  int _sendToTime = 0;
+
+  int get sendToTime => _sendToTime;
+  void setSendToTime(int value) {
+    _sendToTime = value;
+  }
+
   void setAuthorization(String authorization) {
     _authorization = authorization;
   }
@@ -94,12 +102,20 @@ class PedometerController extends GetxController {
       <Map<String, dynamic>>[].obs;
 
   Timer? _reportTimer;
+  Timer? _rankReportTimer;
+  Timer? _midnightTimer;
 
   PedometerController() {
     initPlatformState();
 
+    PrefsManager().setLastReportedSteps(0);
     _lastReportedSteps = PrefsManager().getLastReportedSteps();
     _walkReports.assignAll(PrefsManager().getUnsentStepsList());
+
+    log("PedometerController: PedometerController: _lastReportedSteps: $_lastReportedSteps");
+    log("PedometerController: PedometerController: _stepsAfterLastBoot: $_stepsAfterLastBoot");
+    log("PedometerController: PedometerController: _totalSteps: $_totalSteps");
+    log("PedometerController: PedometerController: _steps: $_steps");
 
     ever<List<Map<String, dynamic>>>(_walkReports, (reports) async {
       if (reports.isEmpty) return;
@@ -126,10 +142,10 @@ class PedometerController extends GetxController {
           totalWalkCount = bodyToJson['totalWalkCount'];
           steps = todayWalkCount;
 
-          log("PedometerController : getWalkHistory : todayWalkCount : $todayWalkCount");
-          log("PedometerController : getWalkHistory : weeklyWalkCount : $weeklyWalkCount");
-          log("PedometerController : getWalkHistory : monthlyWalkCount : $monthlyWalkCount");
-          log("PedometerController : getWalkHistory : totalWalkCount : $totalWalkCount");
+          log("PedometerController : PedometerController : todayWalkCount : $todayWalkCount");
+          log("PedometerController : PedometerController : weeklyWalkCount : $weeklyWalkCount");
+          log("PedometerController : PedometerController : monthlyWalkCount : $monthlyWalkCount");
+          log("PedometerController : PedometerController : totalWalkCount : $totalWalkCount");
 
           _walkReports.clear();
         } else {
@@ -170,13 +186,35 @@ class PedometerController extends GetxController {
     _lastReportedSteps = steps;
     PrefsManager().setLastReportedSteps(_lastReportedSteps);
 
+    log("PedometerController: _addWalkReport: _lastReportedSteps: $_lastReportedSteps");
+    log("PedometerController: _addWalkReport: _stepsAfterLastBoot: $_stepsAfterLastBoot");
+    log("PedometerController: _addWalkReport: _totalSteps: $_totalSteps");
+    log("PedometerController: _addWalkReport: _steps: $_steps");
+
     // log("PedometerController : _addWalkReport : _walkReports : ${_walkReports.toString()}");
   }
 
-  void startReportTimer() {
+  void startTimer() {
     _reportTimer?.cancel();
+    _rankReportTimer?.cancel();
+    _midnightTimer?.cancel();
+    
     _reportTimer = Timer.periodic(const Duration(hours: 1), (_) {
       _addWalkReport();
+    });
+    _rankReportTimer = Timer.periodic(const Duration(hours: 1), (_) {
+      final DateTime dateTime = DateTime.now();
+      if (_sendToTime == dateTime.second) {
+        log("PedometerController: _rankReportTimer: _sendToTime: $_sendToTime, dateTime: $dateTime");
+        _addWalkReport();
+      }
+    });
+    _midnightTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      final DateTime dateTime = DateTime.now();
+      if (dateTime.hour == 0 && dateTime.minute == 0 && dateTime.second == 0) {
+        getWalkHitory();
+        PrefsManager().setLastReportedSteps(0);
+      }
     });
   }
 

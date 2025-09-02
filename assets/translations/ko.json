@@ -37,6 +37,13 @@
     "progress": "진행도",
     "additional_information": "부가 정보"
   },
+  "rank": {
+    "ranking": "랭킹",
+    "point": "포인트",
+    "step_count": "누적 걸음",
+    "ranking_desc_point": "포인트 획득량과 사용량 합을 기준으로 순위가 결정됩니다.",
+    "ranking_desc_step_count": "순위는 매 시 정각에 갱신됩니다."
+  },
   "sign_in": {
     "sid_or_id": "학번 또는 교번",
     "sid_or_id_hint": "학번 또는 교번을 입력해 주세요",
@@ -46,13 +53,6 @@
     "register": "회원가입",
     "forgot_password": "비밀번호를 잊으셨나요?",
     "sign_in_failed": "로그인 실패"
-  },
-  "rank": {
-    "ranking": "랭킹",
-    "point": "포인트",
-    "step_count": "누적 걸음",
-    "ranking_desc_point": "포인트 획득량과 사용량 합을 기준으로 순위가 결정됩니다.",
-    "ranking_desc_step_count": "순위는 매 시 정각에 갱신됩니다."
   },
   "register_organization": {
     "appbar_title": "구분",
@@ -132,6 +132,32 @@
     "to_sign_in_screen": "로그인하러 가기",
     "sign_up_failed": "회원가입 실패",
     "sign_up_failed_message": "회원가입에 실패했습니다. 다시 시도해주세요."
+  },
+  "reset_password": {
+    "appbar_title": "비밀번호 변경",
+    "sid_or_employee_id": "학번 또는 교번",
+    "sid_or_employee_id_hint": "학번 또는 교번을 입력해 주세요.",
+    "validate_mail": "메일 인증",
+    "validate_mail_success_title": "인증 메일 전송 완료",
+    "validate_mail_success_content": "인증 메일에 포함된 인증 코드를 입력해 주세요.",
+    "validate_mail_error_title": "인증 메일 전송에 실패했습니다.",
+    "validate_mail_error_content": "알 수 없는 오류로 인증 메일 전송에 실패했습니다. 잠시 후 다시 시도해주세요.",
+    "validation_code": "인증 코드",
+    "validation_code_hint": "학번/교번 이메일로 발송된 인증 코드를 입력해 주세요.",
+    "new_password": "새 비밀번호",
+    "new_password_hint": "영문 대·소문자, 숫자, 특수문자를 포함하여 8자리 이상",
+    "new_password_check": "비밀번호 확인",
+    "new_password_check_hint": "비밀번호를 한 번 더 입력해 주세요.",
+    "password_rule_error_title": "비밀번호 요구사항을 확인해 주세요.",
+    "password_rule_error_content": "비밀번호는 영문 대·소문자, 숫자, 특수문자를 포함하여 8자리 이상이어야 합니다.",
+    "password_mismatch_title": "비밀번호가 일치하지 않습니다.",
+    "password_mismatch_content": "입력하신 비밀번호를 다시 확인해 주세요.",
+    "reset_password": "비밀번호 변경",
+    "reset_password_success_title": "비밀번호 변경 완료",
+    "reset_password_success_content": "비밀번호 변경이 완료되었습니다. 변경된 비밀번호로 로그인 후 이용해주세요.",
+    "reset_password_unknown_error_title": "비밀번호 변경 실패",
+    "reset_password_unknown_error_content": "알 수 없는 오류로 비밀번호 변경에 실패했습니다. 잠시 후 다시 시도해주세요.",
+    "confirm": "확인"
   },
   "bottom_navigation_bar": {
     "qr": "QR",

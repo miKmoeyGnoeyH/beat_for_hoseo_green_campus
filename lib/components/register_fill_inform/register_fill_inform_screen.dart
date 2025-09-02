@@ -240,6 +240,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                     ],
                   ),
                   const SizedBox(height: 20),
+                  // TODO: 학생이면 8자리 학번, 교직원은 꼭 교번이 아닐 수 있음
                   // 학번
                   CustomSubtitleLarge(
                     text: localizationManager.rfiSidOrEmployeeId,
@@ -403,7 +404,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                     }
 
                     final String email =
-                        "${registerSidController.idController.text}$mailDomain";
+                        registerSidController.idController.text;
                     final ByteData? signature = await registerSignController
                         .handSignatureControl
                         .toImage(background: Colors.transparent);

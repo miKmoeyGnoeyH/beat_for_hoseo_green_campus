@@ -155,6 +155,33 @@ class LocalizationManager {
   String get toaRightToRefusal => "terms_of_agreement_content".tr(gender: "right_to_refusal");
   String get toaRightToRefusalContent => "terms_of_agreement_content".tr(gender: "right_to_refusal_content");
 
+  // reset password
+  String get rpAppbarTitle => "reset_password".tr(gender: "appbar_title");
+  String get rpSidOrEmployeeId => "reset_password".tr(gender: "sid_or_employee_id");
+  String get rpSidOrEmployeeIdHint => "reset_password".tr(gender: "sid_or_employee_id_hint");
+  String get rpValidateMailSuccessTitle => "reset_password".tr(gender: "validate_mail_success_title");
+  String get rpValidateMailSuccessContent => "reset_password".tr(gender: "validate_mail_success_content");
+  String get rpValidateMail => "reset_password".tr(gender: "validate_mail");
+  String get rpValidateMailErrorTitle => "reset_password".tr(gender: "validate_mail_error_title");
+  String get rpValidateMailErrorContent => "reset_password".tr(gender: "validate_mail_error_content");
+  String get rpValidationCode => "reset_password".tr(gender: "validation_code");
+  String get rpValidationCodeHint => "reset_password".tr(gender: "validation_code_hint");
+  String get rpNewPassword => "reset_password".tr(gender: "new_password");
+  String get rpNewPasswordHint => "reset_password".tr(gender: "new_password_hint");
+  String get rpNewPasswordCheck => "reset_password".tr(gender: "new_password_check");
+  String get rpNewPasswordCheckHint => "reset_password".tr(gender: "new_password_check_hint");
+  String get rpPasswordRuleErrorTitle => "reset_password".tr(gender: "password_rule_error_title");
+  String get rpPasswordRuleErrorContent => "reset_password".tr(gender: "password_rule_error_content");
+  String get rpPasswordMismatchTitle => "reset_password".tr(gender: "password_mismatch_title");
+  String get rpPasswordMismatchContent => "reset_password".tr(gender: "password_mismatch_content");
+  String get rpResetPassword => "reset_password".tr(gender: "reset_password");
+  String get rpResetPasswordSuccessTitle => "reset_password".tr(gender: "reset_password_success_title");
+  String get rpResetPasswordSuccessContent => "reset_password".tr(gender: "reset_password_success_content");
+  String get rpResetPasswordUnknownErrorTitle => "reset_password".tr(gender: "reset_password_unknown_error_title");
+  String get rpResetPasswordUnknownErrorContent => "reset_password".tr(gender: "reset_password_unknown_error_content");
+  String get rpConfirm => "reset_password".tr(gender: "confirm");
+
+
   // bottom navigation bar
   String get bnbQR => "bottom_navigation_bar".tr(gender: "qr");
   String get bnbHome => "bottom_navigation_bar".tr(gender: "home");

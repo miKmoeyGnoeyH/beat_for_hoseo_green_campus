@@ -29,4 +29,6 @@ class DotEnvManager {
   String get questImage => dotenv.env['QUEST_IMAGE'] ?? "";
   String get signUp => dotenv.env['SIGN_UP'] ?? "";
   String get emailRequest => dotenv.env['EMAIL_REQUEST'] ?? "";
+  String get resetPasswordEmailRequest => dotenv.env['RESET_PASSWORD_EMAIL_REQUEST'] ?? "";
+  String get resetPassword => dotenv.env['RESET_PASSWORD'] ?? "";
 }

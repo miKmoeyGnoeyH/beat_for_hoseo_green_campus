@@ -21,4 +21,5 @@ abstract class RouteNames {
   static const String withdrawal = '/withdrawal';
   static const String notifications = '/notifications';
   static const String ossLicenses = '/oss_licenses';
+  static const String resetPassword = '/reset_password';
 }
