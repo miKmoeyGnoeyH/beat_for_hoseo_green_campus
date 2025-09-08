@@ -9,6 +9,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart' hide Trans;
 
 import 'app.dart';
@@ -27,7 +28,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 // TODO : 전체적으로 리팩토링 한 번 싹 조져주기
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   BEATLogger.init();
   PrefsManager().init();
 

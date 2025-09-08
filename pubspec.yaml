@@ -61,7 +61,20 @@ dependencies:
   location: ^8.0.1
   logger: ^2.6.1
   path_provider: ^2.1.5
+  flutter_native_splash: ^2.4.6
 
+flutter_native_splash:
+  color: "#222BA3"
+  image: assets/images/beat_hgc_splash_transparent_resize.png
+
+  android: true
+  ios: true
+
+  android_12:
+    icon_background_color: "#222BA3"
+    icon_background_color_dark: "#222BA3"
+#    image: assets/images/beat_hgc_splash_android_960.png
+#    image_dark: assets/images/beat_hgc_splash_android_960.png
 
 dev_dependencies:
   flutter_test:
