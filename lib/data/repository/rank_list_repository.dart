@@ -6,6 +6,18 @@ import 'package:beat_flutter/data/provider/rank_list_provider.dart';
 class RankListRepository {
   RankListRepository(this.rankListProvider);
 
+  Future<RankListModel> getRankList(String authorization) async {
+
+    try {
+      final Map<String, dynamic> rankListData = await rankListProvider
+          .getRankList(authorization);
+      return RankListModel.fromJson(rankListData);
+    } catch (e) {
+      log("RankListRepository : getRankList : error : $e");
+      rethrow;
+    }
+  }
+
   Future<List<RankListModelTest>> getRankListTest() async {
     List<RankListModelTest> retList = [];
 

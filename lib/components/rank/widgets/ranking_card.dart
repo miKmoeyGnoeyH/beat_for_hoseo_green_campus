@@ -1,6 +1,8 @@
 
+import 'package:beat_flutter/controller/user_controller.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../data/models/data_models.dart';
 import '../../global/widgets/custom_rounded_bordered_container.dart';
@@ -16,6 +18,8 @@ class RankingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final UserController userController = context.read<UserController>();
+
     return CustomRoundedBorderedContainer(
       borderWidth: 0.5,
       color: context.appColors.background,
@@ -32,6 +36,6 @@ class RankingCard extends StatelessWidget {
     );
   }
 
-  final RankItemModelTest ranking;
+  final RankItemModel ranking;
   final int rank;
 }

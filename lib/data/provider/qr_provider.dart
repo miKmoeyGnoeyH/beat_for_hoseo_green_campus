@@ -1,16 +1,17 @@
 import 'dart:developer';
 
+import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
 
 import '../states/qr_state.dart';
-
 
 class QRProvider {
   final http.Client client = http.Client();
 
   Future<QRState> handleQRCheckRequest(
       String requestUrl, String authorization) async {
+    final LocalizationManager localizationManager = LocalizationManager();
     QRState qrState;
 
     try {
@@ -26,26 +27,26 @@ class QRProvider {
 
         if (credit >= 0) {
           qrState = QRSuccess(
-            'reward_acquire_success'.tr(),
-            'qr_scan_success_earned_neuro'.tr(args: [credit.toString()]),
+            localizationManager.qrRewardAcquireSuccess,
+            localizationManager.qrQRScanSuccessEarnedPoint(credit.toString()),
           );
         } else {
           qrState = QRSuccess(
-            'qr_scan_success'.tr(),
-            'qr_scan_success_Deducted_neuro'.tr(args: [credit.toString()]),
+            localizationManager.qrQRScanSuccess,
+            localizationManager.qrQRScanSuccessDeductedPoint(credit.toString()),
           );
         }
       } else {
         qrState = QRFailure(
-          'qr_scan_failed'.tr(),
-          'already_checked'.tr(),
+          localizationManager.qrQRScanFailed,
+          localizationManager.qrAlreadyChecked,
         );
       }
     } catch (e) {
       log(e.toString());
       qrState = QRFailure(
-        'qr_scan_failed'.tr(),
-        'error_occured'.tr(),
+        localizationManager.qrQRScanFailed,
+        localizationManager.qrErrorOccured,
       );
     }
     return qrState;

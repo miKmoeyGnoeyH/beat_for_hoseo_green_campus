@@ -5,9 +5,9 @@ import '../methods/buildQuestDetailTableRows.dart';
 
 class QuestDetailTableContents extends StatelessWidget {
   const QuestDetailTableContents(
-      this.questDetailModel, {
-        super.key,
-      });
+    this.questDetailModel, {
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,14 +21,25 @@ class QuestDetailTableContents extends StatelessWidget {
             reward: questDetailModel.neuro.toString(),
           ),
           buildQuestDetailTableQuestTypeRow(
-            questType: questDetailModel.eventType.eventType,
+            questType: questDetailModel.eventType,
           ),
           buildQuestDetailTableQuestRequirementRow(
-            questRequirement: questDetailModel.eventLongDTO.qrMissionLongDTO.successCondition.toString(),
+            questRequirement: questDetailModel.eventType == EventType.qr
+                ? (questDetailModel.eventLongDTO as EventQRLongDTO)
+                    .qrMissionLongDTO
+                    .successCondition
+                    .toString()
+                : (questDetailModel.eventLongDTO as EventWalkLongDTO)
+                    .walkCount
+                    .toString(),
           ),
-          buildQuestDetailTableBonusRewardRow(
-            bonusReward: questDetailModel.eventLongDTO.qrMissionLongDTO.successPoint.toString(),
-          ),
+          if (questDetailModel.eventType == EventType.qr)
+            buildQuestDetailTableBonusRewardRow(
+              bonusReward: (questDetailModel.eventLongDTO as EventQRLongDTO)
+                  .qrMissionLongDTO
+                  .successPoint
+                  .toString(),
+            ),
           // buildQuestDetailTableLocationRow(
           //   questLocation: questDetailModel.eventLocation,
           // ),

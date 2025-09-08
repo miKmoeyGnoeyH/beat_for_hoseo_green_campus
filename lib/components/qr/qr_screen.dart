@@ -1,7 +1,12 @@
 import 'dart:developer';
 
+import 'package:beat_flutter/components/qr/widgets/overlay.dart';
+import 'package:beat_flutter/controller/location/location_controller.dart';
+import 'package:beat_flutter/extensions/buildcontext_extension.dart';
+import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../controller/qr/qr_controller.dart';
@@ -23,6 +28,9 @@ class QrScreen extends StatefulWidget {
 class _QrScreenState extends State<QrScreen> {
   final MobileScannerController mobileScannerController =
       MobileScannerController();
+
+  final LocalizationManager localizationManager = LocalizationManager();
+  final LocationController locationController = Get.find<LocationController>();
 
   @override
   Widget build(BuildContext context) {
@@ -58,51 +66,145 @@ class _QrScreenState extends State<QrScreen> {
               });
             }
           },
-          child: MobileScanner(
-            controller: mobileScannerController,
-            // overlayBuilder: (context, boxConstraints) => Center(
-            //   child: Container(
-            //     decoration: BoxDecoration(
-            //
-            //     ),
-            //   ),
-            // ),
-            onDetect: (BarcodeCapture capture) {
-              if (isScanning) return;
+          child: Stack(
+            children: [
+              MobileScanner(
+                controller: mobileScannerController,
+                // overlayBuilder: (context, boxConstraints) => Center(
+                //   child: Container(
+                //     decoration: BoxDecoration(
+                //
+                //     ),
+                //   ),
+                // ),
+                scanWindow: Rect.fromCenter(
+                  center:
+                      MediaQuery.sizeOf(context).center(const Offset(0, -50)),
+                  width: 200,
+                  height: 200,
+                ),
+                onDetect: (BarcodeCapture capture) {
+                  if (isScanning) return;
 
-              final List<Barcode> barcodes = capture.barcodes;
-              final Barcode barcode = barcodes.first;
+                  final List<Barcode> barcodes = capture.barcodes;
+                  final Barcode barcode = barcodes.first;
 
-              if (barcode.rawValue == null) return;
+                  if (barcode.rawValue == null) return;
 
-              final String requestUrl = barcode.rawValue!;
-              final QRController qrController = context.read<QRController>();
-              log(requestUrl);
+                  final String requestUrl = barcode.rawValue!;
+                  final QRController qrController =
+                      context.read<QRController>();
+                  log(requestUrl);
 
-              if (qrRawValueFileterCheck.hasMatch(requestUrl)) {
-                qrController.add(
-                  QRCheck(
-                    requestUrl,
-                    userBloc.state.authorization,
+                  if (locationController.locationData == null ||
+                      locationController.locationData?.latitude == null ||
+                      locationController.locationData?.longitude == null) {
+                    customShowDialog(
+                      context: context,
+                      title: localizationManager.qrLocationFetchErrorTitle,
+                      content: localizationManager.qrLocationFetchErrorContent,
+                    );
+                    return;
+                  }
+
+                  if (qrRawValueFileterCheck.hasMatch(requestUrl)) {
+                    qrController.add(
+                      QRCheck(
+                        requestUrl,
+                        userBloc.state.authorization,
+                        locationController.locationData!.latitude!,
+                        locationController.locationData!.longitude!,
+                      ),
+                    );
+                  } else if (qrRawValueFileterCredit.hasMatch(requestUrl)) {
+                    qrController.add(
+                      QRCredit(
+                        requestUrl,
+                        userBloc.state.authorization,
+                        locationController.locationData!.latitude!,
+                        locationController.locationData!.longitude!,
+                      ),
+                    );
+                  } else if (qrRawValueFileterSign.hasMatch(requestUrl)) {
+                    qrController.add(
+                      QRSign(
+                        requestUrl,
+                        userBloc.state.authorization,
+                        locationController.locationData!.latitude!,
+                        locationController.locationData!.longitude!,
+                      ),
+                    );
+                  }
+                },
+              ),
+              Container(
+                decoration: ShapeDecoration(
+                  shape: QROverlay(
+                    borderColor: context.appColors.primary,
+                    borderRadius: 10,
+                    borderLength: 30,
+                    borderWidth: 10,
+                    cutOutWidth: 200,
+                    cutOutHeight: 200,
                   ),
-                );
-              } else if (qrRawValueFileterCredit.hasMatch(requestUrl)) {
-                qrController.add(
-                  QRCredit(
-                    requestUrl,
-                    userBloc.state.authorization,
-                  ),
-                );
-              } else if (qrRawValueFileterSign.hasMatch(requestUrl)) {
-                qrController.add(
-                  QRSign(
-                    requestUrl,
-                    userBloc.state.authorization,
-                  ),
-                );
-              }
-            },
+                ),
+              ),
+            ],
           ),
+          // SizedBox.expand(
+          //   child: MobileScanner(
+          //     controller: mobileScannerController,
+          //     // overlayBuilder: (context, boxConstraints) => Center(
+          //     //   child: Container(
+          //     //     decoration: BoxDecoration(
+          //     //
+          //     //     ),
+          //     //   ),
+          //     // ),
+          //     scanWindow: Rect.fromCenter(
+          //       center:
+          //       MediaQuery.sizeOf(context).center(const Offset(0, -50)),
+          //       width: 300,
+          //       height: 300,
+          //     ),
+          //     onDetect: (BarcodeCapture capture) {
+          //       if (isScanning) return;
+          //
+          //       final List<Barcode> barcodes = capture.barcodes;
+          //       final Barcode barcode = barcodes.first;
+          //
+          //       if (barcode.rawValue == null) return;
+          //
+          //       final String requestUrl = barcode.rawValue!;
+          //       final QRController qrController =
+          //       context.read<QRController>();
+          //       log(requestUrl);
+          //
+          //       if (qrRawValueFileterCheck.hasMatch(requestUrl)) {
+          //         qrController.add(
+          //           QRCheck(
+          //             requestUrl,
+          //             userBloc.state.authorization,
+          //           ),
+          //         );
+          //       } else if (qrRawValueFileterCredit.hasMatch(requestUrl)) {
+          //         qrController.add(
+          //           QRCredit(
+          //             requestUrl,
+          //             userBloc.state.authorization,
+          //           ),
+          //         );
+          //       } else if (qrRawValueFileterSign.hasMatch(requestUrl)) {
+          //         qrController.add(
+          //           QRSign(
+          //             requestUrl,
+          //             userBloc.state.authorization,
+          //           ),
+          //         );
+          //       }
+          //     },
+          //   ),
+          // ),
         );
       }),
     );

@@ -1,4 +1,6 @@
 
+import 'dart:developer';
+
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -14,6 +16,8 @@ class CustomTitleLarge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log(textColor.toString());
+
     return Text(
       text ?? '',
       maxLines: maxLines,

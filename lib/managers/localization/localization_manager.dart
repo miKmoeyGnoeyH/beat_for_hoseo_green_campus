@@ -47,6 +47,8 @@ class LocalizationManager {
   String get qdBonusReward => "quest_detail".tr(gender: "bonus_reward");
   String get qdProgress => "quest_detail".tr(gender: "progress");
   String get qdAdditionalInformation => "quest_detail".tr(gender: "additional_information");
+  String get qdQuestTypeQR => "quest_detail".tr(gender: "quest_type_qr");
+  String get qdQuestTypeWalk => "quest_detail".tr(gender: "quest_type_walk");
 
   // sign in
   String get signInSidOrId => "sign_in".tr(gender: "sid_or_id");
@@ -58,12 +60,34 @@ class LocalizationManager {
   String get signInForgotPassword => "sign_in".tr(gender: "forgot_password");
   String get signInSignInFailed => "sign_in".tr(gender: "sign_in_failed");
 
+  // qr
+  String get qrRewardAcquireFailed => "qr".tr(gender: "reward_acquire_failed");
+  String get qrRewardAcquireSuccess => "qr".tr(gender: "reward_acquire_success");
+  String get qrQRScanFailed => "qr".tr(gender: "qr_scan_failed");
+  String get qrQRScanSuccess => "qr".tr(gender: "qr_scan_success");
+  String qrQRScanSuccessDeductedPoint(String arg) => "qr".tr(gender: "qr_scan_success_deducted_point", args: [arg]);
+  String qrQRScanSuccessEarnedPoint(String arg) => "qr".tr(gender: "qr_scan_success_earned_point", args: [arg]);
+  String get qrAlreadyChecked => "qr".tr(gender: "already_checked");
+  String get qrErrorOccured => "qr".tr(gender: "error_occured");
+  String get qrLocationFetchErrorTitle => "qr".tr(gender: "location_fetch_error_title");
+  String get qrLocationFetchErrorContent => "qr".tr(gender: "location_fetch_error_content");
+
+  // notice
+  String get noticeLabel => "notice".tr(gender: "label");
+
   // ranking
   String get rankingRanking => "rank".tr(gender: "ranking");
   String get rankingPoint => "rank".tr(gender: "point");
   String get rankingStepCount => "rank".tr(gender: "step_count");
   String get rankingRankingDescPoint => "rank".tr(gender: "ranking_desc_point");
   String get rankingRankingDescStepCount => "rank".tr(gender: "ranking_desc_step_count");
+  String get rankingPointRankerList => "rank".tr(gender: "point_ranker_list");
+  String get rankingPointRankerListStudent => "rank".tr(gender: "point_ranker_list_student");
+  String get rankingPointRankerListEmployee => "rank".tr(gender: "point_ranker_list_employee");
+  String get rankingWalkRankerList => "rank".tr(gender: "walk_ranker_list");
+  String get rankingWalkRankerListStudent => "rank".tr(gender: "walk_ranker_list_student");
+  String get rankingWalkRankerListEmployee => "rank".tr(gender: "walk_ranker_list_employee");
+  String get rankingMyRank => "rank".tr(gender: "my_rank");
 
   // register organization
   String get roAppbarTitle => "register_organization".tr(gender: "appbar_title");
@@ -181,10 +205,25 @@ class LocalizationManager {
   String get rpResetPasswordUnknownErrorContent => "reset_password".tr(gender: "reset_password_unknown_error_content");
   String get rpConfirm => "reset_password".tr(gender: "confirm");
 
+  // my page
+  String get mpAppbarTitle => "my_page".tr(gender: "appbar_title");
+  String get mpCategory => "my_page".tr(gender: "category");
+  String get mpStudent => "my_page".tr(gender: "student");
+  String get mpEmployee => "my_page".tr(gender: "employee");
+  String get mpOthers => "my_page".tr(gender: "others");
+  String get mpStudentID => "my_page".tr(gender: "student_id");
+  String get mpEmployeeID => "my_page".tr(gender: "employee_id");
+  String get mpID => "my_page".tr(gender: "id");
+  String get mpName => "my_page".tr(gender: "name");
+  String get mpDepartment => "my_page".tr(gender: "department");
+  String get mpEmail => "my_page".tr(gender: "email");
+  String get mpNickname => "my_page".tr(gender: "nickname");
+  String get mpChangePassword => "my_page".tr(gender: "change_password");
 
   // bottom navigation bar
   String get bnbQR => "bottom_navigation_bar".tr(gender: "qr");
   String get bnbHome => "bottom_navigation_bar".tr(gender: "home");
+  String get bnbMyPage => "bottom_navigation_bar".tr(gender: "my_page");
 
   // errors
   String get errorsTimeout => "errors".tr(gender: "timeout");

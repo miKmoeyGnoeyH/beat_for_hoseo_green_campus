@@ -220,18 +220,34 @@ class QRMissionLongDTO {
   final List<QRMissionDTO> qrMissionDTOList;
 }
 
-class EventLongDTO {
-  EventLongDTO({
+class EventLongDTO {}
+
+class EventQRLongDTO extends EventLongDTO {
+  EventQRLongDTO({
     required this.hasReward,
     required this.qrMissionLongDTO,
   });
 
-  EventLongDTO.fromJson(Map<String, dynamic> json)
+  EventQRLongDTO.fromJson(Map<String, dynamic> json)
       : hasReward = json['hasReward'],
         qrMissionLongDTO = QRMissionLongDTO.fronJson(json['qrMissionLongDto']);
 
   final bool hasReward;
   final QRMissionLongDTO qrMissionLongDTO;
+}
+
+class EventWalkLongDTO extends EventLongDTO {
+  EventWalkLongDTO({
+    required this.period,
+    required this.walkCount,
+  });
+
+  EventWalkLongDTO.fromJson(Map<String, dynamic> json)
+      : period = json['period'],
+        walkCount = json['walkCount'];
+
+  final String period;
+  final int walkCount;
 }
 
 class QuestDetailModel extends QuestModel {
@@ -244,16 +260,17 @@ class QuestDetailModel extends QuestModel {
     required this.startDate,
     required this.endDate,
     // required this.eventLocation,
-    required this.imageFilePath,
+    required this.hasImage,
     required this.eventLongDTO,
   }) : super(descriptionShort: "", hasSuccess: false);
 
-  QuestDetailModel.fromJson(Map<String, dynamic> json)
+  QuestDetailModel.fromJson(Map<String, dynamic> json, this.hasImage)
       : descriptionLong = json['descriptionLong'],
         startDate = DateTime.parse(json['startDate']),
         endDate = DateTime.parse(json['endDate']),
-        imageFilePath = json['imageFilePath'],
-        eventLongDTO = EventLongDTO.fromJson(json['eventLongDto']),
+        eventLongDTO = EventType.fromString(json['eventType']) == EventType.qr
+            ? EventQRLongDTO.fromJson(json['eventLongDto'])
+            : EventWalkLongDTO.fromJson(json['eventLongDto']),
         super(
           eventId: json['eventId'],
           eventName: json['eventName'],
@@ -270,6 +287,7 @@ class QuestDetailModel extends QuestModel {
   final String descriptionLong;
   final DateTime startDate;
   final DateTime endDate;
-  final String? imageFilePath;
+
+  final bool hasImage;
   final EventLongDTO eventLongDTO;
 }

@@ -1,4 +1,5 @@
 import 'package:beat_flutter/components/global/beat/gc_point.dart';
+import 'package:beat_flutter/data/models/data_models.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,14 @@ TableRow buildQuestDetailTableRewardRow({required String reward}) {
   );
 }
 
-TableRow buildQuestDetailTableQuestTypeRow({required String? questType}) {
+TableRow buildQuestDetailTableQuestTypeRow({required EventType? questType}) {
+  final LocalizationManager localizationManager = LocalizationManager();
+  final String questTypeString = switch (questType) {
+    EventType.qr => localizationManager.qdQuestTypeQR,
+    EventType.walk => localizationManager.qdQuestTypeWalk,
+    _ => '',
+  };
+
   return TableRow(
     children: [
       TableCell(
@@ -48,7 +56,7 @@ TableRow buildQuestDetailTableQuestTypeRow({required String? questType}) {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 10),
-                CustomBodyLarge(text: questType),
+                CustomBodyLarge(text: questTypeString),
                 const SizedBox(height: 10),
               ],
             ),

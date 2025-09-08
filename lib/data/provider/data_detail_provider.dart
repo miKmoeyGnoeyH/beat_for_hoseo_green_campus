@@ -22,7 +22,7 @@ class DataDetailProvider {
           '${DotEnvManager().questQRDetailUrl}/${(dataModel as QuestQRModel).eventId}';
     } else if (dataModel.runtimeType == QuestWalkModel) {
       requestUrl =
-          '${DotEnvManager().questWalkDetailUrl}/${(dataModel as QuestQRModel).eventId}';
+          '${DotEnvManager().questWalkDetailUrl}/${(dataModel as QuestWalkModel).eventId}';
     } else if (dataModel.runtimeType == QuizModel) {
       requestUrl =
           '${dotenv.env['QUIZ_DETAIL']!}${(dataModel as QuizModel).quizId}';
@@ -46,10 +46,30 @@ class DataDetailProvider {
 
         switch (dataModel.runtimeType) {
           case const (QuestQRModel):
-            data = QuestDetailModel.fromJson(body);
+            data = QuestDetailModel.fromJson(body, true);
             break;
           case const (QuestWalkModel):
-            data = QuestDetailModel.fromJson(body);
+            data = QuestDetailModel.fromJson(body, true);
+            break;
+          case const (QuizModel):
+            data =
+                QuizDetailModel.fromModelAndJson(dataModel as QuizModel, body);
+            break;
+          default:
+            return DataDetailModelLoadingError();
+        }
+        return DataDetailModelLoadingSuccess(data);
+      } else if (response.statusCode == 400) {
+        DataModel data;
+        // log(response.body.toString());
+        final body = jsonDecode(utf8.decode(response.bodyBytes));
+
+        switch (dataModel.runtimeType) {
+          case const (QuestQRModel):
+            data = QuestDetailModel.fromJson(body, false);
+            break;
+          case const (QuestWalkModel):
+            data = QuestDetailModel.fromJson(body, false);
             break;
           case const (QuizModel):
             data =

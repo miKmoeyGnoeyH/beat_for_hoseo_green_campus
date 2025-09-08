@@ -1,5 +1,6 @@
 
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
+import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,7 +15,9 @@ import '../global/widgets/texts/custom_display_medium.dart';
 import 'widgets/notifications_list_view.dart';
 
 class NotificationsScreen extends StatelessWidget {
-  const NotificationsScreen({super.key});
+   NotificationsScreen({super.key});
+
+  final LocalizationManager localizationManager = LocalizationManager();
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +29,7 @@ class NotificationsScreen extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         children: [
           CustomDisplayMedium(
-            text: context.tr('notifications'),
+            text: localizationManager.noticeLabel,
             textColor: context.appColors.defaultTextColor,
           ),
           BlocBuilder<NotificationsController, DataListState>(

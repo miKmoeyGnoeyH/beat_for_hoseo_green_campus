@@ -56,8 +56,7 @@ class _QuestDetailScreenState extends State<QuestDetailScreen> {
                         title: (state.dataModel! as QuestDetailModel).eventName,
                       ),
                       const SizedBox(height: 20),
-                      (state.dataModel! as QuestDetailModel).imageFilePath !=
-                              null
+                      (state.dataModel! as QuestDetailModel).hasImage
                           ? DetailImage(
                               imageUrl:
                                   '${DotEnvManager().questImage}${(state.dataModel! as QuestDetailModel).eventId}')
@@ -87,31 +86,41 @@ class _QuestDetailScreenState extends State<QuestDetailScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            CustomTitleLarge(
-                              text: localizationManager.qdAdditionalInformation,
-                            ),
-                            ListView.separated(
-                              padding: const EdgeInsets.symmetric(vertical: 20),
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                return QuestDetailAdditionalInfoCard(
-                                  qrMissionDTO:
-                                      (state.dataModel! as QuestDetailModel)
-                                          .eventLongDTO
-                                          .qrMissionLongDTO
-                                          .qrMissionDTOList[index],
-                                );
-                              },
-                              separatorBuilder: (context, index) {
-                                return const SizedBox(height: 20);
-                              },
-                              itemCount: (state.dataModel! as QuestDetailModel)
-                                  .eventLongDTO
-                                  .qrMissionLongDTO
-                                  .qrMissionDTOList
-                                  .length,
-                            )
+                            (state.dataModel! as QuestDetailModel).eventType ==
+                                    EventType.qr
+                                ? CustomTitleLarge(
+                                    text: localizationManager
+                                        .qdAdditionalInformation,
+                                  )
+                                : const SizedBox.shrink(),
+                            (state.dataModel! as QuestDetailModel).eventType ==
+                                    EventType.qr
+                                ? ListView.separated(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 20),
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemBuilder: (context, index) {
+                                      return QuestDetailAdditionalInfoCard(
+                                        qrMissionDTO: ((state.dataModel!
+                                                    as QuestDetailModel)
+                                                .eventLongDTO as EventQRLongDTO)
+                                            .qrMissionLongDTO
+                                            .qrMissionDTOList[index],
+                                      );
+                                    },
+                                    separatorBuilder: (context, index) {
+                                      return const SizedBox(height: 20);
+                                    },
+                                    itemCount:
+                                        ((state.dataModel! as QuestDetailModel)
+                                                .eventLongDTO as EventQRLongDTO)
+                                            .qrMissionLongDTO
+                                            .qrMissionDTOList
+                                            .length,
+                                  )
+                                : const SizedBox.shrink()
                           ],
                         ),
                       )

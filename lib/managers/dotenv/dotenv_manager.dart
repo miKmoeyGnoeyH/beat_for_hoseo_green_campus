@@ -22,6 +22,7 @@ class DotEnvManager {
   String get rankListUrl => dotenv.env['RANK'] ?? "";
   String get walkHistoryUrl => dotenv.env['WALK_HISTORY'] ?? "";
   String get walkRecordUrl => dotenv.env['WALK_RECORD'] ?? "";
+  String get questList => dotenv.env['QUEST_LIST'] ?? "";
   String get questQRDetailUrl => dotenv.env['QUEST_QR_DETAIL'] ?? "";
   String get questQRCheckUrl => dotenv.env['QUEST_QR_CHECK'] ?? "";
   String get questWalkDetailUrl => dotenv.env['QUEST_WALK_DETAIL'] ?? "";
@@ -31,4 +32,6 @@ class DotEnvManager {
   String get emailRequest => dotenv.env['EMAIL_REQUEST'] ?? "";
   String get resetPasswordEmailRequest => dotenv.env['RESET_PASSWORD_EMAIL_REQUEST'] ?? "";
   String get resetPassword => dotenv.env['RESET_PASSWORD'] ?? "";
+  String get history => dotenv.env['NEURO_HISTORY'] ?? "";
+  String get notice => dotenv.env['NOTICE_LIST'] ?? "";
 }

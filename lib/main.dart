@@ -1,7 +1,9 @@
  import 'dart:developer';
 import 'dart:io';
 
+import 'package:beat_flutter/controller/location/location_controller.dart';
 import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
+import 'package:beat_flutter/managers/logger/beat_logger.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +28,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 // TODO : 전체적으로 리팩토링 한 번 싹 조져주기
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  BEATLogger.init();
   PrefsManager().init();
 
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -72,6 +75,7 @@ Future<void> main() async {
 
   // Pedometer
   Get.put<PedometerController>(PedometerController(), permanent: true);
+  Get.put<LocationController>(LocationController(), permanent: true);
 
   runApp(
     EasyLocalization(

@@ -41,9 +41,12 @@ class _NeuroHistoryScreenState extends State<NeuroHistoryScreen> {
           BlocBuilder<NeuroHistoryController, NeuroHistoryState>(
             builder: (context, state) {
               if (state is NeuroHistoryLoadingError) {
-                return CustomRefreshButton(
-                    onTap: () =>
-                        neuroHistoryController.add(NeuroHistoryRequestEvent()));
+                return SizedBox(
+                  height: 500,
+                  child: CustomRefreshButton(
+                      onTap: () =>
+                          neuroHistoryController.add(NeuroHistoryRequestEvent())),
+                );
               } else if (state is NeuroHistoryLoading) {
                 return const CustomCircularProgressIndicator();
               } else {

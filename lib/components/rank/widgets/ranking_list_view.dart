@@ -20,7 +20,7 @@ class RankingListView extends StatelessWidget {
       separatorBuilder: (BuildContext context, int index) =>
       const SizedBox(height: 10),
       itemBuilder: (BuildContext context, int index) =>
-          RankingCard(rankingList[index] as RankItemModelTest, index + 1),
+          RankingCard(rankingList[index] as RankItemModel, index + 1),
     );
   }
 

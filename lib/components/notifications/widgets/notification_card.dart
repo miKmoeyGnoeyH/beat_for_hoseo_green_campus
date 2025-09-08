@@ -1,5 +1,7 @@
 
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
+import 'package:beat_flutter/managers/navigator/navigator_key_manager.dart';
+import 'package:beat_flutter/managers/navigator/routes.dart';
 import 'package:flutter/material.dart';
 
 import '../../../data/models/data_models.dart';
@@ -14,19 +16,26 @@ class NotificationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomRoundedBorderedContainer(
-      borderWidth: 0.5,
-      color: context.appColors.background,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            NotificationContent(notificationModel: notificationModel),
-          ],
+    return GestureDetector(
+      onTap: onTap,
+      child: CustomRoundedBorderedContainer(
+        borderWidth: 0.5,
+        color: context.appColors.background,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              NotificationContent(notificationModel: notificationModel),
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  void onTap() {
+    NavigatorKeyManager().pushNamed(RouteNames.noticeDetail, arguments: notificationModel);
   }
 
   final NotificationModel notificationModel;

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 
+import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
@@ -12,7 +13,7 @@ class NeuroHistoryProvider {
   final http.Client _httpClient = http.Client();
 
   Future<NeuroHistoryState> getNeuroHistoryList(String authorization) async {
-    final String requestUrl = dotenv.env['NEURO_HISTORY']!;
+    final String requestUrl = DotEnvManager().history;
 
     try {
       final http.Response httpResponse = await _httpClient.get(
@@ -25,6 +26,7 @@ class NeuroHistoryProvider {
       if (httpResponse.statusCode == 200) {
         final responseBody = jsonDecode(utf8.decode(httpResponse.bodyBytes));
         List<NeuroHistoryModel> neuroHistoryList = [];
+        log(responseBody.runtimeType.toString());
 
         for (var neuroHistory in responseBody) {
           neuroHistoryList.add(NeuroHistoryModel.fromJson(neuroHistory));

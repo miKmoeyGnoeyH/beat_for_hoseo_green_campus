@@ -32,7 +32,7 @@ class SignInScreen extends StatelessWidget {
     return BlocListener<UserController, User>(
       // listenWhen: (prev, curr) => prev is! ErrorUser && curr is ErrorUser,
       listener: (context, state) {
-        log("SignInScreen: BlocListener: $state");
+        // log("SignInScreen: BlocListener: $state");
         if (state is ErrorUser) {
           customShowDialog(
             context: context,
@@ -83,7 +83,7 @@ class SignInScreen extends StatelessWidget {
   }
 
   void onForgotPasswordTap() {
-    log("forgot password");
+    // log("forgot password");
     NavigatorKeyManager()
         .pushNamed(RouteNames.resetPassword);
   }

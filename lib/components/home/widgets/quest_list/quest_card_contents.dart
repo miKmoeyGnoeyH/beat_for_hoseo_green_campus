@@ -119,7 +119,7 @@ class QuestCardContents extends StatelessWidget {
                                                 onClaimButtonTap(userController
                                                     .state.authorization),
                                             loadingWidget:
-                                                CustomCircularProgressIndicator());
+                                                const CustomCircularProgressIndicator());
 
                                     log(response.statusCode.toString());
 
@@ -306,7 +306,7 @@ class QuestCardContents extends StatelessWidget {
     final int eventId = questModel.eventId;
     const bool hasSuccess = true;
     final String requestUrl = questModel.eventType == EventType.qr
-        ? "${DotEnvManager().questQRCheckUrl}$eventId"
+        ? "${DotEnvManager().questQRCheckUrl}$eventId?hasSuccess=$hasSuccess"
         : "${DotEnvManager().questWalkCheckUrl}$eventId?hasSuccess=$hasSuccess";
 
     return await http.get(Uri.parse(requestUrl), headers: {

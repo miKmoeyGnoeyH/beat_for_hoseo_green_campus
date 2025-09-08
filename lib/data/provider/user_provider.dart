@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
+import 'package:beat_flutter/managers/logger/beat_logger.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -26,24 +28,35 @@ class UserProvider {
         },
       ).timeout(const Duration(seconds: 5));
 
-      log(response.toString());
+      BEATLogger.d("UserProvider: signIn: response: ${response.body.toString()}");
 
       if (response.statusCode == 200) {
         PrefsManager().setValue<String>('saved_studentId', studentId);
         PrefsManager().setValue<String>('saved_nickname', password);
 
+        // log("UserProvider: signIn: response.headers: ${response.headers.toString()}");
         final String authorization = response.headers['authorization']!;
-        
-        log("UserProvider: signIn: response.headers: ${response.headers.toString()}");
         final int sendToTime = int.parse(response.headers["send_to_time"]!);
+
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        final String category = responseBody['category'];
+        final String name = responseBody['name'];
+        final String department = responseBody['department'];
+        final String email = responseBody['email'];
+        final String nickname = responseBody['nickname'];
+
         final String neuroesInHand = await myNeuro(authorization);
 
         // TODO: 나중에 서버에서 사용자 정보를 응답으로 줄건데, 그때 그걸로 바꾸기
         user = Member(
-          studentId,
-          studentId,
-          neuroesInHand,
           authorization,
+          category,
+          studentId,
+          name,
+          department,
+          email,
+          nickname,
+          neuroesInHand,
           sendToTime,
         );
       } else {
@@ -118,7 +131,7 @@ class UserProvider {
         'category': category,
         'department': department,
         'studentId': studentId,
-        // 'email': email,
+        'email': email,
         'name': name,
         'nickname': nickname,
         'password': password,

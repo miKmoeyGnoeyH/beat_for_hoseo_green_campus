@@ -1,6 +1,7 @@
-
+import 'package:beat_flutter/controller/user_controller.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../managers/navigator/navigator_key_manager.dart';
 import '../../../managers/navigator/routes.dart';
@@ -12,6 +13,8 @@ class HomeLeaderboardButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final UserController userController = context.read<UserController>();
+
     return IconButton(
       visualDensity: const VisualDensity(horizontal: -4),
       icon: Icon(
@@ -20,7 +23,10 @@ class HomeLeaderboardButton extends StatelessWidget {
         size: 24,
       ),
       onPressed: () {
-        NavigatorKeyManager().pushNamed(RouteNames.ranking);
+        NavigatorKeyManager().pushNamed(
+          RouteNames.ranking,
+          arguments: userController.state.authorization,
+        );
       },
     );
   }

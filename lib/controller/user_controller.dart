@@ -61,7 +61,8 @@ class UserController extends Bloc<UserEvent, User> {
         if (await _userProvider.registerToken(user.authorization, fcmToken)) {
           NavigatorKeyManager().pushNamedAndRemoveUntil(
             RouteNames.screenHolder,
-            arguments: ScreenHolderArguments(user.authorization, user.sendToTime),
+            arguments:
+                ScreenHolderArguments(user.authorization, user.sendToTime),
           );
         } else {
           user = ErrorUser('connection_error'.tr());
@@ -73,20 +74,21 @@ class UserController extends Bloc<UserEvent, User> {
   }
 
   void _signOut(SignOut event, Emitter<User> emit) {
-    NavigatorKeyManager().navigatorState!.pushNamedAndRemoveUntil(
-          RouteNames.signIn,
-          (route) => false,
-        );
+    NavigatorKeyManager().pushNamedAndRemoveUntil(RouteNames.signIn);
     emit(Guest());
   }
 
   void _getMyNeuro(GetMyNeuro event, Emitter<User> emit) async {
     emit(
       IsNeuroLoading(
+        state.authorization,
+        state.category,
         state.studentId,
+        state.name,
+        state.department,
+        state.email,
         state.nickname,
         state.neuroesInHand,
-        state.authorization,
         state.sendToTime,
       ),
     );
@@ -94,10 +96,14 @@ class UserController extends Bloc<UserEvent, User> {
     final String neuroesInHand =
         await _userProvider.myNeuro(state.authorization);
     final User user = Member(
+      state.authorization,
+      state.category,
       state.studentId,
+      state.name,
+      state.department,
+      state.email,
       state.nickname,
       neuroesInHand,
-      state.authorization,
       state.sendToTime,
     );
 

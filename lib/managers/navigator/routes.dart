@@ -1,10 +1,14 @@
 import 'dart:developer';
 
 import 'package:beat_flutter/components/forgot_password/reset_password.dart';
+import 'package:beat_flutter/components/notice_detail/notice_detail.dart';
 import 'package:beat_flutter/components/oss_licenses/oss_licenses.dart';
 import 'package:beat_flutter/controller/home/controllers/quest_list_controller.dart';
 import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
+import 'package:beat_flutter/controller/rank/rank_controller_test.dart';
 import 'package:beat_flutter/controller/user_controller.dart';
+import 'package:beat_flutter/data/provider/rank_list_provider.dart';
+import 'package:beat_flutter/data/repository/rank_list_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -102,6 +106,11 @@ abstract class Routes {
 
       case RouteNames.ranking:
         {
+          final String authorization = settings.arguments as String;
+
+          Get.put(RankControllerTest(
+              RankListRepository(RankListProvider()), authorization));
+
           return MaterialPageRoute(
             builder: (context) => BlocProvider(
               create: (context) => RankController(),
@@ -188,17 +197,21 @@ abstract class Routes {
           final ScreenHolderArguments arguments =
               settings.arguments as ScreenHolderArguments;
           return MaterialPageRoute(
-            builder: (context)
-            {
-              final UserController userController = context.read<UserController>();
-              Get.find<PedometerController>().setAuthorization(arguments.authorization);
-              Get.find<PedometerController>().setSendToTime(arguments.sendToTime);
+            builder: (context) {
+              final UserController userController =
+                  context.read<UserController>();
+              Get.find<PedometerController>()
+                  .setAuthorization(arguments.authorization);
+              Get.find<PedometerController>()
+                  .setSendToTime(arguments.sendToTime);
               Get.find<PedometerController>().getWalkHitory();
               Get.find<PedometerController>().startTimer();
 
               return MultiBlocProvider(
                 providers: [
-                  BlocProvider(create: (context) => QuestListController()),
+                  BlocProvider(
+                      create: (context) =>
+                          QuestListController(arguments.authorization)),
                   BlocProvider(create: (context) => QuizListController()),
                   BlocProvider(create: (context) => SurveyListController()),
                   // BlocProvider(
@@ -260,8 +273,16 @@ abstract class Routes {
           return MaterialPageRoute(
             builder: (context) => BlocProvider(
               create: (context) => NotificationsController(),
-              child: const NotificationsScreen(),
+              child: NotificationsScreen(),
             ),
+          );
+        }
+
+      case RouteNames.noticeDetail:
+        {
+          final NotificationModel notificationModel = settings.arguments as NotificationModel;
+          return MaterialPageRoute(
+            builder: (context) => NoticeDetail(notificationModel: notificationModel,),
           );
         }
 

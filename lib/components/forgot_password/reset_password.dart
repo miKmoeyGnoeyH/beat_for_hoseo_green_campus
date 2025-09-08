@@ -11,12 +11,14 @@ import 'package:beat_flutter/components/global/widgets/custom_scaffold.dart';
 import 'package:beat_flutter/components/global/widgets/custom_text_field.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_subtitle_large.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_title_large.dart';
+import 'package:beat_flutter/controller/user_controller.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/managers/navigator/navigator_key_manager.dart';
 import 'package:beat_flutter/managers/navigator/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
@@ -264,10 +266,14 @@ class _ResetPasswordState extends State<ResetPassword> {
 
       if (response.statusCode == 200) {
         customShowDialog(
-            context: context,
-            title: localizationManager.rpResetPasswordSuccessTitle,
-            content: localizationManager.rpResetPasswordSuccessContent,
-            onTap: () => NavigatorKeyManager().pop());
+          context: context,
+          title: localizationManager.rpResetPasswordSuccessTitle,
+          content: localizationManager.rpResetPasswordSuccessContent,
+          onTap: () {
+            context.read<UserController>().add(SignOut());
+            NavigatorKeyManager().pushNamedAndRemoveUntil(RouteNames.signIn);
+          },
+        );
       } else {
         customShowDialog(
           context: context,

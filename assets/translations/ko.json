@@ -35,14 +35,38 @@
     "quest_requirement": "퀘스트 완료 조건",
     "bonus_reward": "퀘스트 완료 시 추가 보상",
     "progress": "진행도",
-    "additional_information": "부가 정보"
+    "additional_information": "부가 정보",
+    "quest_type_qr": "QR",
+    "quest_type_walk": "걷기"
   },
   "rank": {
     "ranking": "랭킹",
     "point": "포인트",
     "step_count": "누적 걸음",
     "ranking_desc_point": "포인트 획득량과 사용량 합을 기준으로 순위가 결정됩니다.",
-    "ranking_desc_step_count": "순위는 매 시 정각에 갱신됩니다."
+    "ranking_desc_step_count": "순위는 매 시 정각에 갱신됩니다.",
+    "point_ranker_list": "포인트 순위",
+    "point_ranker_list_student": "학생 포인트 순위",
+    "point_ranker_list_employee": "교직원 포인트 순위",
+    "walk_ranker_list": "걸음 수 순위",
+    "walk_ranker_list_student": "학생 걸음 수 순위",
+    "walk_ranker_list_employee": "교직원 걸음 수 순위",
+    "my_rank": "내 순위"
+  },
+  "qr": {
+    "reward_acquire_failed": "보상 획득 실패",
+    "reward_acquire_success": "보상 획득 완료",
+    "qr_scan_failed": "QR 스캔 실패",
+    "qr_scan_success": "QR 스캔 성공",
+    "qr_scan_success_deducted_point": "{}포인트 차감",
+    "qr_scan_success_earned_point": "{}포인트 획득",
+    "already_checked": "이미 참여하셨습니다.",
+    "error_occured": "요청하신 작업을 처리하는 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.",
+    "location_fetch_error_title": "위치 정보를 가져오는 데 실패했습니다.",
+    "location_fetch_error_content": "위치 정보를 가져오는 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요."
+  },
+  "notice": {
+    "label": "공지사항"
   },
   "sign_in": {
     "sid_or_id": "학번 또는 교번",
@@ -159,9 +183,25 @@
     "reset_password_unknown_error_content": "알 수 없는 오류로 비밀번호 변경에 실패했습니다. 잠시 후 다시 시도해주세요.",
     "confirm": "확인"
   },
+  "my_page": {
+    "appbar_title": "내 정보",
+    "category": "구분",
+    "student": "학생",
+    "employee": "교직원",
+    "others": "기타",
+    "student_id": "학번",
+    "employee_id": "교번",
+    "id": "ID",
+    "name": "이름",
+    "department": "학부·학과",
+    "email": "이메일",
+    "nickname": "닉네임",
+    "change_password": "비밀번호 변경"
+  },
   "bottom_navigation_bar": {
     "qr": "QR",
-    "home": "Home"
+    "home": "Home",
+    "my_page": "My Page"
   },
   "colleges": "AI공과대학, 바이오헬스대학, 아트앤컬처대학, 글로벌융합대학, 교양대학",
   "departments": {

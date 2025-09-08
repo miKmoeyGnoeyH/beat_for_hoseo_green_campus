@@ -1,7 +1,13 @@
+import 'dart:developer';
+
 import 'package:beat_flutter/components/global/widgets/buttons/custom_wide_button.dart';
+import 'package:beat_flutter/components/global/widgets/texts/custom_headline_large.dart';
+import 'package:beat_flutter/components/global/widgets/texts/custom_headline_small.dart';
 import 'package:beat_flutter/components/rank/widgets/ranking_card.dart';
 import 'package:beat_flutter/components/rank/widgets/ranking_point_list.dart';
 import 'package:beat_flutter/controller/rank/rank_controller_test.dart';
+import 'package:beat_flutter/controller/user_controller.dart';
+import 'package:beat_flutter/data/models/data_models.dart';
 import 'package:beat_flutter/data/provider/rank_list_provider.dart';
 import 'package:beat_flutter/data/repository/rank_list_repository.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
@@ -29,8 +35,7 @@ class RankingScreen extends StatefulWidget {
 }
 
 class _RankingScreenState extends State<RankingScreen> {
-  final RankControllerTest rankControllerTest =
-      Get.put(RankControllerTest(RankListRepository(RankListProvider())));
+  final RankControllerTest rankListController = Get.find<RankControllerTest>();
 
   final LocalizationManager localizationManager = LocalizationManager();
 
@@ -40,13 +45,15 @@ class _RankingScreenState extends State<RankingScreen> {
 
   @override
   void initState() {
-    rankControllerTest.fetchRankList();
+    rankListController.fetchRankList();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     // final RankController rankController = context.read<RankController>();
+    final UserController userController = context.read<UserController>();
+
     return CustomScaffold(
       appBar: const CustomEmptyAppBar(),
       body: NestedScrollView(
@@ -65,108 +72,165 @@ class _RankingScreenState extends State<RankingScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  // TODO: 예외처리
-                  Obx(
-                    () => rankControllerTest.rankList.isEmpty
-                        ? const SizedBox.shrink()
-                        : Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                height: 50,
-                                child: ListView.separated(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20),
-                                  scrollDirection: Axis.horizontal,
-                                  itemBuilder: (_, index) => CustomWideButton(
-                                    autoSizeText: false,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20, vertical: 16),
-                                    buttonText: getButtonTextByRankType(
-                                      rankControllerTest.rankList[index].type,
-                                    ),
-                                    buttonTextStyle: CustomTexts.bodyLarge,
-                                    textColor: index == currentIndex
-                                        ? context.appColors.onPrimary
-                                        : context.appColors.defaultTextColor,
-                                    buttonColor: index == currentIndex
-                                        ? context.appColors.primary
-                                        : context.appColors.background,
-                                    onTap: () => onButtonTap(index),
-                                  ),
-                                  separatorBuilder: (_, __) =>
-                                      const SizedBox(width: 10),
-                                  itemCount: rankControllerTest.rankList.length,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 20),
-                                child: CustomBodyLarge(
-                                  text: getDescByRankType(rankControllerTest
-                                      .rankList[currentIndex].type),
-                                ),
-                              ),
-                            ],
+                  rankListController.obx(
+                    (state) {
+                      final List<String> keys = state!.data.keys.toList();
+                      return SizedBox(
+                        height: 50,
+                        child: ListView.separated(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
                           ),
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            // if (index % 2 != 0) return const SizedBox.shrink();
+                            final int key = index * 2;
+                            return CustomWideButton(
+                              borderWidth: 1,
+                              autoSizeText: false,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 16,
+                              ),
+                              buttonText: getButtonTextByFieldName(
+                                // rankListController.rankList[index].type,
+                                keys[key],
+                              ),
+                              buttonTextStyle: CustomTexts.bodyLarge,
+                              textColor: index == currentIndex
+                                  ? context.appColors.onPrimary
+                                  : context.appColors.defaultTextColor,
+                              buttonColor: index == currentIndex
+                                  ? context.appColors.primary
+                                  : context.appColors.background,
+                              onTap: () => onButtonTap(index),
+                            );
+                          },
+                          separatorBuilder: (_, __) =>
+                              const SizedBox(width: 10),
+                          itemCount: (state.data.length / 2).ceil(),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
             ),
           ),
         ],
-        body: Obx(
-          () => rankControllerTest.rankList.isEmpty
-              ? const SizedBox.shrink()
-              : PageView(
-                  controller: pageController,
-                  onPageChanged: onPageChanged,
-                  children: rankControllerTest.rankList.map((rankList) {
-                    return ListView.separated(
-                      padding: const EdgeInsets.only(
-                          left: 20, right: 20, bottom: 16),
-                      itemCount: rankList.data.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 10),
-                      itemBuilder: (_, index) =>
-                          RankingCard(rankList.data[index], index + 1),
-                    );
-                  }).toList(),
-                ),
+        body: rankListController.obx(
+          (state) {
+            return PageView(
+              controller: pageController,
+              onPageChanged: onPageChanged,
+              children: rankListPages(state!.data),
+            );
+          },
         ),
       ),
     );
   }
 
-  List<Widget> get rankingListWidgets =>
-      rankControllerTest.rankList.map((rankList) {
-        return ListView.separated(
-          padding: EdgeInsets.zero,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: rankList.data.length,
-          separatorBuilder: (context, index) => const SizedBox(height: 10),
-          itemBuilder: (context, index) =>
-              RankingCard(rankList.data[index], index + 1),
-        );
-      }).toList();
+  List<Widget> rankListPages(Map<String, List<RankItemModel>> data) {
+    final List<Widget> pages = [];
+    final List<String> keys = data.keys.toList();
+    int length = (data.length / 2).ceil();
 
-  String getButtonTextByRankType(String type) {
+    for (int i = 0; i < length; i++) {
+      final int key = i * 2;
+
+      pages.add(
+        SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: CustomBodyLarge(text: getDescByFieldName(keys[key])),
+              ),
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: CustomHeadlineSmall(text: getTitleByFieldName(keys[key])),
+              ),
+              const SizedBox(height: 10),
+              ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 16),
+                itemBuilder: (_, index) =>
+                    RankingCard(data[keys[key]]![index], index + 1),
+                separatorBuilder: (_, __) => const SizedBox(height: 10),
+                itemCount: data[keys[key]]!.length,
+              ),
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: CustomHeadlineSmall(text: getTitleByFieldName(keys[key + 1])),
+              ),
+              const SizedBox(height: 10),
+              ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 16),
+                itemBuilder: (_, index) =>
+                    RankingCard(data[keys[key + 1]]![index], index + 1),
+                separatorBuilder: (_, __) => const SizedBox(height: 10),
+                itemCount: data[keys[key + 1]]!.length,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return pages;
+  }
+
+  // rankListController.rankList.map((rankList) {
+  //   return ListView.separated(
+  //     padding: EdgeInsets.zero,
+  //     shrinkWrap: true,
+  //     physics: const NeverScrollableScrollPhysics(),
+  //     itemCount: rankList.data.length,
+  //     separatorBuilder: (context, index) => const SizedBox(height: 10),
+  //     itemBuilder: (context, index) =>
+  //         RankingCard(rankList.data[index], index + 1),
+  //   );
+  // }).toList();
+
+  String getButtonTextByFieldName(String type) {
     switch (type) {
-      case 'point':
-        return localizationManager.rankingPoint;
-      case 'step':
-        return localizationManager.rankingStepCount;
+      case 'pointRankerList':
+        return localizationManager.rankingPointRankerList;
+      case 'walkRankerList':
+        return localizationManager.rankingWalkRankerList;
       default:
         return type;
     }
   }
 
-  String getDescByRankType(String type) {
+  String getTitleByFieldName(String type) {
     switch (type) {
-      case 'point':
+      case 'pointRankerList':
+        return localizationManager.rankingPointRankerList;
+      case 'pointCategoryRankerList':
+        return localizationManager.rankingPointRankerListStudent;
+      case 'walkRankerList':
+        return localizationManager.rankingWalkRankerList;
+      case 'walkCategoryRankerList':
+        return localizationManager.rankingWalkRankerListStudent;
+      default:
+        return type;
+    }
+  }
+
+  String getDescByFieldName(String type) {
+    switch (type) {
+      case 'pointRankerList':
         return localizationManager.rankingRankingDescPoint;
-      case 'step':
+      case 'walkRankerList':
         return localizationManager.rankingRankingDescStepCount;
       default:
         return '';
@@ -174,6 +238,8 @@ class _RankingScreenState extends State<RankingScreen> {
   }
 
   void onButtonTap(int index) {
+    log(index.toString());
+
     setState(() {
       currentIndex = index;
     });
@@ -185,6 +251,8 @@ class _RankingScreenState extends State<RankingScreen> {
   }
 
   void onPageChanged(int index) {
+    log(index.toString());
+    // log((index % 2).toString());
     setState(() {
       currentIndex = index;
     });

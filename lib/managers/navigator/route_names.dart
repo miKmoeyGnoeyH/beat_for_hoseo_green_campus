@@ -20,6 +20,7 @@ abstract class RouteNames {
   static const String voteResult = '/vote_result';
   static const String withdrawal = '/withdrawal';
   static const String notifications = '/notifications';
+  static const String noticeDetail = '/notice_detail';
   static const String ossLicenses = '/oss_licenses';
   static const String resetPassword = '/reset_password';
 }

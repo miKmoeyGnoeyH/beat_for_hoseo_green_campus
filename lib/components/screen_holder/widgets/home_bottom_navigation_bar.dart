@@ -18,7 +18,7 @@ class HomeBottomNavigationBar extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(
           top: BorderSide(
-            color: context.appColors.onBackground.withOpacity(0.1),
+            color: context.appColors.onBackground.withValues(alpha: 0.9),
             width: 0.03,
           ),
         ),
@@ -37,6 +37,10 @@ class HomeBottomNavigationBar extends StatelessWidget {
           BottomNavigationBarItem(
             icon: const Icon(Icons.home_outlined),
             label: localizationManager.bnbHome,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.person_outlined),
+            label: localizationManager.bnbMyPage,
           ),
           // BottomNavigationBarItem(
           //   icon: Icon(Icons.how_to_vote_rounded),

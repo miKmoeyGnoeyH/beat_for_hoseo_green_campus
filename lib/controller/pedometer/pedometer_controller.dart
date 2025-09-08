@@ -159,6 +159,14 @@ class PedometerController extends GetxController {
     });
   }
 
+  @override
+  dispose() {
+    _reportTimer?.cancel();
+    _rankReportTimer?.cancel();
+    _midnightTimer?.cancel();
+    super.dispose();
+  }
+
   // 생성자에서 실행할 메소드.
   // 이벤트 스트림 구독, 걸음 수 초기값 설정.
   Future<void> initPlatformState() async {

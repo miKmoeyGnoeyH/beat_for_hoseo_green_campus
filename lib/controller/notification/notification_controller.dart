@@ -1,3 +1,4 @@
+import 'package:beat_flutter/data/provider/notice_provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data/provider/data_list_provider.dart';
@@ -13,10 +14,10 @@ class NotificationsController extends Bloc<DataEvent, DataListState> {
   Future<void> _onDataListRequest(DataEvent event, Emitter<DataListState> emit) async {
     emit(DataListLoading());
 
-    final DataListState eventState = await dataListProvider.fetchDataList(DataListType.notification);
+    final DataListState eventState = await noticeProvider.fetchDataList();
 
     emit(eventState);
   }
 
-  final DataListProvider dataListProvider = DataListProvider();
+  final NoticeProvider noticeProvider = NoticeProvider();
 }

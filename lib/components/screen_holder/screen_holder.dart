@@ -1,3 +1,4 @@
+import 'package:beat_flutter/components/my_page/my_page.dart';
 import 'package:beat_flutter/controller/home/controllers/quest_list_controller.dart';
 import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
@@ -49,13 +50,7 @@ class _ScreenHolderState extends State<ScreenHolder> {
               color: context.appColors.primary,
               onRefresh: onPullDown,
               notificationPredicate: (n) => true,
-              child: ListView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: EdgeInsets.zero,
-                children: [
-                  _screens[_selectedIndex],
-                ],
-              ),
+              child: _screens[_selectedIndex]
             ),
           ),
         ),
@@ -86,6 +81,7 @@ class _ScreenHolderState extends State<ScreenHolder> {
   final List<Widget> _screens = [
     const QrScreen(),
     HomeScreen(),
+    MyPage(),
     // const VoteScreen()
   ];
   int _selectedIndex = 1;
