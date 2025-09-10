@@ -1,9 +1,7 @@
-import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
 import 'package:beat_flutter/data/models/data_models.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 import '../../../global/widgets/texts/custom_body_large.dart';
 import '../../../global/widgets/texts/custom_label_large.dart';

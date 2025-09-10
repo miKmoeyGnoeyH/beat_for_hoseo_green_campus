@@ -1,15 +1,11 @@
-import 'package:beat_flutter/components/global/widgets/custom_rounded_bordered_container.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.dart';
-import 'package:beat_flutter/components/global/widgets/texts/custom_subtitle_large.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_title_large.dart';
-import 'package:beat_flutter/components/home/widgets/quest_list/quest_card_icon_and_neuro.dart';
 import 'package:beat_flutter/components/quest_detail/widgets/quest_detail_additional_info_card.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../../controller/home/controllers/data_controller.dart';
 import '../../controller/home/events/data_events.dart';

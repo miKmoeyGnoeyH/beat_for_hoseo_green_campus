@@ -4,7 +4,6 @@ import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import '../../global/beat/neuro.dart';
 import '../../global/widgets/texts/custom_body_large.dart';
 import '../../global/widgets/texts/custom_subtitle_large.dart';
 

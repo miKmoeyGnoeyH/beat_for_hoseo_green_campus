@@ -1,7 +1,5 @@
 import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.dart';
-import 'package:beat_flutter/components/global/widgets/texts/custom_headline_large.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_headline_small.dart';
-import 'package:beat_flutter/components/global/widgets/texts/custom_title_large.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_title_medium.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
@@ -11,7 +9,7 @@ import '../../../../data/models/data_models.dart';
 import 'quest_card.dart';
 
 class CustomQuestListView extends StatefulWidget {
-  CustomQuestListView({
+  const CustomQuestListView({
     super.key,
     required this.list,
     this.child,

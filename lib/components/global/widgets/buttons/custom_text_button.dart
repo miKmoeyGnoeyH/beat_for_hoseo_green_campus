@@ -1,9 +1,7 @@
-import 'dart:developer';
 
 import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class CustomTextButton extends StatelessWidget {
   const CustomTextButton({

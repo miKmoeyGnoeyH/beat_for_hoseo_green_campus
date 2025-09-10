@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:beat_flutter/components/global/widgets/custom_rounded_bordered_container.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.dart';
@@ -13,7 +12,7 @@ import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 
 class PedometerCard extends StatefulWidget {
-  PedometerCard({super.key});
+  const PedometerCard({super.key});
 
   @override
   State<PedometerCard> createState() => _PedometerCardState();

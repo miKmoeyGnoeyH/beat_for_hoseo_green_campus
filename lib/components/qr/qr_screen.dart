@@ -97,8 +97,8 @@ class _QrScreenState extends State<QrScreen> {
                   log(requestUrl);
 
                   if (locationController.locationData == null ||
-                      locationController.locationData?.latitude == null ||
-                      locationController.locationData?.longitude == null) {
+                      locationController.locationData?.lat == null ||
+                      locationController.locationData?.lng == null) {
                     customShowDialog(
                       context: context,
                       title: localizationManager.qrLocationFetchErrorTitle,
@@ -112,8 +112,8 @@ class _QrScreenState extends State<QrScreen> {
                       QRCheck(
                         requestUrl,
                         userBloc.state.authorization,
-                        locationController.locationData!.latitude!,
-                        locationController.locationData!.longitude!,
+                        locationController.locationData!.lat,
+                        locationController.locationData!.lng,
                       ),
                     );
                   } else if (qrRawValueFileterCredit.hasMatch(requestUrl)) {
@@ -121,8 +121,8 @@ class _QrScreenState extends State<QrScreen> {
                       QRCredit(
                         requestUrl,
                         userBloc.state.authorization,
-                        locationController.locationData!.latitude!,
-                        locationController.locationData!.longitude!,
+                        locationController.locationData!.lat,
+                        locationController.locationData!.lng,
                       ),
                     );
                   } else if (qrRawValueFileterSign.hasMatch(requestUrl)) {
@@ -130,8 +130,8 @@ class _QrScreenState extends State<QrScreen> {
                       QRSign(
                         requestUrl,
                         userBloc.state.authorization,
-                        locationController.locationData!.latitude!,
-                        locationController.locationData!.longitude!,
+                        locationController.locationData!.lat,
+                        locationController.locationData!.lng,
                       ),
                     );
                   }

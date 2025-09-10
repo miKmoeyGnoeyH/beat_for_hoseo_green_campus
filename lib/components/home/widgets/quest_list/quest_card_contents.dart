@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:beat_flutter/components/global/methods/custom_show_dialog.dart';
@@ -6,13 +7,15 @@ import 'package:beat_flutter/components/global/widgets/buttons/custom_text_butto
 import 'package:beat_flutter/components/global/widgets/custom_circular_progress_indicator.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.dart';
 import 'package:beat_flutter/controller/home/controllers/quest_list_controller.dart';
+import 'package:beat_flutter/controller/home/controllers/survey_detail_controller.dart';
 import 'package:beat_flutter/controller/home/events/data_events.dart';
 import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
 import 'package:beat_flutter/controller/user_controller.dart';
-import 'package:beat_flutter/data/models/user_model.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
+import 'package:beat_flutter/managers/navigator/navigator_key_manager.dart';
+import 'package:beat_flutter/managers/navigator/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -125,10 +128,24 @@ class QuestCardContents extends StatelessWidget {
 
                                     if (response.statusCode == 200) {
                                       customShowDialog(
-                                          context: context,
-                                          title: localizationManager
-                                              .homeRewardAcquisitionComplete,
-                                          content: response.body);
+                                        context: context,
+                                        title: localizationManager
+                                            .homeRewardAcquisitionComplete,
+                                        content: response.body,
+                                        onTap: () {
+                                          final Map<String, dynamic>
+                                          responseBody =
+                                          jsonDecode(response.body);
+                                          Get.find<SurveyDetailController>()
+                                              .surveyId =
+                                          responseBody["surveyId"];
+                                          Get.find<SurveyDetailController>()
+                                              .fetchSurveyDetail();
+                                          Get.back();
+                                          NavigatorKeyManager().pushNamed(
+                                              RouteNames.surveyDetail);
+                                        },
+                                      );
                                     } else {
                                       customShowDialog(
                                           context: context,
@@ -190,9 +207,9 @@ class QuestCardContents extends StatelessWidget {
 
                   int steps;
                   if ((questModel as QuestWalkModel).eventPeriodType ==
-                      EventPeriodType.daily)
+                      EventPeriodType.daily) {
                     steps = pedometerController.steps;
-                  else if ((questModel as QuestWalkModel).eventPeriodType ==
+                  } else if ((questModel as QuestWalkModel).eventPeriodType ==
                       EventPeriodType.weekly)
                     steps = pedometerController.weeklyWalkCount;
                   else if ((questModel as QuestWalkModel).eventPeriodType ==
@@ -251,16 +268,30 @@ class QuestCardContents extends StatelessWidget {
                                                         userController.state
                                                             .authorization),
                                                 loadingWidget:
-                                                    CustomCircularProgressIndicator());
+                                                    const CustomCircularProgressIndicator());
 
                                         log(response.statusCode.toString());
 
                                         if (response.statusCode == 200) {
                                           customShowDialog(
-                                              context: context,
-                                              title: localizationManager
-                                                  .homeRewardAcquisitionComplete,
-                                              content: response.body);
+                                            context: context,
+                                            title: localizationManager
+                                                .homeRewardAcquisitionComplete,
+                                            content: response.body,
+                                            onTap: () {
+                                              final Map<String, dynamic>
+                                                  responseBody =
+                                                  jsonDecode(response.body);
+                                              Get.find<SurveyDetailController>()
+                                                      .surveyId =
+                                                  responseBody["surveyId"];
+                                              Get.find<SurveyDetailController>()
+                                                  .fetchSurveyDetail();
+                                              Get.back();
+                                              NavigatorKeyManager().pushNamed(
+                                                  RouteNames.surveyDetail);
+                                            },
+                                          );
                                         } else {
                                           customShowDialog(
                                               context: context,

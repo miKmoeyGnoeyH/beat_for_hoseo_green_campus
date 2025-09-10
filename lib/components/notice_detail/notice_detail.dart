@@ -1,11 +1,9 @@
-import 'package:beat_flutter/components/detail/detail_desc.dart';
 import 'package:beat_flutter/components/detail/detail_label_and_title.dart';
 import 'package:beat_flutter/components/global/widgets/appbars/custom_empty_appbar.dart';
 import 'package:beat_flutter/components/global/widgets/custom_rounded_bordered_container.dart';
 import 'package:beat_flutter/components/global/widgets/custom_scaffold.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_subtitle_large.dart';
-import 'package:beat_flutter/components/global/widgets/texts/custom_title_large.dart';
 import 'package:beat_flutter/data/models/data_models.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';

@@ -1,7 +1,6 @@
 import 'package:beat_flutter/components/global/widgets/custom_rounded_bordered_container.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_subtitle_large.dart';
-import 'package:beat_flutter/components/home/widgets/quest_list/quest_card_icon_and_neuro.dart';
 import 'package:beat_flutter/components/quest_detail/widgets/additional_info_card_icon_and_point.dart';
 import 'package:beat_flutter/data/models/data_models.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';

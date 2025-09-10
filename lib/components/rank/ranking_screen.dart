@@ -1,15 +1,11 @@
 import 'dart:developer';
 
 import 'package:beat_flutter/components/global/widgets/buttons/custom_wide_button.dart';
-import 'package:beat_flutter/components/global/widgets/texts/custom_headline_large.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_headline_small.dart';
 import 'package:beat_flutter/components/rank/widgets/ranking_card.dart';
-import 'package:beat_flutter/components/rank/widgets/ranking_point_list.dart';
 import 'package:beat_flutter/controller/rank/rank_controller_test.dart';
 import 'package:beat_flutter/controller/user_controller.dart';
 import 'package:beat_flutter/data/models/data_models.dart';
-import 'package:beat_flutter/data/provider/rank_list_provider.dart';
-import 'package:beat_flutter/data/repository/rank_list_repository.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/theme/texts/custom_texts.dart';
@@ -17,18 +13,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 
-import '../../controller/rank/rank_controller.dart';
-import '../../data/states/data_list_state.dart';
 import '../global/widgets/appbars/custom_empty_appbar.dart';
-import '../global/widgets/buttons/custom_refresh_button.dart';
-import '../global/widgets/custom_circular_progress_indicator.dart';
 import '../global/widgets/custom_scaffold.dart';
 import '../global/widgets/texts/custom_body_large.dart';
 import '../global/widgets/texts/custom_display_medium.dart';
-import 'widgets/ranking_list_view.dart';
 
 class RankingScreen extends StatefulWidget {
-  RankingScreen({super.key});
+  const RankingScreen({super.key});
 
   @override
   State<RankingScreen> createState() => _RankingScreenState();

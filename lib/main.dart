@@ -4,11 +4,13 @@ import 'dart:io';
 import 'package:beat_flutter/controller/location/location_controller.dart';
 import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
 import 'package:beat_flutter/managers/logger/beat_logger.dart';
+import 'package:beat_flutter/managers/notification/local_notification.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart' hide Trans;
 
@@ -26,12 +28,19 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   }
 }
 
+ // @pragma('vm:entry-point')
+ // void notificationTapBackground(NotificationResponse notificationResponse) {
+ //   // handle action
+ // }
+
 // TODO : 전체적으로 리팩토링 한 번 싹 조져주기
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   BEATLogger.init();
   PrefsManager().init();
+  LocalNotificationManager.init();
 
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await EasyLocalization.ensureInitialized();

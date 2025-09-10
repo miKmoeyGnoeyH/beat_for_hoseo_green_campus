@@ -1,18 +1,15 @@
-import 'dart:developer';
 
-import 'package:beat_flutter/components/global/widgets/buttons/custom_text_button.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/managers/navigator/navigator_key_manager.dart';
 import 'package:beat_flutter/managers/navigator/routes.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../controller/user_controller.dart';
 import '../../data/models/user_model.dart';
-import '../../managers/prefs/prefs_manager.dart';
 import '../global/beat/beat_full_logo.dart';
 import '../global/widgets/custom_scaffold.dart';
 import '../global/methods/custom_show_dialog.dart';

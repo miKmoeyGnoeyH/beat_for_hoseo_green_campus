@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../global/methods/custom_input_formatters.dart';
 import '../../global/widgets/custom_text_field.dart';
 import '../../global/widgets/texts/custom_subtitle_large.dart';
 

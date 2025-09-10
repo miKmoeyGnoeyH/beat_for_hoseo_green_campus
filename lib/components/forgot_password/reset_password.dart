@@ -10,7 +10,6 @@ import 'package:beat_flutter/components/global/widgets/custom_circular_progress_
 import 'package:beat_flutter/components/global/widgets/custom_scaffold.dart';
 import 'package:beat_flutter/components/global/widgets/custom_text_field.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_subtitle_large.dart';
-import 'package:beat_flutter/components/global/widgets/texts/custom_title_large.dart';
 import 'package:beat_flutter/controller/user_controller.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
@@ -61,6 +60,7 @@ class _ResetPasswordState extends State<ResetPassword> {
         FocusScope.of(context).unfocus();
       },
       child: CustomScaffold(
+        hasScrollBody: false,
         appBar: CustomAppBar(
           title: Text(localizationManager.rpAppbarTitle),
         ),
@@ -210,6 +210,14 @@ class _ResetPasswordState extends State<ResetPassword> {
           content: response.body,
         );
       }
+    } on TimeoutException {
+      log("ResetPassword: onValidateMailButtonTap: TimeoutException");
+
+      customShowDialog(
+        context: context,
+        title: localizationManager.errorsTimeout,
+        content: localizationManager.errorsConnectionError,
+      );
     } catch (e) {
       log("ResetPassword: onValidateMailButtonTap: error: $e");
       customShowDialog(

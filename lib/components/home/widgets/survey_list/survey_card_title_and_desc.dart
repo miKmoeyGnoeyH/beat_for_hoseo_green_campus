@@ -3,7 +3,6 @@ import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:flutter/material.dart';
 
-import '../../../global/widgets/texts/custom_body_large.dart';
 import '../../../global/widgets/texts/custom_label_large.dart';
 import '../../../global/widgets/texts/custom_subtitle_large.dart';
 

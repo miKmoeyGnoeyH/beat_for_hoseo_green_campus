@@ -1,8 +1,6 @@
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import '../../../controller/register_fill_inform/register_name_controller.dart';
 import 'register_fill_inform_text_field.dart';
 
 class RegisterPasswordTextField extends StatelessWidget {

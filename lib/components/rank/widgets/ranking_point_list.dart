@@ -1,5 +1,4 @@
 import 'package:beat_flutter/components/global/widgets/buttons/custom_refresh_button.dart';
-import 'package:beat_flutter/components/global/widgets/buttons/custom_wide_button.dart';
 import 'package:beat_flutter/components/global/widgets/custom_circular_progress_indicator.dart';
 import 'package:beat_flutter/components/rank/widgets/ranking_list_view.dart';
 import 'package:beat_flutter/controller/home/events/data_events.dart';

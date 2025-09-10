@@ -3,7 +3,10 @@ import 'dart:developer';
 import 'package:beat_flutter/components/forgot_password/reset_password.dart';
 import 'package:beat_flutter/components/notice_detail/notice_detail.dart';
 import 'package:beat_flutter/components/oss_licenses/oss_licenses.dart';
+import 'package:beat_flutter/components/survey_detail/survey_detail.dart';
 import 'package:beat_flutter/controller/home/controllers/quest_list_controller.dart';
+import 'package:beat_flutter/controller/home/controllers/survey_detail_controller.dart';
+import 'package:beat_flutter/controller/location/location_controller.dart';
 import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
 import 'package:beat_flutter/controller/rank/rank_controller_test.dart';
 import 'package:beat_flutter/controller/user_controller.dart';
@@ -14,7 +17,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 
 import '../../components/history/neuro_history_screen.dart';
-import '../../components/home/home_screen.dart';
 import '../../components/info/info_screen.dart';
 import '../../components/notifications/notifications_screen.dart';
 import '../../components/quest_detail/quest_detail_screen.dart';
@@ -44,7 +46,6 @@ import '../../controller/rank/rank_controller.dart';
 import '../../controller/register_fill_inform/register_nickname_controller.dart';
 import '../../controller/register_fill_inform/register_sid_controller.dart';
 import '../../controller/vote/controllers/vote_detail_controller.dart';
-import '../../controller/vote/controllers/vote_list_controller.dart';
 import '../../controller/vote/controllers/vote_result_controller.dart';
 import '../../data/models/data_models.dart';
 import 'arguments/register_arguments.dart';
@@ -114,7 +115,7 @@ abstract class Routes {
           return MaterialPageRoute(
             builder: (context) => BlocProvider(
               create: (context) => RankController(),
-              child: RankingScreen(),
+              child: const RankingScreen(),
             ),
           );
         }
@@ -198,14 +199,18 @@ abstract class Routes {
               settings.arguments as ScreenHolderArguments;
           return MaterialPageRoute(
             builder: (context) {
+              Get.put(SurveyDetailController());
+
               final UserController userController =
                   context.read<UserController>();
+
               Get.find<PedometerController>()
                   .setAuthorization(arguments.authorization);
               Get.find<PedometerController>()
                   .setSendToTime(arguments.sendToTime);
               Get.find<PedometerController>().getWalkHitory();
               Get.find<PedometerController>().startTimer();
+              Get.find<LocationController>().startTimer();
 
               return MultiBlocProvider(
                 providers: [
@@ -297,6 +302,13 @@ abstract class Routes {
         {
           return MaterialPageRoute(
             builder: (context) => const ResetPassword(),
+          );
+        }
+
+      case RouteNames.surveyDetail:
+        {
+          return MaterialPageRoute(
+            builder: (context) => SurveyDetail(),
           );
         }
 

@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:beat_flutter/data/models/data_models.dart';
-import 'package:beat_flutter/data/provider/data_list_provider.dart';
 import 'package:beat_flutter/data/states/data_list_state.dart';
 import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
 import "package:http/http.dart" as http;

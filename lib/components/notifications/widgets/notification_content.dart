@@ -1,4 +1,3 @@
-import 'package:beat_flutter/components/global/widgets/texts/custom_title_large.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_title_medium.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:easy_localization/easy_localization.dart';

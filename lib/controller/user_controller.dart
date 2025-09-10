@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:beat_flutter/managers/prefs/prefs_manager.dart';
 import 'package:bloc/bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';

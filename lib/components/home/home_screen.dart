@@ -1,7 +1,6 @@
 import 'package:beat_flutter/components/home/widgets/home_contents.dart';
 import 'package:beat_flutter/components/home/widgets/pedometer_card.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 import 'widgets/neuroes_in_hand_card.dart';
 
@@ -11,7 +10,7 @@ class HomeScreen extends StatelessWidget {
   final PageController pageController = PageController();
   final List<Widget> widgets = [
     PointsInHandCard(),
-    PedometerCard(),
+    const PedometerCard(),
   ];
 
   @override
@@ -19,6 +18,7 @@ class HomeScreen extends StatelessWidget {
     return ListView(
       padding: EdgeInsets.zero,
       physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
       children: [
         Column(
           // shrinkWrap: true,

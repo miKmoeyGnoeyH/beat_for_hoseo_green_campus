@@ -1,5 +1,4 @@
 import 'package:beat_flutter/components/global/beat/gc_point.dart';
-import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_subtitle_large.dart';
 import 'package:flutter/material.dart';
 

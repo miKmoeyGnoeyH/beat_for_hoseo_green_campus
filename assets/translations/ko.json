@@ -39,6 +39,17 @@
     "quest_type_qr": "QR",
     "quest_type_walk": "걷기"
   },
+  "survey_detail": {
+    "survey": "설문",
+    "question": "Q. {}",
+    "submit": "제출",
+    "submit_completed_title": "설문을 제출했습니다.",
+    "submit_completed_content": "참여해주셔서 감사합니다.",
+    "submit_error_title": "설문 제출 실패",
+    "submit_error_content": "설문을 제출하는 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.",
+    "failed_to_fetch_survey_detail_title": "설문 상세 정보를 가져오는 데 실패했습니다.",
+    "failed_to_fetch_survey_detail_content": "설문 상세 정보를 가져오는 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요."
+  },
   "rank": {
     "ranking": "랭킹",
     "point": "포인트",
@@ -221,6 +232,12 @@
     "retention_content": "회원 탈퇴 시까지, 탈퇴 후 즉시 폐기(본인 요청 시 즉시 폐기).",
     "right_to_refusal": "동의를 거부할 권리 및 동의를 거부할 경우의 불이익",
     "right_to_refusal_content": "동의를 거부할 권리가 있으며, 동의를 거부할 경우 서비스 이용이 제한됩니다."
+  },
+  "local_notifications": {
+    "out_of_range_title": "유효 걷기 범위를 벗어났습니다.",
+    "out_of_range_body": "걸음 수 기록이 일시정지됩니다.",
+    "back_in_range_title": "유효 걷기 범위에 들어왔습니다.",
+    "back_in_range_body": "걸음 수가 기록중입니다."
   },
   "errors": {
     "timeout": "요청 시간이 초과되었습니다.",

@@ -50,6 +50,17 @@ class LocalizationManager {
   String get qdQuestTypeQR => "quest_detail".tr(gender: "quest_type_qr");
   String get qdQuestTypeWalk => "quest_detail".tr(gender: "quest_type_walk");
 
+  // Survey detail
+  String get sdSurvey => "survey_detail".tr(gender: "survey");
+  String sdQuestion(String arg) => "survey_detail".tr(gender: "question", args: [arg]);
+  String get sdSubmit => "survey_detail".tr(gender: "submit");
+  String get sdSubmitCompletedTitle => "survey_detail".tr(gender: "submit_completed_title");
+  String get sdSubmitCompletedContent => "survey_detail".tr(gender: "submit_completed_content");
+  String get sdSubmitErrorTitle => "survey_detail".tr(gender: "submit_error_title");
+  String get sdSubmitErrorContent => "survey_detail".tr(gender: "submit_error_content");
+  String get sdFetchSurveyFailedTitle => "survey_detail".tr(gender: "failed_to_fetch_survey_detail_title");
+  String get sdFetchSurveyFailedContent => "survey_detail".tr(gender: "failed_to_fetch_survey_detail_content");
+
   // sign in
   String get signInSidOrId => "sign_in".tr(gender: "sid_or_id");
   String get signInSidOrIdHint => "sign_in".tr(gender: "sid_or_id_hint");
@@ -224,6 +235,12 @@ class LocalizationManager {
   String get bnbQR => "bottom_navigation_bar".tr(gender: "qr");
   String get bnbHome => "bottom_navigation_bar".tr(gender: "home");
   String get bnbMyPage => "bottom_navigation_bar".tr(gender: "my_page");
+
+  // local notifications
+  String get lnOutOfRangeTitle => "local_notifications".tr(gender: "out_of_range_title");
+  String get lnOutOfRangeBody => "local_notifications".tr(gender: "out_of_range_body");
+  String get lnBackInRangeTitle => "local_notifications".tr(gender: "back_in_range_title");
+  String get lnBackInRangeBody => "local_notifications".tr(gender: "back_in_range_body");
 
   // errors
   String get errorsTimeout => "errors".tr(gender: "timeout");

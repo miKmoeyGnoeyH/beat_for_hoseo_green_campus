@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -18,22 +19,27 @@ class DataListProvider {
 
     switch (type) {
       case DataListType.quest:
-        requestUrl = dotenv.env['QUEST_LIST']!;
+        requestUrl = DotEnvManager().questList;
+        // requestUrl = dotenv.env['QUEST_LIST']!;
         break;
       case DataListType.quiz:
         requestUrl = dotenv.env['QUIZ_LIST']!;
         break;
       case DataListType.rank:
-        requestUrl = dotenv.env['RANK']!;
+        requestUrl = DotEnvManager().rankListUrl;
+        // requestUrl = dotenv.env['RANK']!;
         break;
       case DataListType.survey:
-        requestUrl = dotenv.env['SURVEY_LIST']!;
+        requestUrl = DotEnvManager().surveyList;
+        // requestUrl = dotenv.env['SURVEY_LIST']!;
         break;
       case DataListType.notification:
-        requestUrl = dotenv.env['NOTICE_LIST']!;
+        requestUrl = DotEnvManager().notice;
+        // requestUrl = dotenv.env['NOTICE_LIST']!;
         break;
       default:
-        requestUrl = dotenv.env['SURVEY_LIST']!;
+        requestUrl = "";
+        // requestUrl = dotenv.env['SURVEY_LIST']!;
         break;
     }
 

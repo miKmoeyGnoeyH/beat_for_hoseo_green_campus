@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:beat_flutter/controller/user_controller.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
@@ -7,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../data/models/data_models.dart';
-import '../../global/beat/neuro.dart';
 import '../../global/widgets/texts/custom_title_large.dart';
 
 class RankNeuro extends StatelessWidget {

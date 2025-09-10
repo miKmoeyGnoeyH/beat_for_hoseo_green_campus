@@ -1,7 +1,6 @@
 import 'package:beat_flutter/components/global/beat/gc_point.dart';
 import 'package:flutter/material.dart';
 
-import '../../../global/beat/neuro.dart';
 import '../../../global/widgets/texts/custom_subtitle_large.dart';
 
 class QuestCardIconAndPoint extends StatelessWidget {

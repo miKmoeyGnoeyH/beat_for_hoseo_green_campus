@@ -1,4 +1,5 @@
 
+import 'package:beat_flutter/data/provider/survey_list_provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../data/provider/data_list_provider.dart';
@@ -14,11 +15,11 @@ class SurveyListController extends Bloc<DataEvent, DataListState> {
   Future<void> _onDataListRequest(DataEvent event, Emitter<DataListState> emit) async {
     emit(DataListLoading());
 
-    // final DataListState eventState = await dataListProvider.fetchDataList(DataListType.survey);
-    final DataListState eventState = await dataListProvider.fetchSurveyListTest();
+    final DataListState eventState = await dataListProvider.fetchSurveyList();
+    // final DataListState eventState = await dataListProvider.fetchSurveyListTest();
 
     emit(eventState);
   }
 
-  final DataListProvider dataListProvider = DataListProvider();
+  final SurveyListProvider dataListProvider = SurveyListProvider();
 }

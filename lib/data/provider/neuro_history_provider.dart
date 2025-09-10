@@ -3,7 +3,6 @@ import 'dart:developer';
 
 
 import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/neuro_history_model.dart';
@@ -13,7 +12,7 @@ class NeuroHistoryProvider {
   final http.Client _httpClient = http.Client();
 
   Future<NeuroHistoryState> getNeuroHistoryList(String authorization) async {
-    final String requestUrl = DotEnvManager().history;
+    final String requestUrl = DotEnvManager().pointHistory;
 
     try {
       final http.Response httpResponse = await _httpClient.get(

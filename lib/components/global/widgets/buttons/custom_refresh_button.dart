@@ -8,6 +8,7 @@ class CustomRefreshButton extends StatelessWidget {
   CustomRefreshButton({
     super.key,
     this.onTap,
+    this.text
   });
 
   final LocalizationManager localizationManager = LocalizationManager();
@@ -27,7 +28,7 @@ class CustomRefreshButton extends StatelessWidget {
                   color: context.appColors.onBackground,
                 ),
                 const SizedBox(height: 10),
-                CustomBodyLarge(text: localizationManager.errorsConnectionError),
+                CustomBodyLarge(text: text ?? localizationManager.errorsConnectionError),
               ],
             ),
           ),
@@ -37,4 +38,5 @@ class CustomRefreshButton extends StatelessWidget {
   }
 
   final Function()? onTap;
+  final String? text;
 }

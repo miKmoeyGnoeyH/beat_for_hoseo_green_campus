@@ -6,7 +6,6 @@ import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
 import 'package:beat_flutter/managers/prefs/prefs_manager.dart';
 import 'package:get/get.dart';
 import 'package:pedometer/pedometer.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:http/http.dart' as http;
 
 /// 자정 초기화를 구현하는 방법
@@ -96,6 +95,8 @@ class PedometerController extends GetxController {
 
   // 이전 전송 걸음 수
   int _lastReportedSteps = 0;
+
+  bool isInValidArea = false;
 
   // 일정 주기로 서버에 걸음 수를 보고할 때 사용하는 반응형 리스트
   final RxList<Map<String, dynamic>> _walkReports =
@@ -262,6 +263,8 @@ class PedometerController extends GetxController {
 
   // 걸음 수가 변경될 때마다 호출되는 이벤트 핸들러
   void onStepCount(StepCount event) {
+    if (!isInValidArea) return;
+
     // 부팅 이후 걸음 수가 null이라면 초기화
     if (_stepsAfterLastBoot == null) {
       _stepsAfterLastBoot = event.steps;

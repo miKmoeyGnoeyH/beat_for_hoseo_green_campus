@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import 'home_contents_tab_button.dart';
 import 'quest_list/quest_list.dart';
-import 'quiz_list/quiz_list.dart';
 import 'survey_list/survey_list.dart';
 
 class HomeContentsItem {

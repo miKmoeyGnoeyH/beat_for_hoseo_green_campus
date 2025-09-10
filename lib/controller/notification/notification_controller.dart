@@ -1,7 +1,6 @@
 import 'package:beat_flutter/data/provider/notice_provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../data/provider/data_list_provider.dart';
 import '../../data/states/data_list_state.dart';
 import '../home/events/data_events.dart';
 
