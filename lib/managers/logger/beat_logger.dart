@@ -18,15 +18,10 @@ class FileOutput extends LogOutput {
 
   @override
   Future<void> init() async {
-    final Directory? directory;
-
-    if (kDebugMode) {
-      directory = await getApplicationDocumentsDirectory();
-    } else {
-      directory = await getExternalStorageDirectory();
-    }
-    _logFile = File('${directory!.path}/$filename');
+    final directory = await getApplicationDocumentsDirectory();
+    _logFile = File('${directory.path}/$filename');
     log("log file path: ${_logFile!.path}");
+
     if (!(await _logFile!.exists())) {
       await _logFile!.create(recursive: true);
     }

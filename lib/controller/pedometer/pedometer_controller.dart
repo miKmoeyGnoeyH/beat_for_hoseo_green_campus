@@ -263,11 +263,14 @@ class PedometerController extends GetxController {
 
   // 걸음 수가 변경될 때마다 호출되는 이벤트 핸들러
   void onStepCount(StepCount event) {
+    log("PedometerController : onStepCount : isInValidArea : $isInValidArea");
+
     if (!isInValidArea) return;
 
     // 부팅 이후 걸음 수가 null이라면 초기화
     if (_stepsAfterLastBoot == null) {
       _stepsAfterLastBoot = event.steps;
+      totalSteps = event.steps;
       steps = 0;
     }
 

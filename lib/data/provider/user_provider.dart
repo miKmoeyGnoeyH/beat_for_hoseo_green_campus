@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
 import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
+import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/managers/logger/beat_logger.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -12,13 +14,16 @@ import '../models/user_model.dart';
 
 class UserProvider {
   final http.Client _httpClient = http.Client();
+  final LocalizationManager localizationManager = LocalizationManager();
 
   Future<User> signIn(String studentId, String password) async {
-    log("UserProvider : signIn : studentId : $studentId, nickname : $password");
-    final String requestUrl = dotenv.env['SIGN_IN']!;
+    BEATLogger.d("UserProvider: signIn: studentId: $studentId, password: $password");
+
+    final String requestUrl = DotEnvManager().signIn;
     User user = Guest();
 
     try {
+
       final http.Response response = await _httpClient.post(
         Uri.parse(requestUrl),
         body: {
@@ -26,7 +31,7 @@ class UserProvider {
           // 'nickname': password,
           'password': password,
         },
-      ).timeout(const Duration(seconds: 5));
+      ).timeout(const Duration(seconds: 10));
 
       BEATLogger.d("UserProvider: signIn: response: ${response.body.toString()}");
 
@@ -60,11 +65,14 @@ class UserProvider {
           sendToTime,
         );
       } else {
-        user = ErrorUser('sign_in_failed_message'.tr());
+        user = ErrorUser(response.body);
       }
-    } catch (e) {
+    } on TimeoutException {
+      user = ErrorUser(localizationManager.errorsTimeout);
+    }
+    catch (e) {
       log("UserProvider : signIn : error : ${e.toString()}");
-      user = ErrorUser('connection_error'.tr());
+      user = ErrorUser(localizationManager.errorsConnectionError);
     }
 
     return user;

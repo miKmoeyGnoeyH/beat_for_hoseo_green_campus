@@ -1,4 +1,6 @@
 
+import 'dart:developer';
+
 import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
@@ -29,7 +31,7 @@ class SignInScreen extends StatelessWidget {
     return BlocListener<UserController, User>(
       // listenWhen: (prev, curr) => prev is! ErrorUser && curr is ErrorUser,
       listener: (context, state) {
-        // log("SignInScreen: BlocListener: $state");
+        log("SignInScreen: BlocListener: ${state.studentId}");
         if (state is ErrorUser) {
           customShowDialog(
             context: context,

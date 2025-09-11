@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:bloc/bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -47,6 +48,8 @@ class UserController extends Bloc<UserEvent, User> {
     log("UserController : _signIn");
     emit(IsLoading());
 
+    final LocalizationManager localizationManager = LocalizationManager();
+
     User user;
     user = await _userProvider.signIn(event.studentId, event.password);
 
@@ -55,7 +58,7 @@ class UserController extends Bloc<UserEvent, User> {
       log('user_controller.dart : _signIn : fcmToken : $fcmToken');
 
       if (fcmToken == null) {
-        user = ErrorUser('connection_error'.tr());
+        user = ErrorUser(localizationManager.errorsConnectionError);
       } else {
         if (await _userProvider.registerToken(user.authorization, fcmToken)) {
           NavigatorKeyManager().pushNamedAndRemoveUntil(
@@ -64,7 +67,7 @@ class UserController extends Bloc<UserEvent, User> {
                 ScreenHolderArguments(user.authorization, user.sendToTime),
           );
         } else {
-          user = ErrorUser('connection_error'.tr());
+          user = ErrorUser(localizationManager.errorsConnectionError);
         }
       }
     }

@@ -208,8 +208,10 @@ abstract class Routes {
                   .setAuthorization(arguments.authorization);
               Get.find<PedometerController>()
                   .setSendToTime(arguments.sendToTime);
+
               Get.find<PedometerController>().getWalkHitory();
               Get.find<PedometerController>().startTimer();
+
               Get.find<LocationController>().startTimer();
 
               return MultiBlocProvider(

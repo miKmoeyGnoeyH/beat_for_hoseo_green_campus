@@ -9,13 +9,16 @@ import 'package:beat_flutter/components/global/widgets/buttons/custom_refresh_bu
 import 'package:beat_flutter/components/global/widgets/custom_circular_progress_indicator.dart';
 import 'package:beat_flutter/components/survey_detail/widgets/survey_questions.dart';
 import 'package:beat_flutter/controller/home/controllers/survey_detail_controller.dart';
+import 'package:beat_flutter/controller/user_controller.dart';
 import 'package:beat_flutter/data/models/data_models.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
+import 'package:beat_flutter/managers/navigator/arguments/screen_holder_arguments.dart';
 import 'package:beat_flutter/managers/navigator/navigator_key_manager.dart';
 import 'package:beat_flutter/managers/navigator/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
@@ -95,7 +98,7 @@ class SurveyDetail extends StatelessWidget {
               .post(
                 Uri.parse(requestUrl),
                 headers: {
-                  "Contgent-Type": "application/json",
+                  "Content-Type": "application/json",
                 },
                 body: jsonEncode(surveyDetailController.answersToJson()),
               )
@@ -107,12 +110,16 @@ class SurveyDetail extends StatelessWidget {
       log("SurveyDetail : onSubmit : response.body : ${response.body}");
 
       if (response.statusCode == 200) {
+        final UserController userController = context.read<UserController>();
         customShowDialog(
           context: context,
           title: localizationManager.sdSubmitCompletedTitle,
           content: localizationManager.sdSubmitCompletedContent,
-          onTap: () => NavigatorKeyManager()
-              .pushNamedAndRemoveUntil(RouteNames.screenHolder),
+          onTap: () => NavigatorKeyManager().pushNamedAndRemoveUntil(
+            RouteNames.screenHolder,
+            arguments: ScreenHolderArguments(userController.state.authorization,
+                userController.state.sendToTime),
+          ),
         );
       } else {
         throw Exception();

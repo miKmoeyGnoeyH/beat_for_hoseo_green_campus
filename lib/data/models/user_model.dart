@@ -59,5 +59,5 @@ final class IsNeuroLoading extends Member {
 }
 
 final class ErrorUser extends User {
-  ErrorUser(studentId) : super(studentId, '', '', '', '', '', '', '', -1);
+  ErrorUser(studentId) : super('', '', studentId, '', '', '', '', '', -1);
 }
