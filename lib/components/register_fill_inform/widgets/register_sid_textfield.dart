@@ -35,5 +35,5 @@ class RegisterSIDTextField extends StatelessWidget {
 
   final Function(String)? onChanged;
   final String? hintText;
-  final int maxLength;
+  final int? maxLength;
 }

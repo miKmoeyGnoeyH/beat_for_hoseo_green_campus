@@ -60,14 +60,14 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
 
   final LocalizationManager localizationManager = LocalizationManager();
 
-  late final int maxIDLength;
+  late final int? maxIDLength;
 
   @override
   void initState() {
     maxIDLength = registerOrganizationController!.organization ==
             localizationManager.generalStudent
         ? 8
-        : 8;
+        : null;
     super.initState();
   }
 
@@ -192,7 +192,9 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                         builder: (context, state) => Flexible(
                           child: CustomWideButton(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 5, vertical: 5),
+                              horizontal: 5,
+                              vertical: 5,
+                            ),
                             onTap: _isNicknameButtonEnabled
                                 ? () async {
                                     FocusScope.of(context).unfocus();
@@ -241,7 +243,10 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                   // TODO: 학생이면 8자리 학번, 교직원은 꼭 교번이 아닐 수 있음
                   // 학번
                   CustomSubtitleLarge(
-                    text: localizationManager.rfiSidOrEmployeeId,
+                    text: registerOrganizationController!.organization ==
+                            localizationManager.generalStudent
+                        ? localizationManager.rfiStudentId
+                        : localizationManager.rfiEmployeeMail,
                     // registerOrganizationController!.organization ==
                     //         localizationManager.generalStudent
                     //     ? localizationManager.rfiStudentId
@@ -252,18 +257,33 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                       RegisterSIDTextField(
                           maxLength: maxIDLength,
                           registerSidController: registerSidController,
-                          hintText: localizationManager.rfiSidOrEmployeeIdHint,
+                          hintText:
+                              registerOrganizationController!.organization ==
+                                      localizationManager.generalStudent
+                                  ? localizationManager.rfiStudentIdHint
+                                  : localizationManager.rfiEmployeeMailHint,
                           // registerOrganizationController!.organization ==
                           //         localizationManager.generalStudent
                           //     ? localizationManager.rfiStudentIdHint
                           //     : localizationManager.rfiIdHint,
                           onChanged: (value) {
                             registerSidController.add(IDChanged());
-                            if (value.length >= maxIDLength) {
-                              _isEmailButtonEnabled = true;
+
+                            if (registerOrganizationController!.organization ==
+                                localizationManager.generalStudent) {
+                              if (value.length >= maxIDLength!) {
+                                _isEmailButtonEnabled = true;
+                              } else {
+                                _isEmailButtonEnabled = false;
+                              }
                             } else {
-                              _isEmailButtonEnabled = false;
+                              if (value.isNotEmpty) {
+                                _isEmailButtonEnabled = true;
+                              } else {
+                                _isEmailButtonEnabled = false;
+                              }
                             }
+
                             setState(() {});
                           }),
                       const SizedBox(width: 10),
@@ -271,7 +291,9 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                         builder: (context, state) => Flexible(
                           child: CustomWideButton(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 5, vertical: 5),
+                              horizontal: 5,
+                              vertical: 5,
+                            ),
                             onTap: _isEmailButtonEnabled
                                 ? () async {
                                     _isEmailButtonEnabled = false;
@@ -294,7 +316,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                                 registerOrganizationController!.organization ==
                                         localizationManager.generalStudent
                                     ? localizationManager.rfiValidateMail
-                                    : localizationManager.rfiValidateId,
+                                    : localizationManager.rfiValidateMail,
                             buttonColor: _isEmailButtonEnabled
                                 ? context.appColors.primary
                                 : context.appColors.disabled,
@@ -352,8 +374,8 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
 
                 return CustomBottomAppbarButton(
                   onTap:
-                      // _isSignUpButtonEnabled
-                      //     ?
+                      _isSignUpButtonEnabled
+                          ?
                       () async {
                     _isSignUpButtonEnabled = false;
                     final UserProvider userProvider = UserProvider();
@@ -441,7 +463,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                         }
                       } else {
                         if (context.mounted) {
-                        customShowDialog(
+                          customShowDialog(
                             context: context,
                             title: localizationManager.rfiSignUpFailed,
                             content: response.body,
@@ -458,7 +480,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                         _isSignUpButtonEnabled = true;
                       }
                     }
-                  },
+                  } : () {},
                   // : () {},
                   backgroundColor: _isSignUpButtonEnabled
                       ? context.appColors.primary
@@ -506,8 +528,12 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
   }
 
   void validateName(String value) {
-    if (!RegExp(r'[ㅏ-ㅣㄱ-ㅎ]').hasMatch(value)) {
-      _isNameValid = true;
+    if (value.isNotEmpty) {
+      if (!RegExp(r'[ㅏ-ㅣㄱ-ㅎ]').hasMatch(value)) {
+        _isNameValid = true;
+      } else {
+        _isNameValid = false;
+      }
     } else {
       _isNameValid = false;
     }

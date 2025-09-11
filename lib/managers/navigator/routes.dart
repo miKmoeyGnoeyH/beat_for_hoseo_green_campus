@@ -212,6 +212,7 @@ abstract class Routes {
               Get.find<PedometerController>().getWalkHitory();
               Get.find<PedometerController>().startTimer();
 
+              Get.find<LocationController>().fetchLocation();
               Get.find<LocationController>().startTimer();
 
               return MultiBlocProvider(

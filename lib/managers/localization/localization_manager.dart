@@ -114,6 +114,12 @@ class LocalizationManager {
   String get rdAppbarTitle => "register_department".tr(gender: "appbar_title");
   String rdContinueWith(String arg) => "register_department".tr(gender: "continue_with", args: [arg]);
 
+  // register affiliation
+  String get raAppbarTitle => "register_affiliation".tr(gender: "appbar_title");
+  String get raInappropriateAffiliationTitle => "register_affiliation".tr(gender: "inappropriate_affiliation_title");
+  String get raInappropriateAffiliationContent => "register_affiliation".tr(gender: "inappropriate_affiliation_content");
+  String raContinueWith(String arg) => "register_affiliation".tr(gender: "continue_with", args: [arg]);
+
   // register fill inform
   String get rfiAppbarTitle => "register_fill_inform_page".tr(gender: "appbar_title");
   String get rfiName => "register_fill_inform_page".tr(gender: "name");
@@ -122,6 +128,8 @@ class LocalizationManager {
   String get rfiStudentIdHint => "register_fill_inform_page".tr(gender: "student_id_hint");
   String get rfiSidOrEmployeeId => "register_fill_inform_page".tr(gender: "sid_or_employee_id");
   String get rfiSidOrEmployeeIdHint => "register_fill_inform_page".tr(gender: "sid_or_employee_id_hint");
+  String get rfiEmployeeMail => "register_fill_inform_page".tr(gender: "employee_mail");
+  String get rfiEmployeeMailHint => "register_fill_inform_page".tr(gender: "employee_mail_hint");
   String get rfiId => "register_fill_inform_page".tr(gender: "id");
   String get rfiIdHint => "register_fill_inform_page".tr(gender: "id_hint");
   String get rfiValidateMail => "register_fill_inform_page".tr(gender: "validate_mail");

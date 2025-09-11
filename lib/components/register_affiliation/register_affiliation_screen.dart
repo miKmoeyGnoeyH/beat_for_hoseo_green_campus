@@ -1,4 +1,6 @@
+import 'package:beat_flutter/components/global/methods/custom_show_dialog.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
+import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/managers/navigator/arguments/register_arguments.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +31,8 @@ class RegisterAffiliationScreen extends StatefulWidget {
 }
 
 class _RegisterAffiliationScreenState extends State<RegisterAffiliationScreen> {
+  final LocalizationManager localizationManager = LocalizationManager();
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -57,21 +61,31 @@ class _RegisterAffiliationScreenState extends State<RegisterAffiliationScreen> {
         ),
         bottomNavigationBar: CustomBottomAppbarButton(
           onTap: isLengthValid
-              ? () => NavigatorKeyManager().pushNamed(
-                    RouteNames.registerFillInform,
-                    arguments: RegisterArguments(
-                      registerOrganizationController:
-                          registerOrganizationController,
-                      registerCollegeController: registerCollegeController,
-                      registerDepartmentController:
-                          registerDepartmentController,
-                    ),
-                  )
+              ? () {
+                  if (RegExp(r'[ㅏ-ㅣㄱ-ㅎ]').hasMatch(registerDepartmentController.department)) {
+                    customShowDialog(
+                      context: context,
+                      title: localizationManager.raInappropriateAffiliationTitle,
+                      content:
+                          localizationManager.raInappropriateAffiliationContent,
+                    );
+                  } else {
+                    NavigatorKeyManager().pushNamed(
+                      RouteNames.registerFillInform,
+                      arguments: RegisterArguments(
+                        registerOrganizationController:
+                            registerOrganizationController,
+                        registerCollegeController: registerCollegeController,
+                        registerDepartmentController:
+                            registerDepartmentController,
+                      ),
+                    );
+                  }
+
+                }
               : () {},
-          text: context.tr(
-            'continue_with',
-            args: [registerDepartmentController.department],
-          ),
+          text: localizationManager
+              .rcContinueWith(registerDepartmentController.department),
           backgroundColor: isLengthValid
               ? context.appColors.primary
               : context.appColors.disabled,

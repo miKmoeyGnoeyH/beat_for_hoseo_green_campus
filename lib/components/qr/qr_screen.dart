@@ -79,19 +79,24 @@ class _QrScreenState extends State<QrScreen> {
                 // ),
                 scanWindow: Rect.fromCenter(
                   center:
-                      MediaQuery.sizeOf(context).center(const Offset(0, -50)),
-                  width: 200,
-                  height: 200,
+                      MediaQuery.sizeOf(context).center(const Offset(0, -100)),
+                  width: 220,
+                  height: 220,
                 ),
                 onDetect: (BarcodeCapture capture) {
                   if (isScanning) return;
+
+                  isScanning = true;
 
                   final List<Barcode> barcodes = capture.barcodes;
                   final Barcode barcode = barcodes.first;
 
                   if (barcode.rawValue == null) return;
 
-                  final String requestUrl = barcode.rawValue!;
+                  final String requestUrl = barcode.rawValue!.trim();
+
+                  // if(!requestUrl.contains("192.168.1.11")) return;
+
                   final QRController qrController =
                       context.read<QRController>();
                   log(requestUrl);
@@ -107,7 +112,9 @@ class _QrScreenState extends State<QrScreen> {
                     return;
                   }
 
-                  if (qrRawValueFileterCheck.hasMatch(requestUrl)) {
+                  log("${qrRawValueFileterCheckDebug.hasMatch(requestUrl)}");
+
+                  if (qrRawValueFileterCheckDebug.hasMatch(requestUrl)) {
                     qrController.add(
                       QRCheck(
                         requestUrl,
@@ -116,7 +123,7 @@ class _QrScreenState extends State<QrScreen> {
                         locationController.locationData!.lng,
                       ),
                     );
-                  } else if (qrRawValueFileterCredit.hasMatch(requestUrl)) {
+                  } else if (qrRawValueFileterCreditDebug.hasMatch(requestUrl)) {
                     qrController.add(
                       QRCredit(
                         requestUrl,
@@ -125,7 +132,7 @@ class _QrScreenState extends State<QrScreen> {
                         locationController.locationData!.lng,
                       ),
                     );
-                  } else if (qrRawValueFileterSign.hasMatch(requestUrl)) {
+                  } else if (qrRawValueFileterSignDebug.hasMatch(requestUrl)) {
                     qrController.add(
                       QRSign(
                         requestUrl,

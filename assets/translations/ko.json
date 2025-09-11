@@ -103,6 +103,12 @@
     "appbar_title": "학부 · 학과",
     "continue_with": "{}(으)로 계속"
   },
+  "register_affiliation": {
+    "appbar_title": "소속",
+    "continue_with": "{}(으)로 계속",
+    "inappropriate_affiliation_title": "소속을 다시 한 번 확인해주세요.",
+    "inappropriate_affiliation_content": "소속에 초성이 포함되어 있습니다. 소속을 다시 한 번 확인해주세요."
+  },
   "register_fill_inform_page": {
     "appbar_title": "정보 기입",
     "name": "이름",
@@ -111,6 +117,8 @@
     "student_id_hint": "학번을 입력해주세요.",
     "sid_or_employee_id": "학번 또는 교번",
     "sid_or_employee_id_hint": "학번 또는 교번을 입력해주세요.",
+    "employee_mail": "교직원 메일",
+    "employee_mail_hint": "@hoseo.edu를 제외한 앞부분을 입력해주세요.",
     "id": "ID",
     "id_hint": "ID로 사용할 4자리 숫자를 입력해주세요.",
     "validate_mail": "메일 인증",
