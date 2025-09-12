@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
@@ -89,6 +90,11 @@ class LocationController extends GetxController {
       await fetchLocation();
       checkIsValidArea();
     });
+  }
+
+  Future<void> setUp() async {
+    await fetchLocation();
+    checkIsValidArea();
   }
 
   Future<void> fetchLocation() async {

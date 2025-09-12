@@ -17,10 +17,12 @@ class NotificationsListView extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: notificationList.length,
+      // itemCount: 20,
       separatorBuilder: (BuildContext context, int index) =>
           const SizedBox(height: 10),
       itemBuilder: (BuildContext context, int index) =>
           NotificationCard(notificationList[index] as NotificationModel),
+          // NotificationCard(NotificationModel(noticeId: 0, title: "test", body: "test", createdAt: DateTime.now())),
     );
   }
 

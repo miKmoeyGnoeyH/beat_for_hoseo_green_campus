@@ -94,10 +94,12 @@ let pedometer = CMPedometer()
         if CMPedometer.isStepCountingAvailable() {
             pedometer.startUpdates(from: Date()) { data, error in
                 if let steps = data?.numberOfSteps {
-                    self.flutterChannel?.invokeMethod(
-                        "updateStepsFromNative",
-                        arguments: ["steps": steps]
-                    )
+                    DispatchQueue.main.async {
+                        self.flutterChannel?.invokeMethod(
+                            "updateStepsFromNative",
+                            arguments: ["steps": steps]
+                        )
+                    }
                 }
             }
         }
@@ -119,10 +121,12 @@ let pedometer = CMPedometer()
         let lat = location.coordinate.latitude
         let lon = location.coordinate.longitude
 
-        flutterChannel?.invokeMethod("backgroundLocationUpdate", arguments: [
-            "latitude": lat,
-            "longitude": lon
-        ])
+        DispatchQueue.main.async {
+            self.flutterChannel?.invokeMethod("backgroundLocationUpdate", arguments: [
+                "latitude": lat,
+                "longitude": lon
+            ])
+        }
     }
 
     // MARK: - BGTask
@@ -148,11 +152,16 @@ let pedometer = CMPedometer()
         scheduleWalkReportTask()
 
         if let controller = window?.rootViewController as? FlutterViewController {
-            setupMethodChannel(controller: controller)
+            flutterChannel = FlutterMethodChannel(
+                name: "com.beat.walkreport/channel",
+                binaryMessenger: controller.binaryMessenger
+            )
 
-            flutterChannel?.invokeMethod("syncWalkDataInBackground", arguments: nil) { result in
-                print("📬 syncWalkDataInBackground complete: \(String(describing: result))")
-                task.setTaskCompleted(success: true)
+            DispatchQueue.main.async {
+                self.flutterChannel?.invokeMethod("syncWalkDataInBackground", arguments: nil) { result in
+                    print("📬 syncWalkDataInBackground complete: \(String(describing: result))")
+                    task.setTaskCompleted(success: true)
+                }
             }
         } else {
             task.setTaskCompleted(success: false)

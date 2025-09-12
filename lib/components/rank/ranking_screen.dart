@@ -1,6 +1,8 @@
 import 'dart:developer';
 
+import 'package:beat_flutter/components/global/widgets/buttons/custom_refresh_button.dart';
 import 'package:beat_flutter/components/global/widgets/buttons/custom_wide_button.dart';
+import 'package:beat_flutter/components/global/widgets/custom_circular_progress_indicator.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_headline_small.dart';
 import 'package:beat_flutter/components/rank/widgets/ranking_card.dart';
 import 'package:beat_flutter/controller/rank/rank_controller_test.dart';
@@ -32,22 +34,25 @@ class _RankingScreenState extends State<RankingScreen> {
 
   final PageController pageController = PageController();
 
+  final ScrollController scrollController = ScrollController();
+
   int currentIndex = 0;
 
   @override
   void initState() {
-    rankListController.fetchRankList();
+    // rankListController.fetchRankList();
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      rankListController.fetchRankList();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // final RankController rankController = context.read<RankController>();
-    final UserController userController = context.read<UserController>();
-
     return CustomScaffold(
       appBar: const CustomEmptyAppBar(),
       body: NestedScrollView(
+        controller: scrollController,
         headerSliverBuilder: (context, inner) => [
           SliverToBoxAdapter(
             child: Padding(
@@ -64,7 +69,7 @@ class _RankingScreenState extends State<RankingScreen> {
                   ),
                   const SizedBox(height: 10),
                   rankListController.obx(
-                    (state) {
+                        (state) {
                       final List<String> keys = state!.data.keys.toList();
                       return SizedBox(
                         height: 50,
@@ -98,7 +103,7 @@ class _RankingScreenState extends State<RankingScreen> {
                             );
                           },
                           separatorBuilder: (_, __) =>
-                              const SizedBox(width: 10),
+                          const SizedBox(width: 10),
                           itemCount: (state.data.length / 2).ceil(),
                         ),
                       );
@@ -110,7 +115,7 @@ class _RankingScreenState extends State<RankingScreen> {
           ),
         ],
         body: rankListController.obx(
-          (state) {
+              (state) {
             return PageView(
               controller: pageController,
               onPageChanged: onPageChanged,
@@ -131,66 +136,68 @@ class _RankingScreenState extends State<RankingScreen> {
       final int key = i * 2;
 
       pages.add(
-        SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: CustomBodyLarge(text: getDescByFieldName(keys[key])),
-              ),
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: CustomHeadlineSmall(text: getTitleByFieldName(keys[key])),
-              ),
-              const SizedBox(height: 10),
-              ListView.separated(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 16),
-                itemBuilder: (_, index) =>
-                    RankingCard(data[keys[key]]![index], index + 1),
-                separatorBuilder: (_, __) => const SizedBox(height: 10),
-                itemCount: data[keys[key]]!.length,
-              ),
-              const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: CustomHeadlineSmall(text: getTitleByFieldName(keys[key + 1])),
-              ),
-              const SizedBox(height: 10),
-              ListView.separated(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 16),
-                itemBuilder: (_, index) =>
-                    RankingCard(data[keys[key + 1]]![index], index + 1),
-                separatorBuilder: (_, __) => const SizedBox(height: 10),
-                itemCount: data[keys[key + 1]]!.length,
-              ),
-              const SizedBox(height: 50),
-            ],
-          ),
+        ListView(
+          padding: EdgeInsets.zero,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: CustomBodyLarge(text: getDescByFieldName(keys[key])),
+                ),
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child:
+                      CustomHeadlineSmall(text: getTitleByFieldName(keys[key])),
+                ),
+                const SizedBox(height: 10),
+                ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding:
+                      const EdgeInsets.only(left: 20, right: 20, bottom: 16),
+                  // itemBuilder: (_, index) =>
+                  //     RankingCard(data[keys[key]]![index], index + 1),
+                  itemBuilder: (_, index) =>
+                      RankingCard(data[keys[key]]![0], 0),
+                  // itemCount: data[keys[key]]!.length,
+                  itemCount: 20,
+                  separatorBuilder: (_, __) => const SizedBox(height: 10),
+                ),
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: CustomHeadlineSmall(
+                      text: getTitleByFieldName(keys[key + 1])),
+                ),
+                const SizedBox(height: 10),
+                ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding:
+                      const EdgeInsets.only(left: 20, right: 20, bottom: 16),
+                  // itemBuilder: (_, index) =>
+                  //     RankingCard(data[keys[key + 1]]![index], index + 1),
+                  itemBuilder: (_, index) =>
+                      RankingCard(data[keys[key + 1]]![0], 0),
+                  // itemCount: data[keys[key + 1]]!.length,
+                  itemCount: 20,
+                  separatorBuilder: (_, __) => const SizedBox(height: 10),
+                ),
+                const SizedBox(height: 50),
+              ],
+            ),
+          ],
         ),
       );
     }
 
     return pages;
   }
-
-  // rankListController.rankList.map((rankList) {
-  //   return ListView.separated(
-  //     padding: EdgeInsets.zero,
-  //     shrinkWrap: true,
-  //     physics: const NeverScrollableScrollPhysics(),
-  //     itemCount: rankList.data.length,
-  //     separatorBuilder: (context, index) => const SizedBox(height: 10),
-  //     itemBuilder: (context, index) =>
-  //         RankingCard(rankList.data[index], index + 1),
-  //   );
-  // }).toList();
 
   String getButtonTextByFieldName(String type) {
     switch (type) {
@@ -230,11 +237,12 @@ class _RankingScreenState extends State<RankingScreen> {
   }
 
   void onButtonTap(int index) {
-    log(index.toString());
+    // log(index.toString());
 
     setState(() {
       currentIndex = index;
     });
+    scrollController.jumpTo(0);
     pageController.animateToPage(
       index,
       duration: const Duration(milliseconds: 500),
@@ -245,6 +253,7 @@ class _RankingScreenState extends State<RankingScreen> {
   void onPageChanged(int index) {
     log(index.toString());
     // log((index % 2).toString());
+    scrollController.jumpTo(0);
     setState(() {
       currentIndex = index;
     });

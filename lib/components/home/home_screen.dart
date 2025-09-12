@@ -18,7 +18,7 @@ class HomeScreen extends StatelessWidget {
     return ListView(
       padding: EdgeInsets.zero,
       physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
+      // shrinkWrap: true,
       children: [
         Column(
           // shrinkWrap: true,

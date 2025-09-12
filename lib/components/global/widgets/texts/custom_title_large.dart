@@ -16,8 +16,6 @@ class CustomTitleLarge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log(textColor.toString());
-
     return Text(
       text ?? '',
       maxLines: maxLines,

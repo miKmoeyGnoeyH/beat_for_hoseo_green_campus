@@ -88,7 +88,8 @@
     "cancel": "취소"
   },
   "notice": {
-    "label": "공지사항"
+    "label": "공지사항",
+    "no_notices": "공지사항이 없습니다."
   },
   "sign_in": {
     "sid_or_id": "학번 또는 교번",

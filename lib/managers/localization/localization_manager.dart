@@ -96,6 +96,7 @@ class LocalizationManager {
 
   // notice
   String get noticeLabel => "notice".tr(gender: "label");
+  String get noticeNoNotices => "notice".tr(gender: "no_notices");
 
   // ranking
   String get rankingRanking => "rank".tr(gender: "ranking");

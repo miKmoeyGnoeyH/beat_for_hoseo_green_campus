@@ -10,10 +10,16 @@ class NotificationsController extends Bloc<DataEvent, DataListState> {
     add(DataListRequest());
   }
 
-  Future<void> _onDataListRequest(DataEvent event, Emitter<DataListState> emit) async {
+  Future<void> _onDataListRequest(
+      DataEvent event, Emitter<DataListState> emit) async {
     emit(DataListLoading());
 
     final DataListState eventState = await noticeProvider.fetchDataList();
+
+    // final DataListState eventState =
+    //     await Future.delayed(const Duration(seconds: 5), () {
+    //   return DataListLoadingError();
+    // });
 
     emit(eventState);
   }

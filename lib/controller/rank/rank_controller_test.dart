@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:beat_flutter/data/models/data_models.dart';
@@ -15,13 +16,19 @@ class RankControllerTest extends GetxController with StateMixin<RankListModel> {
 
   Future<void> fetchRankList() async {
     change(null, status: RxStatus.loading());
+
+    await Future.delayed(const Duration(seconds: 5), () {
+      change(null, status: RxStatus.error(""));
+      throw TimeoutException("");
+    });
+
     try {
       // final List<RankListModelTest> list = await rankListRepository.getRankListTest();
       final RankListModel rankListModel = await rankListRepository.getRankList(authorization);
       change(rankListModel, status: RxStatus.success());
       // rankList = rankListModel;
     } catch (e) {
-      log("Error fetching rank list: $e");
+      // log("Error fetching rank list: $e");
       change(null, status: RxStatus.error(e.toString()));
       rethrow;
       // rankList = RankListModel.empty();
