@@ -16,6 +16,7 @@ import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/managers/navigator/navigator_key_manager.dart';
 import 'package:beat_flutter/managers/navigator/routes.dart';
+import 'package:beat_flutter/managers/prefs/prefs_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -279,6 +280,7 @@ class _ResetPasswordState extends State<ResetPassword> {
           content: localizationManager.rpResetPasswordSuccessContent,
           onTap: () {
             context.read<UserController>().add(SignOut());
+            PrefsManager().resetSavedStudentIdAndPassword();
             NavigatorKeyManager().pushNamedAndRemoveUntil(RouteNames.signIn);
           },
         );

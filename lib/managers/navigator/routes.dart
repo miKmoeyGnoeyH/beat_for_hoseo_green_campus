@@ -9,6 +9,7 @@ import 'package:beat_flutter/controller/home/controllers/survey_detail_controlle
 import 'package:beat_flutter/controller/location/location_controller.dart';
 import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
 import 'package:beat_flutter/controller/rank/rank_controller_test.dart';
+import 'package:beat_flutter/controller/screen_holder/page_index_controller.dart';
 import 'package:beat_flutter/controller/user_controller.dart';
 import 'package:beat_flutter/data/provider/rank_list_provider.dart';
 import 'package:beat_flutter/data/repository/rank_list_repository.dart';
@@ -200,6 +201,7 @@ abstract class Routes {
           return MaterialPageRoute(
             builder: (context) {
               Get.put(SurveyDetailController());
+              Get.put(PageIndexController());
 
               final UserController userController =
                   context.read<UserController>();
@@ -213,6 +215,7 @@ abstract class Routes {
               Get.find<PedometerController>().startTimer();
 
               Get.find<LocationController>().fetchLocation();
+              Get.find<LocationController>().checkIsValidArea();
               Get.find<LocationController>().startTimer();
 
               return MultiBlocProvider(
@@ -234,7 +237,7 @@ abstract class Routes {
         }
 
       case RouteNames.settings:
-        return MaterialPageRoute(builder: (context) => const SettingsScreen());
+        return MaterialPageRoute(builder: (context) => SettingsScreen());
 
       case RouteNames.signIn:
         return MaterialPageRoute(

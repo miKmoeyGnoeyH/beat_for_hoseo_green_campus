@@ -53,33 +53,49 @@ class PrefsManager {
     return _prefs.getInt("lastReportedSteps") ?? 0;
   }
 
-  // int? todaysBaseLine() {
-  //   return _prefs.getInt("todaysBaseLine");
-  // }
-  //
-  // Future<void> setTodaysBaseLine(int? steps) {
-  //   if (steps == null) {
-  //     return _prefs.remove("todaysBaseLine");
-  //   } else {
-  //     return _prefs.setInt("todaysBaseLine", steps);
-  //   }
-  // }
-  //
-  // int getSteps() {
-  //   return _prefs.getInt("steps") ?? 0;
-  // }
-  //
-  // Future<void> setSteps(int steps) {
-  //   return _prefs.setInt("steps", steps);
-  // }
-  //
-  // int getTotalSteps() {
-  //   return _prefs.getInt("totalSteps") ?? 0;
-  // }
-  //
-  // Future<void> setTotlaSteps(int steps) {
-  //   return _prefs.setInt("totalSteps", steps);
-  // }
+  (int, int, int, int) getSteps() {
+    final todayWalkCount = _prefs.getInt("todayWalkCount") ?? 0;
+    final weeklyWalkCount = _prefs.getInt("weeklyWalkCount") ?? 0;
+    final monthlyWalkCount = _prefs.getInt("monthlyWalkCount") ?? 0;
+    final totalWalkCount = _prefs.getInt("totalWalkCount") ?? 0;
+    return (todayWalkCount, weeklyWalkCount, monthlyWalkCount, totalWalkCount);
+  }
+
+  Future<void> setSteps(int todayWalkCount, int weeklyWalkCount, int monthlyWalkCount, int totalWalkCount) {
+    _prefs.setInt("todayWalkCount", todayWalkCount);
+    _prefs.setInt("weeklyWalkCount", weeklyWalkCount);
+    _prefs.setInt("monthlyWalkCount", monthlyWalkCount);
+    return _prefs.setInt("totalWalkCount", totalWalkCount);
+  }
+
+  bool isStudentIdSaved() {
+    return _prefs.containsKey("saved_studentId");
+  }
+
+  bool isPasswordSaved() {
+    return _prefs.containsKey("saved_password");
+  }
+
+  String getSavedStudentId() {
+    return _prefs.getString("saved_studentId") ?? '';
+  }
+
+  String getSavedPassword() {
+    return _prefs.getString("saved_password") ?? '';
+  }
+
+  Future<void> setSavedStudentId(String studentId) {
+    return _prefs.setString("saved_studentId", studentId);
+  }
+
+  Future<void> setSavedPassword(String password) {
+    return _prefs.setString("saved_password", password);
+  }
+
+  void resetSavedStudentIdAndPassword() {
+    _prefs.remove("saved_studentId");
+    _prefs.remove("saved_password");
+  }
 
   T getValueAs<T>(String key) {
     if (!_prefs.containsKey(key)) return defaultValue<T>();

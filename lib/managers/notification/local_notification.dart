@@ -31,11 +31,11 @@ abstract class LocalNotificationManager {
     );
   }
 
-  static void requestNotificationPermission() {
-    flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
-        ?.requestPermissions(alert: true, badge: true, sound: true);
-  }
+  // static void requestNotificationPermission() {
+  //   flutterLocalNotificationsPlugin
+  //       .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
+  //       ?.requestPermissions(alert: true, badge: true, sound: true);
+  // }
 
   static Future<void> showValidAreaNotification(String title, String body) async {
     const AndroidNotificationDetails androidNotificationDetails =
@@ -50,7 +50,7 @@ abstract class LocalNotificationManager {
 
     const NotificationDetails notificationDetails = NotificationDetails(
       android: androidNotificationDetails,
-      iOS: DarwinNotificationDetails(badgeNumber: 1),
+      iOS: DarwinNotificationDetails(badgeNumber: 0),
     );
 
     await flutterLocalNotificationsPlugin.show(

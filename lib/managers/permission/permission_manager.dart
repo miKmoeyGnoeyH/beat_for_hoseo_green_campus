@@ -1,3 +1,4 @@
+import 'package:beat_flutter/managers/prefs/prefs_manager.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -37,7 +38,9 @@ class PermissionManager {
     //   Permission.notification,
     //   Permission.activityRecognition,
     // ].request();
-
-    FlutterNativeSplash.remove();
+    if (!PrefsManager().isStudentIdSaved() || !PrefsManager().isPasswordSaved()) {
+      FlutterNativeSplash.remove();
+      return;
+    }
   }
 }

@@ -81,7 +81,7 @@ class _RankingScreenState extends State<RankingScreen> {
                               autoSizeText: false,
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 20,
-                                vertical: 16,
+                                vertical: 10,
                               ),
                               buttonText: getButtonTextByFieldName(
                                 // rankListController.rankList[index].type,
@@ -170,6 +170,7 @@ class _RankingScreenState extends State<RankingScreen> {
                 separatorBuilder: (_, __) => const SizedBox(height: 10),
                 itemCount: data[keys[key + 1]]!.length,
               ),
+              const SizedBox(height: 50),
             ],
           ),
         ),

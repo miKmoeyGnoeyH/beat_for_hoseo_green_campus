@@ -14,7 +14,7 @@ class QRController extends Bloc<QREvent, QRState> {
 
   void _onQRCheck(QREvent event, Emitter<QRState> emit) async {
     emit(QRLoading());
-    final QRState qrState = await qrProvider.handleQRCheckRequest(event.requestUrl, event.authorization);
+    final QRState qrState = await qrProvider.handleQRCheckRequest(event.requestUrl, event.authorization, event.latitude, event.longitude);
     emit(qrState);
   }
   void _onQRCredit(QREvent event, Emitter<QRState> emit) async {

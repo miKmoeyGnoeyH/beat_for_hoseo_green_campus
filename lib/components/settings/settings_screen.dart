@@ -3,8 +3,10 @@ import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.d
 import 'package:beat_flutter/components/global/widgets/texts/custom_headline_medium.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_title_medium.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
+import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/managers/navigator/navigator_key_manager.dart';
 import 'package:beat_flutter/managers/navigator/routes.dart';
+import 'package:beat_flutter/managers/package_info/package_info_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,6 +16,8 @@ import '../global/widgets/appbars/custom_empty_appbar.dart';
 import '../global/widgets/custom_scaffold.dart';
 
 class SettingsScreen extends StatelessWidget {
+  final LocalizationManager localizationManager = LocalizationManager();
+
   @override
   Widget build(BuildContext context) {
     final UserController userBloc = context.read<UserController>();
@@ -26,19 +30,19 @@ class SettingsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomHeadlineMedium(text: context.tr('settings')),
+            CustomHeadlineMedium(text: localizationManager.settingsAppbarTitle),
             const SizedBox(height: 24),
             CustomWideButton(
               onTap: () => userBloc.add(SignOut()),
               buttonColor: context.appColors.primary,
-              buttonText: context.tr('sign_out'),
+              buttonText: localizationManager.settingsSignOut,
             ),
             const SizedBox(height: 10),
             CustomWideButton(
               onTap: () {
                 NavigatorKeyManager().pushNamed(RouteNames.withdrawal);
               },
-              buttonText: context.tr('withdrawal'),
+              buttonText: localizationManager.settingsWithdrawal,
               buttonColor: Colors.redAccent,
             ),
             const SizedBox(height: 20),
@@ -46,7 +50,7 @@ class SettingsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CustomTitleMedium(
-                  text: "oss_licenses".tr(),
+                  text: localizationManager.settingsOSSLicenses,
                 ),
                 const SizedBox(height: 5),
                 GestureDetector(
@@ -54,7 +58,7 @@ class SettingsScreen extends StatelessWidget {
                     NavigatorKeyManager().pushNamed(RouteNames.ossLicenses);
                   },
                   child: CustomBodyLarge(
-                    text: "view_detail".tr(),
+                    text: localizationManager.settingsViewDetail,
                   ),
                 ),
               ],
@@ -64,11 +68,24 @@ class SettingsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CustomTitleMedium(
-                  text: "app_inquiry".tr(),
+                  text: localizationManager.settingsAppInquiry,
                 ),
                 const SizedBox(height: 5),
                 CustomBodyLarge(
                   text: "20255720@vision.hoseo.edu".tr(),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CustomTitleMedium(
+                  text: localizationManager.settingsVersion,
+                ),
+                const SizedBox(height: 5),
+                CustomBodyLarge(
+                  text: "${PackageInfoManager.instance.version}(${PackageInfoManager.instance.buildNumber})",
                 ),
               ],
             ),
@@ -78,5 +95,5 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  const SettingsScreen({super.key});
+  SettingsScreen({super.key});
 }

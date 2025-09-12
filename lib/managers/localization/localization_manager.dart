@@ -12,6 +12,8 @@ class LocalizationManager {
   }
   // genenral
   String get generalStudent => "general".tr(gender: "student");
+  String get generalConfirm => "general".tr(gender: "confirm");
+  String get generalCancel => "general".tr(gender: "cancel");
 
   // home
   String get homePointsInHand => "home".tr(gender: "points_in_hand");
@@ -36,6 +38,7 @@ class LocalizationManager {
   String get homeClaim => "home".tr(gender: "claim");
   String get homeClaimed => "home".tr(gender: "claimed");
   String get homeRewardAcquisitionComplete => "home".tr(gender: "reward_acquisition_complete");
+  String get homeRewardAcquisitionCompleteContent => "home".tr(gender: "reward_acquisition_complete_content");
   String get homeRewardAcquisitionFailed => "home".tr(gender: "reward_acquisition_failed");
 
   // Quest Detail
@@ -82,6 +85,10 @@ class LocalizationManager {
   String get qrErrorOccured => "qr".tr(gender: "error_occured");
   String get qrLocationFetchErrorTitle => "qr".tr(gender: "location_fetch_error_title");
   String get qrLocationFetchErrorContent => "qr".tr(gender: "location_fetch_error_content");
+  String get qrScanTitle => "qr".tr(gender: "qr_scan_title");
+  String get qrScanContent => "qr".tr(gender: "qr_scan_content");
+  String get qrInvalidQRTitle => "qr".tr(gender: "invalid_qr_code_title");
+  String get qrInvalidQRContent => "qr".tr(gender: "invalid_qr_code_content");
 
   // notice
   String get noticeLabel => "notice".tr(gender: "label");
@@ -249,6 +256,15 @@ class LocalizationManager {
   String get lnOutOfRangeBody => "local_notifications".tr(gender: "out_of_range_body");
   String get lnBackInRangeTitle => "local_notifications".tr(gender: "back_in_range_title");
   String get lnBackInRangeBody => "local_notifications".tr(gender: "back_in_range_body");
+
+  // settings
+  String get settingsAppbarTitle => "settings".tr(gender: "appbar_title");
+  String get settingsSignOut => "settings".tr(gender: "sign_out");
+  String get settingsWithdrawal => "settings".tr(gender: "withdrawal");
+  String get settingsOSSLicenses => "settings".tr(gender: "oss_licenses");
+  String get settingsViewDetail => "settings".tr(gender: "view_detail");
+  String get settingsAppInquiry => "settings".tr(gender: "app_inquiry");
+  String get settingsVersion => "settings".tr(gender: "version");
 
   // errors
   String get errorsTimeout => "errors".tr(gender: "timeout");

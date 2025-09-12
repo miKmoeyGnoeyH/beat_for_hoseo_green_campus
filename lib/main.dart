@@ -5,12 +5,12 @@ import 'package:beat_flutter/controller/location/location_controller.dart';
 import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
 import 'package:beat_flutter/managers/logger/beat_logger.dart';
 import 'package:beat_flutter/managers/notification/local_notification.dart';
+import 'package:beat_flutter/managers/package_info/package_info_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart' hide Trans;
 
@@ -87,6 +87,8 @@ Future<void> main() async {
   // Pedometer
   Get.put<PedometerController>(PedometerController(), permanent: true);
   Get.put<LocationController>(LocationController(), permanent: true);
+
+  PackageInfoManager.instance.init();
 
   runApp(
     EasyLocalization(

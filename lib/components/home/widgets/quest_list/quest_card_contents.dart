@@ -114,67 +114,7 @@ class QuestCardContents extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 5, vertical: 5),
                           onTap: isQuestRequirementSatisfied
-                              ? () async {
-                                  try {
-                                    final http.Response response =
-                                        await Get.showOverlay(
-                                            asyncFunction: () =>
-                                                onClaimButtonTap(userController
-                                                    .state.authorization),
-                                            loadingWidget:
-                                                const CustomCircularProgressIndicator());
-
-                                    log(response.statusCode.toString());
-
-                                    if (response.statusCode == 200) {
-                                      customShowDialog(
-                                        context: context,
-                                        title: localizationManager
-                                            .homeRewardAcquisitionComplete,
-                                        content: response.body,
-                                        onTap: () {
-                                          final Map<String, dynamic>
-                                          responseBody =
-                                          jsonDecode(response.body);
-                                          Get.find<SurveyDetailController>()
-                                              .surveyId =
-                                          responseBody["surveyId"];
-                                          Get.find<SurveyDetailController>()
-                                              .fetchSurveyDetail();
-                                          Get.back();
-                                          NavigatorKeyManager().pushNamed(
-                                              RouteNames.surveyDetail);
-                                        },
-                                      );
-                                    } else {
-                                      customShowDialog(
-                                          context: context,
-                                          title: localizationManager
-                                              .homeRewardAcquisitionFailed,
-                                          content: response.body);
-                                    }
-                                  } on TimeoutException {
-                                    customShowDialog(
-                                        context: context,
-                                        title:
-                                            localizationManager.errorsTimeout,
-                                        content: localizationManager
-                                            .errorsConnectionError);
-                                  } catch (e) {
-                                    log("QuestCardContents : onClaimButtonTap error : $e");
-                                    customShowDialog(
-                                        context: context,
-                                        title:
-                                            localizationManager.errorsUnknown,
-                                        content: localizationManager
-                                            .errorsUnknownDetail);
-                                  } finally {
-                                    userController.add(GetMyNeuro());
-                                    context
-                                        .read<QuestListController>()
-                                        .add(DataListRequest());
-                                  }
-                                }
+                              ? () => onClaimButtonTap(context)
                               : () {},
                         ),
                 ],
@@ -259,68 +199,7 @@ class QuestCardContents extends StatelessWidget {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 5, vertical: 5),
                               onTap: isQuestRequirementSatisfied
-                                  ? () async {
-                                      try {
-                                        final http.Response response =
-                                            await Get.showOverlay(
-                                                asyncFunction: () =>
-                                                    onClaimButtonTap(
-                                                        userController.state
-                                                            .authorization),
-                                                loadingWidget:
-                                                    const CustomCircularProgressIndicator());
-
-                                        log(response.statusCode.toString());
-
-                                        if (response.statusCode == 200) {
-                                          customShowDialog(
-                                            context: context,
-                                            title: localizationManager
-                                                .homeRewardAcquisitionComplete,
-                                            content: response.body,
-                                            onTap: () {
-                                              final Map<String, dynamic>
-                                                  responseBody =
-                                                  jsonDecode(response.body);
-                                              Get.find<SurveyDetailController>()
-                                                      .surveyId =
-                                                  responseBody["surveyId"];
-                                              Get.find<SurveyDetailController>()
-                                                  .fetchSurveyDetail();
-                                              Get.back();
-                                              NavigatorKeyManager().pushNamed(
-                                                  RouteNames.surveyDetail);
-                                            },
-                                          );
-                                        } else {
-                                          customShowDialog(
-                                              context: context,
-                                              title: localizationManager
-                                                  .homeRewardAcquisitionFailed,
-                                              content: response.body);
-                                        }
-                                      } on TimeoutException {
-                                        customShowDialog(
-                                            context: context,
-                                            title: localizationManager
-                                                .errorsTimeout,
-                                            content: localizationManager
-                                                .errorsConnectionError);
-                                      } catch (e) {
-                                        log("QuestCardContents : onClaimButtonTap error : $e");
-                                        customShowDialog(
-                                            context: context,
-                                            title: localizationManager
-                                                .errorsUnknown,
-                                            content: localizationManager
-                                                .errorsUnknownDetail);
-                                      } finally {
-                                        userController.add(GetMyNeuro());
-                                        context
-                                            .read<QuestListController>()
-                                            .add(DataListRequest());
-                                      }
-                                    }
+                                  ? () => onClaimButtonTap(context)
                                   : () {},
                             ),
                     ],
@@ -331,7 +210,60 @@ class QuestCardContents extends StatelessWidget {
     );
   }
 
-  Future<http.Response> onClaimButtonTap(String authorization) async {
+  Future<void> onClaimButtonTap(BuildContext context) async {
+    final UserController userController = context.read<UserController>();
+
+    try {
+      final http.Response response = await Get.showOverlay(
+          asyncFunction: () =>
+              requestReward(userController.state.authorization),
+          loadingWidget: const CustomCircularProgressIndicator());
+
+      log(response.statusCode.toString());
+
+      if (response.statusCode == 200) {
+        customShowDialog(
+          context: context,
+          title: localizationManager.homeRewardAcquisitionComplete,
+          content: localizationManager.homeRewardAcquisitionCompleteContent,
+          onTap: () {
+            final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+            final int surveyId = responseBody["surveyId"];
+
+            if (surveyId > 0) {
+              Get.find<SurveyDetailController>().surveyId = surveyId;
+              Get.find<SurveyDetailController>().fetchSurveyDetail();
+            }
+
+            Get.back();
+            NavigatorKeyManager().pushNamed(RouteNames.surveyDetail);
+          },
+        );
+      } else {
+        customShowDialog(
+            context: context,
+            title: localizationManager.homeRewardAcquisitionFailed,
+            content: response.body);
+      }
+    } on TimeoutException {
+      customShowDialog(
+          context: context,
+          title: localizationManager.errorsTimeout,
+          content: localizationManager.errorsConnectionError);
+    } catch (e) {
+      log("QuestCardContents : onClaimButtonTap error : $e");
+      customShowDialog(
+          context: context,
+          title: localizationManager.errorsUnknown,
+          content: localizationManager.errorsUnknownDetail);
+    } finally {
+      userController.add(GetMyNeuro());
+      context.read<QuestListController>().add(DataListRequest());
+    }
+  }
+
+  Future<http.Response> requestReward(String authorization) async {
     log("QuestCardContents : onClaimButtonTap");
     final String authorization = pedometerController.authorization;
     final int eventId = questModel.eventId;

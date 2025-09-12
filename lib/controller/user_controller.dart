@@ -1,9 +1,10 @@
 import 'dart:developer';
 
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
+import 'package:beat_flutter/managers/prefs/prefs_manager.dart';
 import 'package:bloc/bloc.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import '../data/models/user_model.dart';
 import '../data/provider/user_provider.dart';
@@ -30,18 +31,17 @@ class UserController extends Bloc<UserEvent, User> {
   final UserProvider _userProvider = UserProvider();
 
   UserController() : super(Guest()) {
-    log("UserController : init");
     on<SignIn>(_signIn);
     on<SignOut>(_signOut);
     on<GetMyNeuro>(_getMyNeuro);
-    // if(PrefsManager().containsKey('saved_studentId') && PrefsManager().containsKey('saved_nickname')) {
-    //   add(
-    //     SignIn(
-    //       PrefsManager().getValueAs<String>('saved_studentId'),
-    //       PrefsManager().getValueAs<String>('saved_nickname'),
-    //     ),
-    //   );
-    // }
+    if(PrefsManager().isStudentIdSaved() && PrefsManager().isPasswordSaved()) {
+      add(
+        SignIn(
+          PrefsManager().getSavedStudentId(),
+          PrefsManager().getSavedPassword(),
+        ),
+      );
+    }
   }
 
   Future<void> _signIn(SignIn event, Emitter<User> emit) async {
@@ -73,6 +73,8 @@ class UserController extends Bloc<UserEvent, User> {
     }
 
     emit(user);
+
+    FlutterNativeSplash.remove();
   }
 
   void _signOut(SignOut event, Emitter<User> emit) {

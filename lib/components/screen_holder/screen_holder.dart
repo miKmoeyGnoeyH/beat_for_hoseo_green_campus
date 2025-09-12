@@ -1,6 +1,7 @@
 import 'package:beat_flutter/components/my_page/my_page.dart';
 import 'package:beat_flutter/controller/home/controllers/quest_list_controller.dart';
 import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
+import 'package:beat_flutter/controller/screen_holder/page_index_controller.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,13 +23,8 @@ class ScreenHolder extends StatefulWidget {
 }
 
 class _ScreenHolderState extends State<ScreenHolder> {
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  final ScrollController _scrollController = ScrollController();
+  final PageIndexController pageIndexController =
+      Get.find<PageIndexController>();
 
   @override
   Widget build(BuildContext context) {
@@ -49,47 +45,44 @@ class _ScreenHolderState extends State<ScreenHolder> {
         child: SafeArea(
           top: false,
           bottom: false,
-          child: NestedScrollView(
-            controller: _scrollController,
-            physics: _selectedIndex == _homeIndex
-                ? const AlwaysScrollableScrollPhysics()
-                : const NeverScrollableScrollPhysics(),
-            headerSliverBuilder: (context, innerBoxIsScrolled) => const [
-              HomeAppbar(),
-            ],
-            body: RefreshIndicator(
-                color: context.appColors.primary,
-                onRefresh: onPullDown,
-                notificationPredicate: (_) => _selectedIndex == _homeIndex,
-                child: _screens[_selectedIndex]),
-          ),
+          child: Obx(() {
+            return NestedScrollView(
+              controller: pageIndexController.scrollController,
+              physics: pageIndexController.selectedIndex ==
+                      pageIndexController.homeIndex
+                  ? const AlwaysScrollableScrollPhysics()
+                  : const NeverScrollableScrollPhysics(),
+              headerSliverBuilder: (context, innerBoxIsScrolled) => const [
+                HomeAppbar(),
+              ],
+              body: RefreshIndicator(
+                  color: context.appColors.primary,
+                  onRefresh: onPullDown,
+                  notificationPredicate: (_) =>
+                      pageIndexController.selectedIndex ==
+                      pageIndexController.homeIndex,
+                  child: _screens[pageIndexController.selectedIndex]),
+            );
+          }),
         ),
       ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(
-              color: context.appColors.borderColor,
-              width: 0.1,
+      bottomNavigationBar: Obx(() {
+        return Container(
+          decoration: BoxDecoration(
+            border: Border(
+              top: BorderSide(
+                color: context.appColors.borderColor,
+                width: 0.1,
+              ),
             ),
           ),
-        ),
-        child: HomeBottomNavigationBar(
-          onTap: _setIndex,
-          selectedIndex: _selectedIndex,
-        ),
-      ),
+          child: HomeBottomNavigationBar(
+            onTap: pageIndexController.setIndex,
+            selectedIndex: pageIndexController.selectedIndex,
+          ),
+        );
+      }),
     );
-  }
-
-  void _setIndex(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
-    if (_selectedIndex != _homeIndex) {
-      _scrollController.jumpTo(0);
-    }
   }
 
   final List<Widget> _screens = [
@@ -98,7 +91,4 @@ class _ScreenHolderState extends State<ScreenHolder> {
     MyPage(),
     // const VoteScreen()
   ];
-
-  int _selectedIndex = 1;
-  final int _homeIndex = 1;
 }

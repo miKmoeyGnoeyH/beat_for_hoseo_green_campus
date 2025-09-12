@@ -61,11 +61,11 @@ class SurveyDetailModel extends SurveyModel {
       required super.title,
       required this.questionList});
 
-  SurveyDetailModel.fromJson(Map<String, dynamic> json)
+  SurveyDetailModel.fromJson(super.json)
       : questionList = (json['questionList'] as List)
             .map((e) => SurveyQuestionModel.fromJson(e))
             .toList(),
-        super.fromJson(json);
+        super.fromJson();
 
   @override
   String toString() {

@@ -5,7 +5,6 @@ import 'dart:developer';
 import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/managers/logger/beat_logger.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
@@ -36,8 +35,8 @@ class UserProvider {
       BEATLogger.d("UserProvider: signIn: response: ${response.body.toString()}");
 
       if (response.statusCode == 200) {
-        PrefsManager().setValue<String>('saved_studentId', studentId);
-        PrefsManager().setValue<String>('saved_nickname', password);
+        PrefsManager().setSavedStudentId(studentId);
+        PrefsManager().setSavedPassword(password);
 
         // log("UserProvider: signIn: response.headers: ${response.headers.toString()}");
         final String authorization = response.headers['authorization']!;

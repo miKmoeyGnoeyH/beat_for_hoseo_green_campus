@@ -16,10 +16,12 @@ class TermsOfAgreement extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        TermsOfAgreementTitle(
-          registerAgreementController:
-          registerAgreementController,
-          setIsAgreementChecked: setIsAgreementChecked,
+        Expanded(
+          child: TermsOfAgreementTitle(
+            registerAgreementController:
+            registerAgreementController,
+            setIsAgreementChecked: setIsAgreementChecked,
+          ),
         ),
         TermsOfAgreementCheckbox(
           registerAgreementController:

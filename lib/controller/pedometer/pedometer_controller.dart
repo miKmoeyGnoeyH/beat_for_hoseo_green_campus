@@ -28,6 +28,7 @@ class PedometerController extends GetxController {
   int _sendToTime = 0;
 
   int get sendToTime => _sendToTime;
+
   void setSendToTime(int value) {
     _sendToTime = value;
   }
@@ -182,7 +183,7 @@ class PedometerController extends GetxController {
   }
 
   // 1시간에 한 번씩 걸음 수 동기화
-  void _addWalkReport() async {
+  void addWalkReport() async {
     final DateTime now = DateTime.now();
 
     _walkReports.add({
@@ -207,20 +208,27 @@ class PedometerController extends GetxController {
     _reportTimer?.cancel();
     _rankReportTimer?.cancel();
     _midnightTimer?.cancel();
-    
+
     _reportTimer = Timer.periodic(const Duration(hours: 1), (_) {
-      _addWalkReport();
+      addWalkReport();
     });
     _rankReportTimer = Timer.periodic(const Duration(hours: 1), (_) {
       final DateTime dateTime = DateTime.now();
       if (_sendToTime == dateTime.second) {
         log("PedometerController: _rankReportTimer: _sendToTime: $_sendToTime, dateTime: $dateTime");
-        _addWalkReport();
+        addWalkReport();
       }
     });
     _midnightTimer = Timer.periodic(const Duration(seconds: 1), (_) {
       final DateTime dateTime = DateTime.now();
       if (dateTime.hour == 0 && dateTime.minute == 0 && dateTime.second == 0) {
+        final DateTime now = DateTime.now();
+        PrefsManager().setSteps(
+          0,
+          now.weekday == DateTime.sunday ? 0 : weeklyWalkCount,
+          now.day == 1 ? 0 : monthlyWalkCount,
+          totalWalkCount,
+        );
         getWalkHitory();
         PrefsManager().setLastReportedSteps(0);
       }
@@ -230,6 +238,12 @@ class PedometerController extends GetxController {
   // 서버로부터 걸음 수 받아오기
   Future<void> getWalkHitory() async {
     final String requestURL = DotEnvManager().walkHistoryUrl;
+    final (
+      savedTodayWalkCount,
+      savedWeeklyWalkCount,
+      savedMonthlyWalkCount,
+      savedTotalWalkCount
+    ) = PrefsManager().getSteps();
 
     try {
       final http.Response response = await http.get(
@@ -241,16 +255,23 @@ class PedometerController extends GetxController {
       final Map<String, dynamic> bodyToJson = jsonDecode(responseBody);
 
       if (response.statusCode == 200) {
-        todayWalkCount = bodyToJson['todayWalkCount'];
-        weeklyWalkCount = bodyToJson['weeklyWalkCount'];
-        monthlyWalkCount = bodyToJson['monthlyWalkCount'];
-        totalWalkCount = bodyToJson['totalWalkCount'];
+        if (savedTodayWalkCount >= bodyToJson['todayWalkCount']) {
+          todayWalkCount = savedTodayWalkCount;
+          weeklyWalkCount = savedWeeklyWalkCount;
+          monthlyWalkCount = savedMonthlyWalkCount;
+          totalWalkCount = savedTotalWalkCount;
+        } else {
+          todayWalkCount = bodyToJson['todayWalkCount'];
+          weeklyWalkCount = bodyToJson['weeklyWalkCount'];
+          monthlyWalkCount = bodyToJson['monthlyWalkCount'];
+          totalWalkCount = bodyToJson['totalWalkCount'];
+        }
         steps = todayWalkCount;
 
-        log("PedometerController : getWalkHistory : todayWalkCount : $todayWalkCount");
-        log("PedometerController : getWalkHistory : weeklyWalkCount : $weeklyWalkCount");
-        log("PedometerController : getWalkHistory : monthlyWalkCount : $monthlyWalkCount");
-        log("PedometerController : getWalkHistory : totalWalkCount : $totalWalkCount");
+        // log("PedometerController : getWalkHistory : todayWalkCount : $todayWalkCount");
+        // log("PedometerController : getWalkHistory : weeklyWalkCount : $weeklyWalkCount");
+        // log("PedometerController : getWalkHistory : monthlyWalkCount : $monthlyWalkCount");
+        // log("PedometerController : getWalkHistory : totalWalkCount : $totalWalkCount");
       } else {
         throw Exception();
       }
@@ -290,6 +311,8 @@ class PedometerController extends GetxController {
   void onPedestrianStatusChanged(PedestrianStatus event) {
     log('onPedestrianStatusChanged $event');
     status = event.status;
+    PrefsManager().setSteps(
+        todayWalkCount, weeklyWalkCount, monthlyWalkCount, totalWalkCount);
   }
 
   void onPedestrianStatusError(error) {

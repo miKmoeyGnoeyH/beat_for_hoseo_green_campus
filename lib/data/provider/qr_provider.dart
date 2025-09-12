@@ -10,16 +10,20 @@ class QRProvider {
   final http.Client client = http.Client();
 
   Future<QRState> handleQRCheckRequest(
-      String requestUrl, String authorization) async {
+      String requestUrl, String authorization, double lat, double lng) async {
     final LocalizationManager localizationManager = LocalizationManager();
     QRState qrState;
 
     try {
-      final http.Response response = await client.get(
+      final http.Response response = await client.post(
         Uri.parse(requestUrl),
         headers: <String, String>{
           'Authorization': authorization,
         },
+        body: {
+          "latitude": lat,
+          "longitude": lng,
+        }
       );
 
       if (response.statusCode == 200) {

@@ -58,15 +58,15 @@ class _CustomQuestListViewState extends State<CustomQuestListView> {
     walkQuestsLength = walkQuests.length;
     walkDailyQuestsLength = walkQuests
         .where((e) =>
-    (e as QuestWalkModel).eventPeriodType == EventPeriodType.daily)
+            (e as QuestWalkModel).eventPeriodType == EventPeriodType.daily)
         .length;
     walkWeeklyQuestsLength = walkQuests
         .where((e) =>
-    (e as QuestWalkModel).eventPeriodType == EventPeriodType.weekly)
+            (e as QuestWalkModel).eventPeriodType == EventPeriodType.weekly)
         .length;
     walkMonthlyQuestsLength = walkQuests
         .where((e) =>
-    (e as QuestWalkModel).eventPeriodType == EventPeriodType.monthly)
+            (e as QuestWalkModel).eventPeriodType == EventPeriodType.monthly)
         .length;
 
     return Padding(
@@ -132,63 +132,73 @@ class _CustomQuestListViewState extends State<CustomQuestListView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 10),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: CustomTitleMedium(
-                            text: localizationManager.homeDaily,
-                          ),
-                        ),
                         walkDailyQuestsLength != 0
-                            ? ListView.separated(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: walkQuests
-                                    .where((e) =>
-                                        (e as QuestWalkModel).eventPeriodType ==
-                                        EventPeriodType.daily)
-                                    .length,
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 20),
-                                separatorBuilder: (context, index) =>
-                                    const SizedBox(height: 16),
-                                itemBuilder: (context, index) {
-                                  final List<DataModel> walkDailyQuests =
-                                      walkQuests
-                                          .where((e) =>
-                                              (e as QuestWalkModel)
-                                                  .eventPeriodType ==
-                                              EventPeriodType.daily)
-                                          .toList();
+                            ? Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10),
+                                    child: CustomTitleMedium(
+                                      text: localizationManager.homeDaily,
+                                    ),
+                                  ),
+                                  ListView.separated(
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemCount: walkQuests
+                                        .where((e) =>
+                                            (e as QuestWalkModel)
+                                                .eventPeriodType ==
+                                            EventPeriodType.daily)
+                                        .length,
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 20),
+                                    separatorBuilder: (context, index) =>
+                                        const SizedBox(height: 16),
+                                    itemBuilder: (context, index) {
+                                      final List<DataModel> walkDailyQuests =
+                                          walkQuests
+                                              .where((e) =>
+                                                  (e as QuestWalkModel)
+                                                      .eventPeriodType ==
+                                                  EventPeriodType.daily)
+                                              .toList();
 
-                                  return QuestCard(
-                                    index: index,
-                                    questModel:
-                                        walkDailyQuests[index] as QuestModel,
-                                  );
-                                },
+                                      return QuestCard(
+                                        index: index,
+                                        questModel: walkDailyQuests[index]
+                                            as QuestModel,
+                                      );
+                                    },
+                                  )
+                                ],
                               )
                             : const SizedBox.shrink(),
                         walkWeeklyQuestsLength != 0
                             ? Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // const SizedBox(height: 10),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                                  child: CustomTitleMedium(
-                                    text: localizationManager.homeWeekly,
+                                children: [
+                                  // const SizedBox(height: 10),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10),
+                                    child: CustomTitleMedium(
+                                      text: localizationManager.homeWeekly,
+                                    ),
                                   ),
-                                ),
-                                ListView.separated(
+                                  ListView.separated(
                                     shrinkWrap: true,
-                                    physics: const NeverScrollableScrollPhysics(),
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
                                     itemCount: walkQuests
                                         .where((e) =>
-                                            (e as QuestWalkModel).eventPeriodType ==
+                                            (e as QuestWalkModel)
+                                                .eventPeriodType ==
                                             EventPeriodType.weekly)
                                         .length,
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 20),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 20),
                                     separatorBuilder: (context, index) =>
                                         const SizedBox(height: 16),
                                     itemBuilder: (context, index) {
@@ -202,35 +212,38 @@ class _CustomQuestListViewState extends State<CustomQuestListView> {
 
                                       return QuestCard(
                                         index: index,
-                                        questModel:
-                                            walkWeeklyQuests[index] as QuestModel,
+                                        questModel: walkWeeklyQuests[index]
+                                            as QuestModel,
                                       );
                                     },
                                   ),
-                              ],
-                            )
+                                ],
+                              )
                             : const SizedBox.shrink(),
                         walkMonthlyQuestsLength != 0
                             ? Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // const SizedBox(height: 10),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                                  child: CustomTitleMedium(
-                                    text: localizationManager.homeMonthly,
+                                children: [
+                                  // const SizedBox(height: 10),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10),
+                                    child: CustomTitleMedium(
+                                      text: localizationManager.homeMonthly,
+                                    ),
                                   ),
-                                ),
-                                ListView.separated(
+                                  ListView.separated(
                                     shrinkWrap: true,
-                                    physics: const NeverScrollableScrollPhysics(),
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
                                     itemCount: walkQuests
                                         .where((e) =>
-                                            (e as QuestWalkModel).eventPeriodType ==
+                                            (e as QuestWalkModel)
+                                                .eventPeriodType ==
                                             EventPeriodType.monthly)
                                         .length,
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 20),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 20),
                                     separatorBuilder: (context, index) =>
                                         const SizedBox(height: 16),
                                     itemBuilder: (context, index) {
@@ -244,13 +257,13 @@ class _CustomQuestListViewState extends State<CustomQuestListView> {
 
                                       return QuestCard(
                                         index: index,
-                                        questModel:
-                                            walkMonthlyQuests[index] as QuestModel,
+                                        questModel: walkMonthlyQuests[index]
+                                            as QuestModel,
                                       );
                                     },
                                   ),
-                              ],
-                            )
+                                ],
+                              )
                             : const SizedBox.shrink(),
                       ],
                     )

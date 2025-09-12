@@ -6,9 +6,9 @@ import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/managers/navigator/navigator_key_manager.dart';
 import 'package:beat_flutter/managers/navigator/routes.dart';
+import 'package:beat_flutter/managers/prefs/prefs_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../controller/user_controller.dart';
 import '../../data/models/user_model.dart';
@@ -21,8 +21,10 @@ import 'widgets/sign_in_sid_field.dart';
 import 'widgets/sign_in_sign_in_button.dart';
 
 class SignInScreen extends StatelessWidget {
-  final TextEditingController _studentIdController = TextEditingController();
-  final TextEditingController _nicknameController = TextEditingController();
+  final TextEditingController _studentIdController = TextEditingController(
+      text: PrefsManager().getSavedStudentId());
+  final TextEditingController _nicknameController = TextEditingController(
+      text: PrefsManager().getSavedPassword());
 
   final LocalizationManager localizationManager = LocalizationManager();
 

@@ -1,6 +1,8 @@
 {
   "general": {
-    "student": "학생"
+    "student": "학생",
+    "confirm": "확인",
+    "cancel": "취소"
   },
   "home": {
     "points_in_hand": "보유 포인트",
@@ -25,6 +27,7 @@
     "claim": "보상 받기",
     "claimed": "획득 완료",
     "reward_acquisition_complete": "보상 획득 완료",
+    "reward_acquisition_complete_content": "보상이 지급되었습니다.",
     "reward_acquisition_failed": "보상 획득 실패"
   },
   "quest_detail": {
@@ -74,7 +77,11 @@
     "already_checked": "이미 참여하셨습니다.",
     "error_occured": "요청하신 작업을 처리하는 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.",
     "location_fetch_error_title": "위치 정보를 가져오는 데 실패했습니다.",
-    "location_fetch_error_content": "위치 정보를 가져오는 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요."
+    "location_fetch_error_content": "위치 정보를 가져오는 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.",
+    "qr_scan_title": "QR 코드 스캔",
+    "qr_scan_content": "인증하시겠습니까?",
+    "invalid_qr_code_title": "유효하지 않은 QR 코드",
+    "invalid_qr_code_content": "유효하지 않은 QR 코드입니다."
   },
   "notice": {
     "label": "공지사항"
@@ -247,6 +254,15 @@
     "back_in_range_title": "유효 걷기 범위에 들어왔습니다.",
     "back_in_range_body": "걸음 수가 기록중입니다."
   },
+  "settings": {
+    "appbar_title": "설정",
+    "sign_out": "로그아웃",
+    "withdrawal": "회원 탈퇴",
+    "oss_licenses": "오픈소스 라이선스",
+    "view_detail": "상세 보기",
+    "app_inquiry": "앱 관련 문의",
+    "version": "버전"
+  },
   "errors": {
     "timeout": "요청 시간이 초과되었습니다.",
     "connection_error": "인터넷 연결상태를 확인해 주세요.",
@@ -365,7 +381,6 @@
   "reward_acquire_success": "보상 획득 완료",
   "select_item_to_vote": "투표할 항목을 선택해주세요.",
   "selected_neuro": "이 항목에 {} Neuro 선택하셨습니다.",
-  "settings": "설정",
   "sid_hint": "학번을 입력해주세요.",
   "sign": "서명하기",
   "sign_content": "\"서명하기\" 버튼을 통해 서명을 완료해 주세요.",
