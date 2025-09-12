@@ -150,7 +150,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
             text: localizationManager.rfiAppbarTitle,
           ),
           body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+            padding: const EdgeInsets.only(left: 20.0, right: 20, top: 10),
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -168,7 +168,6 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                   // 이름
                   RegisterNameTextField(
                     registerNameController: registerNameController,
-                    onChanged: validateName,
                   ),
                   const SizedBox(height: 20),
                   // 닉네임
@@ -201,19 +200,37 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                                     final String text =
                                         registerNicknameController
                                             .nicknameController.text;
-                                    // 닉네임에 초성이 포함된 경우
-                                    if (RegExp(r'[ㅏ-ㅣㄱ-ㅎ]').hasMatch(text)) {
+
+                                    if (registerNicknameController
+                                        .nicknameController.text.isEmpty) {
                                       customShowDialog(
                                         context: context,
                                         title: localizationManager
-                                            .rfiInappropriateNickname,
+                                            .rfiUnusableNickname,
+                                        content:
+                                            localizationManager.rfiNicknameHint,
+                                      );
+
+                                      return;
+                                    }
+
+                                    if (RegExp(r'[ㅏ-ㅣㄱ-ㅎ]').hasMatch(
+                                        registerNicknameController
+                                            .nicknameController.text)) {
+                                      customShowDialog(
+                                        context: context,
+                                        title: localizationManager
+                                            .rfiUnusableNickname,
                                         content: localizationManager
                                             .rfiNicknameHasInitialConsonant,
                                       );
+
+                                      return;
                                     }
-                                    // 닉네임에 비속어가 포함된 경우
-                                    else if (customProfanityFilter
-                                        .hasMatch(text)) {
+
+                                    if (customProfanityFilter.hasMatch(
+                                        registerNicknameController
+                                            .nicknameController.text)) {
                                       customShowDialog(
                                         context: context,
                                         title: localizationManager
@@ -221,6 +238,8 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                                         content: localizationManager
                                             .rfiInappropriateNicknameMessage,
                                       );
+
+                                      return;
                                     } else {
                                       _isNicknameButtonEnabled = false;
                                       registerNicknameController
@@ -303,13 +322,6 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                                         category,
                                       ),
                                     );
-                                    // if (registerOrganizationController!
-                                    //         .organization ==
-                                    //     localizationManager.generalStudent) {
-                                    //   registerSidController.add(EmailRequest());
-                                    // } else {
-                                    //   registerSidController.add(IDRequest());
-                                    // }
                                   }
                                 : () {},
                             buttonText:
@@ -367,120 +379,164 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
             builder: (context, sidState) =>
                 BlocBuilder<RegisterNicknameController, NicknameState>(
               builder: (context, nicknameState) {
-                _isSignUpButtonEnabled = _isNameValid &&
-                    sidState is IDSent &&
+                _isSignUpButtonEnabled = sidState is IDSent &&
                     nicknameState is NicknameChecked &&
                     registerAgreementController.isAgreementChecked;
 
                 return CustomBottomAppbarButton(
-                  onTap:
-                      _isSignUpButtonEnabled
-                          ?
-                      () async {
-                    _isSignUpButtonEnabled = false;
-                    final UserProvider userProvider = UserProvider();
-                    final String studentId =
-                        registerSidController.idController.text;
-                    final String name =
-                        registerNameController.nameController.text;
-                    final String nickname =
-                        registerNicknameController.nicknameController.text;
-                    final String department = context.deviceLocale.toString() ==
-                            "ko_KR"
-                        ? registerDepartmentController!.department
-                        : context.tr(registerDepartmentController!.department);
+                  onTap: _isSignUpButtonEnabled
+                      ? () async {
+                          if (registerNameController
+                              .nameController.text.isEmpty) {
+                            await customShowDialog(
+                              context: context,
+                              title: localizationManager.rfiInavailableName,
+                              content: localizationManager.rfiNameIsEmpty,
+                            );
 
-                    final passwordRegex = RegExp(
-                      r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9])\S{8,}$',
-                    );
-                    if (!passwordRegex.hasMatch(passwordController.text)) {
-                      await customShowDialog(
-                        context: context,
-                        title: localizationManager.rfiPasswordRuleErrorTitle,
-                        content:
-                            localizationManager.rfiPasswordRuleErrorContent,
-                      );
-                      return;
-                    } else {
-                      if (passwordController.text !=
-                          passwordCheckController.text) {
-                        await customShowDialog(
-                          context: context,
-                          title: localizationManager.rfiPasswordMismatchTitle,
-                          content:
-                              localizationManager.rfiPasswordMismatchContent,
-                        );
-                        return;
-                      }
-                    }
+                            return;
+                          }
 
-                    if (!registerSignController.handSignatureControl.isFilled) {
-                      await customShowDialog(
-                        context: context,
-                        title: localizationManager.rfiSignIsEmptyTitle,
-                        content: localizationManager.rfiSignIsEmptyContent,
-                      );
-                      return;
-                    }
+                          if (RegExp(r'[ㅏ-ㅣㄱ-ㅎ]').hasMatch(
+                              registerNameController.nameController.text)) {
+                            await customShowDialog(
+                              context: context,
+                              title: localizationManager.rfiInavailableName,
+                              content: localizationManager
+                                  .rfiNameHasInitialConsonant,
+                            );
 
-                    final String email =
-                        registerSidController.idController.text;
-                    final ByteData? signature = await registerSignController
-                        .handSignatureControl
-                        .toImage(background: Colors.transparent);
-                    final String encodedSignFile =
-                        base64Encode(signature!.buffer.asUint8List());
+                            return;
+                          }
 
-                    try {
-                      final http.Response response = await Get.showOverlay(
-                        asyncFunction: () {
-                          return userProvider.signUp(
-                            category,
-                            registerDepartmentController!.department,
-                            studentId,
-                            email,
-                            name,
-                            nickname,
-                            passwordController.text,
-                            encodedSignFile,
+                          if (customProfanityFilter.hasMatch(
+                              registerNameController.nameController.text)) {
+                            await customShowDialog(
+                              context: context,
+                              title: localizationManager.rfiInavailableName,
+                              content:
+                                  localizationManager.rfiInavailableNameMessage,
+                            );
+
+                            return;
+                          }
+
+                          _isSignUpButtonEnabled = false;
+                          final UserProvider userProvider = UserProvider();
+                          final String studentId =
+                              registerSidController.idController.text;
+                          final String name =
+                              registerNameController.nameController.text;
+                          final String nickname = registerNicknameController
+                              .nicknameController.text;
+                          final String department =
+                              context.deviceLocale.toString() == "ko_KR"
+                                  ? registerDepartmentController!.department
+                                  : context.tr(
+                                      registerDepartmentController!.department);
+
+                          final passwordRegex = RegExp(
+                            r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9])\S{8,}$',
                           );
-                        },
-                        loadingWidget: const CustomCircularProgressIndicator(),
-                      );
-                      if (response.statusCode == 200) {
-                        if (context.mounted) {
-                          customShowDialog(
-                            context: context,
-                            title: localizationManager.rfiSignUpSuccess,
-                            content:
-                                localizationManager.rfiSignUpSuccessMessage,
-                            buttonText: localizationManager.rfiToSignInScreen,
-                            onTap: () {
-                              NavigatorKeyManager()
-                                  .pushNamedAndRemoveUntil(RouteNames.signIn);
-                            },
-                          );
+                          if (!passwordRegex
+                              .hasMatch(passwordController.text)) {
+                            await customShowDialog(
+                              context: context,
+                              title:
+                                  localizationManager.rfiPasswordRuleErrorTitle,
+                              content: localizationManager
+                                  .rfiPasswordRuleErrorContent,
+                            );
+                            return;
+                          } else {
+                            if (passwordController.text !=
+                                passwordCheckController.text) {
+                              await customShowDialog(
+                                context: context,
+                                title: localizationManager
+                                    .rfiPasswordMismatchTitle,
+                                content: localizationManager
+                                    .rfiPasswordMismatchContent,
+                              );
+                              return;
+                            }
+                          }
+
+                          if (!registerSignController
+                              .handSignatureControl.isFilled) {
+                            await customShowDialog(
+                              context: context,
+                              title: localizationManager.rfiSignIsEmptyTitle,
+                              content:
+                                  localizationManager.rfiSignIsEmptyContent,
+                            );
+                            return;
+                          }
+
+                          final String email =
+                              registerSidController.idController.text;
+                          final ByteData? signature =
+                              await registerSignController.handSignatureControl
+                                  .toImage(background: Colors.transparent);
+                          final String encodedSignFile =
+                              base64Encode(signature!.buffer.asUint8List());
+
+                          try {
+                            final http.Response response =
+                                await Get.showOverlay(
+                              asyncFunction: () {
+                                return userProvider.signUp(
+                                  category,
+                                  registerDepartmentController!.department,
+                                  studentId,
+                                  email,
+                                  name,
+                                  nickname,
+                                  passwordController.text,
+                                  encodedSignFile,
+                                );
+                              },
+                              loadingWidget:
+                                  const CustomCircularProgressIndicator(),
+                            );
+                            if (response.statusCode == 200) {
+                              if (context.mounted) {
+                                customShowDialog(
+                                  context: context,
+                                  title: localizationManager.rfiSignUpSuccess,
+                                  content: localizationManager
+                                      .rfiSignUpSuccessMessage,
+                                  buttonText:
+                                      localizationManager.rfiToSignInScreen,
+                                  onTap: () {
+                                    NavigatorKeyManager()
+                                        .pushNamedAndRemoveUntil(
+                                            RouteNames.signIn);
+                                  },
+                                );
+                              }
+                            } else {
+                              if (context.mounted) {
+                                customShowDialog(
+                                  context: context,
+                                  title: localizationManager.rfiSignUpFailed,
+                                  content: response.body,
+                                );
+                              }
+                            }
+                          } catch (e) {
+                            if (context.mounted) {
+                              customShowDialog(
+                                context: context,
+                                title: localizationManager.rfiSignUpFailed,
+                                content:
+                                    localizationManager.rfiSignUpFailedMessage,
+                              );
+                              _isSignUpButtonEnabled = true;
+                            }
+                          }
                         }
-                      } else {
-                        if (context.mounted) {
-                          customShowDialog(
-                            context: context,
-                            title: localizationManager.rfiSignUpFailed,
-                            content: response.body,
-                          );
-                        }
-                      }
-                    } catch (e) {
-                      if (context.mounted) {
-                        customShowDialog(
-                          context: context,
-                          title: localizationManager.rfiSignUpFailed,
-                          content: localizationManager.rfiSignUpFailedMessage,
-                        );
-                        _isSignUpButtonEnabled = true;
-                      }
-                    }
-                  } : () {},
+                      : () {},
                   // : () {},
                   backgroundColor: _isSignUpButtonEnabled
                       ? context.appColors.primary

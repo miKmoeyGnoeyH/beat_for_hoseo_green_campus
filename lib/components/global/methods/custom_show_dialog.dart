@@ -8,137 +8,150 @@ import '../../../theme/texts/custom_texts.dart';
 import '../widgets/custom_rounded_bordered_container.dart';
 
 Future<dynamic> customShowDialog(
-    {required BuildContext context, required String? title, required String? content, String? buttonText, String? routeName, Function()? onTap}) {
+    {required BuildContext context,
+    required String? title,
+    required String? content,
+    String? buttonText,
+    String? routeName,
+    Function()? onTap}) {
   return showDialog(
     context: context,
-    builder: (context) =>
-        AlertDialog(
-          shape: RoundedRectangleBorder(
-            side: BorderSide(
-              color: context.appColors.borderColor,
-              width: 0.3,
-            ),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          insetPadding: const EdgeInsets.symmetric(horizontal: 20),
-          backgroundColor: context.appColors.background,
-          titlePadding: const EdgeInsets.only(left: 20, right: 20, top: 16),
-          title: title != null ? Text(
-            title,
-            style: CustomTexts.titleLarge
-                .copyWith(color: context.appColors.onBackground),
-          ) : null,
-          contentPadding: const EdgeInsets.symmetric(
-              horizontal: 20, vertical: 16),
-          content: content != null ? SizedBox(
-            width: context.width * 0.7,
-            child: Text(
-              content,
-              style: CustomTexts.bodyLarge
+    builder: (context) => AlertDialog(
+      shape: RoundedRectangleBorder(
+        side: BorderSide(
+          color: context.appColors.borderColor,
+          width: 0.3,
+        ),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+      backgroundColor: context.appColors.background,
+      titlePadding: const EdgeInsets.only(left: 20, right: 20, top: 16),
+      title: title != null
+          ? Text(
+              title,
+              style: CustomTexts.titleLarge
                   .copyWith(color: context.appColors.onBackground),
-            ),
-          ) : null,
-          actionsAlignment: MainAxisAlignment.center,
-          actionsPadding: const EdgeInsets.symmetric(
-              horizontal: 20, vertical: 16),
-          actions: [
-            GestureDetector(
-              onTap: onTap ?? () =>
-              routeName != null
-                  ? NavigatorKeyManager().popUntil(routeName)
-                  : NavigatorKeyManager().pop(),
-              child: CustomRoundedBorderedContainer(
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: Text(
-                      buttonText ?? context.tr('confirm'),
-                      style: CustomTexts.subtitleLarge
-                          .copyWith(color: context.appColors.onPrimary),
-                    ),
-                  ),
+            )
+          : null,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      content: content != null
+          ? SizedBox(
+              width: context.width * 0.7,
+              child: Text(
+                content,
+                style: CustomTexts.bodyLarge
+                    .copyWith(color: context.appColors.onBackground),
+              ),
+            )
+          : null,
+      actionsAlignment: MainAxisAlignment.center,
+      actionsPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      actions: [
+        GestureDetector(
+          onTap: () {
+            NavigatorKeyManager().pop();
+            onTap?.call();
+          },
+          child: CustomRoundedBorderedContainer(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: Text(
+                  buttonText ?? context.tr('confirm'),
+                  style: CustomTexts.subtitleLarge
+                      .copyWith(color: context.appColors.onPrimary),
                 ),
               ),
             ),
-          ],
+          ),
         ),
+      ],
+    ),
   );
 }
 
 Future<dynamic> customConfirmDialog(
-    {required BuildContext context, required String? title, required String? content, String? buttonText, String? routeName, Function()? onConfirmTap, Function()? onCancelTap}) {
+    {required BuildContext context,
+    required String? title,
+    required String? content,
+    String? buttonText,
+    String? routeName,
+    Function()? onConfirmTap,
+    Function()? onCancelTap}) {
   return showDialog(
     context: context,
-    builder: (context) =>
-        AlertDialog(
-          shape: RoundedRectangleBorder(
-            side: BorderSide(
-              color: context.appColors.borderColor,
-              width: 0.3,
-            ),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          insetPadding: const EdgeInsets.symmetric(horizontal: 20),
-          backgroundColor: context.appColors.background,
-          titlePadding: const EdgeInsets.only(left: 20, right: 20, top: 16),
-          title: title != null ? Text(
-            title,
-            style: CustomTexts.titleLarge
-                .copyWith(color: context.appColors.onBackground),
-          ) : null,
-          contentPadding: const EdgeInsets.symmetric(
-              horizontal: 20, vertical: 16),
-          content: content != null ? SizedBox(
-            width: context.width * 0.7,
-            child: Text(
-              content,
-              style: CustomTexts.bodyLarge
-                  .copyWith(color: context.appColors.onBackground),
-            ),
-          ) : null,
-          actionsAlignment: MainAxisAlignment.center,
-          actionsPadding: const EdgeInsets.symmetric(
-              horizontal: 20, vertical: 16),
-          actions: [
-            GestureDetector(
-              onTap: () {
-                NavigatorKeyManager().pop();
-                onCancelTap?.call();
-              },
-              child: CustomRoundedBorderedContainer(
-                color: context.appColors.disabled,
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: Text(
-                      buttonText ?? LocalizationManager().generalCancel,
-                      style: CustomTexts.subtitleLarge
-                          .copyWith(color: context.appColors.onPrimary),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            GestureDetector(
-              onTap: () {
-                NavigatorKeyManager().pop();
-                onConfirmTap?.call();
-              },
-              child: CustomRoundedBorderedContainer(
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: Text(
-                      buttonText ?? LocalizationManager().generalConfirm,
-                      style: CustomTexts.subtitleLarge
-                          .copyWith(color: context.appColors.onPrimary),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
+    builder: (context) => AlertDialog(
+      shape: RoundedRectangleBorder(
+        side: BorderSide(
+          color: context.appColors.borderColor,
+          width: 0.3,
         ),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+      backgroundColor: context.appColors.background,
+      titlePadding: const EdgeInsets.only(left: 20, right: 20, top: 16),
+      title: title != null
+          ? Text(
+              title,
+              style: CustomTexts.titleLarge
+                  .copyWith(color: context.appColors.onBackground),
+            )
+          : null,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      content: content != null
+          ? SizedBox(
+              width: context.width * 0.7,
+              child: Text(
+                content,
+                style: CustomTexts.bodyLarge
+                    .copyWith(color: context.appColors.onBackground),
+              ),
+            )
+          : null,
+      actionsAlignment: MainAxisAlignment.center,
+      actionsPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      actions: [
+        GestureDetector(
+          onTap: () {
+            NavigatorKeyManager().pop();
+            onCancelTap?.call();
+          },
+          child: CustomRoundedBorderedContainer(
+            color: context.appColors.disabled,
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: Text(
+                  buttonText ?? LocalizationManager().generalCancel,
+                  style: CustomTexts.subtitleLarge
+                      .copyWith(color: context.appColors.onPrimary),
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        GestureDetector(
+          onTap: () {
+            NavigatorKeyManager().pop();
+            onConfirmTap?.call();
+          },
+          child: CustomRoundedBorderedContainer(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: Text(
+                  buttonText ?? LocalizationManager().generalConfirm,
+                  style: CustomTexts.subtitleLarge
+                      .copyWith(color: context.appColors.onPrimary),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
   );
 }

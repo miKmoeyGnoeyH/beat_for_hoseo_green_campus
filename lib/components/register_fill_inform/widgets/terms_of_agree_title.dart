@@ -5,7 +5,6 @@ import 'package:beat_flutter/theme/texts/custom_texts.dart';
 import 'package:flutter/material.dart';
 
 import '../../../controller/register_fill_inform/register_agreement_controller.dart';
-import '../../global/widgets/texts/custom_subtitle_large.dart';
 import 'bottom_sheet.dart';
 
 class TermsOfAgreementTitle extends StatelessWidget {

@@ -212,11 +212,13 @@ abstract class Routes {
                   .setSendToTime(arguments.sendToTime);
 
               Get.find<PedometerController>().getWalkHitory();
-              Get.find<PedometerController>().startTimer();
+              Get.find<PedometerController>().initializeService();
+              Get.find<PedometerController>().startBackgroundService();
 
               Get.find<LocationController>().fetchLocation();
               Get.find<LocationController>().checkIsValidArea();
-              Get.find<LocationController>().startTimer();
+              Get.find<LocationController>().initializeService();
+              Get.find<LocationController>().startBackgroundService();
 
               return MultiBlocProvider(
                 providers: [
@@ -275,7 +277,7 @@ abstract class Routes {
       case RouteNames.withdrawal:
         {
           return MaterialPageRoute(
-            builder: (context) => const WithdrawalScreen(),
+            builder: (context) => WithdrawalScreen(),
           );
         }
 

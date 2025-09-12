@@ -4,12 +4,15 @@ import 'dart:developer';
 
 import 'package:beat_flutter/components/qr/widgets/overlay.dart';
 import 'package:beat_flutter/controller/home/controllers/quest_list_controller.dart';
+import 'package:beat_flutter/controller/home/controllers/survey_detail_controller.dart';
 import 'package:beat_flutter/controller/home/events/data_events.dart';
 import 'package:beat_flutter/controller/location/location_controller.dart';
 import 'package:beat_flutter/controller/screen_holder/page_index_controller.dart';
 import 'package:beat_flutter/exception/beat_exception.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
+import 'package:beat_flutter/managers/navigator/navigator_key_manager.dart';
+import 'package:beat_flutter/managers/navigator/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -32,7 +35,8 @@ class _QrScreenState extends State<QrScreen> {
   final MobileScannerController mobileScannerController =
       MobileScannerController();
 
-  final PageIndexController pageIndexController = Get.find<PageIndexController>();
+  final PageIndexController pageIndexController =
+      Get.find<PageIndexController>();
   final LocalizationManager localizationManager = LocalizationManager();
   final LocationController locationController = Get.find<LocationController>();
   Timer? scanTimer;
@@ -78,6 +82,7 @@ class _QrScreenState extends State<QrScreen> {
             final String requestUrl = barcode.rawValue!;
             log("requestUrl : $requestUrl");
 
+            // if (qrRawValueFilterRelease.hasMatch(requestUrl)) {
             if (qrRawValueFilterDebug.hasMatch(requestUrl)) {
               customConfirmDialog(
                 context: context,
@@ -143,7 +148,8 @@ class _QrScreenState extends State<QrScreen> {
                                 .read<QuestListController>()
                                 .add(DataListRequest());
 
-                            pageIndexController.setIndex(pageIndexController.homeIndex);
+                            pageIndexController
+                                .setIndex(pageIndexController.homeIndex);
                           });
                     } else {
                       await customShowDialog(
@@ -153,6 +159,27 @@ class _QrScreenState extends State<QrScreen> {
                       );
                     }
                   }
+
+                  isScanning = false;
+                  startScanTimer();
+                },
+              );
+            // } else if (qrSurveyFilterRelease.hasMatch(requestUrl)) {
+            } else if (qrSurveyFilterDebug.hasMatch(requestUrl)) {
+              await customConfirmDialog(
+                context: context,
+                title: localizationManager.qrSurveyQRTitle,
+                content: localizationManager.qrSurveyQRContent,
+                onConfirmTap: () {
+                  final match = qrSurveyFilterDebug.firstMatch(requestUrl);
+                  final String surveyId = match!.group(1)!;
+
+                  Get.find<SurveyDetailController>().surveyId = int.parse(surveyId);
+                  Get.find<SurveyDetailController>().fetchSurveyDetail();
+
+                  NavigatorKeyManager().pushNamed(RouteNames.surveyDetail);
+
+                  pageIndexController.setIndex(pageIndexController.homeIndex);
 
                   isScanning = false;
                   startScanTimer();

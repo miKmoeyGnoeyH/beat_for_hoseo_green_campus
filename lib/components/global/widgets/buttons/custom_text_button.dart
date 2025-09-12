@@ -1,6 +1,7 @@
-
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
+import 'package:beat_flutter/theme/texts/custom_texts.dart';
 import 'package:flutter/material.dart';
 
 class CustomTextButton extends StatelessWidget {
@@ -15,6 +16,8 @@ class CustomTextButton extends StatelessWidget {
     this.padding,
     this.text = "",
     this.textColor,
+    this.autoSizeText = false,
+    this.maxLines = 1,
   });
 
   @override
@@ -39,10 +42,18 @@ class CustomTextButton extends StatelessWidget {
           child: Padding(
             padding: padding ?? const EdgeInsets.all(16),
             child: Center(
-              child: CustomBodyLarge(
-                text: text,
-                textColor: textColor ?? context.appColors.onPrimary,
-              ),
+              child: autoSizeText
+                  ? AutoSizeText(
+                      text,
+                      style: CustomTexts.bodyLarge.copyWith(
+                        color: textColor ?? context.appColors.onPrimary,
+                      ),
+                      maxLines: maxLines,
+                    )
+                  : CustomBodyLarge(
+                      text: text,
+                      textColor: textColor ?? context.appColors.onPrimary,
+                    ),
             ),
           ),
         ),
@@ -59,4 +70,6 @@ class CustomTextButton extends StatelessWidget {
   final EdgeInsets? padding;
   final String text;
   final Color? textColor;
+  final bool autoSizeText;
+  final int maxLines;
 }

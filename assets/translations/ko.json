@@ -81,7 +81,11 @@
     "qr_scan_title": "QR 코드 스캔",
     "qr_scan_content": "인증하시겠습니까?",
     "invalid_qr_code_title": "유효하지 않은 QR 코드",
-    "invalid_qr_code_content": "유효하지 않은 QR 코드입니다."
+    "invalid_qr_code_content": "유효하지 않은 QR 코드입니다.",
+    "survey_qr_title": "설문 QR",
+    "survey_qr_content": "설문 페이지로 이동하시겠습니까?",
+    "confirm": "확인",
+    "cancel": "취소"
   },
   "notice": {
     "label": "공지사항"
@@ -119,6 +123,10 @@
   "register_fill_inform_page": {
     "appbar_title": "정보 기입",
     "name": "이름",
+    "inavailable_name": "사용할 수 없는 이름",
+    "inavailable_name_message": "이름에 사용할 수 없는 단어가 포함되어 있습니다. 다시 입력해주세요.",
+    "name_has_initial_consonant": "이름에 초성이 포함되어 있습니다.",
+    "name_is_empty": "이름을 입력해주세요.",
     "name_hint": "이름을 입력해주세요.",
     "student_id": "학번",
     "student_id_hint": "학번을 입력해주세요.",
@@ -148,6 +156,7 @@
     "nickname_check_error_title": "닉네임 중복 확인 실패",
     "nickname_check_error_message": "닉네임 중복 확인에 실패했습니다. 다시 시도해주세요.",
     "inapropriate_nickname": "부적절한 닉네임",
+    "unusable_nickname": "사용할 수 없는 닉네임",
     "nickname_has_initial_consonant": "닉네임에 초성이 포함되어 있습니다.",
     "inapropriate_nickname_message": "닉네임에 사용할 수 없는 단어가 포함되어 있습니다. 다시 입력해주세요.",
     "nickname_hint": "사용할 닉네임을 입력해 주세요.",
@@ -263,6 +272,23 @@
     "app_inquiry": "앱 관련 문의",
     "version": "버전"
   },
+  "withdrawal": {
+    "appbar_title": "회원 탈퇴",
+    "notes": "유의 사항",
+    "note_1": "탈퇴 시 모든 활동 내역과 보유 중인 Neuro는 소멸하며, 개인정보는 삭제됩니다. 삭제된 활동 내역과 보유 중인 Neuro, 개인정보는 복구할 수 없습니다.",
+    "note_2": "삭제된 활동 내역과 보유 중인 Neuro, 개인정보는 복구할 수 없습니다.",
+    "note_3": "데이터 처리 방침에 따라 일부 정보는 일정 기간 보관될 수 있습니다.",
+    "note_4": "탈퇴 후에는 동일한 이메일 주소로 다시 회원가입하실 수 있습니다.",
+    "do_you_agree": "동의하시겠습니까?",
+    "i_agree": "동의합니다.",
+    "withdrawal": "회원 탈퇴",
+    "withdrawal_success": "회원 탈퇴 완료",
+    "withdrawal_success_message": "회원 탈퇴가 완료되었습니다. 로그인 화면으로 이동합니다.",
+    "withdrawal_failed": "회원 탈퇴 실패",
+    "withdrawal_failed_message": "회원 탈퇴에 실패했습니다. 다시 시도해주세요.",
+    "confirm": "확인",
+    "cancel": "취소"
+  },
   "errors": {
     "timeout": "요청 시간이 초과되었습니다.",
     "connection_error": "인터넷 연결상태를 확인해 주세요.",
@@ -287,7 +313,6 @@
     "인문사회대학": "기독교학과, 미디어커뮤니케이션학과, 법경찰행정학과, 사회복지학부, 산업심리학과, 영어영문학과, 유아교육과, 인문사회과학연구소, 중국학과, 청소년문화·상담학과, 한국언어문화학과, 항공서비스학과"
   },
   "notifications": "알림",
-  "withdrawal": "회원 탈퇴",
   "notes": "유의 사항",
   "withdrawal_notes": {
     "1": "탈퇴 시 모든 활동 내역과 보유 중인 Neuro는 소멸하며, 개인정보는 삭제됩니다. 삭제된 활동 내역과 보유 중인 Neuro, 개인정보는 복구할 수 없습니다.",

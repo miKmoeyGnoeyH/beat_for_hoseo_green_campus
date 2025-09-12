@@ -10,12 +10,12 @@ import 'package:beat_flutter/components/global/widgets/custom_circular_progress_
 import 'package:beat_flutter/components/global/widgets/custom_scaffold.dart';
 import 'package:beat_flutter/components/global/widgets/custom_text_field.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_subtitle_large.dart';
+import 'package:beat_flutter/controller/location/location_controller.dart';
+import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
 import 'package:beat_flutter/controller/user_controller.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
-import 'package:beat_flutter/managers/navigator/navigator_key_manager.dart';
-import 'package:beat_flutter/managers/navigator/routes.dart';
 import 'package:beat_flutter/managers/prefs/prefs_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -76,9 +76,10 @@ class _ResetPasswordState extends State<ResetPassword> {
                     text: localizationManager.rpSidOrEmployeeId,
                   ),
                   Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Flexible(
-                        flex: 2,
+                        flex: 6,
                         child: CustomTextField(
                           textEditingController: idController,
                           keyboardType: TextInputType.number,
@@ -97,9 +98,15 @@ class _ResetPasswordState extends State<ResetPassword> {
                       ),
                       const SizedBox(width: 10),
                       Flexible(
-                        flex: 1,
+                        flex: 4,
                         child: CustomTextButton(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 5,
+                            vertical: 14,
+                          ),
                           text: localizationManager.rpValidateMail,
+                          // autoSizeText: true,
+                          // maxLines: 1,
                           buttonColor: isValidateMailButtonEnabled
                               ? context.appColors.primary
                               : context.appColors.disabled,
@@ -280,8 +287,12 @@ class _ResetPasswordState extends State<ResetPassword> {
           content: localizationManager.rpResetPasswordSuccessContent,
           onTap: () {
             context.read<UserController>().add(SignOut());
+
+            Get.find<PedometerController>().stopBackgroundService();
+            Get.find<LocationController>().stopBackgroundService();
+
             PrefsManager().resetSavedStudentIdAndPassword();
-            NavigatorKeyManager().pushNamedAndRemoveUntil(RouteNames.signIn);
+            // NavigatorKeyManager().pushNamedAndRemoveUntil(RouteNames.signIn);
           },
         );
       } else {

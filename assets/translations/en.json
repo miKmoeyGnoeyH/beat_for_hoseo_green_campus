@@ -81,7 +81,11 @@
     "qr_scan_title": "QR Code Scan",
     "qr_scan_content": "Would you like to verify?",
     "invalid_qr_code_title": "Invalid QR Code",
-    "invalid_qr_code_content": "The QR code is invalid."
+    "invalid_qr_code_content": "The QR code is invalid.",
+    "survey_qr_title": "Survey QR",
+    "survey_qr_content": "Do you want to go to the survey page?",
+    "confirm": "Confirm",
+    "cancel": "Cancel"
   },
   "notice": {
     "label": "Notice"
@@ -113,6 +117,10 @@
   "register_fill_inform_page": {
     "appbar_title": "Fill Information",
     "name": "Name",
+    "inavailable_name": "Inavailable Name",
+    "inavailable_name_message": "The name contains inappropriate words. Please enter again.",
+    "name_has_initial_consonant": "Name Contains Initial Consonants",
+    "name_is_empty": "Please enter your name.",
     "name_hint": "Please enter your name.",
     "student_id": "Student ID",
     "student_id_hint": "Please enter your Student ID.",
@@ -140,6 +148,7 @@
     "nickname_check_error_title": "Nickname Duplicate Check Failed",
     "nickname_check_error_message": "Failed to check for duplicate nickname. Please try again.",
     "inapropriate_nickname": "Inappropriate Nickname",
+    "unusable_nickname": "Unavailable Nickname",
     "nickname_has_initial_consonant": "The nickname contains initial consonants.",
     "inapropriate_nickname_message": "The nickname contains words that cannot be used. Please re-enter.",
     "nickname_hint": "Please enter a nickname.",
@@ -255,6 +264,23 @@
     "app_inquiry": "App Inquiry",
     "version": "Version"
   },
+  "withdrawal": {
+    "appbar_title": "Withdrawal",
+    "notes": "Notes",
+    "note_1": "Upon withdrawal, all activity history and owned Neuro will be deleted, and personal information will be removed. Deleted activity history, Neuro, and personal information cannot be recovered.",
+    "note_2": "Deleted activity history, Neuro, and personal information cannot be recovered.",
+    "note_3": "According to the data processing policy, some information may be retained for a certain period.",
+    "note_4": "After withdrawal, you can sign up again with the same email address.",
+    "do_you_agree": "Do you agree?",
+    "i_agree": "I agree.",
+    "withdrawal": "Withdrawal",
+    "withdrawal_success": "Withdrawal Completed",
+    "withdrawal_success_message": "Your withdrawal has been completed. Redirecting to the login screen.",
+    "withdrawal_failed": "Withdrawal Failed",
+    "withdrawal_failed_message": "Withdrawal failed. Please try again.",
+    "confirm": "Confirm",
+    "cancel": "Cancel"
+  },
   "errors": {
     "timeout": "Request timed out.",
     "connection_error": "Please check your internet connection.",
@@ -279,7 +305,6 @@
     "College of Humanities and Social Sciences": "Christian Studies, Media Communication, Law and Police Administration, Department of Social Welfare, Industrial Psychology, English Literature, Early Childhood Education, Institute of Humanities and Social Sciences, Chinese Studies, Youth Culture and Counseling, Korean Language and Culture, Aviation Service"
   },
   "notifications": "Notifications",
-  "withdrawal": "Withdraw Membership",
   "notes": "Notes",
   "withdrawal_notes": {
     "1": "Upon withdrawal, all activity history and owned Neuro will be deleted, and personal information will be erased. Deleted data cannot be recovered.",

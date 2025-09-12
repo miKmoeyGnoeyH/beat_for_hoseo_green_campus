@@ -43,4 +43,5 @@ class DotEnvManager {
   String get notice => dotenv.env['NOTICE_LIST'] ?? "";
   String get walkHistoryUrl => dotenv.env['WALK_HISTORY'] ?? "";
   String get walkRecordUrl => dotenv.env['WALK_RECORD'] ?? "";
+  String get withdrawal => dotenv.env['WITHDRAW'] ?? "";
 }

@@ -1,14 +1,15 @@
 import 'dart:developer';
 
-import 'package:easy_localization/easy_localization.dart';
+import 'package:beat_flutter/controller/location/location_controller.dart';
+import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
+import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
+import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 import '../../controller/user_controller.dart';
-import '../../managers/navigator/navigator_key_manager.dart';
-import '../../managers/navigator/routes.dart';
 import '../../managers/prefs/prefs_manager.dart';
 import '../global/methods/custom_show_dialog.dart';
 import '../global/widgets/appbars/custom_empty_appbar.dart';
@@ -19,7 +20,9 @@ import '../global/widgets/texts/custom_headline_medium.dart';
 import '../global/widgets/texts/custom_title_large.dart';
 
 class WithdrawalScreen extends StatelessWidget {
-  const WithdrawalScreen({super.key});
+  WithdrawalScreen({super.key});
+
+  final LocalizationManager localizationManager = LocalizationManager();
 
   @override
   Widget build(BuildContext context) {
@@ -34,24 +37,24 @@ class WithdrawalScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomHeadlineMedium(text: context.tr('withdrawal')),
+            CustomHeadlineMedium(text: localizationManager.withdrawal),
             const SizedBox(height: 24),
-            CustomTitleLarge(text: context.tr('notes')),
+            CustomTitleLarge(text: localizationManager.withdrawalNotes),
             const SizedBox(height: 16),
             CustomBodyLarge(
-                text: '1. ${context.tr('withdrawal_notes', gender: '1')}'),
+                text: '1. ${localizationManager.withdrawalNote1}'),
             // const SizedBox(height: 10),
             // CustomBodyLarge(text: context.tr('withdrawal_notes', gender: '2')),
             const SizedBox(height: 10),
             CustomBodyLarge(
-                text: '2. ${context.tr('withdrawal_notes', gender: '3')}'),
+                text: '2. ${localizationManager.withdrawalNote3}'),
             const SizedBox(height: 10),
             CustomBodyLarge(
-                text: '3. ${context.tr('withdrawal_notes', gender: '4')}'),
+                text: '3. ${localizationManager.withdrawalNote4}'),
             const SizedBox(height: 24),
             CustomWideButton(
               onTap: () async {
-                final String requestUrl = dotenv.env['WITHDRAW']!;
+                final String requestUrl = DotEnvManager().withdrawal;
 
                 try {
                   final http.Response response = await http.get(
@@ -64,10 +67,15 @@ class WithdrawalScreen extends StatelessWidget {
                     if (context.mounted) {
                       customShowDialog(
                         context: context,
-                        title: context.tr('withdrawal_success'),
-                        content: context.tr('withdrawal_success_message'),
+                        title: localizationManager.withdrawalSuccess,
+                        content: localizationManager.withdrawalSuccessMessage,
                         onTap: () {
-                          NavigatorKeyManager().pushNamedAndRemoveUntil(RouteNames.signIn);
+                          Get.find<PedometerController>().stopBackgroundService();
+                          Get.find<LocationController>().stopBackgroundService();
+
+                          context.read<UserController>().add(SignOut());
+
+                          // NavigatorKeyManager().pushNamedAndRemoveUntil(RouteNames.signIn);
                         }
                       );
                       PrefsManager().resetSavedStudentIdAndPassword();
@@ -76,8 +84,8 @@ class WithdrawalScreen extends StatelessWidget {
                     if (context.mounted) {
                       customShowDialog(
                         context: context,
-                        title: context.tr('error'),
-                        content: context.tr('error_occured'),
+                        title: localizationManager.withdrawalFailed,
+                        content: localizationManager.withdrawalFailedMessage,
                       );
                     }
                   }
@@ -86,13 +94,13 @@ class WithdrawalScreen extends StatelessWidget {
                   if (context.mounted) {
                     customShowDialog(
                       context: context,
-                      title: context.tr('error'),
-                      content: context.tr('error_occured'),
+                      title: localizationManager.withdrawalFailed,
+                      content: localizationManager.withdrawalFailedMessage,
                     );
                   }
                 }
               },
-              buttonText: context.tr('withdrawal'),
+              buttonText: localizationManager.withdrawal,
               buttonColor: Colors.redAccent,
             ),
           ],

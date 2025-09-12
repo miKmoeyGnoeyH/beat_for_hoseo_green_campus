@@ -47,10 +47,15 @@
 	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
+        <string>location</string>
 		<string>fetch</string>
 		<string>remote-notification</string>
 		<string>processing</string>
 	</array>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+    <array>
+        <string>com.beat.app.walkreport</string>
+    </array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

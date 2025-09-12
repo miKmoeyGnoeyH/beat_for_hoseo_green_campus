@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:ui';
 
 import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
 import 'package:beat_flutter/managers/prefs/prefs_manager.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:get/get.dart';
 import 'package:pedometer/pedometer.dart';
 import 'package:http/http.dart' as http;
@@ -204,7 +207,44 @@ class PedometerController extends GetxController {
     // log("PedometerController : _addWalkReport : _walkReports : ${_walkReports.toString()}");
   }
 
-  void startTimer() {
+  Future<void> initializeService() async {
+    final service = FlutterBackgroundService();
+
+    await service.configure(
+      iosConfiguration: IosConfiguration(
+        autoStart: false,
+        onForeground: startTimer,
+        onBackground: onIosBackground,
+      ),
+      androidConfiguration: AndroidConfiguration(
+        autoStart: false,
+        onStart: startTimer,
+        isForegroundMode: false,
+        autoStartOnBoot: false,
+      ),
+    );
+  }
+
+  void startBackgroundService() {
+    final service = FlutterBackgroundService();
+    service.startService();
+  }
+
+  void stopBackgroundService() {
+    final service = FlutterBackgroundService();
+    service.invoke("stop");
+  }
+
+  @pragma('vm:entry-point')
+  Future<bool> onIosBackground(ServiceInstance service) async {
+    WidgetsFlutterBinding.ensureInitialized();
+    DartPluginRegistrant.ensureInitialized();
+
+    return true;
+  }
+
+  @pragma('vm:entry-point')
+  void startTimer(ServiceInstance service) {
     _reportTimer?.cancel();
     _rankReportTimer?.cancel();
     _midnightTimer?.cancel();
@@ -282,6 +322,26 @@ class PedometerController extends GetxController {
     return;
   }
 
+  void onStepCountFromNative(int steps) {
+    if (_stepsAfterLastBoot == null) {
+      _stepsAfterLastBoot = steps;
+      totalSteps = steps;
+      this.steps = 0;
+    }
+
+    final int oldSteps = totalSteps;
+    totalSteps = steps;
+
+    final int stepsDiff = totalSteps - oldSteps;
+    if (stepsDiff > 0) {
+      this.steps += stepsDiff;
+      todayWalkCount += stepsDiff;
+      weeklyWalkCount += stepsDiff;
+      monthlyWalkCount += stepsDiff;
+      totalWalkCount += stepsDiff;
+    }
+  }
+
   // 걸음 수가 변경될 때마다 호출되는 이벤트 핸들러
   void onStepCount(StepCount event) {
     log("PedometerController : onStepCount : isInValidArea : $isInValidArea");
@@ -301,11 +361,14 @@ class PedometerController extends GetxController {
     totalSteps = event.steps;
 
     final int stepsDiff = totalSteps - oldSteps;
-    steps += stepsDiff;
-    todayWalkCount += stepsDiff;
-    weeklyWalkCount += stepsDiff;
-    monthlyWalkCount += stepsDiff;
-    totalWalkCount += stepsDiff;
+
+    if (stepsDiff > 0) {
+      steps += stepsDiff;
+      todayWalkCount += stepsDiff;
+      weeklyWalkCount += stepsDiff;
+      monthlyWalkCount += stepsDiff;
+      totalWalkCount += stepsDiff;
+    }
   }
 
   void onPedestrianStatusChanged(PedestrianStatus event) {

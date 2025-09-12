@@ -2,14 +2,16 @@ import 'package:beat_flutter/components/global/widgets/buttons/custom_wide_butto
 import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_headline_medium.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_title_medium.dart';
+import 'package:beat_flutter/controller/location/location_controller.dart';
+import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/managers/navigator/navigator_key_manager.dart';
 import 'package:beat_flutter/managers/navigator/routes.dart';
 import 'package:beat_flutter/managers/package_info/package_info_manager.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart' hide Trans;
 
 import '../../controller/user_controller.dart';
 import '../global/widgets/appbars/custom_empty_appbar.dart';
@@ -33,7 +35,11 @@ class SettingsScreen extends StatelessWidget {
             CustomHeadlineMedium(text: localizationManager.settingsAppbarTitle),
             const SizedBox(height: 24),
             CustomWideButton(
-              onTap: () => userBloc.add(SignOut()),
+              onTap: () {
+                Get.find<PedometerController>().stopBackgroundService();
+                Get.find<LocationController>().stopBackgroundService();
+                userBloc.add(SignOut());
+              },
               buttonColor: context.appColors.primary,
               buttonText: localizationManager.settingsSignOut,
             ),
@@ -45,7 +51,7 @@ class SettingsScreen extends StatelessWidget {
               buttonText: localizationManager.settingsWithdrawal,
               buttonColor: Colors.redAccent,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 30),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -71,8 +77,8 @@ class SettingsScreen extends StatelessWidget {
                   text: localizationManager.settingsAppInquiry,
                 ),
                 const SizedBox(height: 5),
-                CustomBodyLarge(
-                  text: "20255720@vision.hoseo.edu".tr(),
+                const CustomBodyLarge(
+                  text: "20255720@vision.hoseo.edu",
                 ),
               ],
             ),
@@ -85,7 +91,8 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 CustomBodyLarge(
-                  text: "${PackageInfoManager.instance.version}(${PackageInfoManager.instance.buildNumber})",
+                  text:
+                      "${PackageInfoManager.instance.version}(${PackageInfoManager.instance.buildNumber})",
                 ),
               ],
             ),

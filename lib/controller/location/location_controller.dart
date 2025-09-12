@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/managers/logger/beat_logger.dart';
 import 'package:beat_flutter/managers/notification/local_notification.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart';
 
@@ -40,7 +43,43 @@ class LocationController extends GetxController {
   // 지속적으로 사용자 위치를 갱신해 유효 범위 내에 있는지를 확인하기 위한 타이머
   Timer? _timer;
 
-  void startTimer() {
+  void startBackgroundService() {
+    final service = FlutterBackgroundService();
+    service.startService();
+  }
+
+  void stopBackgroundService() {
+    final service = FlutterBackgroundService();
+    service.invoke("stop");
+  }
+
+  Future<void> initializeService() async {
+    final service = FlutterBackgroundService();
+
+    await service.configure(
+      iosConfiguration: IosConfiguration(
+        autoStart: false,
+        onForeground: startTimer,
+        onBackground: onIosBackground,
+      ),
+      androidConfiguration: AndroidConfiguration(
+        autoStart: false,
+        onStart: startTimer,
+        isForegroundMode: false,
+        autoStartOnBoot: false,
+      ),
+    );
+  }
+
+  @pragma('vm:entry-point')
+  Future<bool> onIosBackground(ServiceInstance service) async {
+    WidgetsFlutterBinding.ensureInitialized();
+    DartPluginRegistrant.ensureInitialized();
+
+    return true;
+  }
+
+  void startTimer(ServiceInstance service) {
     BEATLogger.d("LocationController : startTimer() : timer started");
 
     _timer?.cancel();
@@ -83,6 +122,38 @@ class LocationController extends GetxController {
           localizationManager.lnBackInRangeTitle,
           localizationManager.lnBackInRangeBody);
     }
+  }
+
+  // iOS 백그라운드 위치 업데이트용
+  void checkIsValidAreaIOSBackground(double lat, double lon) {
+    final PedometerController pedometerController =
+    Get.find<PedometerController>();
+
+    // log("LocationController : checkIsValidArea() : isPointInAsanArea(): ${isPointInAsanArea()}, isPointInCheonanArea(): ${isPointInCheonanArea()}, pedometerController.isInValidArea: ${pedometerController.isInValidArea}");
+
+    if (!isPointInAsanAreaIOSBackground(lat, lon) && !isPointInCheonanAreaIOSBackground(lat, lon)) {
+      if (!pedometerController.isInValidArea) return;
+      pedometerController.isInValidArea = false;
+      LocalNotificationManager.showValidAreaNotification(
+          localizationManager.lnOutOfRangeTitle,
+          localizationManager.lnOutOfRangeBody);
+    } else {
+      if (pedometerController.isInValidArea) return;
+      pedometerController.isInValidArea = true;
+      LocalNotificationManager.showValidAreaNotification(
+          localizationManager.lnBackInRangeTitle,
+          localizationManager.lnBackInRangeBody);
+    }
+  }
+
+  bool isPointInAsanAreaIOSBackground(double lat, double lon) {
+    if (!hasLocation) return false;
+    return isInsidePolygon(LatLng(lat, lon), asanArea);
+  }
+
+  bool isPointInCheonanAreaIOSBackground(double lat, double lon) {
+    if (!hasLocation) return false;
+    return isInsidePolygon(LatLng(lat, lon), cheonanArea);
   }
 
   // ===아산캠퍼스===

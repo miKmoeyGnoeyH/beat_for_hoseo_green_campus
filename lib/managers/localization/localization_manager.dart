@@ -89,6 +89,10 @@ class LocalizationManager {
   String get qrScanContent => "qr".tr(gender: "qr_scan_content");
   String get qrInvalidQRTitle => "qr".tr(gender: "invalid_qr_code_title");
   String get qrInvalidQRContent => "qr".tr(gender: "invalid_qr_code_content");
+  String get qrSurveyQRTitle => "qr".tr(gender: "survey_qr_title");
+  String get qrSurveyQRContent => "qr".tr(gender: "survey_qr_content");
+  String get qrConfirm => "qr".tr(gender: "confirm");
+  String get qrCancel => "qr".tr(gender: "cancel");
 
   // notice
   String get noticeLabel => "notice".tr(gender: "label");
@@ -130,6 +134,10 @@ class LocalizationManager {
   // register fill inform
   String get rfiAppbarTitle => "register_fill_inform_page".tr(gender: "appbar_title");
   String get rfiName => "register_fill_inform_page".tr(gender: "name");
+  String get rfiInavailableName => "register_fill_inform_page".tr(gender: "inavailable_name");
+  String get rfiInavailableNameMessage => "register_fill_inform_page".tr(gender: "inavailable_name_message");
+  String get rfiNameHasInitialConsonant => "register_fill_inform_page".tr(gender: "name_has_initial_consonant");
+  String get rfiNameIsEmpty => "register_fill_inform_page".tr(gender: "name_is_empty");
   String get rfiNameHint => "register_fill_inform_page".tr(gender: "name_hint");
   String get rfiStudentId => "register_fill_inform_page".tr(gender: "student_id");
   String get rfiStudentIdHint => "register_fill_inform_page".tr(gender: "student_id_hint");
@@ -159,6 +167,7 @@ class LocalizationManager {
   String get rfiNicknameCheckErrorTitle => "register_fill_inform_page".tr(gender: "nickname_check_error_title");
   String get rfiNicknameCheckErrorMessage => "register_fill_inform_page".tr(gender: "nickname_check_error_message");
   String get rfiInappropriateNickname => "register_fill_inform_page".tr(gender: "inapropriate_nickname");
+  String get rfiUnusableNickname => "register_fill_inform_page".tr(gender: "unusable_nickname");
   String get rfiNicknameHasInitialConsonant => "register_fill_inform_page".tr(gender: "nickname_has_initial_consonant");
   String get rfiInappropriateNicknameMessage => "register_fill_inform_page".tr(gender: "inapropriate_nickname_message");
   String get rfiNicknameHint => "register_fill_inform_page".tr(gender: "nickname_hint");
@@ -265,6 +274,23 @@ class LocalizationManager {
   String get settingsViewDetail => "settings".tr(gender: "view_detail");
   String get settingsAppInquiry => "settings".tr(gender: "app_inquiry");
   String get settingsVersion => "settings".tr(gender: "version");
+
+  // withdrawal
+  String get withdrawalAppbarTitle => "withdrawal".tr(gender: "appbar_title");
+  String get withdrawalNotes => "withdrawal".tr(gender: "notes");
+  String get withdrawalNote1 => "withdrawal".tr(gender: "note_1");
+  String get withdrawalNote2 => "withdrawal".tr(gender: "note_2");
+  String get withdrawalNote3 => "withdrawal".tr(gender: "note_3");
+  String get withdrawalNote4 => "withdrawal".tr(gender: "note_4");
+  String get withdrawalDoYouAgree => "withdrawal".tr(gender: "do_you_agree");
+  String get withdrawalIAgree => "withdrawal".tr(gender: "i_agree");
+  String get withdrawal => "withdrawal".tr(gender: "withdrawal");
+  String get withdrawalSuccess => "withdrawal".tr(gender: "withdrawal_success");
+  String get withdrawalSuccessMessage => "withdrawal".tr(gender: "withdrawal_success_message");
+  String get withdrawalFailed => "withdrawal".tr(gender: "withdrawal_failed");
+  String get withdrawalFailedMessage => "withdrawal".tr(gender: "withdrawal_failed_message");
+  String get withdrawalConfirm => "withdrawal".tr(gender: "confirm");
+  String get withdrawalCancel => "withdrawal".tr(gender: "cancel");
 
   // errors
   String get errorsTimeout => "errors".tr(gender: "timeout");

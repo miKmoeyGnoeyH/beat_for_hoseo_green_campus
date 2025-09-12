@@ -25,14 +25,14 @@ class NeuroHistoryProvider {
       if (httpResponse.statusCode == 200) {
         final responseBody = jsonDecode(utf8.decode(httpResponse.bodyBytes));
         List<NeuroHistoryModel> neuroHistoryList = [];
-        log(responseBody.runtimeType.toString());
+        // log(responseBody.runtimeType.toString());
 
         for (var neuroHistory in responseBody) {
           neuroHistoryList.add(NeuroHistoryModel.fromJson(neuroHistory));
         }
 
         List<NeuroHistoryModel> neuroHistoryListReversed =  List.from(neuroHistoryList.reversed);
-        return NeuroHistoryLoadingSuccess(neuroHistoryListReversed);
+        return NeuroHistoryLoadingSuccess(neuroHistoryList);
       }
     } catch (e) {
       log(e.toString());
