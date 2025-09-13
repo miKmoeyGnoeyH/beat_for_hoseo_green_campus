@@ -30,7 +30,7 @@ class CustomAppBar extends StatelessWidget {
       shape: hasBorder
           ? Border(
               bottom: BorderSide(
-                color: context.appColors.onSurface.withOpacity(0.2),
+                color: context.appColors.onSurface.withValues(alpha: 0.2),
                 width: 0.5,
               ),
             )

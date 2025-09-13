@@ -22,7 +22,7 @@ class RankingCard extends StatelessWidget {
 
     return CustomRoundedBorderedContainer(
       borderWidth: 0.5,
-      color: context.appColors.background,
+      color: context.appColors.background.withValues(alpha: 0.2),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         child: Row(

@@ -17,10 +17,10 @@ class RankControllerTest extends GetxController with StateMixin<RankListModel> {
   Future<void> fetchRankList() async {
     change(null, status: RxStatus.loading());
 
-    await Future.delayed(const Duration(seconds: 5), () {
-      change(null, status: RxStatus.error(""));
-      throw TimeoutException("");
-    });
+    // await Future.delayed(const Duration(seconds: 5), () {
+    //   change(null, status: RxStatus.error(""));
+    //   throw TimeoutException("");
+    // });
 
     try {
       // final List<RankListModelTest> list = await rankListRepository.getRankListTest();
