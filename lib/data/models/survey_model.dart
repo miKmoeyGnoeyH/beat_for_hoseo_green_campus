@@ -1,14 +1,20 @@
 part of 'data_models.dart';
 
 class SurveyModel extends DataModel {
-  SurveyModel({required this.surveyId, required this.title});
+  SurveyModel({
+    required this.surveyId,
+    required this.title,
+    required this.fromMission,
+  });
 
   SurveyModel.fromJson(Map<String, dynamic> json)
       : surveyId = json['surveyId'],
-        title = json['title'];
+        title = json['title'],
+        fromMission = json['fromMission'];
 
   final int surveyId;
   final String title;
+  final bool fromMission;
 }
 
 class SurveyAnswerModel {
@@ -56,10 +62,12 @@ class SurveyQuestionModel {
 }
 
 class SurveyDetailModel extends SurveyModel {
-  SurveyDetailModel(
-      {required super.surveyId,
-      required super.title,
-      required this.questionList});
+  SurveyDetailModel({
+    required super.surveyId,
+    required super.title,
+    required this.questionList,
+    super.fromMission = false,
+  });
 
   SurveyDetailModel.fromJson(super.json)
       : questionList = (json['questionList'] as List)

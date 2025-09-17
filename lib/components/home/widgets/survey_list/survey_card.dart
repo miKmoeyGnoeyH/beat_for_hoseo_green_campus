@@ -1,4 +1,3 @@
-
 import 'package:beat_flutter/controller/home/controllers/survey_detail_controller.dart';
 import 'package:beat_flutter/controller/user_controller.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
@@ -19,7 +18,8 @@ class SurveyCard extends StatelessWidget {
     required this.surveyModel,
   });
 
-  final SurveyDetailController surveyDetailController = Get.find<SurveyDetailController>();
+  final SurveyDetailController surveyDetailController =
+      Get.find<SurveyDetailController>();
 
   @override
   Widget build(BuildContext context) {

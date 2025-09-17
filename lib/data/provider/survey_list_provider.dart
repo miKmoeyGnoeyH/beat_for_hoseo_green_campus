@@ -21,10 +21,13 @@ class SurveyListProvider {
         List<SurveyModel> dataList = [];
         final body = jsonDecode(utf8.decode(response.bodyBytes));
         // final body = jsonDecode(response.body);
-        BEATLogger.d("SurveyListProvider : fetchSurveyList : body.toString : ${body.toString()}");
+        BEATLogger.d(
+            "SurveyListProvider : fetchSurveyList : body.toString : ${body.toString()}");
 
         for (var data in body) {
-          dataList.add(SurveyModel.fromJson(data));
+          if (data["fromMission"] == false) {
+            dataList.add(SurveyModel.fromJson(data));
+          }
         }
 
         return DataListLoadingSuccess(dataList);
