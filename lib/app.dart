@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:beat_flutter/components/sign_in/sign_in_screen.dart';
+import 'package:beat_flutter/controller/location/location_controller.dart';
+import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
 import 'package:beat_flutter/managers/permission/permission_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -68,12 +70,24 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    permissionManager.requestPermissions();
+    permissionManager.requestNotificationPermission();
+
+    setControllerFlags();
+  }
+
+  Future<void> setControllerFlags() async {
+    Get.find<LocationController>().isLocationPermissionDenied =
+        await PermissionManager().isLocationPermissionDenied();
+
+    Get.find<PedometerController>().isActivityPermissionDenied =
+        await PermissionManager.isActivityPermissionDenied();
+    Get.find<PedometerController>().isLocationPermissionDenied =
+        await PermissionManager().isLocationPermissionDenied();
   }
 
   Future<void> setupInteractedMessage() async {
     RemoteMessage? initialMessage =
-    await FirebaseMessaging.instance.getInitialMessage();
+        await FirebaseMessaging.instance.getInitialMessage();
 
     if (initialMessage != null) {
       _handleMessage(initialMessage);
@@ -86,7 +100,6 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     log('app.dart : _handleMessage : ${message.data.toString()}');
   }
 
-
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
@@ -94,14 +107,16 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
     debugPrint('didChangeAppLifecycleState: $state');
     switch (state) {
       case AppLifecycleState.resumed:
+        setControllerFlags();
         App.isForeground = true;
         break;
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:
+        setControllerFlags();
         App.isForeground = false;
         break;
       case AppLifecycleState.detached:

@@ -39,7 +39,7 @@ class FileOutput extends LogOutput {
 }
 
 class BEATLogger {
-  static late final Logger _instance;
+  static Logger? _instance;
 
   static Future<void> init() async {
     final fileOutput = FileOutput("log.txt");
@@ -61,11 +61,29 @@ class BEATLogger {
     );
   }
 
-  static void d(String message) => _instance.d(message);
+  static Future<void> ensureInitialized() async {
+    if (_instance == null) {
+      await init();
+    }
+  }
 
-  static void i(String message) => _instance.i(message);
+  static void d(String message) async {
+    await ensureInitialized();
+    _instance!.d(message);
+  }
 
-  static void e(String message) => _instance.e(message);
+  static void i(String message) async {
+    await ensureInitialized();
+    _instance!.i(message);
+  }
 
-  static void w(String message) => _instance.w(message);
+  static void e(String message) async {
+    await ensureInitialized();
+    _instance!.e(message);
+  }
+
+  static void w(String message) async {
+    await ensureInitialized();
+    _instance!.w(message);
+  }
 }

@@ -2,6 +2,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class DotEnvManager {
   static final DotEnvManager _instance = DotEnvManager._internal();
+  static bool _isInitialized = false;
 
   factory DotEnvManager() {
     return _instance;
@@ -10,6 +11,8 @@ class DotEnvManager {
   DotEnvManager._internal();
 
   Future<void> init() async {
+    if(_isInitialized) return;
+
     const currentEnv =
         String.fromEnvironment('ENV', defaultValue: 'development');
     const envFile = currentEnv == 'production'
@@ -17,6 +20,12 @@ class DotEnvManager {
         : 'assets/config/.env.development';
 
     await dotenv.load(fileName: envFile);
+  }
+
+  Future<void> ensureInitialized() async {
+    if (!_isInitialized) {
+      await init();
+    }
   }
 
   String get signIn => dotenv.env['SIGN_IN'] ?? "";
@@ -44,4 +53,5 @@ class DotEnvManager {
   String get walkHistoryUrl => dotenv.env['WALK_HISTORY'] ?? "";
   String get walkRecordUrl => dotenv.env['WALK_RECORD'] ?? "";
   String get withdrawal => dotenv.env['WITHDRAW'] ?? "";
+  String get holidayList => dotenv.env['HOLIDAY_LIST'] ?? "";
 }

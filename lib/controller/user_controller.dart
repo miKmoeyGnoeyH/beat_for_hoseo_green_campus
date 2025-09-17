@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:beat_flutter/managers/background_service/background_service_manager.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/managers/prefs/prefs_manager.dart';
 import 'package:bloc/bloc.dart';
@@ -62,6 +61,8 @@ class UserController extends Bloc<UserEvent, User> {
         user = ErrorUser(localizationManager.errorsConnectionError);
       } else {
         if (await _userProvider.registerToken(user.authorization, fcmToken)) {
+          log("FlutterNativeSplash.remove()");
+          FlutterNativeSplash.remove();
           NavigatorKeyManager().pushNamedAndRemoveUntil(
             RouteNames.screenHolder,
             arguments:
@@ -72,19 +73,16 @@ class UserController extends Bloc<UserEvent, User> {
         }
       }
     }
-
-    emit(user);
+    log("FlutterNativeSplash.remove()");
 
     FlutterNativeSplash.remove();
 
-    await platform.invokeMethod("startBackgroundTasks");
+    emit(user);
   }
 
   void _signOut(SignOut event, Emitter<User> emit) async {
     NavigatorKeyManager().pushNamedAndRemoveUntil(RouteNames.signIn);
     emit(Guest());
-
-    await platform.invokeMethod("stopBackgroundTasks");
   }
 
   void _getMyNeuro(GetMyNeuro event, Emitter<User> emit) async {

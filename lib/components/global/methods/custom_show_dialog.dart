@@ -75,7 +75,8 @@ Future<dynamic> customConfirmDialog(
     {required BuildContext context,
     required String? title,
     required String? content,
-    String? buttonText,
+    String? confirmText,
+    String? cancelText,
     String? routeName,
     Function()? onConfirmTap,
     Function()? onCancelTap}) {
@@ -116,15 +117,14 @@ Future<dynamic> customConfirmDialog(
         GestureDetector(
           onTap: () {
             NavigatorKeyManager().pop();
-            onCancelTap?.call();
+            onConfirmTap?.call();
           },
           child: CustomRoundedBorderedContainer(
-            color: context.appColors.disabled,
             child: Center(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Text(
-                  buttonText ?? LocalizationManager().generalCancel,
+                  confirmText ?? LocalizationManager().generalConfirm,
                   style: CustomTexts.subtitleLarge
                       .copyWith(color: context.appColors.onPrimary),
                 ),
@@ -136,14 +136,15 @@ Future<dynamic> customConfirmDialog(
         GestureDetector(
           onTap: () {
             NavigatorKeyManager().pop();
-            onConfirmTap?.call();
+            onCancelTap?.call();
           },
           child: CustomRoundedBorderedContainer(
+            color: context.appColors.disabled,
             child: Center(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Text(
-                  buttonText ?? LocalizationManager().generalConfirm,
+                  cancelText ?? LocalizationManager().generalCancel,
                   style: CustomTexts.subtitleLarge
                       .copyWith(color: context.appColors.onPrimary),
                 ),

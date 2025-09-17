@@ -7,8 +7,8 @@ final RegExp qrRawValueFileterSign = RegExp(r'https://beat.hoseo.ac.kr/qr/sign/(
 final RegExp qrRawValueFileterSignDebug = RegExp(r'^http://192.168.1.11:8080/event/qr/mission/check/([0-9]+)$');
 
 // valid
-final RegExp qrRawValueFilterRelease = RegExp(r'https://beat.hoseo.ac.kr/event/qr/mission/check/([0-9]+)');
+final RegExp qrRawValueFilterRelease = RegExp(r'https://beat.hoseo.ac.kr/api/event/qr/mission/check/([0-9]+)');
 final RegExp qrRawValueFilterDebug = RegExp(r'http://192.168.1.11:8080/event/qr/mission/check/([0-9]+)');
 
-final RegExp qrSurveyFilterRelease = RegExp(r'https://beat.hoseo.ac.kr/survey/user/([0-9]+)');
+final RegExp qrSurveyFilterRelease = RegExp(r'https://beat.hoseo.ac.kr/api/survey/user/([0-9]+)');
 final RegExp qrSurveyFilterDebug = RegExp(r'http://192.168.1.11:8080/survey/user/([0-9]+)');

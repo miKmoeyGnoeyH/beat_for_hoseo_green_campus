@@ -1,6 +1,6 @@
-
 import 'dart:developer';
 
+import 'package:beat_flutter/components/global/widgets/custom_circular_progress_indicator.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
@@ -9,6 +9,7 @@ import 'package:beat_flutter/managers/navigator/routes.dart';
 import 'package:beat_flutter/managers/prefs/prefs_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 
 import '../../controller/user_controller.dart';
 import '../../data/models/user_model.dart';
@@ -21,10 +22,10 @@ import 'widgets/sign_in_sid_field.dart';
 import 'widgets/sign_in_sign_in_button.dart';
 
 class SignInScreen extends StatelessWidget {
-  final TextEditingController _studentIdController = TextEditingController(
-      text: PrefsManager().getSavedStudentId());
-  final TextEditingController _nicknameController = TextEditingController(
-      text: PrefsManager().getSavedPassword());
+  final TextEditingController _studentIdController =
+      TextEditingController(text: PrefsManager().getSavedStudentId());
+  final TextEditingController _nicknameController =
+      TextEditingController(text: PrefsManager().getSavedPassword());
 
   final LocalizationManager localizationManager = LocalizationManager();
 
@@ -33,12 +34,19 @@ class SignInScreen extends StatelessWidget {
     return BlocListener<UserController, User>(
       // listenWhen: (prev, curr) => prev is! ErrorUser && curr is ErrorUser,
       listener: (context, state) {
-        log("SignInScreen: BlocListener: ${state.studentId}");
+        // log("SignInScreen: BlocListener: ${state.studentId}");
+        if (Get.isDialogOpen == true) Get.back();
+
         if (state is ErrorUser) {
           customShowDialog(
             context: context,
             title: localizationManager.signInSignInFailed,
             content: state.studentId,
+          );
+        }
+        if (state is IsLoading) {
+          Get.dialog(
+            const CustomCircularProgressIndicator(),
           );
         }
       },
@@ -85,8 +93,7 @@ class SignInScreen extends StatelessWidget {
 
   void onForgotPasswordTap() {
     // log("forgot password");
-    NavigatorKeyManager()
-        .pushNamed(RouteNames.resetPassword);
+    NavigatorKeyManager().pushNamed(RouteNames.resetPassword);
   }
 
   SignInScreen({super.key});

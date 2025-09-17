@@ -1,15 +1,20 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
-import 'dart:ui';
+import 'dart:io';
 
 import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
+import 'package:beat_flutter/managers/background_service/background_service_entry.dart';
+import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/managers/logger/beat_logger.dart';
 import 'package:beat_flutter/managers/notification/local_notification.dart';
-import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart';
+import 'package:http/http.dart' as http;
 
 class LatLng {
   final double lat;
@@ -19,15 +24,9 @@ class LatLng {
 }
 
 class LocationController extends GetxController {
-  LocationController() {
-    // startTimer();
-  }
+  static const _channel = MethodChannel("com.beat.walkreport/channel");
 
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
+  LocationController();
 
   // 위치
   final Rx<LatLng?> _locationData = Rx<LatLng?>(null);
@@ -44,205 +43,259 @@ class LocationController extends GetxController {
   // 지속적으로 사용자 위치를 갱신해 유효 범위 내에 있는지를 확인하기 위한 타이머
   Timer? _timer;
 
-  void startBackgroundService() {
-    final service = FlutterBackgroundService();
-    service.startService();
+  /// [_midnightTimer] : 매일 자정에 걸음 수 초기화
+  Timer? _midnightTimer;
+
+  /// [_eventDurationTimer] : 이벤트 진행 시간 측정용 타이머
+  final int endHour = 18;
+  final int endMinute = 0;
+  final int endSecond = 0;
+  Timer? _eventDurationTimer;
+
+  bool isLocationPermissionDenied = true;
+
+  Future<bool> getIsHoliday() async {
+    final DateTime now = DateTime.now();
+    final String requestUrl =
+        "${DotEnvManager().holidayList}?year=${now.year}&month=${(now.month).toString().padLeft(2, "0")}";
+
+    try {
+      final http.Response response = await http
+          .get(Uri.parse(requestUrl))
+          .timeout(const Duration(seconds: 5));
+
+      if (response.statusCode == 200) {
+        final List<dynamic> responseBody = jsonDecode(response.body);
+        final String nowFormatted = DateFormat("yyyy-MM-dd").format(now);
+        final bool isHoliday =
+            responseBody.any((e) => e["date"] == nowFormatted);
+        log("LocationController : getIsHoliday() : isHoliday: $isHoliday");
+        return isHoliday;
+      }
+      return false;
+    } catch (e) {
+      log("LocationController : getIsHoliday error : ${e.toString()}");
+      return false;
+    }
   }
 
-  void stopBackgroundService() {
-    final service = FlutterBackgroundService();
-    service.invoke("stop");
-  }
-
+  /// 서비스 초기화
   Future<void> initializeService() async {
     final service = FlutterBackgroundService();
-
     await service.configure(
       iosConfiguration: IosConfiguration(
         autoStart: false,
-        onForeground: startTimer,
-        onBackground: onIosBackground,
+        onForeground: locationServiceStart,
+        onBackground: locationServiceIosBackground,
       ),
       androidConfiguration: AndroidConfiguration(
         autoStart: false,
-        onStart: startTimer,
+        onStart: locationServiceStart,
         isForegroundMode: false,
         autoStartOnBoot: false,
       ),
     );
   }
 
-  @pragma('vm:entry-point')
-  Future<bool> onIosBackground(ServiceInstance service) async {
-    WidgetsFlutterBinding.ensureInitialized();
-    DartPluginRegistrant.ensureInitialized();
+  /// iOS MethodChannel 핸들러
+  void setMethodCallHandler() {
+    if (Platform.isIOS) {
+      _channel.setMethodCallHandler((call) async {
+        switch (call.method) {
+          case "backgroundLocationUpdate":
+            final args = call.arguments as Map?;
+            if (args == null) return;
+            final double lat = args["latitude"];
+            final double lon = args["longitude"];
+            checkIsValidAreaIOSBackground(lat, lon);
+            break;
 
-    return true;
+          case "midnightReset":
+            _resetAtMidnight();
+            break;
+
+          case "eventDurationReset":
+            // Get.find<PedometerController>().isEventDuration = false;
+            // _stopEventTimers();
+            break;
+        }
+      });
+    }
   }
 
-  void startTimer(ServiceInstance service) {
-    BEATLogger.d("LocationController : startTimer() : timer started");
+  void startBackgroundService() async {
+    final service = FlutterBackgroundService();
+    setMethodCallHandler();
 
-    _timer?.cancel();
-    // _timer = Timer.periodic(const Duration(seconds: 10), (Timer t) async {
-    // _timer = Timer.periodic(const Duration(seconds: 5), (Timer t) async {
-    _timer = Timer.periodic(const Duration(seconds: 5), (Timer t) async {
+    final bool isHoliday = await getIsHoliday();
+
+    if (Platform.isIOS) {
+      // iOS 네이티브에 공휴일 여부 전달
+      await _channel
+          .invokeMethod("startBackgroundTasks", {"isHoliday": isHoliday});
+    } else {
+      Get.find<PedometerController>().isHoliday = isHoliday;
+      // Android는 그냥 서비스만 시작
+      service.startService();
+    }
+
+    service.startService();
+  }
+
+  void stopBackgroundService() {
+    final service = FlutterBackgroundService();
+    service.invoke("stop");
+
+    _channel.setMethodCallHandler(null);
+    _stopAllTimers();
+  }
+
+  /// 자정 초기화
+  void _resetAtMidnight() async {
+    BEATLogger.d("LocationController : _resetAtMidnight()");
+    final bool isHoliday = await getIsHoliday();
+    final pedometerController = Get.find<PedometerController>();
+
+    pedometerController.isHoliday = isHoliday;
+    pedometerController.isEventDuration = true;
+    pedometerController.resetAtMidnight(DateTime.now());
+
+    if (Platform.isIOS) {
+      await _channel
+          .invokeMethod("updateHolidayStatus", {"isHoliday": isHoliday});
+    }
+
+    // ✅ 공휴일이면 위치 추적/이벤트 타이머 중단
+    if (isHoliday) {
+      _stopEventTimers();
+      return;
+    }
+
+    _startLocationTimer();
+    // _startEventDurationTimer();
+  }
+
+  /// Foreground 서비스 시작
+  @pragma('vm:entry-point')
+  void startTimer(ServiceInstance service) async {
+    BEATLogger.d("LocationController : startTimer()");
+
+    await EasyLocalization.ensureInitialized();
+    
+    // 백그라운드에서 사용할 번역 초기화
+    await localizationManager.initializeBackgroundTranslations();
+
+    final bool isHoliday = await getIsHoliday();
+
+    final pedometerController = Get.isRegistered<PedometerController>()
+        ? Get.find<PedometerController>()
+        : Get.put(PedometerController(), permanent: true);
+
+    pedometerController.isHoliday = isHoliday;
+
+    _stopAllTimers();
+
+    // ✅ 공휴일이면 위치 추적/이벤트 타이머 중단
+    if (!isHoliday) {
+      _startLocationTimer();
+      // _startEventDurationTimer();
+    }
+
+    // ✅ 자정 타이머는 항상 실행
+    _startMidnightTimer();
+  }
+
+  void _startLocationTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 5), (t) async {
+      if (isLocationPermissionDenied) return;
       await fetchLocation();
       checkIsValidArea();
     });
   }
 
+  void _startEventDurationTimer() {
+    final now = DateTime.now();
+
+    if (now.hour < endHour &&
+        now.minute < endMinute &&
+        now.second < endSecond) {
+      LocalNotificationManager.showNotification(
+        localizationManager.lnEventDuration,
+        localizationManager.lnBackInRangeBody,
+      );
+    }
+
+    _eventDurationTimer = Timer.periodic(const Duration(seconds: 1), (t) async {
+      if (now.hour > endHour ||
+          (now.hour == endHour && now.minute > endMinute) ||
+          (now.hour == endHour &&
+              now.minute == endMinute &&
+              now.second >= endSecond)) {
+        Get.find<PedometerController>().isEventDuration = false;
+        _stopEventTimers();
+        LocalNotificationManager.showNotification(
+          localizationManager.lnEventDurationEnded,
+          localizationManager.lnOutOfRangeBody,
+        );
+      }
+    });
+  }
+
+  void _startMidnightTimer() {
+    _midnightTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      final now = DateTime.now();
+      if (now.hour == 0 && now.minute == 0 && now.second == 0) {
+        // if (now.hour == 19 && now.minute == 33 && now.second == 0) {
+        log("resetAtMidnight()");
+        _resetAtMidnight();
+      }
+    });
+  }
+
+  void _stopEventTimers() {
+    _timer?.cancel();
+    _timer = null;
+    _eventDurationTimer?.cancel();
+    _eventDurationTimer = null;
+  }
+
+  void _stopAllTimers() {
+    _stopEventTimers();
+    _midnightTimer?.cancel();
+    _midnightTimer = null;
+  }
+
+  // 위치 관련
   Future<void> setUp() async {
+    if (isLocationPermissionDenied) return;
+
+    final now = DateTime.now();
+    // if (now.hour > endHour ||
+    //     (now.hour == endHour && now.minute > endMinute) ||
+    //     (now.hour == endHour &&
+    //         now.minute == endMinute &&
+    //         now.second >= endSecond)) {
+    //   Get.find<PedometerController>().isEventDuration = false;
+    //   _stopEventTimers();
+    //   LocalNotificationManager.showNotification(
+    //     localizationManager.lnEventDurationEnded,
+    //     localizationManager.lnOutOfRangeBody,
+    //   );
+    // }
+
     await fetchLocation();
     checkIsValidArea();
   }
 
   Future<void> fetchLocation() async {
-    final Location location = Location();
-    final LocationData newLocationData = await location.getLocation();
-
-    if (newLocationData.latitude == null || newLocationData.longitude == null) {
+    if (isLocationPermissionDenied) return;
+    final location = Location();
+    final newLocationData = await location.getLocation();
+    if (newLocationData.latitude == null || newLocationData.longitude == null)
       return;
-    }
-
     locationData =
         LatLng(newLocationData.latitude!, newLocationData.longitude!);
   }
-
-  void checkIsValidArea() {
-    final PedometerController pedometerController =
-        Get.find<PedometerController>();
-
-    // log("LocationController : checkIsValidArea() : isPointInAsanArea(): ${isPointInAsanArea()}, isPointInCheonanArea(): ${isPointInCheonanArea()}, pedometerController.isInValidArea: ${pedometerController.isInValidArea}");
-
-    if (!isPointInAsanArea() && !isPointInCheonanArea()) {
-      if (!pedometerController.isInValidArea) return;
-      pedometerController.isInValidArea = false;
-      LocalNotificationManager.showValidAreaNotification(
-          localizationManager.lnOutOfRangeTitle,
-          localizationManager.lnOutOfRangeBody);
-    } else {
-      if (pedometerController.isInValidArea) return;
-      pedometerController.isInValidArea = true;
-      LocalNotificationManager.showValidAreaNotification(
-          localizationManager.lnBackInRangeTitle,
-          localizationManager.lnBackInRangeBody);
-    }
-  }
-
-  // iOS 백그라운드 위치 업데이트용
-  void checkIsValidAreaIOSBackground(double lat, double lon) {
-    final PedometerController pedometerController =
-    Get.find<PedometerController>();
-
-    // log("LocationController : checkIsValidArea() : isPointInAsanArea(): ${isPointInAsanArea()}, isPointInCheonanArea(): ${isPointInCheonanArea()}, pedometerController.isInValidArea: ${pedometerController.isInValidArea}");
-
-    if (!isPointInAsanAreaIOSBackground(lat, lon) && !isPointInCheonanAreaIOSBackground(lat, lon)) {
-      if (!pedometerController.isInValidArea) return;
-      pedometerController.isInValidArea = false;
-      LocalNotificationManager.showValidAreaNotification(
-          localizationManager.lnOutOfRangeTitle,
-          localizationManager.lnOutOfRangeBody);
-    } else {
-      if (pedometerController.isInValidArea) return;
-      pedometerController.isInValidArea = true;
-      LocalNotificationManager.showValidAreaNotification(
-          localizationManager.lnBackInRangeTitle,
-          localizationManager.lnBackInRangeBody);
-    }
-  }
-
-  bool isPointInAsanAreaIOSBackground(double lat, double lon) {
-    if (!hasLocation) return false;
-    return isInsidePolygon(LatLng(lat, lon), asanArea);
-  }
-
-  bool isPointInCheonanAreaIOSBackground(double lat, double lon) {
-    if (!hasLocation) return false;
-    return isInsidePolygon(LatLng(lat, lon), cheonanArea);
-  }
-
-  // ===아산캠퍼스===
-  //
-  // 학생회관 아래 시작(반시계)
-  //
-  // 36.73905847633573는.07441645479297
-  //
-  // 36.73912287279299, 127.07227801510604
-  //
-  // 36.73684411973639, 127.07046772248447
-  //
-  // 36.73573576644016, 127.07042192605417
-  //
-  // 36.73516838296647, 127.06987281506066
-  //
-  // 36.73499676688655, 127.07055560002914
-  //
-  // 36.73551867439705, 127.07179881381333
-  //
-  // 36.735284149061435, 127.07218485008256
-  //
-  // 36.73539632511584, 127.07294626975272
-  //
-  // 36.73460225454914, 127.07469204585705
-  //
-  // 36.73360175547217, 127.07509411621912
-  //
-  // 36.7326814599723, 127.07689568084213
-  //
-  // 36.73303259290043, 127.07736624033019
-  //
-  // 36.73454715737327, 127.07631536610076
-  //
-  // 36.736222818531225, 127.07697758417414
-  //
-  // 36.73880014890887, 127.07678982054752
-  //
-  // 36.738827370019735, 127.07649874382037
-  //
-  // 36.7393687288168, 127.07542442851555
-  //
-  // 36.739477490720276, 127.07442805567023
-  //
-  // =======
-  //
-  // ===천안캠퍼스===
-  //
-  // 가장 위(스타벅스 우측) 꼭짓점 시작
-  //
-  // 36.830327274558805, 127.18020021753239
-  //
-  // 36.83009097680529, 127.18003992692661
-  //
-  // 36.82990371331767, 127.18022724802745
-  //
-  // 36.82876674420636, 127.17977900834666
-  //
-  // 36.82839453209551, 127.18159404825123
-  //
-  // 36.826534838425715, 127.18235186916161
-  //
-  // 36.82608035605323, 127.18197528960386
-  //
-  // 36.82530941393403, 127.18229852140279
-  //
-  // 36.82545220384936, 127.1832011762635
-  //
-  // 36.82589369313384, 127.18323585563941
-  //
-  // 36.82641869776802, 127.18462142354441
-  //
-  // 36.8283930017052, 127.1840544914855
-  //
-  // 36.828461000619335, 127.18378563032861
-  //
-  // 36.82863829677594, 127.18276039787843
-  //
-  // 36.829313469671476, 127.1817195240613
-  //
-  // 36.829603672754665, 127.18198363368744
-  //
-  // ======
 
   List<LatLng> asanArea = [
     LatLng(36.73905847633573, 127.07441645479297),
@@ -323,5 +376,112 @@ class LocationController extends GetxController {
   bool isPointInCheonanArea() {
     if (!hasLocation) return false;
     return isInsidePolygon(locationData!, cheonanArea);
+  }
+
+  bool isPointInAsanAreaIOSBackground(double lat, double lon) {
+    return isInsidePolygon(LatLng(lat, lon), asanArea);
+  }
+
+  bool isPointInCheonanAreaIOSBackground(double lat, double lon) {
+    return isInsidePolygon(LatLng(lat, lon), cheonanArea);
+  }
+
+  void checkIsValidArea() async {
+    final PedometerController pedometerController =
+        Get.find<PedometerController>();
+    final DateTime now = DateTime.now();
+
+    // log("LocationController : checkIsValidArea() : isPointInAsanArea(): ${isPointInAsanArea()}, isPointInCheonanArea(): ${isPointInCheonanArea()}, pedometerController.isInValidArea: ${pedometerController.isInValidArea}");
+
+    if (isLocationPermissionDenied) {
+      pedometerController.isInValidArea = false;
+      return;
+    }
+
+    if (!isPointInAsanArea() && !isPointInCheonanArea()) {
+      if (!pedometerController.isInValidArea) return;
+      pedometerController.isInValidArea = false;
+      BEATLogger.d(
+          "LocationController : checkIsValidArea() : User Location Out of Range : ${locationData?.lat}, ${locationData?.lng}");
+
+      if (now.hour < endHour &&
+          now.minute < endMinute &&
+          now.second < endSecond) {
+        LocalNotificationManager.showValidAreaNotification(
+          localizationManager.lnOutOfRangeTitle,
+          localizationManager.lnOutOfRangeBody,
+        );
+      }
+    } else {
+      if (pedometerController.isInValidArea) return;
+      pedometerController.isInValidArea = true;
+      BEATLogger.d(
+          "LocationController : checkIsValidArea() : User Location Back in Range : ${locationData?.lat}, ${locationData?.lng}");
+
+      if (now.hour < endHour &&
+          now.minute < endMinute &&
+          now.second < endSecond) {
+        LocalNotificationManager.showValidAreaNotification(
+          localizationManager.lnBackInRangeTitle,
+          localizationManager.lnBackInRangeBody,
+        );
+      }
+    }
+  }
+
+  // iOS 백그라운드 위치 업데이트용
+  void checkIsValidAreaIOSBackground(double lat, double lon) async {
+    final PedometerController pedometerController =
+        Get.find<PedometerController>();
+    final DateTime now = DateTime.now();
+
+    // log("LocationController : checkIsValidArea() : isPointInAsanArea(): ${isPointInAsanArea()}, isPointInCheonanArea(): ${isPointInCheonanArea()}, pedometerController.isInValidArea: ${pedometerController.isInValidArea}");
+
+    if (isLocationPermissionDenied) pedometerController.isInValidArea = false;
+
+    if (!isPointInAsanAreaIOSBackground(lat, lon) &&
+        !isPointInCheonanAreaIOSBackground(lat, lon)) {
+      if (!pedometerController.isInValidArea) return;
+      pedometerController.isInValidArea = false;
+      BEATLogger.d(
+          "LocationController : checkIsValidAreaIOSBackground() : User Location Out of Range : ${locationData?.lat}, ${locationData?.lng}");
+
+      if (now.hour < endHour &&
+          now.minute < endMinute &&
+          now.second < endSecond) {
+        LocalNotificationManager.showValidAreaNotification(
+          localizationManager.lnOutOfRangeTitle,
+          localizationManager.lnOutOfRangeBody,
+        );
+      }
+    } else {
+      if (pedometerController.isInValidArea) return;
+      pedometerController.isInValidArea = true;
+      BEATLogger.d(
+          "LocationController : checkIsValidAreaIOSBackground() : User Location Back in Range : ${locationData?.lat}, ${locationData?.lng}");
+
+      if (now.hour < endHour &&
+          now.minute < endMinute &&
+          now.second < endSecond) {
+        LocalNotificationManager.showValidAreaNotification(
+          localizationManager.lnBackInRangeTitle,
+          localizationManager.lnBackInRangeBody,
+        );
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _timer = null;
+
+    _eventDurationTimer?.cancel();
+    _eventDurationTimer = null;
+
+    _midnightTimer?.cancel();
+    _midnightTimer = null;
+
+    super.dispose();
   }
 }

@@ -1,5 +1,4 @@
 
-import 'dart:developer';
 
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';

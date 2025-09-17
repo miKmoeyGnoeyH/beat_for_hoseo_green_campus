@@ -28,7 +28,17 @@
     "claimed": "획득 완료",
     "reward_acquisition_complete": "보상 획득 완료",
     "reward_acquisition_complete_content": "보상이 지급되었습니다.",
-    "reward_acquisition_failed": "보상 획득 실패"
+    "reward_acquisition_failed": "보상 획득 실패",
+    "beat_requires_location_permission_title": "BEAT는 위치 권한이 필요합니다.",
+    "beat_requires_location_permission_content": "BEAT는 걸음 수 측정 및 QR 인식을 위해 위치 권한이 필요합니다. 설정 화면에서 위치 권한을 허용해주세요.",
+    "beat_requires_activity_permission_title": "BEAT는 활동 권한이 필요합니다.",
+    "beat_requires_activity_permission_content": "BEAT는 걸음 수 측정을 위해 활동 권한이 필요합니다. 설정 화면에서 활동 권한을 허용해주세요.",
+    "beat_requires_location_and_activity_permission_title": "BEAT는 위치 및 활동 권한이 필요합니다.",
+    "beat_requires_location_and_activity_permission_content": "BEAT는 걸음 수 측정 및 QR 인식을 위해 위치 및 활동 권한이 필요합니다. 설정 화면에서 위치 및 활동 권한을 허용해주세요.",
+    "not_event_duration": "행사 진행 시간이 아닙니다.",
+    "reached_todays_max_step_count": "오늘의 최대 걸음 수에 도달했습니다.",
+    "go_to_settings": "설정",
+    "later": "나중에"
   },
   "quest_detail": {
     "no_image": "이미지가 없습니다.",
@@ -84,6 +94,11 @@
     "invalid_qr_code_content": "유효하지 않은 QR 코드입니다.",
     "survey_qr_title": "설문 QR",
     "survey_qr_content": "설문 페이지로 이동하시겠습니까?",
+    "beat_requires_camera_permission_title": "BEAT는 카메라 권한이 필요합니다.",
+    "beat_requires_camera_permission_content": "BEAT는 QR 인식을 위해 카메라 권한이 필요합니다. 설정 화면에서 카메라 권한을 허용해주세요.",
+    "not_event_duration": "행사 진행 시간이 아닙니다.",
+    "go_to_settings": "설정",
+    "later": "나중에",
     "confirm": "확인",
     "cancel": "취소"
   },
@@ -262,7 +277,10 @@
     "out_of_range_title": "유효 걷기 범위를 벗어났습니다.",
     "out_of_range_body": "걸음 수 기록이 일시정지됩니다.",
     "back_in_range_title": "유효 걷기 범위에 들어왔습니다.",
-    "back_in_range_body": "걸음 수가 기록중입니다."
+    "back_in_range_body": "걸음 수가 기록중입니다.",
+    "event_duration_title": "오늘의 행사 진행이 시작되었습니다.",
+    "event_duration_ended_title": "오늘의 행사 진행 시간이 종료되었습니다.",
+    "reached_todays_max_step_count_title": "오늘의 최대 걸음 수에 도달했습니다."
   },
   "settings": {
     "appbar_title": "설정",

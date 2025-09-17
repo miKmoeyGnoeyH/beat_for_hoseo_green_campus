@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:beat_flutter/data/models/data_models.dart';
 import 'package:beat_flutter/data/repository/rank_list_repository.dart';

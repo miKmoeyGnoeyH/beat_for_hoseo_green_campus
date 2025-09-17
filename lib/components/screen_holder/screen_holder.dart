@@ -1,8 +1,12 @@
+import 'package:app_settings/app_settings.dart';
+import 'package:beat_flutter/components/global/methods/custom_show_dialog.dart';
 import 'package:beat_flutter/components/my_page/my_page.dart';
 import 'package:beat_flutter/controller/home/controllers/quest_list_controller.dart';
 import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
 import 'package:beat_flutter/controller/screen_holder/page_index_controller.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
+import 'package:beat_flutter/managers/localization/localization_manager.dart';
+import 'package:beat_flutter/managers/permission/permission_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -23,8 +27,52 @@ class ScreenHolder extends StatefulWidget {
 }
 
 class _ScreenHolderState extends State<ScreenHolder> {
+  final LocalizationManager localizationManager = LocalizationManager();
+
   final PageIndexController pageIndexController =
       Get.find<PageIndexController>();
+
+  @override
+  void initState() {
+    showDialogIfPermissionDenied();
+    super.initState();
+  }
+
+  void showDialogIfPermissionDenied() async {
+    await PermissionManager().requestPedometerPermission();
+    await PermissionManager().requestCameraPermission();
+
+    if (await PermissionManager().isLocationPermissionDenied()) {
+      await customConfirmDialog(
+        context: context,
+        title: localizationManager.homeBEATRequiresLocationPermissionTitle,
+        content: localizationManager.homeBEATRequiresLocationPermissionContent,
+        onConfirmTap: () => AppSettings.openAppSettings(),
+        confirmText: localizationManager.homeGotoSettings,
+        cancelText: localizationManager.homeLater,
+      );
+    }
+    if (await PermissionManager.isActivityPermissionDenied()) {
+      await customConfirmDialog(
+        context: context,
+        title: localizationManager.homeBEATRequiresActivityPermissionTitle,
+        content: localizationManager.homeBEATRequiresActivityPermissionContent,
+        onConfirmTap: () => AppSettings.openAppSettings(),
+        confirmText: localizationManager.homeGotoSettings,
+        cancelText: localizationManager.homeLater,
+      );
+    }
+    if (await PermissionManager().isCameraPermissionDenied()) {
+      await customConfirmDialog(
+        context: context,
+        title: localizationManager.qrBEATRequiresCameraPermissionTitle,
+        content: localizationManager.qrBEATRequiresCameraPermissionContent,
+        onConfirmTap: () => AppSettings.openAppSettings(),
+        confirmText: localizationManager.homeGotoSettings,
+        cancelText: localizationManager.homeLater,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

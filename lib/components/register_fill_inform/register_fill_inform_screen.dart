@@ -83,6 +83,8 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
       listeners: [
         BlocListener<RegisterIDController, IDState>(
           listener: (context, state) {
+            if (Get.isDialogOpen == true) Get.back();
+
             if (state is IDSent) {
               customShowDialog(
                 context: context,
@@ -112,11 +114,15 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                 //     ? localizationManager.rfiEmailSentErrorMessage
                 //     : localizationManager.rfiIdCheckErrorMessage,
               );
+            } else if (state is IDSending) {
+              Get.dialog(const CustomCircularProgressIndicator());
             }
           },
         ),
         BlocListener<RegisterNicknameController, NicknameState>(
           listener: (context, state) {
+            if (Get.isDialogOpen == true) Get.back();
+
             if (state is NicknameChecked) {
               customShowDialog(
                 context: context,
@@ -137,6 +143,8 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                 title: localizationManager.rfiNicknameCheckErrorTitle,
                 content: localizationManager.rfiNicknameCheckErrorMessage,
               );
+            } else if (state is NicknameChecking) {
+              Get.dialog(const CustomCircularProgressIndicator());
             }
           },
         )
@@ -370,6 +378,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                     registerAgreementController: registerAgreementController,
                     setIsAgreementChecked: setIsAgreementChecked,
                   ),
+                  const SizedBox(height: 20),
                   // const SizedBox(height: 20),
                 ],
               ),

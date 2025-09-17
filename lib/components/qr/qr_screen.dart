@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:app_settings/app_settings.dart';
 import 'package:beat_flutter/components/qr/widgets/overlay.dart';
 import 'package:beat_flutter/controller/home/controllers/quest_list_controller.dart';
 import 'package:beat_flutter/controller/home/controllers/survey_detail_controller.dart';
@@ -11,8 +12,10 @@ import 'package:beat_flutter/controller/screen_holder/page_index_controller.dart
 import 'package:beat_flutter/exception/beat_exception.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
+import 'package:beat_flutter/managers/logger/beat_logger.dart';
 import 'package:beat_flutter/managers/navigator/navigator_key_manager.dart';
 import 'package:beat_flutter/managers/navigator/routes.dart';
+import 'package:beat_flutter/managers/permission/permission_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -32,14 +35,20 @@ class QrScreen extends StatefulWidget {
 }
 
 class _QrScreenState extends State<QrScreen> {
-  final MobileScannerController mobileScannerController =
-      MobileScannerController();
+  MobileScannerController mobileScannerController = MobileScannerController();
 
   final PageIndexController pageIndexController =
       Get.find<PageIndexController>();
   final LocalizationManager localizationManager = LocalizationManager();
   final LocationController locationController = Get.find<LocationController>();
   Timer? scanTimer;
+
+  @override
+  void initState() {
+    mobileScannerController = MobileScannerController();
+    // showDialogIfCameraPermissionDenied();
+    super.initState();
+  }
 
   void startScanTimer() {
     scanTimer = Timer(const Duration(seconds: 3), () {
@@ -82,8 +91,8 @@ class _QrScreenState extends State<QrScreen> {
             final String requestUrl = barcode.rawValue!;
             log("requestUrl : $requestUrl");
 
-            // if (qrRawValueFilterRelease.hasMatch(requestUrl)) {
-            if (qrRawValueFilterDebug.hasMatch(requestUrl)) {
+            if (qrRawValueFilterRelease.hasMatch(requestUrl)) {
+            // if (qrRawValueFilterDebug.hasMatch(requestUrl)) {
               customConfirmDialog(
                 context: context,
                 title: localizationManager.qrScanTitle,
@@ -109,6 +118,9 @@ class _QrScreenState extends State<QrScreen> {
                           );
                         }
 
+                        BEATLogger.d(
+                            "QrScreen : onDetect : latitude : ${locationController.locationData!.lat}, longitude : ${locationController.locationData!.lng}");
+
                         return await http
                             .post(
                               Uri.parse(requestUrl),
@@ -123,7 +135,9 @@ class _QrScreenState extends State<QrScreen> {
                                     locationController.locationData!.lng,
                               }),
                             )
-                            .timeout(const Duration(seconds: 5));
+                            .timeout(
+                              const Duration(seconds: 5),
+                            );
                       } on BEATException {
                         return null;
                       } catch (e) {
@@ -164,17 +178,19 @@ class _QrScreenState extends State<QrScreen> {
                   startScanTimer();
                 },
               );
-            // } else if (qrSurveyFilterRelease.hasMatch(requestUrl)) {
-            } else if (qrSurveyFilterDebug.hasMatch(requestUrl)) {
+              } else if (qrSurveyFilterRelease.hasMatch(requestUrl)) {
+            // } else if (qrSurveyFilterDebug.hasMatch(requestUrl)) {
               await customConfirmDialog(
                 context: context,
                 title: localizationManager.qrSurveyQRTitle,
                 content: localizationManager.qrSurveyQRContent,
                 onConfirmTap: () {
-                  final match = qrSurveyFilterDebug.firstMatch(requestUrl);
+                  final match = qrSurveyFilterRelease.firstMatch(requestUrl);
+                  // final match = qrSurveyFilterDebug.firstMatch(requestUrl);
                   final String surveyId = match!.group(1)!;
 
-                  Get.find<SurveyDetailController>().surveyId = int.parse(surveyId);
+                  Get.find<SurveyDetailController>().surveyId =
+                      int.parse(surveyId);
                   Get.find<SurveyDetailController>().fetchSurveyDetail();
 
                   NavigatorKeyManager().pushNamed(RouteNames.surveyDetail);

@@ -28,7 +28,17 @@
     "claimed": "Claimed",
     "reward_acquisition_complete": "Reward Acquired",
     "reward_acquisition_complete_content": "Reward has been granted.",
-    "reward_acquisition_failed": "Failed to Acquire Reward"
+    "reward_acquisition_failed": "Failed to Acquire Reward",
+    "beat_requires_location_permission_title": "BEAT requires location permission.",
+    "beat_requires_location_permission_content": "BEAT needs location permission to track your steps and QR recognition. Please enable location permission in the settings.",
+    "beat_requires_activity_permission_title": "BEAT requires activity permission.",
+    "beat_requires_activity_permission_content": "BEAT needs activity permission to track your steps. Please enable activity permission in the settings.",
+    "beat_requires_location_and_activity_permission_title": "BEAT requires location and activity permissions.",
+    "beat_requires_location_and_activity_permission_content": "BEAT needs location and activity permissions to track your steps and QR recognition. Please enable these permissions in the settings.",
+    "not_event_duration": "Not within event duration.",
+    "reached_todays_max_step_count": "Reached today's maximum step count.",
+    "go_to_settings": "Open Settings",
+    "later": "Later"
   },
   "quest_detail": {
     "no_image": "No image available.",
@@ -84,6 +94,10 @@
     "invalid_qr_code_content": "The QR code is invalid.",
     "survey_qr_title": "Survey QR",
     "survey_qr_content": "Do you want to go to the survey page?",
+    "beat_requires_camera_permission_title": "BEAT requires camera permission.",
+    "beat_requires_camera_permission_content": "BEAT requires camera permission to scan QR codes. Please enable camera permission in the settings.",
+    "go_to_settings": "Open Settings",
+    "later": "Later",
     "confirm": "Confirm",
     "cancel": "Cancel"
   },
@@ -253,7 +267,10 @@
     "out_of_range_title": "Out of Valid Walking Range",
     "out_of_range_body": "Step count tracking paused.",
     "back_in_range_title": "Back in Valid Walking Range",
-    "back_in_range_body": "Step count resumed."
+    "back_in_range_body": "Step count resumed.",
+    "event_duration": "Today's event is ongoing.",
+    "event_duration_ended": "Today's event has ended.",
+    "reached_todays_max_step_count": "Reached today's maximum step count."
   },
   "settings": {
     "appbar_title": "Settings",

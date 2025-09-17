@@ -37,6 +37,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
+
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   BEATLogger.init();
   PrefsManager().init();
@@ -45,6 +46,10 @@ Future<void> main() async {
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await EasyLocalization.ensureInitialized();
   await DotEnvManager().init();
+
+  // Pedometer
+  Get.put<PedometerController>(PedometerController(), permanent: true);
+  Get.put<LocationController>(LocationController(), permanent: true);
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -84,10 +89,6 @@ Future<void> main() async {
     }
   });
 
-  // Pedometer
-  Get.put<PedometerController>(PedometerController(), permanent: true);
-  Get.put<LocationController>(LocationController(), permanent: true);
-
   PackageInfoManager.instance.init();
 
   runApp(
@@ -101,4 +102,6 @@ Future<void> main() async {
       child: const App(),
     ),
   );
+
+  FlutterNativeSplash.remove();
 }

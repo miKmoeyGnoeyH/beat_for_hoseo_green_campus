@@ -15,20 +15,29 @@ class PrefsManager {
     _prefs = await SharedPreferences.getInstance();
   }
 
+  Future<SharedPreferences> _ensurePrefs() async {
+    _prefs ??= await SharedPreferences.getInstance();
+    return _prefs;
+  }
+
   bool containsKey(String key) {
+    _ensurePrefs();
     return _prefs.containsKey(key);
   }
 
   void remove(String key) {
+    _ensurePrefs();
     _prefs.remove(key);
   }
 
   // 전송 못한 걸음 수 리스트 저장
   Future<void> setUnsentStepsList(List<Map<String, dynamic>> list) {
+    _ensurePrefs();
     return _prefs.setString("unsentStepsList", jsonEncode(list));
   }
 
   List<Map<String, dynamic>> getUnsentStepsList() {
+    _ensurePrefs();
     final s = _prefs.getString('unsentStepsList');
     if (s == null || s.isEmpty) return <Map<String, dynamic>>[];
 
@@ -45,15 +54,38 @@ class PrefsManager {
     return <Map<String, dynamic>>[];
   }
 
+  Future<void> setLastReportedTime(DateTime dateTime) {
+    _ensurePrefs();
+    return _prefs.setString("lastReportedTime", dateTime.toIso8601String());
+  }
+
+  DateTime getLastReportedTime() {
+    _ensurePrefs();
+    final s = _prefs.getString("lastReportedTime");
+    if (s == null || s.isEmpty) {
+      return DateTime.fromMillisecondsSinceEpoch(0);
+    } else {
+      try {
+        return DateTime.parse(s);
+      } catch (e) {
+        log('PrefsManager.getLastReportedTime parse error: $e');
+        return DateTime.fromMillisecondsSinceEpoch(0);
+      }
+    }
+  }
+
   Future<void> setLastReportedSteps(int steps) {
+    _ensurePrefs();
     return _prefs.setInt("lastReportedSteps", steps);
   }
 
   int getLastReportedSteps() {
+    _ensurePrefs();
     return _prefs.getInt("lastReportedSteps") ?? 0;
   }
 
   (int, int, int, int) getSteps() {
+    _ensurePrefs();
     final todayWalkCount = _prefs.getInt("todayWalkCount") ?? 0;
     final weeklyWalkCount = _prefs.getInt("weeklyWalkCount") ?? 0;
     final monthlyWalkCount = _prefs.getInt("monthlyWalkCount") ?? 0;
@@ -62,6 +94,7 @@ class PrefsManager {
   }
 
   Future<void> setSteps(int todayWalkCount, int weeklyWalkCount, int monthlyWalkCount, int totalWalkCount) {
+    _ensurePrefs();
     _prefs.setInt("todayWalkCount", todayWalkCount);
     _prefs.setInt("weeklyWalkCount", weeklyWalkCount);
     _prefs.setInt("monthlyWalkCount", monthlyWalkCount);
@@ -69,35 +102,43 @@ class PrefsManager {
   }
 
   bool isStudentIdSaved() {
+    _ensurePrefs();
     return _prefs.containsKey("saved_studentId");
   }
 
   bool isPasswordSaved() {
+    _ensurePrefs();
     return _prefs.containsKey("saved_password");
   }
 
   String getSavedStudentId() {
+    _ensurePrefs();
     return _prefs.getString("saved_studentId") ?? '';
   }
 
   String getSavedPassword() {
+    _ensurePrefs();
     return _prefs.getString("saved_password") ?? '';
   }
 
   Future<void> setSavedStudentId(String studentId) {
+    _ensurePrefs();
     return _prefs.setString("saved_studentId", studentId);
   }
 
   Future<void> setSavedPassword(String password) {
+    _ensurePrefs();
     return _prefs.setString("saved_password", password);
   }
 
   void resetSavedStudentIdAndPassword() {
+    _ensurePrefs();
     _prefs.remove("saved_studentId");
     _prefs.remove("saved_password");
   }
 
   T getValueAs<T>(String key) {
+    _ensurePrefs();
     if (!_prefs.containsKey(key)) return defaultValue<T>();
 
     switch (T) {
@@ -113,6 +154,7 @@ class PrefsManager {
   }
 
   Future<void> setValue<T>(String key, T value) async {
+    _ensurePrefs();
     switch (T) {
       case const (int):
         await _prefs.setInt(key, value as int);
@@ -129,6 +171,7 @@ class PrefsManager {
   }
 
   T defaultValue<T>() {
+    _ensurePrefs();
     switch (T) {
       case const (int):
         return 0 as T;
