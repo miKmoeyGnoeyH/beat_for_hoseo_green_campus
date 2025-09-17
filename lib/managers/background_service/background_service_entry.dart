@@ -17,7 +17,6 @@ Future<bool> locationServiceIosBackground(ServiceInstance service) async {
   await DotEnvManager().ensureInitialized();
   WidgetsFlutterBinding.ensureInitialized();
   DartPluginRegistrant.ensureInitialized();
-  await PrefsManager().init();
   await EasyLocalization.ensureInitialized();
   return true;
 }
@@ -28,7 +27,6 @@ Future<bool> pedometerServiceIosBackground(ServiceInstance service) async {
   await DotEnvManager().ensureInitialized();
   WidgetsFlutterBinding.ensureInitialized();
   DartPluginRegistrant.ensureInitialized();
-  await PrefsManager().init();
   await EasyLocalization.ensureInitialized();
   return true;
 }
@@ -37,8 +35,8 @@ Future<bool> pedometerServiceIosBackground(ServiceInstance service) async {
 @pragma('vm:entry-point')
 void locationServiceStart(ServiceInstance service) async {
   await DotEnvManager().ensureInitialized();
-  await PrefsManager().init();
   await EasyLocalization.ensureInitialized();
+  await PrefsManager().init();
   final locationController = Get.put(LocationController());
   locationController.startTimer(service);
 }
@@ -47,8 +45,8 @@ void locationServiceStart(ServiceInstance service) async {
 @pragma('vm:entry-point')
 void pedometerServiceStart(ServiceInstance service) async {
   await DotEnvManager().ensureInitialized();
-  await PrefsManager().init();
   await EasyLocalization.ensureInitialized();
+  await PrefsManager().init();
   final pedometerController = Get.put(PedometerController());
   pedometerController.startTimer(service);
 }

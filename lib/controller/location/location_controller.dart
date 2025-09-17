@@ -67,10 +67,7 @@ class LocationController extends GetxController {
       if (response.statusCode == 200) {
         final List<dynamic> responseBody = jsonDecode(response.body);
         final String nowFormatted = DateFormat("yyyy-MM-dd").format(now);
-        final bool isHoliday =
-            responseBody.any((e) => e["date"] == nowFormatted);
-        log("LocationController : getIsHoliday() : isHoliday: $isHoliday");
-        return isHoliday;
+        return (responseBody.any((e) => e["date"] == nowFormatted));
       }
       return false;
     } catch (e) {
@@ -128,13 +125,14 @@ class LocationController extends GetxController {
     setMethodCallHandler();
 
     final bool isHoliday = await getIsHoliday();
+    log("LocationController : startBackgroundService : isHoliday : $isHoliday");
+    Get.find<PedometerController>().isHoliday = isHoliday;
 
     if (Platform.isIOS) {
       // iOS 네이티브에 공휴일 여부 전달
       await _channel
           .invokeMethod("startBackgroundTasks", {"isHoliday": isHoliday});
     } else {
-      Get.find<PedometerController>().isHoliday = isHoliday;
       // Android는 그냥 서비스만 시작
       service.startService();
     }
@@ -181,9 +179,6 @@ class LocationController extends GetxController {
     BEATLogger.d("LocationController : startTimer()");
 
     await EasyLocalization.ensureInitialized();
-    
-    // 백그라운드에서 사용할 번역 초기화
-    await localizationManager.initializeBackgroundTranslations();
 
     final bool isHoliday = await getIsHoliday();
 
@@ -404,28 +399,38 @@ class LocationController extends GetxController {
       BEATLogger.d(
           "LocationController : checkIsValidArea() : User Location Out of Range : ${locationData?.lat}, ${locationData?.lng}");
 
-      if (now.hour < endHour &&
-          now.minute < endMinute &&
-          now.second < endSecond) {
-        LocalNotificationManager.showValidAreaNotification(
-          localizationManager.lnOutOfRangeTitle,
-          localizationManager.lnOutOfRangeBody,
-        );
-      }
+      // if (now.hour < endHour &&
+      //     now.minute < endMinute &&
+      //     now.second < endSecond) {
+      //   LocalNotificationManager.showValidAreaNotification(
+      //     localizationManager.lnOutOfRangeTitle,
+      //     localizationManager.lnOutOfRangeBody,
+      //   );
+      // }
+
+      LocalNotificationManager.showValidAreaNotification(
+        localizationManager.lnOutOfRangeTitle,
+        localizationManager.lnOutOfRangeBody,
+      );
     } else {
       if (pedometerController.isInValidArea) return;
       pedometerController.isInValidArea = true;
       BEATLogger.d(
           "LocationController : checkIsValidArea() : User Location Back in Range : ${locationData?.lat}, ${locationData?.lng}");
 
-      if (now.hour < endHour &&
-          now.minute < endMinute &&
-          now.second < endSecond) {
-        LocalNotificationManager.showValidAreaNotification(
-          localizationManager.lnBackInRangeTitle,
-          localizationManager.lnBackInRangeBody,
-        );
-      }
+      // if (now.hour < endHour &&
+      //     now.minute < endMinute &&
+      //     now.second < endSecond) {
+      //   LocalNotificationManager.showValidAreaNotification(
+      //     localizationManager.lnBackInRangeTitle,
+      //     localizationManager.lnBackInRangeBody,
+      //   );
+      // }
+
+      LocalNotificationManager.showValidAreaNotification(
+        localizationManager.lnBackInRangeTitle,
+        localizationManager.lnBackInRangeBody,
+      );
     }
   }
 
@@ -446,28 +451,38 @@ class LocationController extends GetxController {
       BEATLogger.d(
           "LocationController : checkIsValidAreaIOSBackground() : User Location Out of Range : ${locationData?.lat}, ${locationData?.lng}");
 
-      if (now.hour < endHour &&
-          now.minute < endMinute &&
-          now.second < endSecond) {
-        LocalNotificationManager.showValidAreaNotification(
-          localizationManager.lnOutOfRangeTitle,
-          localizationManager.lnOutOfRangeBody,
-        );
-      }
+      // if (now.hour < endHour &&
+      //     now.minute < endMinute &&
+      //     now.second < endSecond) {
+      //   LocalNotificationManager.showValidAreaNotification(
+      //     localizationManager.lnOutOfRangeTitle,
+      //     localizationManager.lnOutOfRangeBody,
+      //   );
+      // }
+
+      LocalNotificationManager.showValidAreaNotification(
+        localizationManager.lnOutOfRangeTitle,
+        localizationManager.lnOutOfRangeBody,
+      );
     } else {
       if (pedometerController.isInValidArea) return;
       pedometerController.isInValidArea = true;
       BEATLogger.d(
           "LocationController : checkIsValidAreaIOSBackground() : User Location Back in Range : ${locationData?.lat}, ${locationData?.lng}");
 
-      if (now.hour < endHour &&
-          now.minute < endMinute &&
-          now.second < endSecond) {
-        LocalNotificationManager.showValidAreaNotification(
-          localizationManager.lnBackInRangeTitle,
-          localizationManager.lnBackInRangeBody,
-        );
-      }
+      // if (now.hour < endHour &&
+      //     now.minute < endMinute &&
+      //     now.second < endSecond) {
+      //   LocalNotificationManager.showValidAreaNotification(
+      //     localizationManager.lnBackInRangeTitle,
+      //     localizationManager.lnBackInRangeBody,
+      //   );
+      // }
+
+      LocalNotificationManager.showValidAreaNotification(
+        localizationManager.lnBackInRangeTitle,
+        localizationManager.lnBackInRangeBody,
+      );
     }
   }
 

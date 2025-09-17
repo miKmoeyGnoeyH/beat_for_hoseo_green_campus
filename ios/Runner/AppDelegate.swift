@@ -24,7 +24,7 @@ let pedometer = CMPedometer()
         // 로컬 알림 등록
         FlutterLocalNotificationsPlugin.setPluginRegistrantCallback { registry in
             GeneratedPluginRegistrant.register(with: registry)
-        }
+        } 
         
         if #available(iOS 10.0, *) {
             UNUserNotificationCenter.current().delegate = self

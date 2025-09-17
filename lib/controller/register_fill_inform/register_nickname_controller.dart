@@ -23,10 +23,8 @@ class RegisterNicknameController extends Bloc<NicknameEvent, NicknameState> {
 
     final String studentId = nicknameController.text;
 
-    NicknameState nicknameState = await Get.showOverlay(
-      asyncFunction: () => _nicknameCheckProvider.emailRequest(studentId),
-      loadingWidget: const CustomCircularProgressIndicator(),
-    );
+    NicknameState nicknameState = await _nicknameCheckProvider.emailRequest(studentId);
+
     emit(nicknameState);
 
     if (nicknameState is! NicknameChecked) {

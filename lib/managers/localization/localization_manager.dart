@@ -1,9 +1,8 @@
 
 import 'dart:convert';
-import 'dart:ui';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:beat_flutter/managers/prefs/prefs_manager.dart';
 
 /// [easy_localization] 패키지를 더 간편히 사용하기 위한 클래스.
 /// 텍스트가 너무 많아, 추상 클래스에 정적 메소드 방식은 메모리 낭비가 심할 것이라 판단.
@@ -15,82 +14,28 @@ class LocalizationManager {
     return _instance;
   }
 
-  // 백그라운드에서 직접 JSON 파일을 읽어서 번역하는 메서드
-  Future<String> _getTranslationFromAssets(String key) async {
-    try {
-      // 시스템 로케일 확인
-      final systemLocale = WidgetsBinding.instance.platformDispatcher.locale;
-      final localeCode = systemLocale.languageCode == 'ko' ? 'ko' : 'en';
-      
-      // JSON 파일 경로
-      final String filePath = 'assets/translations/$localeCode.json';
-      
-      // JSON 파일 읽기
-      final String jsonString = await rootBundle.loadString(filePath);
-      final Map<String, dynamic> jsonData = jsonDecode(jsonString);
-      
-      // 키 경로 파싱 (예: "local_notifications.out_of_range_title")
-      final List<String> keyParts = key.split('.');
-      dynamic value = jsonData;
-      
-      for (final part in keyParts) {
-        if (value is Map<String, dynamic> && value.containsKey(part)) {
-          value = value[part];
-        } else {
-          return _getFallbackText(key, localeCode); // 키를 찾을 수 없으면 fallback
-        }
-      }
-      
-      return value.toString();
-    } catch (e) {
-      // 에러 발생 시 시스템 로케일 기반 fallback
-      final systemLocale = WidgetsBinding.instance.platformDispatcher.locale;
-      return _getFallbackText(key, systemLocale.languageCode == 'ko' ? 'ko' : 'en');
-    }
-  }
-
-  // Fallback 텍스트 제공
-  String _getFallbackText(String key, String localeCode) {
-    final fallbackTexts = {
-      'ko': {
-        'local_notifications.out_of_range_title': '유효 걷기 범위를 벗어났습니다.',
-        'local_notifications.out_of_range_body': '걸음 수 기록이 일시정지됩니다.',
-        'local_notifications.back_in_range_title': '유효 걷기 범위에 들어왔습니다.',
-        'local_notifications.back_in_range_body': '걸음 수가 기록중입니다.',
-        'local_notifications.event_duration_title': '오늘의 행사 진행이 시작되었습니다.',
-        'local_notifications.event_duration_ended_title': '오늘의 행사 진행 시간이 종료되었습니다.',
-        'local_notifications.reached_todays_max_step_count_title': '오늘의 최대 걸음 수에 도달했습니다.',
-      },
-      'en': {
-        'local_notifications.out_of_range_title': 'Out of valid walking range.',
-        'local_notifications.out_of_range_body': 'Step counting is paused.',
-        'local_notifications.back_in_range_title': 'Back in valid walking range.',
-        'local_notifications.back_in_range_body': 'Step counting is in progress.',
-        'local_notifications.event_duration_title': 'Today\'s event has started.',
-        'local_notifications.event_duration_ended_title': 'Today\'s event duration has ended.',
-        'local_notifications.reached_todays_max_step_count_title': 'Reached today\'s maximum step count.',
-      }
-    };
-    
-    return fallbackTexts[localeCode]?[key] ?? key;
-  }
+  // 백그라운드에서 사용할 수 있는 직접 번역 메서드들
+  String get lnOutOfRangeTitleFallback => "유효 걷기 범위를 벗어났습니다.";
+  String get lnOutOfRangeBodyFallback => "걸음 수 기록이 일시정지됩니다.";
+  String get lnBackInRangeTitleFallback => "유효 걷기 범위에 들어왔습니다.";
+  String get lnBackInRangeBodyFallback => "걸음 수가 기록중입니다.";
+  String get lnEventDurationFallback => "오늘의 행사 진행이 시작되었습니다.";
+  String get lnEventDurationEndedFallback => "오늘의 행사 진행 시간이 종료되었습니다.";
+  String get lnReachedTodaysMaxStepCountFallback => "오늘의 최대 걸음 수에 도달했습니다.";
 
   // 백그라운드에서 안전하게 번역을 가져오는 메서드
-  Future<String> getSafeTranslation(String key) async {
+  String getSafeTranslation(String key, String fallback) {
     try {
-      // 먼저 EasyLocalization 시도
       final result = key.tr();
-      if (result != key) {
-        return result;
+      // 키값이 그대로 반환되는 경우 (번역이 실패한 경우) fallback 사용
+      if (result == key || result.contains('local_notifications')) {
+        return fallback;
       }
+      return result;
     } catch (e) {
-      // EasyLocalization 실패 시 직접 JSON 읽기
+      return fallback;
     }
-    
-    // EasyLocalization이 실패하면 직접 JSON 파일에서 읽기
-    return await _getTranslationFromAssets(key);
   }
-
   // genenral
   String get generalStudent => "general".tr(gender: "student");
   String get generalConfirm => "general".tr(gender: "confirm");
@@ -118,6 +63,7 @@ class LocalizationManager {
   String get homeNoQuests => "home".tr(gender: "no_quests");
   String get homeClaim => "home".tr(gender: "claim");
   String get homeClaimed => "home".tr(gender: "claimed");
+  String get homeNoSurvey => "home".tr(gender: "no_survey");
   String get homeRewardAcquisitionComplete => "home".tr(gender: "reward_acquisition_complete");
   String get homeRewardAcquisitionCompleteContent => "home".tr(gender: "reward_acquisition_complete_content");
   String get homeRewardAcquisitionFailed => "home".tr(gender: "reward_acquisition_failed");
@@ -356,25 +302,14 @@ class LocalizationManager {
   String get bnbHome => "bottom_navigation_bar".tr(gender: "home");
   String get bnbMyPage => "bottom_navigation_bar".tr(gender: "my_page");
 
-  // local notifications - 백그라운드에서도 작동하도록 수정
-  String lnOutOfRangeTitle = '';
-  String lnOutOfRangeBody = '';
-  String lnBackInRangeTitle = '';
-  String lnBackInRangeBody = '';
-  String lnEventDuration = '';
-  String lnEventDurationEnded = '';
-  String lnReachedTodaysMaxStepCount = '';
-
-  // 백그라운드에서 안전하게 번역을 초기화하는 메서드
-  Future<void> initializeBackgroundTranslations() async {
-    lnOutOfRangeTitle = await getSafeTranslation('local_notifications.out_of_range_title');
-    lnOutOfRangeBody = await getSafeTranslation('local_notifications.out_of_range_body');
-    lnBackInRangeTitle = await getSafeTranslation('local_notifications.back_in_range_title');
-    lnBackInRangeBody = await getSafeTranslation('local_notifications.back_in_range_body');
-    lnEventDuration = await getSafeTranslation('local_notifications.event_duration_title');
-    lnEventDurationEnded = await getSafeTranslation('local_notifications.event_duration_ended_title');
-    lnReachedTodaysMaxStepCount = await getSafeTranslation('local_notifications.reached_todays_max_step_count_title');
-  }
+  // local notifications
+  String get lnOutOfRangeTitle => getSafeTranslation("local_notifications.out_of_range_title", lnOutOfRangeTitleFallback);
+  String get lnOutOfRangeBody => getSafeTranslation("local_notifications.out_of_range_body", lnOutOfRangeBodyFallback);
+  String get lnBackInRangeTitle => getSafeTranslation("local_notifications.back_in_range_title", lnBackInRangeTitleFallback);
+  String get lnBackInRangeBody => getSafeTranslation("local_notifications.back_in_range_body", lnBackInRangeBodyFallback);
+  String get lnEventDuration => getSafeTranslation("local_notifications.event_duration_title", lnEventDurationFallback);
+  String get lnEventDurationEnded => getSafeTranslation("local_notifications.event_duration_ended_title", lnEventDurationEndedFallback);
+  String get lnReachedTodaysMaxStepCount => getSafeTranslation("local_notifications.reached_todays_max_step_count_title", lnReachedTodaysMaxStepCountFallback);
 
   // settings
   String get settingsAppbarTitle => "settings".tr(gender: "appbar_title");

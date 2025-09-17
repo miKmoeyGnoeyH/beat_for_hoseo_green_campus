@@ -126,7 +126,7 @@ class PedometerController extends GetxController {
 
   void onStepCount(StepCount event) {
     if (isActivityPermissionDenied) return;
-    if (!isEventDuration || !isInValidArea || !isEventDuration || isHoliday) return;
+    if (!isEventDuration || !isInValidArea || isHoliday) return;
 
     if (_stepsAfterLastBoot == null) {
       _stepsAfterLastBoot = event.steps;
@@ -184,7 +184,7 @@ class PedometerController extends GetxController {
 
   void onStepCountFromNative(int stepsFromNative) {
     if (isActivityPermissionDenied) return;
-    if (!isEventDuration || !isInValidArea || !isEventDuration || isHoliday) return;
+    if (!isEventDuration || !isInValidArea || isHoliday) return;
 
     if (_stepsAfterLastBoot == null) {
       _stepsAfterLastBoot = stepsFromNative;

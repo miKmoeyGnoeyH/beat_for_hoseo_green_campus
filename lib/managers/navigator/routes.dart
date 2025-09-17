@@ -216,7 +216,6 @@ abstract class Routes {
               Get.find<PedometerController>().startBackgroundService();
 
               Get.find<LocationController>().setUp();
-              // Get.find<LocationController>().checkIsValidArea();
               Get.find<LocationController>().initializeService();
               Get.find<LocationController>().startBackgroundService();
 
