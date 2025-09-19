@@ -1,5 +1,7 @@
 import 'package:beat_flutter/managers/logger/beat_logger.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/browser.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz;
 
 abstract class LocalNotificationManager {
   LocalNotificationManager._internal();
@@ -60,7 +62,7 @@ abstract class LocalNotificationManager {
     AndroidNotificationDetails(
         'normal_channel',
         'normal_channel',
-        channelDescription: 'valid normal_channel channel',
+        channelDescription: 'normal channel',
         importance: Importance.max,
         priority: Priority.high,
         showWhen: false
@@ -77,5 +79,60 @@ abstract class LocalNotificationManager {
       body,
       notificationDetails,
     );
+  }
+
+  static Future<void> setPeriodicalNotification(int id, String title, String body, RepeatInterval interval) async {
+    const AndroidNotificationDetails androidNotificationDetails =
+    AndroidNotificationDetails(
+        'periodic_channel',
+        'periodic_channel',
+        channelDescription: 'periodic channel',
+        importance: Importance.max,
+        priority: Priority.high,
+        showWhen: false
+    );
+
+    const NotificationDetails notificationDetails = NotificationDetails(
+      android: androidNotificationDetails,
+      iOS: DarwinNotificationDetails(badgeNumber: 0),
+    );
+
+    await flutterLocalNotificationsPlugin.periodicallyShow(
+      id,
+      title,
+      body,
+      interval,
+      notificationDetails,
+      androidScheduleMode: AndroidScheduleMode.exact
+    );
+  }
+
+  static Future<void> setScheduledNotification(int id, String title, String body, DateTime scheduledDate) async {
+    tz.initializeTimeZones();
+    tz.setLocalLocation(tz.getLocation('Asia/Seoul'));
+
+    const AndroidNotificationDetails androidNotificationDetails =
+    AndroidNotificationDetails(
+        'scheduled_channel',
+        'scheduled_channel',
+        channelDescription: 'scheduled channel',
+        importance: Importance.max,
+        priority: Priority.high,
+        showWhen: false
+    );
+
+    const NotificationDetails notificationDetails = NotificationDetails(
+      android: androidNotificationDetails,
+      iOS: DarwinNotificationDetails(badgeNumber: 0),
+    );
+
+    // await flutterLocalNotificationsPlugin.zonedSchedule(
+    //   id,
+    //   title,
+    //   body,
+    //   androidScheduleMode:
+    //   matchDateTimeComponents: DateTimeComponents.time,
+    // );
+
   }
 }

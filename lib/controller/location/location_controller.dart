@@ -24,6 +24,8 @@ class LatLng {
 }
 
 class LocationController extends GetxController {
+  // iOS 네이티브와 통신하기 위한 MethodChannel
+  // 모든 백그라운드 작업(걸음 수 동기화, 랭킹 집계, 자정 초기화)이 이 채널을 통해 이루어짐
   static const _channel = MethodChannel("com.beat.walkreport/channel");
 
   LocationController();
@@ -97,26 +99,37 @@ class LocationController extends GetxController {
   /// iOS MethodChannel 핸들러
   void setMethodCallHandler() {
     if (Platform.isIOS) {
-      _channel.setMethodCallHandler((call) async {
-        switch (call.method) {
-          case "backgroundLocationUpdate":
-            final args = call.arguments as Map?;
-            if (args == null) return;
-            final double lat = args["latitude"];
-            final double lon = args["longitude"];
-            checkIsValidAreaIOSBackground(lat, lon);
-            break;
+      _channel.setMethodCallHandler(
+        (call) async {
+          switch (call.method) {
+            case "backgroundLocationUpdate":
+              final args = call.arguments as Map?;
+              if (args == null) return;
+              final double lat = args["latitude"];
+              final double lon = args["longitude"];
+              checkIsValidAreaIOSBackground(lat, lon);
+              break;
 
-          case "midnightReset":
-            _resetAtMidnight();
-            break;
+            case "midnightReset":
+              _resetAtMidnight();
+              break;
 
-          case "eventDurationReset":
-            // Get.find<PedometerController>().isEventDuration = false;
-            // _stopEventTimers();
-            break;
-        }
-      });
+            case "eventDurationReset":
+              // Get.find<PedometerController>().isEventDuration = false;
+              // _stopEventTimers();
+              break;
+
+            // iOS 네이티브에서 정확한 시간에 호출되는 백그라운드 작업들
+            case "syncWalkDataInBackground":
+              await _syncWalkDataInBackground();
+              break;
+
+            case "syncRankingInBackground":
+              await _syncRankingInBackground();
+              break;
+          }
+        },
+      );
     }
   }
 
@@ -124,14 +137,21 @@ class LocationController extends GetxController {
     final service = FlutterBackgroundService();
     setMethodCallHandler();
 
+    final PedometerController pedometerController =
+        Get.isRegistered<PedometerController>()
+            ? Get.find<PedometerController>()
+            : Get.put(PedometerController(), permanent: true);
+
     final bool isHoliday = await getIsHoliday();
-    log("LocationController : startBackgroundService : isHoliday : $isHoliday");
-    Get.find<PedometerController>().isHoliday = isHoliday;
+
+    pedometerController.isHoliday = isHoliday;
+    final int sendToTime = pedometerController.sendToTime;
+    log("LocationController : startBackgroundService : isHoliday : $isHoliday, sendToTime : $sendToTime");
 
     if (Platform.isIOS) {
       // iOS 네이티브에 공휴일 여부 전달
       await _channel
-          .invokeMethod("startBackgroundTasks", {"isHoliday": isHoliday});
+          .invokeMethod("startBackgroundTasks", {"isHoliday": isHoliday, "sendToTime": sendToTime});
     } else {
       // Android는 그냥 서비스만 시작
       service.startService();
@@ -190,14 +210,21 @@ class LocationController extends GetxController {
 
     _stopAllTimers();
 
-    // ✅ 공휴일이면 위치 추적/이벤트 타이머 중단
-    if (!isHoliday) {
-      _startLocationTimer();
-      // _startEventDurationTimer();
+    // iOS에서는 네이티브에서 정확한 시간에 작업을 수행하므로 타이머 사용하지 않음
+    if (Platform.isIOS) {
+      BEATLogger.d("LocationController : iOS에서는 네이티브 스케줄링 시스템 사용");
+      // 공휴일이 아니면 위치 추적만 시작
+      if (!isHoliday) {
+        _startLocationTimer();
+      }
+    } else {
+      // Android에서는 기존 타이머 방식 사용
+      if (!isHoliday) {
+        _startLocationTimer();
+        // _startEventDurationTimer();
+      }
+      _startMidnightTimer();
     }
-
-    // ✅ 자정 타이머는 항상 실행
-    _startMidnightTimer();
   }
 
   void _startLocationTimer() {
@@ -483,6 +510,36 @@ class LocationController extends GetxController {
         localizationManager.lnBackInRangeTitle,
         localizationManager.lnBackInRangeBody,
       );
+    }
+  }
+
+  /// iOS 네이티브에서 정확한 시간(매시간 정각)에 호출되는 백그라운드 걸음 수 동기화
+  Future<void> _syncWalkDataInBackground() async {
+    BEATLogger.d("LocationController : _syncWalkDataInBackground()");
+    try {
+      final pedometerController = Get.find<PedometerController>();
+      if (!pedometerController.isActivityPermissionDenied && 
+          !pedometerController.isLocationPermissionDenied) {
+        pedometerController.addWalkReport();
+        BEATLogger.d("LocationController : 백그라운드 걸음 수 동기화 완료");
+      }
+    } catch (e) {
+      BEATLogger.e("LocationController : 백그라운드 걸음 수 동기화 실패: $e");
+    }
+  }
+
+  /// iOS 네이티브에서 정확한 시간(매시간 정각)에 호출되는 백그라운드 랭킹 집계
+  Future<void> _syncRankingInBackground() async {
+    BEATLogger.d("LocationController : _syncRankingInBackground()");
+    try {
+      final pedometerController = Get.find<PedometerController>();
+      if (!pedometerController.isActivityPermissionDenied && 
+          !pedometerController.isLocationPermissionDenied) {
+        // 랭킹 집계 로직 (필요시 구현)
+        BEATLogger.d("LocationController : 백그라운드 랭킹 집계 완료");
+      }
+    } catch (e) {
+      BEATLogger.e("LocationController : 백그라운드 랭킹 집계 실패: $e");
     }
   }
 

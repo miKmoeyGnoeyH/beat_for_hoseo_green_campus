@@ -50,3 +50,6 @@ assets
 assets/images
 assets/translations
 assets/config/*.env
+
+android/key.properties
+android/beat.keystore

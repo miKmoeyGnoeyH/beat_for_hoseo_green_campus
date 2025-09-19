@@ -37,11 +37,11 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
-
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  BEATLogger.init();
-  PrefsManager().init();
-  LocalNotificationManager.init();
+
+  await BEATLogger.init();
+  await PrefsManager().init();
+  await LocalNotificationManager.init();
 
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await EasyLocalization.ensureInitialized();

@@ -17,6 +17,8 @@ import 'package:pedometer/pedometer.dart';
 import 'package:http/http.dart' as http;
 
 class PedometerController extends GetxController {
+  // iOS 네이티브와 통신하기 위한 MethodChannel
+  // 모든 백그라운드 작업(걸음 수 동기화, 랭킹 집계, 자정 초기화)이 이 채널을 통해 이루어짐
   static const _channel = MethodChannel("com.beat.walkreport/channel");
 
   // 언어
@@ -349,6 +351,7 @@ class PedometerController extends GetxController {
     _lastReportedTime = now;
     _lastReportedSteps = steps;
 
+    PrefsManager().setSteps(todayWalkCount, weeklyWalkCount, monthlyWalkCount, totalWalkCount);
     PrefsManager().setLastReportedTime(_lastReportedTime);
     PrefsManager().setLastReportedSteps(_lastReportedSteps);
   }
@@ -379,28 +382,34 @@ class PedometerController extends GetxController {
     _reportTimer?.cancel();
     _rankReportTimer?.cancel();
 
-    _reportTimer = Timer.periodic(
-      const Duration(hours: 1),
-      (_) async {
-        if (isActivityPermissionDenied || isLocationPermissionDenied) {
-          return;
-        }
-        addWalkReport();
-      },
-    );
-
-    _rankReportTimer = Timer.periodic(
-      const Duration(seconds: 1),
-      (_) async {
-        if (isActivityPermissionDenied || isLocationPermissionDenied) {
-          return;
-        }
-        final DateTime dateTime = DateTime.now();
-        if (dateTime.minute == 59 && _sendToTime == dateTime.second) {
+    // iOS에서는 네이티브에서 정확한 시간에 작업을 수행하므로 타이머 사용하지 않음
+    if (Platform.isIOS) {
+      BEATLogger.d("PedometerController : iOS에서는 네이티브 스케줄링 시스템 사용");
+    } else {
+      // Android에서는 기존 타이머 방식 사용
+      _reportTimer = Timer.periodic(
+        const Duration(hours: 1),
+        (_) async {
+          if (isActivityPermissionDenied || isLocationPermissionDenied) {
+            return;
+          }
           addWalkReport();
-        }
-      },
-    );
+        },
+      );
+
+      _rankReportTimer = Timer.periodic(
+        const Duration(seconds: 1),
+        (_) async {
+          if (isActivityPermissionDenied || isLocationPermissionDenied) {
+            return;
+          }
+          final DateTime dateTime = DateTime.now();
+          if (dateTime.minute == 59 && _sendToTime == dateTime.second) {
+            addWalkReport();
+          }
+        },
+      );
+    }
   }
 
   void startBackgroundService() {
