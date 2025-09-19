@@ -2,7 +2,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class DotEnvManager {
   static final DotEnvManager _instance = DotEnvManager._internal();
-  static bool _isInitialized = false;
+  static const bool _isInitialized = false;
 
   factory DotEnvManager() {
     return _instance;

@@ -2,7 +2,6 @@ import 'package:app_settings/app_settings.dart';
 import 'package:beat_flutter/components/global/methods/custom_show_dialog.dart';
 import 'package:beat_flutter/components/my_page/my_page.dart';
 import 'package:beat_flutter/controller/home/controllers/quest_list_controller.dart';
-import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
 import 'package:beat_flutter/controller/screen_holder/page_index_controller.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
@@ -39,10 +38,11 @@ class _ScreenHolderState extends State<ScreenHolder> {
   }
 
   void showDialogIfPermissionDenied() async {
-    await PermissionManager().requestPedometerPermission();
-    await PermissionManager().requestCameraPermission();
+    final bool isLocationPermissionGranted = await PermissionManager().requestLocationPermission();
+    final bool isCameraPermissionGranted = await PermissionManager().requestCameraPermission();
+    final bool isActivityPermissionDenied = await PermissionManager.isActivityPermissionDenied();
 
-    if (await PermissionManager().isLocationPermissionDenied()) {
+    if (!isLocationPermissionGranted) {
       await customConfirmDialog(
         context: context,
         title: localizationManager.homeBEATRequiresLocationPermissionTitle,
@@ -52,7 +52,7 @@ class _ScreenHolderState extends State<ScreenHolder> {
         cancelText: localizationManager.homeLater,
       );
     }
-    if (await PermissionManager.isActivityPermissionDenied()) {
+    if (isActivityPermissionDenied) {
       await customConfirmDialog(
         context: context,
         title: localizationManager.homeBEATRequiresActivityPermissionTitle,
@@ -62,7 +62,7 @@ class _ScreenHolderState extends State<ScreenHolder> {
         cancelText: localizationManager.homeLater,
       );
     }
-    if (await PermissionManager().isCameraPermissionDenied()) {
+    if (!isCameraPermissionGranted) {
       await customConfirmDialog(
         context: context,
         title: localizationManager.qrBEATRequiresCameraPermissionTitle,
@@ -82,7 +82,7 @@ class _ScreenHolderState extends State<ScreenHolder> {
       context.read<QuestListController>().add(DataListRequest());
       // context.read<QuizListController>().add(DataListRequest());
       context.read<SurveyListController>().add(DataListRequest());
-      Get.find<PedometerController>().getWalkHitory();
+      // Get.find<PedometerController>().getWalkHitory();
       // context.read<VoteListController>().add(VoteListRequest(userController.state.authorization));
       return Future.delayed(const Duration(seconds: 0));
     }

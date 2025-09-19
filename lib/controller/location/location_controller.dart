@@ -313,8 +313,9 @@ class LocationController extends GetxController {
     if (isLocationPermissionDenied) return;
     final location = Location();
     final newLocationData = await location.getLocation();
-    if (newLocationData.latitude == null || newLocationData.longitude == null)
+    if (newLocationData.latitude == null || newLocationData.longitude == null) {
       return;
+    }
     locationData =
         LatLng(newLocationData.latitude!, newLocationData.longitude!);
   }

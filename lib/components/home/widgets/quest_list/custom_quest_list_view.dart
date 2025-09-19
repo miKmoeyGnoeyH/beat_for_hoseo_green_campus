@@ -134,6 +134,7 @@ class _CustomQuestListViewState extends State<CustomQuestListView> {
                         const SizedBox(height: 10),
                         walkDailyQuestsLength != 0
                             ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.symmetric(

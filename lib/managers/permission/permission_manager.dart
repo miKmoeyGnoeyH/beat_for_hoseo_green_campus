@@ -51,7 +51,7 @@ class PermissionManager {
     }
   }
 
-  Future<void> requestPedometerPermission() async {
+  Future<bool> requestPedometerPermission() async {
     final whenInUseStatus = await Permission.locationWhenInUse.request();
 
     if (whenInUseStatus.isGranted) {
@@ -59,20 +59,39 @@ class PermissionManager {
     }
 
     final activityRecognitionStatus = await Permission.activityRecognition.request();
+
+    return whenInUseStatus.isGranted || activityRecognitionStatus.isGranted;
   }
 
-  Future<void> requestNotificationPermission() async {
-    await Permission.notification.request();
+  Future<bool> requestLocationPermission() async {
+    final whenInUseStatus = await Permission.locationWhenInUse.request();
+    late final PermissionStatus alwaysStatus;
+
+    if (whenInUseStatus.isGranted) {
+      alwaysStatus = await Permission.locationAlways.request();
+    }
+
+    return whenInUseStatus.isGranted || alwaysStatus.isGranted;
+  }
+
+  Future<bool> requestActivityPermission() async {
+    final activityRecognitionStatus = await Permission.activityRecognition.request();
+    return activityRecognitionStatus.isGranted;
+  }
+
+  Future<bool> requestNotificationPermission() async {
+    final notificationStatus = await Permission.notification.request();
 
     if (!PrefsManager().isStudentIdSaved() || !PrefsManager().isPasswordSaved()) {
       log("isStudentIdSaved or isPasswordSaved is false");
       FlutterNativeSplash.remove();
-      return;
     }
+    return notificationStatus.isGranted;
   }
 
-  Future<void> requestCameraPermission() async {
-    await Permission.camera.request();
+  Future<bool> requestCameraPermission() async {
+    final cameraStatus = await Permission.camera.request();
+    return cameraStatus.isGranted;
   }
 
   Future<bool> isLocationPermissionDenied() async {

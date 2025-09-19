@@ -14,6 +14,7 @@ import 'package:beat_flutter/controller/user_controller.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
+import 'package:beat_flutter/managers/logger/beat_logger.dart';
 import 'package:beat_flutter/managers/navigator/navigator_key_manager.dart';
 import 'package:beat_flutter/managers/navigator/routes.dart';
 import 'package:flutter/material.dart';
@@ -230,6 +231,7 @@ class QuestCardContents extends StatelessWidget {
             final Map<String, dynamic> responseBody = jsonDecode(response.body);
 
             final int surveyId = responseBody["surveyId"];
+            BEATLogger.d("QuestCard onClaimButtonTap surveyId: $surveyId");
 
             if (surveyId > 0) {
               Get.find<SurveyDetailController>().surveyId = surveyId;

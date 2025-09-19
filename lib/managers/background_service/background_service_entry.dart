@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
-import 'package:beat_flutter/managers/logger/beat_logger.dart';
 import 'package:beat_flutter/managers/prefs/prefs_manager.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';

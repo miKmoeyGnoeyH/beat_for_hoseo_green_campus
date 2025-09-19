@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:app_settings/app_settings.dart';
-import 'package:beat_flutter/components/global/widgets/buttons/custom_text_button.dart';
 import 'package:beat_flutter/components/global/widgets/buttons/custom_text_button_wrap.dart';
 import 'package:beat_flutter/components/global/widgets/custom_rounded_bordered_container.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.dart';

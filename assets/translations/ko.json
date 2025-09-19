@@ -31,7 +31,7 @@
     "reward_acquisition_complete_content": "보상이 지급되었습니다.",
     "reward_acquisition_failed": "보상 획득 실패",
     "beat_requires_location_permission_title": "BEAT는 위치 권한이 필요합니다.",
-    "beat_requires_location_permission_content": "BEAT는 걸음 수 측정 및 QR 인식을 위해 위치 권한이 필요합니다. 설정 화면에서 위치 권한을 허용해주세요.",
+    "beat_requires_location_permission_content": "BEAT는 걸음 수 측정 및 QR 인식을 위해 위치 권한이 필요합니다. 설정 화면에서 위치 권한을 항상 허용으로 변경해주세요.",
     "beat_requires_activity_permission_title": "BEAT는 활동 권한이 필요합니다.",
     "beat_requires_activity_permission_content": "BEAT는 걸음 수 측정을 위해 활동 권한이 필요합니다. 설정 화면에서 활동 권한을 허용해주세요.",
     "beat_requires_location_and_activity_permission_title": "BEAT는 위치 및 활동 권한이 필요합니다.",

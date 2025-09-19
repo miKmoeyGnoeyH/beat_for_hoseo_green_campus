@@ -87,21 +87,21 @@ let pedometer = CMPedometer()
             } else if call.method == "updateHolidayStatus" {
                 if let args = call.arguments as? [String: Any],
                    let isHoliday = args["isHoliday"] as? Bool {
-                    // ✅ 공휴일 상태 업데이트 반영
-                    self.invalidateCustomTimers()
-                    self.startCustomTimers(isHoliday: isHoliday)
-                    
+                    // ✅ 공휴일 상태 업데이트 반영 (BGTask는 계속 동작)
                     if isHoliday {
                         self.locationManager?.stopUpdatingLocation()
-                        print("🛑 Holiday: location tracking/event timer stopped")
+                        print("🛑 Holiday: location tracking stopped (BGTask는 계속 동작)")
                     } else {
                         self.initLocationTracking()
-                        print("✅ Holiday ended: location tracking/event timer resumed")
+                        print("✅ Holiday ended: location tracking resumed (BGTask는 계속 동작)")
                     }
                 }
                 result("Holiday status updated")
             } else if call.method == "isMotionPermissionGranted" {
-                let granted = CMPedometer.isStepCountingAvailable()
+                // 하드웨어 지원 여부와 권한 상태를 모두 확인
+                let hardwareAvailable = CMPedometer.isStepCountingAvailable()
+                let permissionGranted = CMMotionActivityManager.authorizationStatus() == .authorized
+                let granted = hardwareAvailable && permissionGranted
                 result(granted)
             } else {
                 result(FlutterMethodNotImplemented)
@@ -115,10 +115,9 @@ let pedometer = CMPedometer()
         self.sendToTime = sendToTime
         print("✅ sendToTime 설정됨: \(sendToTime)")
         
-        // 새로운 정확한 시간 스케줄링 시스템 시작
+        // BGTaskScheduler 전용 스케줄링 시스템 시작
         scheduleAllBackgroundTasks(sendToTime: sendToTime)
         startPedometer()
-        startCustomTimers(isHoliday: isHoliday)
         
         // 공휴일 여부에 따라 위치 추적 처리
         if !isHoliday {
@@ -140,9 +139,6 @@ let pedometer = CMPedometer()
         
         // BGTask 취소
         BGTaskScheduler.shared.cancelAllTaskRequests()
-        
-        // 커스텀 타이머 해제
-        invalidateCustomTimers()
         
         print("🛑 Background tasks stopped")
     }
@@ -187,53 +183,42 @@ let pedometer = CMPedometer()
         }
     }
     
-    // MARK: - 정확한 시간 스케줄링 시스템
+    // MARK: - BGTaskScheduler 전용 스케줄링 시스템
     
-    /// 정확한 시간에 백그라운드 작업을 트리거하는 시스템
+    /// BGTaskScheduler만 사용하는 백그라운드 작업 스케줄링
     func scheduleAllBackgroundTasks(sendToTime: Int) {
-        scheduleHourlyWalkReport()
-        scheduleHourlyRanking(sendToTime: sendToTime)
-        scheduleMidnightReset()
-        print("✅ 모든 백그라운드 작업 스케줄 완료 (sendToTime: \(sendToTime))")
+        scheduleWalkReportBGTask()
+        scheduleRankingBGTask(sendToTime: sendToTime)
+        scheduleMidnightBGTask()
+        print("✅ 모든 BGTask 스케줄 완료 (sendToTime: \(sendToTime))")
     }
     
-    /// 매시간 정각에 걸음 수 동기화 트리거
-    func scheduleHourlyWalkReport() {
-        let calendar = Calendar.current
-        let now = Date()
+    /// 걸음 수 동기화 BGTask 스케줄링 (4시간마다 - Apple 가이드라인 준수)
+    func scheduleWalkReportBGTask() {
+        let request = BGProcessingTaskRequest(identifier: "com.beat.app.walkreport")
+        request.requiresNetworkConnectivity = true
+        request.requiresExternalPower = false
+        request.earliestBeginDate = Date(timeIntervalSinceNow: 14400) // 4시간 후 (Apple 가이드라인)
         
-        // 다음 정각까지의 시간 계산
-        let nextHour = calendar.date(byAdding: .hour, value: 1, to: calendar.startOfHour(for: now))!
-        let timeInterval = nextHour.timeIntervalSince(now)
-        
-        // 알림 없이 백그라운드 작업 트리거
-        let content = UNMutableNotificationContent()
-        content.sound = nil // 알림음 없음
-        content.badge = nil // 뱃지 없음
-        
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
-        let request = UNNotificationRequest(
-            identifier: "walkreport_\(Int(nextHour.timeIntervalSince1970))",
-            content: content,
-            trigger: trigger
-        )
-        
-        UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                print("❌ 걸음 수 동기화 스케줄 실패: \(error)")
-            } else {
-                print("✅ 걸음 수 동기화 스케줄 완료: \(nextHour)")
-            }
+        do {
+            try BGTaskScheduler.shared.submit(request)
+            print("✅ 걸음 수 동기화 BGTask 스케줄 완료 (4시간 후)")
+        } catch {
+            print("❌ 걸음 수 동기화 BGTask 스케줄 실패: \(error)")
         }
     }
     
-    /// 매시간 59분 {sendToTime}초에 랭킹 집계 트리거
-    func scheduleHourlyRanking(sendToTime: Int) {
+    /// 랭킹 집계 BGTask 스케줄링 (매시간 59분 {sendToTime}초)
+    func scheduleRankingBGTask(sendToTime: Int) {
+        let request = BGProcessingTaskRequest(identifier: "com.beat.app.ranking")
+        request.requiresNetworkConnectivity = true
+        request.requiresExternalPower = false
+        
+        // 다음 59분 {sendToTime}초까지의 시간 계산
         let calendar = Calendar.current
         let now = Date()
-        
-        // 현재 시간이 59분 {sendToTime}초 이후라면 다음 시간으로, 그렇지 않으면 현재 시간으로
         var targetDate: Date
+        
         let currentMinute = calendar.component(.minute, from: now)
         let currentSecond = calendar.component(.second, from: now)
         
@@ -249,55 +234,35 @@ let pedometer = CMPedometer()
             targetDate = calendar.date(byAdding: .second, value: sendToTime, to: targetDate)!
         }
         
-        let timeInterval = targetDate.timeIntervalSince(now)
+        request.earliestBeginDate = targetDate
         
-        let content = UNMutableNotificationContent()
-        content.sound = nil
-        content.badge = nil
-        
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
-        let request = UNNotificationRequest(
-            identifier: "ranking_\(Int(targetDate.timeIntervalSince1970))",
-            content: content,
-            trigger: trigger
-        )
-        
-        UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                print("❌ 랭킹 집계 스케줄 실패: \(error)")
-            } else {
-                print("✅ 랭킹 집계 스케줄 완료: \(targetDate) (59분 \(sendToTime)초)")
-            }
+        do {
+            try BGTaskScheduler.shared.submit(request)
+            print("✅ 랭킹 집계 BGTask 스케줄 완료: \(targetDate) (59분 \(sendToTime)초)")
+        } catch {
+            print("❌ 랭킹 집계 BGTask 스케줄 실패: \(error)")
         }
     }
     
-    /// 매일 자정에 초기화 트리거
-    func scheduleMidnightReset() {
-        let calendar = Calendar.current
-        let now = Date()
+    /// 자정 초기화 BGTask 스케줄링 (매일 자정)
+    func scheduleMidnightBGTask() {
+        let request = BGProcessingTaskRequest(identifier: "com.beat.app.midnight")
+        request.requiresNetworkConnectivity = false
+        request.requiresExternalPower = false
         
         // 다음 자정까지의 시간 계산
+        let calendar = Calendar.current
+        let now = Date()
         let tomorrow = calendar.date(byAdding: .day, value: 1, to: now)!
         let midnight = calendar.startOfDay(for: tomorrow)
-        let timeInterval = midnight.timeIntervalSince(now)
         
-        let content = UNMutableNotificationContent()
-        content.sound = nil
-        content.badge = nil
+        request.earliestBeginDate = midnight
         
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
-        let request = UNNotificationRequest(
-            identifier: "midnight_\(Int(midnight.timeIntervalSince1970))",
-            content: content,
-            trigger: trigger
-        )
-        
-        UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                print("❌ 자정 초기화 스케줄 실패: \(error)")
-            } else {
-                print("✅ 자정 초기화 스케줄 완료: \(midnight)")
-            }
+        do {
+            try BGTaskScheduler.shared.submit(request)
+            print("✅ 자정 초기화 BGTask 스케줄 완료: \(midnight)")
+        } catch {
+            print("❌ 자정 초기화 BGTask 스케줄 실패: \(error)")
         }
     }
     
@@ -309,8 +274,8 @@ let pedometer = CMPedometer()
             task.setTaskCompleted(success: false)
         }
         
-        // 다음 스케줄 예약
-        scheduleHourlyWalkReport()
+        // 다음 스케줄 예약 (BGTask로)
+        scheduleWalkReportBGTask()
         
         executeWalkReportSync { success in
             task.setTaskCompleted(success: success)
@@ -323,8 +288,8 @@ let pedometer = CMPedometer()
             task.setTaskCompleted(success: false)
         }
         
-        // 다음 스케줄 예약 (sendToTime 전달)
-        scheduleHourlyRanking(sendToTime: sendToTime)
+        // 다음 스케줄 예약 (BGTask로, sendToTime 전달)
+        scheduleRankingBGTask(sendToTime: sendToTime)
         
         executeRankingSync { success in
             task.setTaskCompleted(success: success)
@@ -337,8 +302,8 @@ let pedometer = CMPedometer()
             task.setTaskCompleted(success: false)
         }
         
-        // 다음 스케줄 예약
-        scheduleMidnightReset()
+        // 다음 스케줄 예약 (BGTask로)
+        scheduleMidnightBGTask()
         
         executeMidnightReset { success in
             task.setTaskCompleted(success: success)
@@ -453,5 +418,12 @@ let pedometer = CMPedometer()
         eventDurationTimer = nil
         
         print("🛑 Custom timers stopped")
+    }
+}
+
+extension Calendar {
+    func startOfHour(for date: Date) -> Date {
+        let components = dateComponents([.year, .month, .day, .hour], from: date)
+        return self.date(from: components)!
     }
 }

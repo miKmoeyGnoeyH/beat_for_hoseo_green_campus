@@ -1,8 +1,5 @@
 
-import 'dart:convert';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/services.dart';
-import 'package:beat_flutter/managers/prefs/prefs_manager.dart';
 
 /// [easy_localization] 패키지를 더 간편히 사용하기 위한 클래스.
 /// 텍스트가 너무 많아, 추상 클래스에 정적 메소드 방식은 메모리 낭비가 심할 것이라 판단.
