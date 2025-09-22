@@ -76,7 +76,8 @@ class PermissionManager {
 
   Future<bool> requestActivityPermission() async {
     final activityRecognitionStatus = await Permission.activityRecognition.request();
-    return activityRecognitionStatus.isGranted;
+    // 권한 요청 후 실제 권한 상태를 Android/iOS 통일된 방식으로 확인
+    return await isActivityPermissionDenied();
   }
 
   Future<bool> requestNotificationPermission() async {
@@ -99,6 +100,7 @@ class PermissionManager {
     final alwaysStatus = await Permission.locationAlways.status;
     return !whenInUseStatus.isGranted || !alwaysStatus.isGranted;
   }
+
 
   static Future<bool> isActivityPermissionDenied() async {
     if (Platform.isIOS) {

@@ -48,8 +48,14 @@ Future<void> main() async {
   await DotEnvManager().init();
 
   // Pedometer
-  Get.put<PedometerController>(PedometerController(), permanent: true);
-  Get.put<LocationController>(LocationController(), permanent: true);
+  final PedometerController pedometerController = Get.put<PedometerController>(PedometerController(), permanent: true);
+  final LocationController locationController = Get.put<LocationController>(LocationController(), permanent: true);
+
+  pedometerController.getWalkHitory();
+  pedometerController.initializeService();
+
+  locationController.setUp();
+  locationController.initializeService();
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

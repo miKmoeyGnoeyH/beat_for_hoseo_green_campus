@@ -76,13 +76,32 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   }
 
   Future<void> setControllerFlags() async {
-    Get.find<LocationController>().isLocationPermissionDenied =
+    final bool isLocationPermissionDenied =
         await PermissionManager().isLocationPermissionDenied();
-
-    Get.find<PedometerController>().isActivityPermissionDenied =
+    final bool isActivityPermissionDenied =
         await PermissionManager.isActivityPermissionDenied();
-    Get.find<PedometerController>().isLocationPermissionDenied =
-        await PermissionManager().isLocationPermissionDenied();
+
+    final LocationController locationController =
+        Get.find<LocationController>();
+    final PedometerController pedometerController =
+        Get.find<PedometerController>();
+
+    log("app.dart : setControllerFlags : isLocationPermissionDenied : $isLocationPermissionDenied");
+    log("app.dart : setControllerFlags : isActivityPermissionDenied : $isActivityPermissionDenied");
+
+    locationController.isLocationPermissionDenied.value =
+        isLocationPermissionDenied;
+    pedometerController.isActivityPermissionDenied.value =
+        isActivityPermissionDenied;
+    pedometerController.isLocationPermissionDenied.value =
+        isLocationPermissionDenied;
+
+    // log("app.dart : setControllerFlags : locationController.isLocationPermissionDenied : ${locationController.isLocationPermissionDenied}");
+    // log("app.dart : setControllerFlags : pedometerController.isLocationPermissionDenied : ${pedometerController.isLocationPermissionDenied.value}");
+    // log("app.dart : setControllerFlags : pedometerController.isActivityPermissionDenied : ${pedometerController.isActivityPermissionDenied.value}");
+    // log("app.dart : setControllerFlags : pedometerController.isEventDuration : ${pedometerController.isEventDuration.value}");
+    // log("app.dart : setControllerFlags : pedometerController.isHoliday : ${pedometerController.isHoliday.value}");
+    // log("app.dart : setControllerFlags : pedometerController.isInValidArea : ${pedometerController.isInValidArea.value}");
   }
 
   Future<void> setupInteractedMessage() async {
@@ -111,15 +130,18 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     debugPrint('didChangeAppLifecycleState: $state');
     switch (state) {
       case AppLifecycleState.resumed:
+        Get.find<PedometerController>().stopBackgroundService();
+        Get.find<LocationController>().stopBackgroundService();
         setControllerFlags();
         App.isForeground = true;
         break;
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:
-        setControllerFlags();
+      case AppLifecycleState.detached:
+        Get.find<PedometerController>().startBackgroundService();
+        Get.find<LocationController>().startBackgroundService();
         App.isForeground = false;
         break;
-      case AppLifecycleState.detached:
       default:
         break;
     }

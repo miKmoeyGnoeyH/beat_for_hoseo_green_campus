@@ -9,6 +9,7 @@ import 'package:easy_localization/easy_localization.dart';
 
 import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
 import 'package:beat_flutter/controller/location/location_controller.dart';
+import 'package:location/location.dart';
 
 /// iOS background entrypoint (Location)
 @pragma('vm:entry-point')
@@ -36,7 +37,9 @@ void locationServiceStart(ServiceInstance service) async {
   await DotEnvManager().ensureInitialized();
   await EasyLocalization.ensureInitialized();
   await PrefsManager().init();
-  final locationController = Get.put(LocationController());
+  final locationController = Get.isRegistered<LocationController>()
+      ? Get.find<LocationController>()
+      : Get.put(LocationController(), permanent: true);
   locationController.startTimer(service);
 }
 
@@ -46,6 +49,11 @@ void pedometerServiceStart(ServiceInstance service) async {
   await DotEnvManager().ensureInitialized();
   await EasyLocalization.ensureInitialized();
   await PrefsManager().init();
-  final pedometerController = Get.put(PedometerController());
+
+  // 백그라운드 서비스에서는 기존 인스턴스를 찾거나 새로 생성
+  final pedometerController = Get.isRegistered<PedometerController>()
+      ? Get.find<PedometerController>()
+      : Get.put(PedometerController(), permanent: true);
+
   pedometerController.startTimer(service);
 }

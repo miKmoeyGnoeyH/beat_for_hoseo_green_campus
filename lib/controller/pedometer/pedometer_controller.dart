@@ -15,6 +15,7 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:get/get.dart';
 import 'package:pedometer/pedometer.dart';
 import 'package:http/http.dart' as http;
+import 'package:permission_handler/permission_handler.dart';
 
 class PedometerController extends GetxController {
   // iOS 네이티브와 통신하기 위한 MethodChannel
@@ -108,15 +109,15 @@ class PedometerController extends GetxController {
   final RxList<Map<String, dynamic>> _walkReports =
       <Map<String, dynamic>>[].obs;
 
-  bool isActivityPermissionDenied = true;
-  bool isLocationPermissionDenied = true;
-  bool isHoliday = true;
+  final RxBool isActivityPermissionDenied = true.obs;
+  final RxBool isLocationPermissionDenied = true.obs;
+  final RxBool isHoliday = true.obs;
 
   /// 현재 위치가 유효 범위 내에 있는지?
-  bool isInValidArea = false;
+  final RxBool isInValidArea = false.obs;
 
   /// [isEventDuration] : 이벤트 진행 시간 측정용 플래그
-  bool isEventDuration = true;
+  final RxBool isEventDuration = true.obs;
 
   /// [_reportTimer] : 1시간마다 서버와 걸음 수를 동기화
   Timer? _reportTimer;
@@ -127,14 +128,15 @@ class PedometerController extends GetxController {
   bool get isReachedTodaysMaxStepCount => steps >= maxDailySteps ? true : false;
 
   void onStepCount(StepCount event) {
-    if (isActivityPermissionDenied) return;
-    if (!isEventDuration || !isInValidArea || isHoliday) return;
+    if (isActivityPermissionDenied.value) return;
+    if (!isEventDuration.value || !isInValidArea.value || isHoliday.value) return;
 
     if (_stepsAfterLastBoot == 0 ||
         (_stepsAfterLastBoot != null && _stepsAfterLastBoot! > event.steps)) {
       _stepsAfterLastBoot = event.steps;
       totalSteps = event.steps;
-      steps = 0;
+      log("PedometerController : _stepsAfterLastBoot - ${_stepsAfterLastBoot}");
+      // steps = 0;
       PrefsManager().setStepsAfterLastboot(_stepsAfterLastBoot!);
     }
 
@@ -187,13 +189,16 @@ class PedometerController extends GetxController {
   }
 
   void onStepCountFromNative(int stepsFromNative) {
-    if (isActivityPermissionDenied) return;
-    if (!isEventDuration || !isInValidArea || isHoliday) return;
+    if (isActivityPermissionDenied.value) return;
+    if (!isEventDuration.value || !isInValidArea.value || isHoliday.value) return;
 
-    if (_stepsAfterLastBoot == null) {
+    if (_stepsAfterLastBoot == 0 ||
+        (_stepsAfterLastBoot != null && _stepsAfterLastBoot! > stepsFromNative)) {
       _stepsAfterLastBoot = stepsFromNative;
       totalSteps = stepsFromNative;
-      steps = 0;
+      // steps = 0;
+      log("PedometerController : _stepsAfterLastBoot - ${_stepsAfterLastBoot}");
+      PrefsManager().setStepsAfterLastboot(_stepsAfterLastBoot!);
     }
 
     final int oldSteps = totalSteps;
@@ -254,6 +259,9 @@ class PedometerController extends GetxController {
   /// [_walkReports]에 변화가 있을 때마다 이를 감지해 서버에 보고하도록 리스너 추가
   PedometerController() {
     initPlatformState();
+    
+    // 권한 상태 초기화
+    // _initializePermissionStatus();
 
     // PrefsManager().setLastReportedSteps(0);
     // getWalkHitory();
@@ -326,8 +334,8 @@ class PedometerController extends GetxController {
         headers: {"Authorization": _authorization},
       );
 
-      BEATLogger.d(
-          "PedometerController : getWalkHitory() response : $response");
+      // BEATLogger.d(
+      //     "PedometerController : getWalkHitory() response : $response");
 
       if (response.statusCode == 200) {
         final bodyToJson = jsonDecode(response.body);
@@ -420,7 +428,7 @@ class PedometerController extends GetxController {
       _reportTimer = Timer.periodic(
         const Duration(hours: 1),
         (_) async {
-          if (isActivityPermissionDenied || isLocationPermissionDenied) {
+          if (isActivityPermissionDenied.value || isLocationPermissionDenied.value) {
             return;
           }
           addWalkReport();
@@ -430,7 +438,7 @@ class PedometerController extends GetxController {
       _rankReportTimer = Timer.periodic(
         const Duration(seconds: 1),
         (_) async {
-          if (isActivityPermissionDenied || isLocationPermissionDenied) {
+          if (isActivityPermissionDenied.value || isLocationPermissionDenied.value) {
             return;
           }
           final DateTime dateTime = DateTime.now();
@@ -443,11 +451,13 @@ class PedometerController extends GetxController {
   }
 
   void startBackgroundService() {
+    BEATLogger.d("PedometerController : startBackgroundService()");
     FlutterBackgroundService().startService();
     setMethodCallHandler();
   }
 
   void stopBackgroundService() {
+    BEATLogger.d("PedometerController : stopBackgroundService()");
     FlutterBackgroundService().invoke("stopService");
 
     _channel.setMethodCallHandler(null);

@@ -2,6 +2,8 @@ import 'package:app_settings/app_settings.dart';
 import 'package:beat_flutter/components/global/methods/custom_show_dialog.dart';
 import 'package:beat_flutter/components/my_page/my_page.dart';
 import 'package:beat_flutter/controller/home/controllers/quest_list_controller.dart';
+import 'package:beat_flutter/controller/location/location_controller.dart';
+import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
 import 'package:beat_flutter/controller/screen_holder/page_index_controller.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
@@ -37,10 +39,23 @@ class _ScreenHolderState extends State<ScreenHolder> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   void showDialogIfPermissionDenied() async {
     final bool isLocationPermissionGranted = await PermissionManager().requestLocationPermission();
     final bool isCameraPermissionGranted = await PermissionManager().requestCameraPermission();
-    final bool isActivityPermissionDenied = await PermissionManager.isActivityPermissionDenied();
+    final bool isActivityPermissionDenied = await PermissionManager().requestActivityPermission();
+
+    // LocationController와 PedometerController의 권한 상태 설정
+    final locationController = Get.find<LocationController>();
+    final pedometerController = Get.find<PedometerController>();
+    
+    locationController.isLocationPermissionDenied.value = !isLocationPermissionGranted;
+    pedometerController.isLocationPermissionDenied.value = !isLocationPermissionGranted;
+    pedometerController.isActivityPermissionDenied.value = isActivityPermissionDenied;
 
     if (!isLocationPermissionGranted) {
       await customConfirmDialog(
