@@ -63,7 +63,10 @@ class _RankingScreenState extends State<RankingScreen> {
 
             return RefreshIndicator(
               color: context.appColors.primary,
-              onRefresh: () => rankListController.fetchRankList(),
+              onRefresh: () {
+                onButtonTap(0);
+                return rankListController.fetchRankList();
+              },
               child: ListView(
                 controller: scrollController,
                 physics: const AlwaysScrollableScrollPhysics(),
@@ -76,7 +79,8 @@ class _RankingScreenState extends State<RankingScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
                               child: CustomDisplayMedium(
                                 text: localizationManager.rankingRanking,
                                 textColor: context.appColors.defaultTextColor,
@@ -156,12 +160,22 @@ class _RankingScreenState extends State<RankingScreen> {
     const double paddingHeight = 16;
     const double extraSpacingHeight = 50;
 
-    final double spacingHeight = (40 + (((data[keys[currentIndex]]!.length - 1).toDouble() + (data[keys[currentIndex + 1]]!.length - 1).toDouble()) * 10));
+    final double spacingHeight = (40 +
+        (((data[keys[currentIndex]]!.length - 1).toDouble() +
+                (data[keys[currentIndex + 1]]!.length - 1).toDouble()) *
+            10));
     // final double spacingHeight = (40 + ((19 + 19) * 10));
-    final double contentHeight = (data[keys[currentIndex]]!.length.toDouble() + data[keys[currentIndex + 1]]!.length.toDouble()) * rankCardHeight;
+    final double contentHeight = (data[keys[currentIndex]]!.length.toDouble() +
+            data[keys[currentIndex + 1]]!.length.toDouble()) *
+        rankCardHeight;
     // final double contentHeight = (20 + 20) * rankCardHeight;
 
-    return (appBarHeight + textsHeight + paddingHeight + extraSpacingHeight + spacingHeight + contentHeight);
+    return (appBarHeight +
+        textsHeight +
+        paddingHeight +
+        extraSpacingHeight +
+        spacingHeight +
+        contentHeight);
   }
 
   List<Widget> rankListPages(Map<String, List<RankItemModel>> data) {

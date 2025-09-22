@@ -101,6 +101,16 @@ class PrefsManager {
     return _prefs.setInt("totalWalkCount", totalWalkCount);
   }
 
+  Future<void> setStepsAfterLastboot(int steps) {
+    _ensurePrefs();
+    return _prefs.setInt("stepsAfterLastboot", steps);
+  }
+
+  int getStepsAfterLastboot() {
+    _ensurePrefs();
+    return _prefs.getInt("stepsAfterLastboot") ?? 0;
+  }
+
   bool isStudentIdSaved() {
     _ensurePrefs();
     return _prefs.containsKey("saved_studentId");

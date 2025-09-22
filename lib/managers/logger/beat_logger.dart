@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
@@ -30,7 +31,11 @@ class FileOutput extends LogOutput {
   Future<void> output(OutputEvent event) async {
     if (_logFile == null) return;
     for (var line in event.lines) {
-      await _logFile!.writeAsString('$line\n', mode: FileMode.append);
+      await _logFile!.writeAsString(
+        '$line\n',
+        mode: FileMode.append,
+        encoding: utf8,
+      );
     }
   }
 

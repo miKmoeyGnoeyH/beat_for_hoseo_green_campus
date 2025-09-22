@@ -130,10 +130,12 @@ class PedometerController extends GetxController {
     if (isActivityPermissionDenied) return;
     if (!isEventDuration || !isInValidArea || isHoliday) return;
 
-    if (_stepsAfterLastBoot == null) {
+    if (_stepsAfterLastBoot == 0 ||
+        (_stepsAfterLastBoot != null && _stepsAfterLastBoot! > event.steps)) {
       _stepsAfterLastBoot = event.steps;
       totalSteps = event.steps;
       steps = 0;
+      PrefsManager().setStepsAfterLastboot(_stepsAfterLastBoot!);
     }
 
     final int oldSteps = totalSteps;
@@ -254,8 +256,10 @@ class PedometerController extends GetxController {
     initPlatformState();
 
     // PrefsManager().setLastReportedSteps(0);
+    // getWalkHitory();
     _lastReportedTime = PrefsManager().getLastReportedTime();
     _lastReportedSteps = PrefsManager().getLastReportedSteps();
+    _stepsAfterLastBoot = PrefsManager().getStepsAfterLastboot();
     _walkReports.assignAll(PrefsManager().getUnsentStepsList());
 
     ever<List<Map<String, dynamic>>>(
@@ -322,6 +326,9 @@ class PedometerController extends GetxController {
         headers: {"Authorization": _authorization},
       );
 
+      BEATLogger.d(
+          "PedometerController : getWalkHitory() response : $response");
+
       if (response.statusCode == 200) {
         final bodyToJson = jsonDecode(response.body);
         if (savedToday >= bodyToJson['todayWalkCount']) {
@@ -361,9 +368,22 @@ class PedometerController extends GetxController {
     _lastReportedSteps = steps;
 
     PrefsManager().setSteps(
-        todayWalkCount, weeklyWalkCount, monthlyWalkCount, totalWalkCount);
+      todayWalkCount,
+      weeklyWalkCount,
+      monthlyWalkCount,
+      totalWalkCount,
+    );
     PrefsManager().setLastReportedTime(_lastReportedTime);
     PrefsManager().setLastReportedSteps(_lastReportedSteps);
+
+    // TODO: 출시 때는 삭제해야됨
+    BEATLogger.d("PedometerController : addWalkReport() - ${_walkReports.toString()}");
+    BEATLogger.d("PedometerController : addWalkReport() - lastReportedTime: $_lastReportedTime");
+    BEATLogger.d("PedometerController : addWalkReport() - lastReportedSteps: $_lastReportedSteps");
+    BEATLogger.d("PedometerController : addWalkReport() - todayWalkCount: $todayWalkCount");
+    BEATLogger.d("PedometerController : addWalkReport() - weeklyWalkCount: $weeklyWalkCount");
+    BEATLogger.d("PedometerController : addWalkReport() - monthlyWalkCount: $monthlyWalkCount");
+    BEATLogger.d("PedometerController : addWalkReport() - totalWalkCount: $totalWalkCount");
   }
 
   /// 백그라운드 서비스 초기화
