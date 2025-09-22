@@ -69,12 +69,12 @@ class LocationController extends GetxController {
       if (response.statusCode == 200) {
         final List<dynamic> responseBody = jsonDecode(response.body);
         final String nowFormatted = DateFormat("yyyy-MM-dd").format(now);
-        return (responseBody.any((e) => e["date"] == nowFormatted));
+        return (responseBody.any((e) => e["date"] == nowFormatted)) || now == DateTime.saturday || now == DateTime.sunday;
       }
-      return false;
+      return now == DateTime.saturday || now == DateTime.sunday;
     } catch (e) {
       log("LocationController : getIsHoliday error : ${e.toString()}");
-      return false;
+      return now == DateTime.saturday || now == DateTime.sunday;
     }
   }
 
@@ -170,26 +170,33 @@ class LocationController extends GetxController {
 
   /// 자정 초기화
   void _resetAtMidnight() async {
-    BEATLogger.d("LocationController : _resetAtMidnight()");
+    BEATLogger.d("LocationController : _resetAtMidnight() 시작");
     final bool isHoliday = await getIsHoliday();
     final pedometerController = Get.find<PedometerController>();
 
+    BEATLogger.d("LocationController : 공휴일 여부: $isHoliday");
+    
     pedometerController.isHoliday = isHoliday;
     pedometerController.isEventDuration = true;
     pedometerController.resetAtMidnight(DateTime.now());
+    
+    BEATLogger.d("LocationController : 걸음 수 초기화 완료");
 
     if (Platform.isIOS) {
       await _channel
           .invokeMethod("updateHolidayStatus", {"isHoliday": isHoliday});
+      BEATLogger.d("LocationController : iOS 네이티브에 공휴일 상태 업데이트 완료");
     }
 
     // ✅ 공휴일이면 위치 추적/이벤트 타이머 중단
     if (isHoliday) {
       _stopEventTimers();
+      BEATLogger.d("LocationController : 공휴일로 인해 이벤트 타이머 중단");
       return;
     }
 
     _startLocationTimer();
+    BEATLogger.d("LocationController : 자정 초기화 완료 - 위치 추적 재시작");
     // _startEventDurationTimer();
   }
 
@@ -536,8 +543,11 @@ class LocationController extends GetxController {
       final pedometerController = Get.find<PedometerController>();
       if (!pedometerController.isActivityPermissionDenied && 
           !pedometerController.isLocationPermissionDenied) {
-        // 랭킹 집계 로직 (필요시 구현)
-        BEATLogger.d("LocationController : 백그라운드 랭킹 집계 완료");
+        // 실제 걸음 수 전송 로직 실행
+        pedometerController.addWalkReport();
+        BEATLogger.d("LocationController : 백그라운드 랭킹 집계 완료 - 걸음 수 전송됨");
+      } else {
+        BEATLogger.d("LocationController : 권한이 없어서 랭킹 집계 건너뜀");
       }
     } catch (e) {
       BEATLogger.e("LocationController : 백그라운드 랭킹 집계 실패: $e");

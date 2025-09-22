@@ -239,6 +239,8 @@ let pedometer = CMPedometer()
         do {
             try BGTaskScheduler.shared.submit(request)
             print("✅ 랭킹 집계 BGTask 스케줄 완료: \(targetDate) (59분 \(sendToTime)초)")
+            print("✅ 현재 시간: \(Date())")
+            print("✅ 다음 실행까지 남은 시간: \(targetDate.timeIntervalSinceNow)초")
         } catch {
             print("❌ 랭킹 집계 BGTask 스케줄 실패: \(error)")
         }
@@ -261,6 +263,8 @@ let pedometer = CMPedometer()
         do {
             try BGTaskScheduler.shared.submit(request)
             print("✅ 자정 초기화 BGTask 스케줄 완료: \(midnight)")
+            print("✅ 현재 시간: \(Date())")
+            print("✅ 다음 자정까지 남은 시간: \(midnight.timeIntervalSinceNow)초")
         } catch {
             print("❌ 자정 초기화 BGTask 스케줄 실패: \(error)")
         }
@@ -284,7 +288,9 @@ let pedometer = CMPedometer()
     
     func handleRankingTask(task: BGProcessingTask) {
         print("📊 랭킹 집계 BGTask 시작 (sendToTime: \(sendToTime))")
+        print("📊 현재 시간: \(Date())")
         task.expirationHandler = {
+            print("❌ 랭킹 집계 BGTask 만료됨")
             task.setTaskCompleted(success: false)
         }
         
@@ -292,13 +298,16 @@ let pedometer = CMPedometer()
         scheduleRankingBGTask(sendToTime: sendToTime)
         
         executeRankingSync { success in
+            print("📊 랭킹 집계 BGTask 완료: \(success)")
             task.setTaskCompleted(success: success)
         }
     }
     
     func handleMidnightTask(task: BGProcessingTask) {
         print("🌙 자정 초기화 BGTask 시작")
+        print("🌙 현재 시간: \(Date())")
         task.expirationHandler = {
+            print("❌ 자정 초기화 BGTask 만료됨")
             task.setTaskCompleted(success: false)
         }
         
@@ -306,6 +315,7 @@ let pedometer = CMPedometer()
         scheduleMidnightBGTask()
         
         executeMidnightReset { success in
+            print("🌙 자정 초기화 BGTask 완료: \(success)")
             task.setTaskCompleted(success: success)
         }
     }
@@ -334,6 +344,7 @@ let pedometer = CMPedometer()
     
     func executeRankingSync(completion: @escaping (Bool) -> Void) {
         guard let controller = window?.rootViewController as? FlutterViewController else {
+            print("❌ FlutterViewController를 찾을 수 없음")
             completion(false)
             return
         }
@@ -344,6 +355,7 @@ let pedometer = CMPedometer()
             binaryMessenger: controller.binaryMessenger
         )
         
+        print("📊 Flutter와 통신하여 랭킹 집계 시작")
         DispatchQueue.main.async {
             self.flutterChannel?.invokeMethod("syncRankingInBackground", arguments: nil) { result in
                 print("📊 랭킹 집계 완료: \(String(describing: result))")
@@ -354,6 +366,7 @@ let pedometer = CMPedometer()
     
     func executeMidnightReset(completion: @escaping (Bool) -> Void) {
         guard let controller = window?.rootViewController as? FlutterViewController else {
+            print("❌ FlutterViewController를 찾을 수 없음")
             completion(false)
             return
         }
@@ -364,6 +377,7 @@ let pedometer = CMPedometer()
             binaryMessenger: controller.binaryMessenger
         )
         
+        print("🌙 Flutter와 통신하여 자정 초기화 시작")
         DispatchQueue.main.async {
             self.flutterChannel?.invokeMethod("midnightReset", arguments: nil) { result in
                 print("🌙 자정 초기화 완료: \(String(describing: result))")

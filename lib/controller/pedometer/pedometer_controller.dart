@@ -221,7 +221,7 @@ class PedometerController extends GetxController {
   void setMethodCallHandler() {
     if (Platform.isIOS) {
       _channel.setMethodCallHandler(
-            (call) async {
+        (call) async {
           switch (call.method) {
             case "updateStepsFromNative":
               final steps = call.arguments["steps"] as int;
@@ -263,9 +263,12 @@ class PedometerController extends GetxController {
       (reports) async {
         if (reports.isEmpty) return;
 
-        BEATLogger.d("PedometerController : ever : _walkReports : $_walkReports");
+        BEATLogger.d(
+            "PedometerController : ever : _walkReports : $_walkReports");
 
         final String requestUrl = DotEnvManager().walkRecordUrl;
+        final (savedToday, savedWeekly, savedMonthly, savedTotal) =
+            PrefsManager().getSteps();
 
         try {
           final http.Response response = await http.post(
@@ -277,13 +280,19 @@ class PedometerController extends GetxController {
             body: jsonEncode(_walkReports),
           );
 
-          final bodyToJson = jsonDecode(response.body);
-
           if (response.statusCode == 200) {
-            todayWalkCount = bodyToJson['todayWalkCount'];
-            weeklyWalkCount = bodyToJson['weeklyWalkCount'];
-            monthlyWalkCount = bodyToJson['monthlyWalkCount'];
-            totalWalkCount = bodyToJson['totalWalkCount'];
+            final bodyToJson = jsonDecode(response.body);
+            if (savedToday >= bodyToJson['todayWalkCount']) {
+              todayWalkCount = savedToday;
+              weeklyWalkCount = savedWeekly;
+              monthlyWalkCount = savedMonthly;
+              totalWalkCount = savedTotal;
+            } else {
+              todayWalkCount = bodyToJson['todayWalkCount'];
+              weeklyWalkCount = bodyToJson['weeklyWalkCount'];
+              monthlyWalkCount = bodyToJson['monthlyWalkCount'];
+              totalWalkCount = bodyToJson['totalWalkCount'];
+            }
             steps = todayWalkCount;
             _walkReports.clear();
           } else {
@@ -351,7 +360,8 @@ class PedometerController extends GetxController {
     _lastReportedTime = now;
     _lastReportedSteps = steps;
 
-    PrefsManager().setSteps(todayWalkCount, weeklyWalkCount, monthlyWalkCount, totalWalkCount);
+    PrefsManager().setSteps(
+        todayWalkCount, weeklyWalkCount, monthlyWalkCount, totalWalkCount);
     PrefsManager().setLastReportedTime(_lastReportedTime);
     PrefsManager().setLastReportedSteps(_lastReportedSteps);
   }
@@ -430,6 +440,7 @@ class PedometerController extends GetxController {
   }
 
   void resetAtMidnight(DateTime dateTime) {
+    BEATLogger.d("PedometerController : resetAtMidnight() 시작");
     final DateTime now = DateTime.now();
 
     const int saveSteps = 0;
@@ -437,6 +448,11 @@ class PedometerController extends GetxController {
         now.weekday == DateTime.sunday ? 0 : weeklyWalkCount;
     final int saveMonthlyWalkCount = now.day == 1 ? 0 : monthlyWalkCount;
     final int saveTotalWalkCount = totalWalkCount;
+
+    BEATLogger.d(
+        "PedometerController : 초기화 전 값들 - today: $todayWalkCount, weekly: $weeklyWalkCount, monthly: $monthlyWalkCount, total: $totalWalkCount");
+    BEATLogger.d(
+        "PedometerController : 초기화 후 값들 - today: $saveSteps, weekly: $saveWeeklyWalkCount, monthly: $saveMonthlyWalkCount, total: $saveTotalWalkCount");
 
     steps = saveSteps;
     todayWalkCount = saveSteps;
@@ -453,8 +469,10 @@ class PedometerController extends GetxController {
     _lastReportedSteps = 0;
     PrefsManager().setLastReportedSteps(0);
 
-    removeListeners();
-    initPlatformState();
+    BEATLogger.d("PedometerController : 자정 초기화 완료 - 모든 걸음 수 데이터 초기화됨");
+
+    // removeListeners();
+    // initPlatformState();
   }
 
   void removeListeners() {

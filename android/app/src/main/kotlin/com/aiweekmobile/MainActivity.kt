@@ -1,4 +1,4 @@
-package com.dclab.beat  // ← 실제 패키지명으로 수정
+package com.aiweekmobile  // ← 실제 패키지명으로 수정
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
