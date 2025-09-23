@@ -70,7 +70,9 @@ class WithdrawalScreen extends StatelessWidget {
                         title: localizationManager.withdrawalSuccess,
                         content: localizationManager.withdrawalSuccessMessage,
                         onTap: () {
+                          Get.find<PedometerController>().stopForegroundService();
                           Get.find<PedometerController>().stopBackgroundService();
+                          Get.find<LocationController>().stopForegroundService();
                           Get.find<LocationController>().stopBackgroundService();
 
                           context.read<UserController>().add(SignOut());

@@ -36,7 +36,9 @@ class SettingsScreen extends StatelessWidget {
             const SizedBox(height: 24),
             CustomWideButton(
               onTap: () {
+                Get.find<PedometerController>().stopForegroundService();
                 Get.find<PedometerController>().stopBackgroundService();
+                Get.find<LocationController>().stopForegroundService();
                 Get.find<LocationController>().stopBackgroundService();
                 userBloc.add(SignOut());
               },

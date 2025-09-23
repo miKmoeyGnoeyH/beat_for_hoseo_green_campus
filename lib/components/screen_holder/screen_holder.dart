@@ -27,35 +27,63 @@ class ScreenHolder extends StatefulWidget {
   State<ScreenHolder> createState() => _ScreenHolderState();
 }
 
-class _ScreenHolderState extends State<ScreenHolder> {
+class _ScreenHolderState extends State<ScreenHolder>
+    with WidgetsBindingObserver {
   final LocalizationManager localizationManager = LocalizationManager();
 
   final PageIndexController pageIndexController =
       Get.find<PageIndexController>();
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    debugPrint('didChangeAppLifecycleState: $state');
+    switch (state) {
+      case AppLifecycleState.resumed:
+        Get.find<PedometerController>().stopBackgroundService();
+        Get.find<LocationController>().stopBackgroundService();
+
+        Get.find<PedometerController>().startForegroundService();
+        Get.find<LocationController>().startForegroundService();
+
+        Get.find<PedometerController>().addWalkReport();
+        break;
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.paused:
+      case AppLifecycleState.detached:
+        Get.find<PedometerController>().stopForegroundService();
+        Get.find<LocationController>().stopForegroundService();
+
+        Get.find<PedometerController>().startBackgroundService();
+        Get.find<LocationController>().startBackgroundService();
+        break;
+      default:
+        break;
+    }
+    super.didChangeAppLifecycleState(state);
+  }
+
+  @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     showDialogIfPermissionDenied();
     super.initState();
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
   void showDialogIfPermissionDenied() async {
-    final bool isLocationPermissionGranted = await PermissionManager().requestLocationPermission();
-    final bool isCameraPermissionGranted = await PermissionManager().requestCameraPermission();
-    final bool isActivityPermissionDenied = await PermissionManager().requestActivityPermission();
+    final bool isLocationPermissionGranted =
+        await PermissionManager.requestLocationPermission();
+    final bool isCameraPermissionGranted =
+        await PermissionManager.requestCameraPermission();
+    final bool isActivityPermissionGranted =
+        await PermissionManager.requestActivityPermission();
 
-    // LocationController와 PedometerController의 권한 상태 설정
-    final locationController = Get.find<LocationController>();
-    final pedometerController = Get.find<PedometerController>();
-    
-    locationController.isLocationPermissionDenied.value = !isLocationPermissionGranted;
-    pedometerController.isLocationPermissionDenied.value = !isLocationPermissionGranted;
-    pedometerController.isActivityPermissionDenied.value = isActivityPermissionDenied;
+    PermissionManager.updateLocationAndActivityPemission();
 
     if (!isLocationPermissionGranted) {
       await customConfirmDialog(
@@ -67,7 +95,7 @@ class _ScreenHolderState extends State<ScreenHolder> {
         cancelText: localizationManager.homeLater,
       );
     }
-    if (isActivityPermissionDenied) {
+    if (!isActivityPermissionGranted) {
       await customConfirmDialog(
         context: context,
         title: localizationManager.homeBEATRequiresActivityPermissionTitle,
@@ -87,6 +115,9 @@ class _ScreenHolderState extends State<ScreenHolder> {
         cancelText: localizationManager.homeLater,
       );
     }
+
+    Get.find<PedometerController>().startForegroundService();
+    Get.find<LocationController>().startForegroundService();
   }
 
   @override
@@ -97,7 +128,7 @@ class _ScreenHolderState extends State<ScreenHolder> {
       context.read<QuestListController>().add(DataListRequest());
       // context.read<QuizListController>().add(DataListRequest());
       context.read<SurveyListController>().add(DataListRequest());
-      // Get.find<PedometerController>().getWalkHitory();
+      Get.find<PedometerController>().getWalkHitory();
       // context.read<VoteListController>().add(VoteListRequest(userController.state.authorization));
       return Future.delayed(const Duration(seconds: 0));
     }

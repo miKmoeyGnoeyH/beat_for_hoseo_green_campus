@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:beat_flutter/components/sign_in/sign_in_screen.dart';
 import 'package:beat_flutter/controller/location/location_controller.dart';
 import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
+import 'package:beat_flutter/data/models/user_model.dart';
 import 'package:beat_flutter/managers/permission/permission_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -36,8 +37,6 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   //   log(status.map((key, value) => MapEntry(key, value.toString())).toString());
   // }
 
-  final PermissionManager permissionManager = PermissionManager();
-
   @override
   Widget build(BuildContext context) {
     return CustomThemeApp(
@@ -70,38 +69,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    permissionManager.requestNotificationPermission();
-
-    setControllerFlags();
-  }
-
-  Future<void> setControllerFlags() async {
-    final bool isLocationPermissionDenied =
-        await PermissionManager().isLocationPermissionDenied();
-    final bool isActivityPermissionDenied =
-        await PermissionManager.isActivityPermissionDenied();
-
-    final LocationController locationController =
-        Get.find<LocationController>();
-    final PedometerController pedometerController =
-        Get.find<PedometerController>();
-
-    log("app.dart : setControllerFlags : isLocationPermissionDenied : $isLocationPermissionDenied");
-    log("app.dart : setControllerFlags : isActivityPermissionDenied : $isActivityPermissionDenied");
-
-    locationController.isLocationPermissionDenied.value =
-        isLocationPermissionDenied;
-    pedometerController.isActivityPermissionDenied.value =
-        isActivityPermissionDenied;
-    pedometerController.isLocationPermissionDenied.value =
-        isLocationPermissionDenied;
-
-    // log("app.dart : setControllerFlags : locationController.isLocationPermissionDenied : ${locationController.isLocationPermissionDenied}");
-    // log("app.dart : setControllerFlags : pedometerController.isLocationPermissionDenied : ${pedometerController.isLocationPermissionDenied.value}");
-    // log("app.dart : setControllerFlags : pedometerController.isActivityPermissionDenied : ${pedometerController.isActivityPermissionDenied.value}");
-    // log("app.dart : setControllerFlags : pedometerController.isEventDuration : ${pedometerController.isEventDuration.value}");
-    // log("app.dart : setControllerFlags : pedometerController.isHoliday : ${pedometerController.isHoliday.value}");
-    // log("app.dart : setControllerFlags : pedometerController.isInValidArea : ${pedometerController.isInValidArea.value}");
+    PermissionManager.requestNotificationPermission();
   }
 
   Future<void> setupInteractedMessage() async {
@@ -130,16 +98,13 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     debugPrint('didChangeAppLifecycleState: $state');
     switch (state) {
       case AppLifecycleState.resumed:
-        Get.find<PedometerController>().stopBackgroundService();
-        Get.find<LocationController>().stopBackgroundService();
-        setControllerFlags();
+        // Get.find<PedometerController>().stopBackgroundService();
+        // Get.find<LocationController>().stopBackgroundService();
         App.isForeground = true;
         break;
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
-        Get.find<PedometerController>().startBackgroundService();
-        Get.find<LocationController>().startBackgroundService();
         App.isForeground = false;
         break;
       default:

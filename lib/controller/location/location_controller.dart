@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
 import 'package:beat_flutter/managers/background_service/background_service_entry.dart';
@@ -11,11 +12,14 @@ import 'package:beat_flutter/managers/logger/beat_logger.dart';
 import 'package:beat_flutter/managers/notification/local_notification.dart';
 import 'package:beat_flutter/managers/permission/permission_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
+import 'package:pedometer/pedometer.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class LatLng {
   final double lat;
@@ -25,11 +29,9 @@ class LatLng {
 }
 
 class LocationController extends GetxController {
-  // iOS 네이티브와 통신하기 위한 MethodChannel
-  // 모든 백그라운드 작업(걸음 수 동기화, 랭킹 집계, 자정 초기화)이 이 채널을 통해 이루어짐
+  /// iOS 네이티브와 통신하기 위한 MethodChannel
+  /// 모든 백그라운드 작업(걸음 수 동기화, 랭킹 집계, 자정 초기화)이 이 채널을 통해 이루어짐
   static const _channel = MethodChannel("com.beat.walkreport/channel");
-
-  LocationController();
 
   // 위치
   final Rx<LatLng?> _locationData = Rx<LatLng?>(null);
@@ -43,20 +45,59 @@ class LocationController extends GetxController {
   // 언어
   final LocalizationManager localizationManager = LocalizationManager();
 
-  // 지속적으로 사용자 위치를 갱신해 유효 범위 내에 있는지를 확인하기 위한 타이머
-  Timer? _timer;
-
+  /// 타이머들
+  ///
+  /// [_updateLocationTimer] : 위치 갱신 및 유효 범위 체크용 타이머
+  /// [_eventDurationTimer] : 이벤트 진행 시간 측정용 타이머(현재 사용 안됨)
   /// [_midnightTimer] : 매일 자정에 걸음 수 초기화
-  Timer? _midnightTimer;
+  ///
+  /// 위 세 가지 타이머 중 [_midnightTimer]는 중지되지 않아야 한다.
+  ///
+  /// 로그인한 사용자가 없을 때, 즉 앱이 사용중이지 않을 때는 위치정보를 수집할 필요가 없으므로
+  /// [_updateLocationTimer]는 중지된다.
+  ///
+  /// [_eventDurationTimer]는 현재 사용되지 않지만, 매 초 현재 시각이 이벤트 진행 시간 내인지를 확인하고,
+  /// 만약 이벤트 시간이 지났거나 공휴일이라면 중지된다.
+  ///
+  /// 반면 [_midnightTimer]는 로그인된 사용자가 있다면 매일 자정 [PedometerController]의 [resetAtMidnight]를 호출해
+  /// 걸음 수를 초기화하고, 날짜가 변경되었으므로 공휴일 여부를 확인해 만약 공휴일이 아니라면 [_updateLocationTimer]를 시작하며,
+  /// 기획에 따라 [_eventDurationTimer]를 시작해야 할 수도 있기 때문에 [_midnightTimer]는 중지되어서는 안 된다.
+  ///
+  /// 지속적으로 사용자 위치를 갱신해 유효 범위 내에 있는지를 확인하기 위한 타이머
+  Timer? _updateLocationTimer;
 
-  /// [_eventDurationTimer] : 이벤트 진행 시간 측정용 타이머
+  /// [_eventDurationTimer] : 이벤트 진행 시간 측정용 타이머(현재 사용 안됨)
   final int endHour = 18;
   final int endMinute = 0;
   final int endSecond = 0;
   Timer? _eventDurationTimer;
 
-  final RxBool isLocationPermissionDenied = true.obs;
+  /// [_midnightTimer] : 매일 자정에 걸음 수 초기화
+  Timer? _midnightTimer;
 
+  LocationController();
+
+  /// 백그라운드 서비스 초기화
+  Future<void> initializeService() async {
+    final service = FlutterBackgroundService();
+    await service.configure(
+      iosConfiguration: IosConfiguration(
+        autoStart: false,
+        onForeground: startLocationTimerForeground,
+        onBackground: startLocationTimerBackgroundIOS,
+      ),
+      androidConfiguration: AndroidConfiguration(
+        autoStart: false,
+        onStart: startLocationTimerForeground,
+        isForegroundMode: false,
+        autoStartOnBoot: false,
+      ),
+    );
+  }
+
+  /// API 요청을 통해 오늘이 공휴일인지를 확인.
+  /// 서버는 이번 달의 공휴일 리스트를 응답하는데, 이 리스트에 오늘 날짜가 포함되었는지, 오늘이 토요일 혹은 일요일인지를 확인한다.
+  /// 상태코드가 200이 아니거나 오류 발생 시에는 false를 반환한다.
   Future<bool> getIsHoliday() async {
     final DateTime now = DateTime.now();
     final String requestUrl =
@@ -71,32 +112,193 @@ class LocationController extends GetxController {
         final List<dynamic> responseBody = jsonDecode(response.body);
         final String nowFormatted = DateFormat("yyyy-MM-dd").format(now);
         return (responseBody.any((e) => e["date"] == nowFormatted)) ||
-            now == DateTime.saturday ||
-            now == DateTime.sunday;
+            now.day == DateTime.saturday ||
+            now.day == DateTime.sunday;
       }
-      return now == DateTime.saturday || now == DateTime.sunday;
+      return false;
     } catch (e) {
       BEATLogger.d("LocationController : getIsHoliday error : ${e.toString()}");
-      return now == DateTime.saturday || now == DateTime.sunday;
+      return false;
     }
   }
 
-  /// 서비스 초기화
-  Future<void> initializeService() async {
-    final service = FlutterBackgroundService();
-    await service.configure(
-      iosConfiguration: IosConfiguration(
-        autoStart: false,
-        onForeground: locationServiceStart,
-        onBackground: locationServiceIosBackground,
-      ),
-      androidConfiguration: AndroidConfiguration(
-        autoStart: false,
-        onStart: locationServiceStart,
-        isForegroundMode: false,
-        autoStartOnBoot: false,
-      ),
+  /// 베타 테스트용 공휴일 여부 판별 함수.
+  /// 오늘이 토요일 혹은 일요일인지 여부만을 확인한다.
+  Future<bool> getIsHolidayTest() async {
+    final DateTime now = DateTime.now();
+
+    BEATLogger.d("LocationController : getIsHolidayTest : now: $now, now.day: ${now.day}, now.weekday: ${now.weekday}");
+
+    return now.weekday == DateTime.saturday || now.day == DateTime.sunday;
+  }
+
+  void stopUpdateLocationTimer() {
+    _updateLocationTimer?.cancel();
+    _updateLocationTimer = null;
+  }
+
+  void startUpdateLocationTimer() {
+    stopUpdateLocationTimer();
+
+    _updateLocationTimer = Timer.periodic(
+      const Duration(seconds: 5),
+      (t) async {
+        await PermissionManager
+            .ensureLocationAndActivityPermissionInitialized();
+        if (PermissionManager.isLocationPermissionGrantedStatic!) return;
+        await fetchLocation();
+        checkIsValidArea();
+      },
     );
+  }
+
+  void stopMidnightTimer() {
+    _midnightTimer?.cancel();
+    _midnightTimer = null;
+  }
+
+  void startMidnightTimer() {
+    stopMidnightTimer();
+
+    _midnightTimer = Timer.periodic(
+      const Duration(seconds: 1),
+      (_) {
+        final now = DateTime.now();
+        // if (now.hour == 0 && now.minute == 0 && now.second == 0) {
+          if (now.minute % 3 == 0 && now.second == 0) {
+          BEATLogger.d("resetAtMidnight()");
+          _resetAtMidnight();
+        }
+      },
+    );
+  }
+
+  void startForegroundService() async {
+    BEATLogger.d("LocationController : startForegroundService()");
+
+    await PermissionManager.ensureLocationAndActivityPermissionInitialized();
+
+    await fetchLocation();
+    checkIsValidArea();
+
+    final bool isHoliday = await getIsHoliday();
+    final pedometerController = Get.find<PedometerController>();
+
+    pedometerController.isHoliday = isHoliday;
+
+    stopUpdateLocationTimer();
+    stopMidnightTimer();
+
+    if (!isHoliday) {
+      startUpdateLocationTimer();
+    }
+    startMidnightTimer();
+  }
+
+  void stopForegroundService() {
+    BEATLogger.d("LocationController : stopForegroundService()");
+
+    _channel.setMethodCallHandler(null);
+
+    stopUpdateLocationTimer();
+    stopMidnightTimer();
+  }
+
+  void startBackgroundService() async {
+    BEATLogger.d("LocationController : startBackgroundService()");
+
+    WidgetsFlutterBinding.ensureInitialized();
+    DartPluginRegistrant.ensureInitialized();
+
+    PermissionManager.updateLocationAndActivityPemission();
+    await EasyLocalization.ensureInitialized();
+
+    await fetchLocation();
+    checkIsValidArea();
+
+    if (Platform.isIOS) {
+      final bool isHoliday = await getIsHolidayTest();
+      final int sendToTime = Get.find<PedometerController>().sendToTime;
+
+      setMethodCallHandler();
+      await _channel.invokeMethod("startBackgroundTasks",
+          {"isHoliday": isHoliday, "sendToTime": sendToTime});
+    }
+
+    FlutterBackgroundService().startService();
+  }
+
+  void stopBackgroundService() async {
+    BEATLogger.d("LocationController : stopBackgroundService()");
+    FlutterBackgroundService().invoke("stop");
+
+    await _channel.invokeMethod("stopBackgroundTasks");
+    _channel.setMethodCallHandler(null);
+
+    stopUpdateLocationTimer();
+    stopMidnightTimer();
+  }
+
+  // void startBackgroundService() async {
+  //   BEATLogger.d("LocationController : startBackgroundService()");
+  //   final service = FlutterBackgroundService();
+  //   setMethodCallHandler();
+  //
+  //   final PedometerController pedometerController =
+  //       Get.find<PedometerController>();
+  //
+  //   final bool isHoliday = await getIsHoliday();
+  //
+  //   isLocationPermissionDenied.value =
+  //       await PermissionManager().isLocationPermissionDenied();
+  //   pedometerController.isLocationPermissionDenied.value =
+  //       isLocationPermissionDenied.value;
+  //   pedometerController.isActivityPermissionDenied.value =
+  //       await PermissionManager.isActivityPermissionDenied();
+  //   pedometerController.isHoliday.value = isHoliday;
+  //   final int sendToTime = pedometerController.sendToTime;
+  //
+  //   // log("LocationController : startBackgroundService : isHoliday : $isHoliday, sendToTime : $sendToTime");
+  //
+  //   if (Platform.isIOS) {
+  //     // iOS 네이티브에 공휴일 여부 전달
+  //     await _channel.invokeMethod("startBackgroundTasks",
+  //         {"isHoliday": isHoliday, "sendToTime": sendToTime});
+  //   } else {
+  //     // Android는 그냥 서비스만 시작
+  //     service.startService();
+  //   }
+  //
+  //   service.startService();
+  // }
+
+  /// 자정 초기화
+  void _resetAtMidnight() async {
+    BEATLogger.d("LocationController : _resetAtMidnight()");
+
+    final pedometerController = Get.find<PedometerController>();
+    final bool isHoliday = await getIsHoliday();
+
+    pedometerController.isHoliday = isHoliday;
+    pedometerController.resetAtMidnight(DateTime.now());
+
+    BEATLogger.d("LocationController : 걸음 수 초기화 완료");
+
+    if (Platform.isIOS) {
+      await _channel
+          .invokeMethod("updateHolidayStatus", {"isHoliday": isHoliday});
+      BEATLogger.d("LocationController : iOS 네이티브에 공휴일 상태 업데이트 완료");
+    }
+
+    if (isHoliday) {
+      stopUpdateLocationTimer();
+      BEATLogger.d("LocationController : 공휴일로 인해 이벤트 타이머 중단");
+      return;
+    }
+
+    startUpdateLocationTimer();
+    BEATLogger.d("LocationController : 자정 초기화 완료 - 위치 추적 재시작");
+    // _startEventDurationTimer();
   }
 
   /// iOS MethodChannel 핸들러
@@ -122,7 +324,6 @@ class LocationController extends GetxController {
               // _stopEventTimers();
               break;
 
-            // iOS 네이티브에서 정확한 시간에 호출되는 백그라운드 작업들
             case "syncWalkDataInBackground":
               await _syncWalkDataInBackground();
               break;
@@ -136,206 +337,21 @@ class LocationController extends GetxController {
     }
   }
 
-  void startBackgroundService() async {
-    BEATLogger.d("LocationController : startBackgroundService()");
-    final service = FlutterBackgroundService();
-    setMethodCallHandler();
-
-    final PedometerController pedometerController =
-        Get.find<PedometerController>();
-
-    final bool isHoliday = await getIsHoliday();
-
-    isLocationPermissionDenied.value = await PermissionManager().isLocationPermissionDenied();
-    pedometerController.isLocationPermissionDenied.value = isLocationPermissionDenied.value;
-    pedometerController.isActivityPermissionDenied.value = await PermissionManager.isActivityPermissionDenied();
-    pedometerController.isHoliday.value = isHoliday;
-    final int sendToTime = pedometerController.sendToTime;
-
-    // log("LocationController : startBackgroundService : isHoliday : $isHoliday, sendToTime : $sendToTime");
-
-    if (Platform.isIOS) {
-      // iOS 네이티브에 공휴일 여부 전달
-      await _channel.invokeMethod("startBackgroundTasks",
-          {"isHoliday": isHoliday, "sendToTime": sendToTime});
-    } else {
-      // Android는 그냥 서비스만 시작
-      service.startService();
-    }
-
-    service.startService();
-  }
-
-  void stopBackgroundService() {
-    BEATLogger.d("LocationController : stopBackgroundService()");
-    final service = FlutterBackgroundService();
-    service.invoke("stop");
-
-    _channel.setMethodCallHandler(null);
-    _stopAllTimers();
-  }
-
-  /// 자정 초기화
-  void _resetAtMidnight() async {
-    BEATLogger.d("LocationController : _resetAtMidnight() 시작");
-    final bool isHoliday = await getIsHoliday();
-    final pedometerController = Get.find<PedometerController>();
-
-    BEATLogger.d("LocationController : 공휴일 여부: $isHoliday");
-
-    pedometerController.isHoliday.value = isHoliday;
-    pedometerController.isEventDuration.value = true;
-    pedometerController.resetAtMidnight(DateTime.now());
-
-    BEATLogger.d("LocationController : 걸음 수 초기화 완료");
-
-    if (Platform.isIOS) {
-      await _channel
-          .invokeMethod("updateHolidayStatus", {"isHoliday": isHoliday});
-      BEATLogger.d("LocationController : iOS 네이티브에 공휴일 상태 업데이트 완료");
-    }
-
-    // ✅ 공휴일이면 위치 추적/이벤트 타이머 중단
-    if (isHoliday) {
-      _stopEventTimers();
-      BEATLogger.d("LocationController : 공휴일로 인해 이벤트 타이머 중단");
-      return;
-    }
-
-    _startLocationTimer();
-    BEATLogger.d("LocationController : 자정 초기화 완료 - 위치 추적 재시작");
-    // _startEventDurationTimer();
-  }
-
-  /// Foreground 서비스 시작
-  @pragma('vm:entry-point')
-  void startTimer(ServiceInstance service) async {
-    BEATLogger.d("LocationController : startTimer()");
-
-    await EasyLocalization.ensureInitialized();
-
-    final bool isHoliday = await getIsHoliday();
-
-    final pedometerController = Get.isRegistered<PedometerController>()
-        ? Get.find<PedometerController>()
-        : Get.put(PedometerController(), permanent: true);
-
-    pedometerController.isHoliday.value = isHoliday;
-
-    _stopAllTimers();
-
-    // iOS에서는 네이티브에서 정확한 시간에 작업을 수행하므로 타이머 사용하지 않음
-    if (Platform.isIOS) {
-      BEATLogger.d("LocationController : iOS에서는 네이티브 스케줄링 시스템 사용");
-      // 공휴일이 아니면 위치 추적만 시작
-      if (!isHoliday) {
-        _startLocationTimer();
-      }
-      _startMidnightTimer();
-    } else {
-      BEATLogger.d("LocationController : startTimer : isAndroid");
-      // Android에서는 기존 타이머 방식 사용
-      if (!isHoliday) {
-        _startLocationTimer();
-        // _startEventDurationTimer();
-      }
-      _startMidnightTimer();
-    }
-  }
-
-  void _startLocationTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 5), (t) async {
-      BEATLogger.d("LocationController : _startLocationTimer() : isLocationPermissionDenied: ${isLocationPermissionDenied.value}");
-
-      if (isLocationPermissionDenied.value) return;
-      await fetchLocation();
-      checkIsValidArea();
-    });
-  }
-
-  void _startEventDurationTimer() {
-    final now = DateTime.now();
-
-    if (now.hour < endHour &&
-        now.minute < endMinute &&
-        now.second < endSecond) {
-      LocalNotificationManager.showNotification(
-        localizationManager.lnEventDuration,
-        localizationManager.lnBackInRangeBody,
-      );
-    }
-
-    _eventDurationTimer = Timer.periodic(const Duration(seconds: 1), (t) async {
-      if (now.hour > endHour ||
-          (now.hour == endHour && now.minute > endMinute) ||
-          (now.hour == endHour &&
-              now.minute == endMinute &&
-              now.second >= endSecond)) {
-        Get.find<PedometerController>().isEventDuration.value = false;
-        _stopEventTimers();
-        LocalNotificationManager.showNotification(
-          localizationManager.lnEventDurationEnded,
-          localizationManager.lnOutOfRangeBody,
-        );
-      }
-    });
-  }
-
-  void _startMidnightTimer() {
-    _midnightTimer = Timer.periodic(const Duration(seconds: 1), (_) {
-      final now = DateTime.now();
-      if (now.hour == 0 && now.minute == 0 && now.second == 0) {
-        // if (now.hour == 19 && now.minute == 33 && now.second == 0) {
-        BEATLogger.d("resetAtMidnight()");
-        _resetAtMidnight();
-      }
-    });
-  }
-
-  void _stopEventTimers() {
-    _timer?.cancel();
-    _timer = null;
-    _eventDurationTimer?.cancel();
-    _eventDurationTimer = null;
-  }
-
-  void _stopAllTimers() {
-    _stopEventTimers();
-    _midnightTimer?.cancel();
-    _midnightTimer = null;
-  }
-
-  // 위치 관련
-  Future<void> setUp() async {
-    if (isLocationPermissionDenied.value) return;
-
-    final now = DateTime.now();
-    // if (now.hour > endHour ||
-    //     (now.hour == endHour && now.minute > endMinute) ||
-    //     (now.hour == endHour &&
-    //         now.minute == endMinute &&
-    //         now.second >= endSecond)) {
-    //   Get.find<PedometerController>().isEventDuration.value = false;
-    //   _stopEventTimers();
-    //   LocalNotificationManager.showNotification(
-    //     localizationManager.lnEventDurationEnded,
-    //     localizationManager.lnOutOfRangeBody,
-    //   );
-    // }
-
-    await fetchLocation();
-    checkIsValidArea();
-  }
-
   Future<void> fetchLocation() async {
-    if (isLocationPermissionDenied.value) return;
+    await PermissionManager.ensureLocationAndActivityPermissionInitialized();
+    if (!PermissionManager.isLocationPermissionGrantedStatic!) return;
+
     final location = Location();
     final newLocationData = await location.getLocation();
+
     if (newLocationData.latitude == null || newLocationData.longitude == null) {
       return;
     }
-    locationData =
-        LatLng(newLocationData.latitude!, newLocationData.longitude!);
+
+    locationData = LatLng(
+      newLocationData.latitude!,
+      newLocationData.longitude!,
+    );
   }
 
   List<LatLng> asanArea = [
@@ -386,16 +402,14 @@ class LocationController extends GetxController {
       LatLng a = polygon[i];
       LatLng b = polygon[(i + 1) % polygon.length];
 
-      if (a.lng == b.lng) continue; // 수직선은 제외
+      if (a.lng == b.lng) continue;
 
-      // a.lng <= b.lng 순으로 정렬
       if (a.lng > b.lng) {
         final temp = a;
         a = b;
         b = temp;
       }
 
-      // 현재 점이 선분의 Y 범위 내에 있는지 체크
       if (point.lng > a.lng && point.lng <= b.lng) {
         final slope = (b.lat - a.lat) / (b.lng - a.lng);
         final intersectLat = slope * (point.lng - a.lng) + a.lat;
@@ -430,16 +444,17 @@ class LocationController extends GetxController {
   void checkIsValidArea() async {
     final PedometerController pedometerController =
         Get.find<PedometerController>();
-    final DateTime now = DateTime.now();
 
-    if (isLocationPermissionDenied.value) {
-      pedometerController.isInValidArea.value = false;
+    if (PermissionManager.isLocationPermissionGrantedStatic == null ||
+        (PermissionManager.isLocationPermissionGrantedStatic == null &&
+            !PermissionManager.isLocationPermissionGrantedStatic!)) {
+      pedometerController.isInValidArea = false;
       return;
     }
 
     if (!isPointInAsanArea() && !isPointInCheonanArea()) {
-      if (!pedometerController.isInValidArea.value) return;
-      pedometerController.isInValidArea.value = false;
+      if (!pedometerController.isInValidArea) return;
+      pedometerController.isInValidArea = false;
       BEATLogger.d(
           "LocationController : checkIsValidArea() : User Location Out of Range : ${locationData?.lat}, ${locationData?.lng}");
 
@@ -448,8 +463,8 @@ class LocationController extends GetxController {
         localizationManager.lnOutOfRangeBody,
       );
     } else {
-      if (pedometerController.isInValidArea.value) return;
-      pedometerController.isInValidArea.value = true;
+      if (pedometerController.isInValidArea) return;
+      pedometerController.isInValidArea = true;
       BEATLogger.d(
           "LocationController : checkIsValidArea() : User Location Back in Range : ${locationData?.lat}, ${locationData?.lng}");
 
@@ -468,12 +483,17 @@ class LocationController extends GetxController {
 
     // log("LocationController : checkIsValidArea() : isPointInAsanArea(): ${isPointInAsanArea()}, isPointInCheonanArea(): ${isPointInCheonanArea()}, pedometerController.isInValidArea.value: ${pedometerController.isInValidArea.value}");
 
-    if (isLocationPermissionDenied.value) pedometerController.isInValidArea.value = false;
+    if (PermissionManager.isLocationPermissionGrantedStatic == null ||
+        (PermissionManager.isLocationPermissionGrantedStatic == null &&
+            !PermissionManager.isLocationPermissionGrantedStatic!)) {
+      pedometerController.isInValidArea = false;
+      return;
+    }
 
     if (!isPointInAsanAreaIOSBackground(lat, lon) &&
         !isPointInCheonanAreaIOSBackground(lat, lon)) {
-      if (!pedometerController.isInValidArea.value) return;
-      pedometerController.isInValidArea.value = false;
+      if (!pedometerController.isInValidArea) return;
+      pedometerController.isInValidArea = false;
       BEATLogger.d(
           "LocationController : checkIsValidAreaIOSBackground() : User Location Out of Range : ${locationData?.lat}, ${locationData?.lng}");
 
@@ -491,8 +511,8 @@ class LocationController extends GetxController {
         localizationManager.lnOutOfRangeBody,
       );
     } else {
-      if (pedometerController.isInValidArea.value) return;
-      pedometerController.isInValidArea.value = true;
+      if (pedometerController.isInValidArea) return;
+      pedometerController.isInValidArea = true;
       BEATLogger.d(
           "LocationController : checkIsValidAreaIOSBackground() : User Location Back in Range : ${locationData?.lat}, ${locationData?.lng}");
 
@@ -516,11 +536,14 @@ class LocationController extends GetxController {
   Future<void> _syncWalkDataInBackground() async {
     BEATLogger.d("LocationController : _syncWalkDataInBackground()");
     try {
-      final pedometerController = Get.find<PedometerController>();
-      if (!pedometerController.isActivityPermissionDenied.value &&
-          !pedometerController.isLocationPermissionDenied.value) {
+      PermissionManager.ensureLocationAndActivityPermissionInitialized();
+      if (PermissionManager.isActivityPermissionGrantedStatic! &&
+          PermissionManager.isLocationPermissionGrantedStatic!) {
+        final pedometerController = Get.find<PedometerController>();
         pedometerController.addWalkReport();
         BEATLogger.d("LocationController : 백그라운드 걸음 수 동기화 완료");
+      } else {
+        BEATLogger.d("LocationController : 권한이 없어 걸음 수 동기화 건너뜀");
       }
     } catch (e) {
       BEATLogger.e("LocationController : 백그라운드 걸음 수 동기화 실패: $e");
@@ -531,10 +554,10 @@ class LocationController extends GetxController {
   Future<void> _syncRankingInBackground() async {
     BEATLogger.d("LocationController : _syncRankingInBackground()");
     try {
-      final pedometerController = Get.find<PedometerController>();
-      if (!pedometerController.isActivityPermissionDenied.value &&
-          !pedometerController.isLocationPermissionDenied.value) {
-        // 실제 걸음 수 전송 로직 실행
+      PermissionManager.ensureLocationAndActivityPermissionInitialized();
+      if (PermissionManager.isActivityPermissionGrantedStatic! &&
+          PermissionManager.isLocationPermissionGrantedStatic!) {
+        final pedometerController = Get.find<PedometerController>();
         pedometerController.addWalkReport();
         BEATLogger.d("LocationController : 백그라운드 랭킹 집계 완료 - 걸음 수 전송됨");
       } else {
@@ -547,8 +570,8 @@ class LocationController extends GetxController {
 
   @override
   void dispose() {
-    _timer?.cancel();
-    _timer = null;
+    _updateLocationTimer?.cancel();
+    _updateLocationTimer = null;
 
     _eventDurationTimer?.cancel();
     _eventDurationTimer = null;

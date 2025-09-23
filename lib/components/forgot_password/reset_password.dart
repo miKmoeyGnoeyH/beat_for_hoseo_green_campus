@@ -288,7 +288,9 @@ class _ResetPasswordState extends State<ResetPassword> {
           onTap: () {
             context.read<UserController>().add(SignOut());
 
+            Get.find<PedometerController>().stopForegroundService();
             Get.find<PedometerController>().stopBackgroundService();
+            Get.find<LocationController>().stopForegroundService();
             Get.find<LocationController>().stopBackgroundService();
 
             PrefsManager().resetSavedStudentIdAndPassword();

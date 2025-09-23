@@ -106,9 +106,9 @@ class PrefsManager {
     return _prefs.setInt("stepsAfterLastboot", steps);
   }
 
-  int getStepsAfterLastboot() {
+  int? getStepsAfterLastboot() {
     _ensurePrefs();
-    return _prefs.getInt("stepsAfterLastboot") ?? 0;
+    return _prefs.getInt("stepsAfterLastboot");
   }
 
   bool isStudentIdSaved() {

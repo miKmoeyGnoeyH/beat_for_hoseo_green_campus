@@ -127,7 +127,7 @@ class QuestCardContents extends StatelessWidget {
 
                   // 해당 퀘스트가 일일 퀘스트인 경우
                   if (questWalkModel.eventPeriodType == EventPeriodType.daily) {
-                    isQuestRequirementSatisfied = pedometerController.steps >=
+                    isQuestRequirementSatisfied = pedometerController.todayWalkCount >=
                         questWalkModel.requiredWalkCount;
                     // 해당 퀘스트가 주간 퀘스트인 경우
                   } else if (questWalkModel.eventPeriodType ==
@@ -149,7 +149,7 @@ class QuestCardContents extends StatelessWidget {
                   int steps;
                   if ((questModel as QuestWalkModel).eventPeriodType ==
                       EventPeriodType.daily) {
-                    steps = pedometerController.steps;
+                    steps = pedometerController.todayWalkCount;
                   } else if ((questModel as QuestWalkModel).eventPeriodType ==
                       EventPeriodType.weekly)
                     steps = pedometerController.weeklyWalkCount;

@@ -99,6 +99,8 @@ class SurveyDetail extends StatelessWidget {
                 Uri.parse(requestUrl),
                 headers: {
                   "Content-Type": "application/json",
+                  "Authorization":
+                      context.read<UserController>().state.authorization,
                 },
                 body: jsonEncode(surveyDetailController.answersToJson()),
               )
