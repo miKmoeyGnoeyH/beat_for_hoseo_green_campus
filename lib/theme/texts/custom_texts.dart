@@ -69,6 +69,11 @@ abstract class CustomTexts {
     letterSpacing: letterSpacing,
   );
 
+  static TextStyle get bodyLLarge => TextStyle(
+    fontSize: 16.0,
+    fontWeight: FontWeights.regular,
+    letterSpacing: letterSpacing,
+  );
   static TextStyle get bodyLarge => TextStyle(
     fontSize: 14.0,
     fontWeight: FontWeights.regular,

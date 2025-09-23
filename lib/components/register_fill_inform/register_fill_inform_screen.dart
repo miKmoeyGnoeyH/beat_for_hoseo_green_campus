@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:beat_flutter/components/global/methods/custom_input_formatters.dart';
 import 'package:beat_flutter/components/global/widgets/custom_circular_progress_indicator.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -293,6 +295,20 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                           //         localizationManager.generalStudent
                           //     ? localizationManager.rfiStudentIdHint
                           //     : localizationManager.rfiIdHint,
+                          inputFormatters:
+                              registerOrganizationController!.organization ==
+                                      localizationManager.generalStudent
+                                  ? [
+                                      onlyDigitsInputFormatter(),
+                                    ]
+                                  : [
+                                      FilteringTextInputFormatter.deny(' '),
+                                    ],
+                          keyboardType:
+                              registerOrganizationController!.organization ==
+                                      localizationManager.generalStudent
+                                  ? TextInputType.number
+                                  : null,
                           onChanged: (value) {
                             registerSidController.add(IDChanged());
 
@@ -323,6 +339,19 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                             ),
                             onTap: _isEmailButtonEnabled
                                 ? () async {
+                                    final RegExp emailRegexp = RegExp(r"^(?=.{1,64}$)([A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+)?)$");
+
+                                    if (!emailRegexp.hasMatch(registerSidController.idController.text)) {
+                                      await customShowDialog(
+                                        context: context,
+                                        title: localizationManager.rfiInvalidMailTitle,
+                                        content:
+                                        localizationManager.rfiInvalidMailContent,
+                                      );
+                                      _isEmailButtonEnabled = false;
+                                      return;
+                                    }
+
                                     _isEmailButtonEnabled = false;
                                     registerSidController.add(
                                       EmailRequest(

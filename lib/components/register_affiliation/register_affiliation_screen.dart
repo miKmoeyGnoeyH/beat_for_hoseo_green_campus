@@ -43,14 +43,14 @@ class _RegisterAffiliationScreenState extends State<RegisterAffiliationScreen> {
         top: false,
         isScrollable: false,
         appBar: RegisterBasicAppbar(
-          text: context.tr('affiliation'),
+          text: localizationManager.raAppbarTitle,
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: Center(
             child: CustomTextField(
-              maxLength: 10,
-              hintText: context.tr('affiliation_hint'),
+              // maxLength: 10,
+              hintText: localizationManager.raAffiliationHint,
               onChanged: (value) {
                 registerDepartmentController.department = value;
                 isLengthValid = value.length >= minLength;
@@ -103,6 +103,6 @@ class _RegisterAffiliationScreenState extends State<RegisterAffiliationScreen> {
   RegisterDepartmentController get registerDepartmentController =>
       widget.registerDepartmentController;
 
-  final int minLength = 3;
+  final int minLength = 1;
   bool isLengthValid = false;
 }

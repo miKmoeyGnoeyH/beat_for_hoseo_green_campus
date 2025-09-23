@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../controller/register_fill_inform/register_sid_controller.dart';
 import '../../global/methods/custom_input_formatters.dart';
@@ -12,6 +13,8 @@ class RegisterSIDTextField extends StatelessWidget {
     this.onChanged,
     this.maxLength = 8,
     this.hintText = "",
+    this.inputFormatters,
+    this.keyboardType,
   });
 
   final RegisterIDController registerSidController;
@@ -22,12 +25,10 @@ class RegisterSIDTextField extends StatelessWidget {
       flex: 2,
       child: CustomTextField(
         textEditingController: registerSidController.idController,
-        keyboardType: TextInputType.number,
+        keyboardType: keyboardType,
         hintText: hintText,
         maxLength: maxLength,
-        inputFormatters: [
-          onlyDigitsInputFormatter(),
-        ],
+        inputFormatters: inputFormatters,
         onChanged: onChanged,
       ),
     );
@@ -36,4 +37,6 @@ class RegisterSIDTextField extends StatelessWidget {
   final Function(String)? onChanged;
   final String? hintText;
   final int? maxLength;
+  final List<TextInputFormatter>? inputFormatters;
+  final TextInputType? keyboardType;
 }

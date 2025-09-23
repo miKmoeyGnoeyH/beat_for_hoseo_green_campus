@@ -64,22 +64,6 @@ class PedometerController extends GetxController {
   /// 객체가 생성될 때 초기화
   int? _stepsAfterLastBoot;
 
-  /// 부팅 이후 총 걸음 수
-  /// 이 값은 앱 내에서 측정한 실제 걸음 수를 계산하기 위해 사용되는데,
-  /// 이 값에서 [_stepsAfterLastBoot]을 뺀 값이 앱 내에서 측정한 실제 걸음 수가 된다.
-  // final Rx<int> _totalSteps = 0.obs;
-  //
-  // int get totalSteps => _totalSteps.value;
-  //
-  // set totalSteps(int value) => _totalSteps.value = value;
-
-  /// 실제 앱에서 측정한 걸음 수
-  // final Rx<int> _steps = 0.obs;
-  //
-  // int get steps => _steps.value;
-  //
-  // set steps(int value) => _steps.value = value;
-
   /// 서버에 기록된, 서버로부터 전달받은 오늘 걸음 수
   final RxInt _todayWalkCount = 0.obs;
 
@@ -209,8 +193,6 @@ class PedometerController extends GetxController {
               monthlyWalkCount = bodyToJson['monthlyWalkCount'];
               totalWalkCount = bodyToJson['totalWalkCount'];
             }
-            // steps = todayWalkCount;
-            // totalSteps = totalWalkCount;
             _walkReports.clear();
           } else {
             todayWalkCount = savedToday;
@@ -418,8 +400,6 @@ class PedometerController extends GetxController {
           monthlyWalkCount = bodyToJson['monthlyWalkCount'];
           totalWalkCount = bodyToJson['totalWalkCount'];
         }
-        // steps = todayWalkCount;
-        // totalSteps = totalWalkCount;
       } else {
         todayWalkCount = savedToday;
         weeklyWalkCount = savedWeekly;
@@ -612,7 +592,6 @@ class PedometerController extends GetxController {
     final int saveMonthlyWalkCount = now.day == 1 ? 0 : monthlyWalkCount;
     final int saveTotalWalkCount = totalWalkCount;
 
-    // steps = saveSteps;
     todayWalkCount = saveSteps;
     weeklyWalkCount = saveWeeklyWalkCount;
     monthlyWalkCount = saveMonthlyWalkCount;

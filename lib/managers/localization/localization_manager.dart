@@ -166,6 +166,7 @@ class LocalizationManager {
 
   // register affiliation
   String get raAppbarTitle => "register_affiliation".tr(gender: "appbar_title");
+  String get raAffiliationHint => "register_affiliation".tr(gender: "affiliation_hint");
   String get raInappropriateAffiliationTitle => "register_affiliation".tr(gender: "inappropriate_affiliation_title");
   String get raInappropriateAffiliationContent => "register_affiliation".tr(gender: "inappropriate_affiliation_content");
   String raContinueWith(String arg) => "register_affiliation".tr(gender: "continue_with", args: [arg]);
@@ -187,6 +188,8 @@ class LocalizationManager {
   String get rfiId => "register_fill_inform_page".tr(gender: "id");
   String get rfiIdHint => "register_fill_inform_page".tr(gender: "id_hint");
   String get rfiValidateMail => "register_fill_inform_page".tr(gender: "validate_mail");
+  String get rfiInvalidMailTitle => "register_fill_inform_page".tr(gender: "invalid_mail_title");
+  String get rfiInvalidMailContent => "register_fill_inform_page".tr(gender: "invalid_mail_content");
   String get rfiValidateId => "register_fill_inform_page".tr(gender: "validate_id");
   String get rfiEmailSentTitle => "register_fill_inform_page".tr(gender: "email_sent_title");
   String get rfiEmailSentMessage => "register_fill_inform_page".tr(gender: "email_sent_message");
