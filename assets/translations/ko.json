@@ -108,8 +108,8 @@
     "no_notices": "공지사항이 없습니다."
   },
   "sign_in": {
-    "sid_or_id": "학번 또는 교번",
-    "sid_or_id_hint": "학번 또는 교번을 입력해 주세요",
+    "sid_or_id": "호서대학교 이메일",
+    "sid_or_id_hint": "이메일 주소 앞부분을 입력해주세요.",
     "password": "비밀번호",
     "password_hint": "비밀번호를 입력해 주세요",
     "sign_in": "로그인",
@@ -148,7 +148,7 @@
     "name_hint": "이름을 입력해주세요.",
     "student_id": "학번",
     "student_id_hint": "학번을 입력해주세요.",
-    "sid_or_employee_id": "학번 또는 교번",
+    "sid_or_employee_id": "학번 또는 ID",
     "sid_or_employee_id_hint": "학번 또는 교번을 입력해주세요.",
     "employee_mail": "교직원 메일",
     "employee_mail_hint": "@hoseo.edu를 제외한 앞부분을 입력해주세요.",
@@ -293,6 +293,10 @@
     "oss_licenses": "오픈소스 라이선스",
     "view_detail": "상세 보기",
     "app_inquiry": "앱 관련 문의",
+    "email": "이메일",
+    "email_address": "hsu.dclab01@gmail.com",
+    "phone": "전화번호",
+    "phone_number": "041-540-5695",
     "version": "버전"
   },
   "withdrawal": {

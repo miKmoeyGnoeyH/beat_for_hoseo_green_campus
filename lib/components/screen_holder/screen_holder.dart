@@ -39,23 +39,23 @@ class _ScreenHolderState extends State<ScreenHolder>
     debugPrint('didChangeAppLifecycleState: $state');
     switch (state) {
       case AppLifecycleState.resumed:
-        Get.find<PedometerController>().stopBackgroundService();
-        Get.find<LocationController>().stopBackgroundService();
+        await Get.find<PedometerController>().stopBackgroundService();
+        await Get.find<LocationController>().stopBackgroundService();
 
         Get.find<PedometerController>().startForegroundService();
         Get.find<LocationController>().startForegroundService();
 
-        Get.find<PedometerController>().addWalkReport();
+        // Get.find<PedometerController>().addWalkReport();
         break;
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:
-      case AppLifecycleState.detached:
-        Get.find<PedometerController>().stopForegroundService();
-        Get.find<LocationController>().stopForegroundService();
+        // await Get.find<PedometerController>().stopForegroundService();
+        // await Get.find<LocationController>().stopForegroundService();
 
         Get.find<PedometerController>().startBackgroundService();
         Get.find<LocationController>().startBackgroundService();
         break;
+      case AppLifecycleState.detached:
       default:
         break;
     }

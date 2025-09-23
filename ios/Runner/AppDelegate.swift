@@ -5,8 +5,10 @@ import flutter_local_notifications
 import BackgroundTasks
 import CoreMotion
 import UserNotifications
+import CoreMotion
 
 let pedometer = CMPedometer()
+let activityManager = CMMotionActivityManager()
 
 @main
 @objc class AppDelegate: FlutterAppDelegate, CLLocationManagerDelegate {
@@ -76,7 +78,7 @@ let pedometer = CMPedometer()
                     self.startBackgroundTasks(isHoliday: isHoliday, sendToTime: 0)
                 } else {
                     // 모든 인자가 없는 경우 기본값 사용
-                    self.startBackgroundTasks(isHoliday: false, sendToTime: 0)
+                    self.startBackgroundTasks(isHoliday: true, sendToTime: 0)
                 }
                 result("Background tasks started")
                 
@@ -103,6 +105,14 @@ let pedometer = CMPedometer()
                 let permissionGranted = CMMotionActivityManager.authorizationStatus() == .authorized
                 let granted = hardwareAvailable && permissionGranted
                 result(granted)
+            } else if call.method == "startPedometer" {
+                startPedometer()
+            } else if call.method == "stopPedometer" {
+                stopPedometer()
+            } else if call.method == "startActivityUpdates" {
+                startActivityUpdates()
+            } else if call.method == "stopActivityUpdates" {
+                stopActivityUpdates()
             } else {
                 result(FlutterMethodNotImplemented)
             }
@@ -117,7 +127,7 @@ let pedometer = CMPedometer()
         
         // BGTaskScheduler 전용 스케줄링 시스템 시작
         scheduleAllBackgroundTasks(sendToTime: sendToTime)
-        startPedometer()
+//        startPedometer()
         
         // 공휴일 여부에 따라 위치 추적 처리
         if !isHoliday {
@@ -130,6 +140,9 @@ let pedometer = CMPedometer()
     
     // MARK: - 로그아웃 시 호출
     func stopBackgroundTasks() {
+        // 만보기 중지
+//        stopPedometer()
+        
         // 위치 추적 중지
         locationManager?.stopUpdatingLocation()
         locationManager = nil
@@ -145,6 +158,8 @@ let pedometer = CMPedometer()
     
     // MARK: - Pedometer
     func startPedometer() {
+        stopPedometer()
+        
         if CMPedometer.isStepCountingAvailable() {
             pedometer.startUpdates(from: Date()) { data, error in
                 if let steps = data?.numberOfSteps {
@@ -157,6 +172,32 @@ let pedometer = CMPedometer()
                 }
             }
         }
+    }
+    
+    func stopPedometer() {
+        pedometer.stopUpdates();
+    }
+    
+    func startActivityUpdates() {
+        if CMMotionActivityManager.isActivityAvailable() {
+            activityManager.startActivityUpdates(to: OperationQueue.main) { activity in
+                guard let activity = activity else { return }
+                
+                if activity.walking {
+                    self.flutterChannel?.invokeMethod("updatePedestrianStatus", arguments: ["status": "walking"])
+                } else if activity.running {
+                    self.flutterChannel?.invokeMethod("updatePedestrianStatus", arguments: ["status": "walking"])
+                } else if activity.stationary {
+                    self.flutterChannel?.invokeMethod("updatePedestrianStatus", arguments: ["status": "stopped"])
+                } else {
+                    self.flutterChannel?.invokeMethod("updatePedestrianStatus", arguments: ["status": "unknown"])
+                }
+            }
+        }
+    }
+
+    func stopActivityUpdates() {
+        activityManager.stopActivityUpdates()
     }
     
     // MARK: - 위치 추적
@@ -270,6 +311,22 @@ let pedometer = CMPedometer()
         }
     }
     
+//    func scheduleMidnightBGTask() {
+//        let request = BGProcessingTaskRequest(identifier: "com.beat.app.midnight")
+//        request.requiresNetworkConnectivity = false
+//        request.requiresExternalPower = false
+//        
+//        // ✅ 테스트: 5분 뒤 실행
+//        request.earliestBeginDate = Date(timeIntervalSinceNow: 5 * 60)
+//        
+//        do {
+//            try BGTaskScheduler.shared.submit(request)
+//            print("✅ 테스트 모드: 5분 뒤 자정 초기화 BGTask 실행 예정")
+//        } catch {
+//            print("❌ 자정 초기화 BGTask 스케줄 실패: \(error)")
+//        }
+//    }
+    
     // MARK: - BGTask 핸들러들
     
     func handleWalkReportTask(task: BGProcessingTask) {
@@ -305,17 +362,13 @@ let pedometer = CMPedometer()
     
     func handleMidnightTask(task: BGProcessingTask) {
         print("🌙 자정 초기화 BGTask 시작")
-        print("🌙 현재 시간: \(Date())")
         task.expirationHandler = {
-            print("❌ 자정 초기화 BGTask 만료됨")
             task.setTaskCompleted(success: false)
         }
-        
-        // 다음 스케줄 예약 (BGTask로)
-        scheduleMidnightBGTask()
-        
+
+        scheduleMidnightBGTask() // 다음 자정 예약
+
         executeMidnightReset { success in
-            print("🌙 자정 초기화 BGTask 완료: \(success)")
             task.setTaskCompleted(success: success)
         }
     }

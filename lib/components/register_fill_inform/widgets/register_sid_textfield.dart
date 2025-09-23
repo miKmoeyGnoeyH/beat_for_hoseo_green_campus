@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../controller/register_fill_inform/register_sid_controller.dart';
-import '../../global/methods/custom_input_formatters.dart';
 import '../../global/widgets/custom_text_field.dart';
 
 class RegisterSIDTextField extends StatelessWidget {

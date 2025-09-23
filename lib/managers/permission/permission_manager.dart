@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:beat_flutter/managers/prefs/prefs_manager.dart';
@@ -92,7 +91,7 @@ abstract class PermissionManager {
   /// 위치 권한 요청 (앱 사용 중이거나 항상)
   static Future<bool> requestLocationPermission() async {
     final isLocationWhenInUseGranted = await PermissionManager.requestLocationWhenInUserPermission();
-    late final isLocationAlwaysGranted;
+    late final bool isLocationAlwaysGranted;
 
     if (isLocationWhenInUseGranted) isLocationAlwaysGranted = await PermissionManager.requestLocationAlwaysPermission();
 

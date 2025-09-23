@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:beat_flutter/components/global/methods/custom_input_formatters.dart';
 import 'package:beat_flutter/components/global/widgets/custom_circular_progress_indicator.dart';

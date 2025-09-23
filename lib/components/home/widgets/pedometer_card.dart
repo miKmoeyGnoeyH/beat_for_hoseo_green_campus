@@ -1,5 +1,3 @@
-import 'dart:async';
-import 'dart:developer';
 
 import 'package:app_settings/app_settings.dart';
 import 'package:beat_flutter/components/global/widgets/buttons/custom_text_button_wrap.dart';
@@ -106,6 +104,7 @@ class _PedometerCardState extends State<PedometerCard> {
                           CustomSubtitleLarge(
                             text: localizationManager
                                 .homeBEATRequiresLocationAndActivityPermissionTitle,
+                            textColor: context.appColors.onPrimary,
                           ),
                           const SizedBox(height: 10),
                           CustomTextButtonWrap(
@@ -127,6 +126,7 @@ class _PedometerCardState extends State<PedometerCard> {
                         children: [
                           CustomSubtitleLarge(
                             text: localizationManager.homeNotEventDuration,
+                            textColor: context.appColors.onPrimary,
                           ),
                         ],
                       ),
@@ -144,6 +144,7 @@ class _PedometerCardState extends State<PedometerCard> {
                           CustomSubtitleLarge(
                             text: localizationManager
                                 .homeReachedTodaysMaxStepCount,
+                            textColor: context.appColors.onPrimary,
                           ),
                         ],
                       ),

@@ -79,8 +79,11 @@ class SettingsScreen extends StatelessWidget {
                   text: localizationManager.settingsAppInquiry,
                 ),
                 const SizedBox(height: 5),
-                const CustomBodyLarge(
-                  text: "20255720@vision.hoseo.edu",
+                CustomBodyLarge(
+                  text: "${localizationManager.settingsEmail}: ${localizationManager.settingsEmailAddress}",
+                ),
+                CustomBodyLarge(
+                  text: "${localizationManager.settingsPhone}: ${localizationManager.settingsPhoneNumber}",
                 ),
               ],
             ),

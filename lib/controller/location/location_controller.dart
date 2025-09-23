@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
 
@@ -18,8 +17,6 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
-import 'package:pedometer/pedometer.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class LatLng {
   final double lat;
@@ -145,7 +142,7 @@ class LocationController extends GetxController {
       (t) async {
         await PermissionManager
             .ensureLocationAndActivityPermissionInitialized();
-        if (PermissionManager.isLocationPermissionGrantedStatic!) return;
+        if (!PermissionManager.isLocationPermissionGrantedStatic!) return;
         await fetchLocation();
         checkIsValidArea();
       },
@@ -164,8 +161,8 @@ class LocationController extends GetxController {
       const Duration(seconds: 1),
       (_) {
         final now = DateTime.now();
-        // if (now.hour == 0 && now.minute == 0 && now.second == 0) {
-          if (now.minute % 3 == 0 && now.second == 0) {
+        if (now.hour == 0 && now.minute == 0 && now.second == 0) {
+          // if (now.minute % 5 == 0 && now.second == 0) {
           BEATLogger.d("resetAtMidnight()");
           _resetAtMidnight();
         }
@@ -195,10 +192,10 @@ class LocationController extends GetxController {
     startMidnightTimer();
   }
 
-  void stopForegroundService() {
+  Future<void> stopForegroundService() async {
     BEATLogger.d("LocationController : stopForegroundService()");
 
-    _channel.setMethodCallHandler(null);
+    // _channel.setMethodCallHandler(null);
 
     stopUpdateLocationTimer();
     stopMidnightTimer();
@@ -228,7 +225,7 @@ class LocationController extends GetxController {
     FlutterBackgroundService().startService();
   }
 
-  void stopBackgroundService() async {
+  Future<void> stopBackgroundService() async {
     BEATLogger.d("LocationController : stopBackgroundService()");
     FlutterBackgroundService().invoke("stop");
 
@@ -238,39 +235,6 @@ class LocationController extends GetxController {
     stopUpdateLocationTimer();
     stopMidnightTimer();
   }
-
-  // void startBackgroundService() async {
-  //   BEATLogger.d("LocationController : startBackgroundService()");
-  //   final service = FlutterBackgroundService();
-  //   setMethodCallHandler();
-  //
-  //   final PedometerController pedometerController =
-  //       Get.find<PedometerController>();
-  //
-  //   final bool isHoliday = await getIsHoliday();
-  //
-  //   isLocationPermissionDenied.value =
-  //       await PermissionManager().isLocationPermissionDenied();
-  //   pedometerController.isLocationPermissionDenied.value =
-  //       isLocationPermissionDenied.value;
-  //   pedometerController.isActivityPermissionDenied.value =
-  //       await PermissionManager.isActivityPermissionDenied();
-  //   pedometerController.isHoliday.value = isHoliday;
-  //   final int sendToTime = pedometerController.sendToTime;
-  //
-  //   // log("LocationController : startBackgroundService : isHoliday : $isHoliday, sendToTime : $sendToTime");
-  //
-  //   if (Platform.isIOS) {
-  //     // iOS 네이티브에 공휴일 여부 전달
-  //     await _channel.invokeMethod("startBackgroundTasks",
-  //         {"isHoliday": isHoliday, "sendToTime": sendToTime});
-  //   } else {
-  //     // Android는 그냥 서비스만 시작
-  //     service.startService();
-  //   }
-  //
-  //   service.startService();
-  // }
 
   /// 자정 초기화
   void _resetAtMidnight() async {

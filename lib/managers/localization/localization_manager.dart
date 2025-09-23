@@ -318,6 +318,10 @@ class LocalizationManager {
   String get settingsOSSLicenses => "settings".tr(gender: "oss_licenses");
   String get settingsViewDetail => "settings".tr(gender: "view_detail");
   String get settingsAppInquiry => "settings".tr(gender: "app_inquiry");
+  String get settingsEmail => "settings".tr(gender: "email");
+  String get settingsEmailAddress => "settings".tr(gender: "email_address");
+  String get settingsPhone => "settings".tr(gender: "phone");
+  String get settingsPhoneNumber => "settings".tr(gender: "phone_number");
   String get settingsVersion => "settings".tr(gender: "version");
 
   // withdrawal

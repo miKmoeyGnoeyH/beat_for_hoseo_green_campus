@@ -2,7 +2,6 @@ import 'package:beat_flutter/components/global/methods/custom_show_dialog.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/managers/navigator/arguments/register_arguments.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../controller/register/register_college_controller.dart';

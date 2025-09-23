@@ -1,9 +1,6 @@
 import 'dart:developer';
 
 import 'package:beat_flutter/components/sign_in/sign_in_screen.dart';
-import 'package:beat_flutter/controller/location/location_controller.dart';
-import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
-import 'package:beat_flutter/data/models/user_model.dart';
 import 'package:beat_flutter/managers/permission/permission_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -100,6 +97,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
       case AppLifecycleState.resumed:
         // Get.find<PedometerController>().stopBackgroundService();
         // Get.find<LocationController>().stopBackgroundService();
+        PermissionManager.updateLocationAndActivityPemission();
         App.isForeground = true;
         break;
       case AppLifecycleState.inactive:

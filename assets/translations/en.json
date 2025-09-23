@@ -106,8 +106,8 @@
     "label": "Notice"
   },
   "sign_in": {
-    "sid_or_id": "Student or Employee ID",
-    "sid_or_id_hint": "Please enter your student or employee ID",
+    "sid_or_id": "Hoseo Univ. Email",
+    "sid_or_id_hint": "Please enter the first part of your email address.",
     "password": "Password",
     "password_hint": "Please enter your password",
     "sign_in": "Sign In",
@@ -146,7 +146,7 @@
     "name_hint": "Please enter your name.",
     "student_id": "Student ID",
     "student_id_hint": "Please enter your Student ID.",
-    "sid_or_employee_id": "Student ID or Employee ID",
+    "sid_or_employee_id": "Student ID or ID",
     "sid_or_employee_id_hint": "Please enter your Student ID or Employee ID.",
     "employee_mail": "Employee Mail",
     "employee_mail_hint": "Please enter the part before @hoseo.edu.",
@@ -291,6 +291,10 @@
     "oss_licenses": "Open Source Licenses",
     "view_detail": "View Details",
     "app_inquiry": "App Inquiry",
+    "email": "Email",
+    "email_address": "hsu.dclab01@gmail.com",
+    "phone": "Phone",
+    "phone_number": "041-540-5695",
     "version": "Version"
   },
   "withdrawal": {
