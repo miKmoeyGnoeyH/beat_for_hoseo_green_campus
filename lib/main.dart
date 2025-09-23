@@ -47,9 +47,11 @@ Future<void> main() async {
   await EasyLocalization.ensureInitialized();
   await DotEnvManager().init();
 
-  // Pedometer
-  Get.put<PedometerController>(PedometerController(), permanent: true);
-  Get.put<LocationController>(LocationController(), permanent: true);
+  final PedometerController pedometerController = Get.put<PedometerController>(PedometerController(), permanent: true);
+  final LocationController locationController = Get.put<LocationController>(LocationController(), permanent: true);
+
+  pedometerController.initializeService();
+  locationController.initializeService();
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

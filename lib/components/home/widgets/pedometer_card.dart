@@ -29,41 +29,19 @@ class _PedometerCardState extends State<PedometerCard> {
   final PedometerController pedometerController =
       Get.find<PedometerController>();
 
-  late Timer _timer;
-  bool _denied = false;
-
   @override
   void initState() {
-    // pedometerController.
-    _checkPermission();
-    _timer = Timer.periodic(const Duration(seconds: 2), (_) {
-      _checkPermission();
-    });
+    PermissionManager.ensureLocationAndActivityPermissionInitialized();
     super.initState();
-  }
-
-  Future<void> _checkPermission() async {
-    final denied = await PermissionManager().isLocationPermissionDenied() ||
-        await PermissionManager.isActivityPermissionDenied();
-
-    if (_denied != denied) {
-      setState(() {
-        _denied = denied;
-      });
-    }
   }
 
   @override
   void dispose() {
-    _timer.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    log("PedometerCard : pedometerController.isEventDuration : ${pedometerController.isEventDuration}");
-    log("PedometerCard : pedometerController.isHoliday : ${pedometerController.isHoliday}");
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Stack(
@@ -114,57 +92,71 @@ class _PedometerCardState extends State<PedometerCard> {
               ),
             ),
           ),
-          if (_denied)
-            Positioned(
-              child: CustomRoundedBorderedContainer(
-                color: Colors.black.withValues(alpha: 0.8),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CustomSubtitleLarge(text: localizationManager.homeBEATRequiresLocationAndActivityPermissionTitle),
-                      const SizedBox(height: 10),
-                      CustomTextButtonWrap(text: localizationManager.homeGotoSettings, onTap: AppSettings.openAppSettings,)
-                    ],
-                  ),
-                ),
-              ),
-            )
-          else if (!pedometerController.isEventDuration || pedometerController.isHoliday)
-            Positioned(
-              child: CustomRoundedBorderedContainer(
-                color: Colors.black.withValues(alpha: 0.8),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CustomSubtitleLarge(text: localizationManager.homeNotEventDuration),
-                    ],
-                  ),
-                ),
-              ),
-            )
-          else if (pedometerController.isReachedTodaysMaxStepCount)
-              Positioned(
-                child: CustomRoundedBorderedContainer(
-                  color: Colors.black.withValues(alpha: 0.8),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CustomSubtitleLarge(text: localizationManager.homeReachedTodaysMaxStepCount),
-                      ],
+          Obx(
+            () {
+              if (!PermissionManager.isLocationPermissionGrantedStatic! ||
+                  !PermissionManager.isActivityPermissionGrantedStatic!) {
+                return Positioned(
+                  child: CustomRoundedBorderedContainer(
+                    color: Colors.black.withValues(alpha: 0.8),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CustomSubtitleLarge(
+                            text: localizationManager
+                                .homeBEATRequiresLocationAndActivityPermissionTitle,
+                          ),
+                          const SizedBox(height: 10),
+                          CustomTextButtonWrap(
+                            text: localizationManager.homeGotoSettings,
+                            onTap: AppSettings.openAppSettings,
+                          )
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              )
+                );
+              } else if (pedometerController.isHoliday) {
+                return Positioned(
+                  child: CustomRoundedBorderedContainer(
+                    color: Colors.black.withValues(alpha: 0.8),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CustomSubtitleLarge(
+                            text: localizationManager.homeNotEventDuration,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              } else if (pedometerController.isReachedMaxStepCount) {
+                return Positioned(
+                  child: CustomRoundedBorderedContainer(
+                    color: Colors.black.withValues(alpha: 0.8),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CustomSubtitleLarge(
+                            text: localizationManager
+                                .homeReachedTodaysMaxStepCount,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              } else {
+                return const SizedBox.shrink();
+              }
+            },
+          ),
         ],
       ),
     );
-  }
-
-  Future<bool> _checkIsPedometerPermissionsDenied() async {
-    return await PermissionManager().isLocationPermissionDenied() ||
-        await PermissionManager.isActivityPermissionDenied();
   }
 }

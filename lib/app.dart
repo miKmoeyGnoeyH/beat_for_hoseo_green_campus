@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:beat_flutter/components/sign_in/sign_in_screen.dart';
 import 'package:beat_flutter/controller/location/location_controller.dart';
 import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
+import 'package:beat_flutter/data/models/user_model.dart';
 import 'package:beat_flutter/managers/permission/permission_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -36,8 +37,6 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   //   log(status.map((key, value) => MapEntry(key, value.toString())).toString());
   // }
 
-  final PermissionManager permissionManager = PermissionManager();
-
   @override
   Widget build(BuildContext context) {
     return CustomThemeApp(
@@ -70,20 +69,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    permissionManager.requestNotificationPermission();
-
-    setControllerFlags();
-  }
-
-  Future<void> setControllerFlags() async {
-    Get.find<LocationController>().isLocationPermissionDenied =
-        await PermissionManager().isLocationPermissionDenied();
-
-    Get.find<PedometerController>().isActivityPermissionDenied =
-        await PermissionManager.isActivityPermissionDenied();
-
-    Get.find<PedometerController>().isLocationPermissionDenied =
-        await PermissionManager().isLocationPermissionDenied();
+    PermissionManager.requestNotificationPermission();
   }
 
   Future<void> setupInteractedMessage() async {
@@ -112,15 +98,15 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     debugPrint('didChangeAppLifecycleState: $state');
     switch (state) {
       case AppLifecycleState.resumed:
-        setControllerFlags();
+        // Get.find<PedometerController>().stopBackgroundService();
+        // Get.find<LocationController>().stopBackgroundService();
         App.isForeground = true;
         break;
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:
-        setControllerFlags();
+      case AppLifecycleState.detached:
         App.isForeground = false;
         break;
-      case AppLifecycleState.detached:
       default:
         break;
     }

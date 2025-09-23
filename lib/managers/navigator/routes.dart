@@ -203,21 +203,10 @@ abstract class Routes {
               Get.put(SurveyDetailController());
               Get.put(PageIndexController());
 
-              final UserController userController =
-                  context.read<UserController>();
-
               Get.find<PedometerController>()
                   .setAuthorization(arguments.authorization);
               Get.find<PedometerController>()
                   .setSendToTime(arguments.sendToTime);
-
-              Get.find<PedometerController>().getWalkHitory();
-              Get.find<PedometerController>().initializeService();
-              Get.find<PedometerController>().startBackgroundService();
-
-              Get.find<LocationController>().setUp();
-              Get.find<LocationController>().initializeService();
-              Get.find<LocationController>().startBackgroundService();
 
               return MultiBlocProvider(
                 providers: [
