@@ -133,6 +133,7 @@
   },
   "register_affiliation": {
     "appbar_title": "소속",
+    "affiliation_hint": "소속을 입력해주세요(최소 1자 이상).",
     "continue_with": "{}(으)로 계속",
     "inappropriate_affiliation_title": "소속을 다시 한 번 확인해주세요.",
     "inappropriate_affiliation_content": "소속에 초성이 포함되어 있습니다. 소속을 다시 한 번 확인해주세요."
@@ -154,6 +155,8 @@
     "id": "ID",
     "id_hint": "ID로 사용할 4자리 숫자를 입력해주세요.",
     "validate_mail": "메일 인증",
+    "invalid_mail_title": "유효하지 않은 이메일 형식",
+    "invalid_mail_content": "유효한 이메일을 입력해주세요.",
     "validate_id": "중복확인",
     "email_sent_title": "메일 전송 완료",
     "email_sent_message": "확인 메일을 전송했습니다. 메일함을 확인해주세요.",

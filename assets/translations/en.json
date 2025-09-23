@@ -129,6 +129,13 @@
     "appbar_title": "Department",
     "continue_with": "Continue with {}"
   },
+  "register_affiliation": {
+    "appbar_title": "Affiliation",
+    "affiliation_hint": "Please enter your affiliation (at least 1 characters).",
+    "continue_with": "Continue with {}",
+    "inappropriate_affiliation_title": "Please check your affiliation again.",
+    "inappropriate_affiliation_content": "Your affiliation contains initial consonants. Please check it again."
+  },
   "register_fill_inform_page": {
     "appbar_title": "Fill Information",
     "name": "Name",
@@ -141,9 +148,13 @@
     "student_id_hint": "Please enter your Student ID.",
     "sid_or_employee_id": "Student ID or Employee ID",
     "sid_or_employee_id_hint": "Please enter your Student ID or Employee ID.",
+    "employee_mail": "Employee Mail",
+    "employee_mail_hint": "Please enter the part before @hoseo.edu.",
     "id": "ID",
     "id_hint": "Please enter a 4-digit number to use as your ID.",
     "validate_mail": "Verify Email",
+    "invalid_mail_title": "Invalid Email",
+    "invalid_mail_content": "Please enter a valid email address.",
     "validate_id": "Check Duplicate",
     "email_sent_title": "Email Sent",
     "email_sent_message": "A confirmation email has been sent. Please check your inbox.",

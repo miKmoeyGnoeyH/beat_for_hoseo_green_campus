@@ -85,7 +85,7 @@ class _PedometerCardState extends State<PedometerCard> {
                         () {
                           return CustomHeadlineLarge(
                             text: NumberFormat("###,###,###,###")
-                                .format(pedometerController.steps),
+                                .format(pedometerController.todayWalkCount),
                             textColor: context.appColors.onPrimary,
                           );
                         },

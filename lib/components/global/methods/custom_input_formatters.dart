@@ -11,3 +11,8 @@ FilteringTextInputFormatter onlyEnglishAndKoreanInputFormatter() {
 }
 
 FilteringTextInputFormatter onlyDigitsInputFormatter() => FilteringTextInputFormatter.allow(RegExp(r'[0-9]'));
+
+FilteringTextInputFormatter emailInputFormatter() {
+  return FilteringTextInputFormatter.allow(
+      RegExp(r"^(?=.{1,64}$)([A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+)?)$"));
+}

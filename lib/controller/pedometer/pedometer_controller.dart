@@ -57,18 +57,8 @@ class PedometerController extends GetxController {
 
   /// 부팅 이후 걸음 수
   int? _stepsAfterLastBoot;
-  final Rx<int> _totalSteps = 0.obs;
-
-  int get totalSteps => _totalSteps.value;
-
-  set totalSteps(int value) => _totalSteps.value = value;
 
   /// 실제 앱에서 측정한 걸음 수
-  final Rx<int> _steps = 0.obs;
-
-  int get steps => _steps.value;
-
-  set steps(int value) => _steps.value = value;
 
   /// 서버에 기록된, 서버로부터 전달받은 오늘 걸음 수
   final RxInt _todayWalkCount = 0.obs;
@@ -124,7 +114,7 @@ class PedometerController extends GetxController {
   /// [_rankReportTimer] : 매 시 59분 특정 초에 서버에 걸음 수를 동기화
   Timer? _rankReportTimer;
 
-  bool get isReachedTodaysMaxStepCount => steps >= maxDailySteps ? true : false;
+  bool get isReachedTodaysMaxStepCount => todayWalkCount >= maxDailySteps ? true : false;
 
   void onStepCount(StepCount event) {
     if (isActivityPermissionDenied) return;
@@ -133,19 +123,19 @@ class PedometerController extends GetxController {
     if (_stepsAfterLastBoot == 0 ||
         (_stepsAfterLastBoot != null && _stepsAfterLastBoot! > event.steps)) {
       _stepsAfterLastBoot = event.steps;
-      totalSteps = event.steps;
-      steps = 0;
+      totalWalkCount = event.steps;
+      todayWalkCount = 0;
       PrefsManager().setStepsAfterLastboot(_stepsAfterLastBoot!);
     }
 
-    final int oldSteps = totalSteps;
-    totalSteps = event.steps;
-    int diff = totalSteps - oldSteps;
+    final int oldSteps = totalWalkCount;
+    totalWalkCount = event.steps;
+    int diff = totalWalkCount - oldSteps;
 
     if (diff > 0) {
-      if (steps + diff > maxDailySteps) {
-        diff = diff - (steps + diff - maxDailySteps);
-        steps = maxDailySteps;
+      if (todayWalkCount + diff > maxDailySteps) {
+        diff = diff - (todayWalkCount + diff - maxDailySteps);
+        todayWalkCount = maxDailySteps;
         todayWalkCount += diff;
         weeklyWalkCount += diff;
         monthlyWalkCount += diff;
@@ -158,7 +148,7 @@ class PedometerController extends GetxController {
 
         removeListeners();
       } else {
-        steps += diff;
+        todayWalkCount += diff;
         todayWalkCount += diff;
         weeklyWalkCount += diff;
         monthlyWalkCount += diff;
@@ -192,18 +182,18 @@ class PedometerController extends GetxController {
 
     if (_stepsAfterLastBoot == null) {
       _stepsAfterLastBoot = stepsFromNative;
-      totalSteps = stepsFromNative;
-      steps = 0;
+      totalWalkCount = stepsFromNative;
+      todayWalkCount = 0;
     }
 
-    final int oldSteps = totalSteps;
-    totalSteps = stepsFromNative;
-    int diff = totalSteps - oldSteps;
+    final int oldSteps = totalWalkCount;
+    totalWalkCount = stepsFromNative;
+    int diff = totalWalkCount - oldSteps;
 
     if (diff > 0) {
-      if (steps + diff > maxDailySteps) {
-        diff = diff - (steps + diff - maxDailySteps);
-        steps = maxDailySteps;
+      if (todayWalkCount + diff > maxDailySteps) {
+        diff = diff - (todayWalkCount + diff - maxDailySteps);
+        todayWalkCount = maxDailySteps;
         todayWalkCount += diff;
         weeklyWalkCount += diff;
         monthlyWalkCount += diff;
@@ -211,7 +201,7 @@ class PedometerController extends GetxController {
 
         removeListeners();
       } else {
-        steps += diff;
+        todayWalkCount += diff;
         todayWalkCount += diff;
         weeklyWalkCount += diff;
         monthlyWalkCount += diff;
@@ -297,7 +287,6 @@ class PedometerController extends GetxController {
               monthlyWalkCount = bodyToJson['monthlyWalkCount'];
               totalWalkCount = bodyToJson['totalWalkCount'];
             }
-            steps = todayWalkCount;
             _walkReports.clear();
           } else {
             throw Exception();
@@ -342,7 +331,7 @@ class PedometerController extends GetxController {
           monthlyWalkCount = bodyToJson['monthlyWalkCount'];
           totalWalkCount = bodyToJson['totalWalkCount'];
         }
-        steps = todayWalkCount;
+        todayWalkCount = todayWalkCount;
       } else {
         throw Exception();
       }
@@ -361,11 +350,11 @@ class PedometerController extends GetxController {
       "historyDateTime":
           DateTime(now.year, now.month, now.day, now.hour + 1, 0, 0)
               .toIso8601String(),
-      "walkCount": steps - _lastReportedSteps,
+      "walkCount": todayWalkCount - _lastReportedSteps,
     });
 
     _lastReportedTime = now;
-    _lastReportedSteps = steps;
+    _lastReportedSteps = todayWalkCount;
 
     PrefsManager().setSteps(
       todayWalkCount,
@@ -474,7 +463,6 @@ class PedometerController extends GetxController {
     BEATLogger.d(
         "PedometerController : 초기화 후 값들 - today: $saveSteps, weekly: $saveWeeklyWalkCount, monthly: $saveMonthlyWalkCount, total: $saveTotalWalkCount");
 
-    steps = saveSteps;
     todayWalkCount = saveSteps;
     weeklyWalkCount = saveWeeklyWalkCount;
     monthlyWalkCount = saveMonthlyWalkCount;

@@ -34,7 +34,7 @@ class CustomTextField extends StatelessWidget {
         cursorColor: context.appColors.primary,
         onChanged: onChanged,
         inputFormatters: inputFormatters,
-        style: CustomTexts.bodyLarge.copyWith(
+        style: CustomTexts.bodyLLarge.copyWith(
           color: context.appColors.onBackground,
         ),
         decoration: buildCustomInputDecoration(context, hintText),

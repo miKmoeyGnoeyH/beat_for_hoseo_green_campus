@@ -81,6 +81,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
 
     Get.find<PedometerController>().isActivityPermissionDenied =
         await PermissionManager.isActivityPermissionDenied();
+
     Get.find<PedometerController>().isLocationPermissionDenied =
         await PermissionManager().isLocationPermissionDenied();
   }
