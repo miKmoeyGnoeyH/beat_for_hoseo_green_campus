@@ -277,7 +277,8 @@ class PedometerController extends GetxController {
       //     "PedometerController : onStepCount : Saved _stepsAfterLastBoot to PrefsManager: ${PrefsManager().getStepsAfterLastboot()}");
     }
 
-    if (_previousSteps == null || (_previousSteps != null && _previousSteps! > event.steps)) {
+    if (_previousSteps == null ||
+        (_previousSteps != null && _previousSteps! > event.steps)) {
       _previousSteps = event.steps;
       // BEATLogger.d(
       //     "PedometerController : onStepCount : _previousSteps is null or greater than event.steps. Set _previousSteps to event.steps");
@@ -352,7 +353,8 @@ class PedometerController extends GetxController {
       //     "PedometerController : onStepCount : Saved _stepsAfterLastBoot to PrefsManager: ${PrefsManager().getStepsAfterLastboot()}");
     }
 
-    if (_previousSteps == null || (_previousSteps != null && _previousSteps! > stepsFromNative)) {
+    if (_previousSteps == null ||
+        (_previousSteps != null && _previousSteps! > stepsFromNative)) {
       _previousSteps = stepsFromNative;
       // BEATLogger.d(
       //     "PedometerController : onStepCount : _previousSteps is null or greater than event.steps. Set _previousSteps to event.steps");
@@ -595,9 +597,11 @@ class PedometerController extends GetxController {
       await PrefsManager().setStepsAfterLastboot(_stepsAfterLastBoot!);
     }
 
-    await _channel.invokeMethod("stopPedometer");
-    await _channel.invokeMethod("stopActivityUpdates");
-    _channel.setMethodCallHandler(null);
+    if (Platform.isIOS) {
+      await _channel.invokeMethod("stopPedometer");
+      await _channel.invokeMethod("stopActivityUpdates");
+      _channel.setMethodCallHandler(null);
+    }
 
     _reportTimer?.cancel();
     _rankReportTimer?.cancel();
@@ -634,9 +638,11 @@ class PedometerController extends GetxController {
       await PrefsManager().setStepsAfterLastboot(_stepsAfterLastBoot!);
     }
 
-    await _channel.invokeMethod("stopPedometer");
-    await _channel.invokeMethod("stopActivityUpdates");
-    _channel.setMethodCallHandler(null);
+    if (Platform.isIOS) {
+      await _channel.invokeMethod("stopPedometer");
+      await _channel.invokeMethod("stopActivityUpdates");
+      _channel.setMethodCallHandler(null);
+    }
 
     _reportTimer?.cancel();
     _rankReportTimer?.cancel();
@@ -657,9 +663,7 @@ class PedometerController extends GetxController {
               break;
             case "updatePedestrianStatus":
               final status = call.arguments["status"] as String;
-              onPedestrianStatusChangedFromNative(
-                status
-              );
+              onPedestrianStatusChangedFromNative(status);
               break;
           }
         },

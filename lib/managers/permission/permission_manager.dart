@@ -93,7 +93,11 @@ abstract class PermissionManager {
     final isLocationWhenInUseGranted = await PermissionManager.requestLocationWhenInUserPermission();
     late final bool isLocationAlwaysGranted;
 
-    if (isLocationWhenInUseGranted) isLocationAlwaysGranted = await PermissionManager.requestLocationAlwaysPermission();
+    if (isLocationWhenInUseGranted) {
+      isLocationAlwaysGranted = await PermissionManager.requestLocationAlwaysPermission();
+    } else {
+      isLocationAlwaysGranted = false;
+    }
 
     return isLocationWhenInUseGranted || isLocationAlwaysGranted;
   }

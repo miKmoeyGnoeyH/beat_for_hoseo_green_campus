@@ -1,4 +1,3 @@
-
 import 'package:app_settings/app_settings.dart';
 import 'package:beat_flutter/components/global/widgets/buttons/custom_text_button_wrap.dart';
 import 'package:beat_flutter/components/global/widgets/custom_rounded_bordered_container.dart';
@@ -90,72 +89,73 @@ class _PedometerCardState extends State<PedometerCard> {
               ),
             ),
           ),
-          Obx(
-            () {
-              if (!PermissionManager.isLocationPermissionGrantedStatic! ||
-                  !PermissionManager.isActivityPermissionGrantedStatic!) {
-                return Positioned(
-                  child: CustomRoundedBorderedContainer(
-                    color: Colors.black.withValues(alpha: 0.8),
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CustomSubtitleLarge(
-                            text: localizationManager
-                                .homeBEATRequiresLocationAndActivityPermissionTitle,
-                            textColor: context.appColors.onPrimary,
-                          ),
-                          const SizedBox(height: 10),
-                          CustomTextButtonWrap(
-                            text: localizationManager.homeGotoSettings,
-                            onTap: AppSettings.openAppSettings,
-                          )
-                        ],
+          if (!PermissionManager.isLocationPermissionGrantedStatic! ||
+              !PermissionManager.isActivityPermissionGrantedStatic!)
+            Positioned(
+              child: CustomRoundedBorderedContainer(
+                color: Colors.black.withValues(alpha: 0.8),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CustomSubtitleLarge(
+                        text: localizationManager
+                            .homeBEATRequiresLocationAndActivityPermissionTitle,
+                        textColor: context.appColors.onPrimary,
+                      ),
+                      const SizedBox(height: 10),
+                      CustomTextButtonWrap(
+                        text: localizationManager.homeGotoSettings,
+                        onTap: AppSettings.openAppSettings,
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            )
+          else
+            Obx(
+              () {
+                if (pedometerController.isHoliday) {
+                  return Positioned(
+                    child: CustomRoundedBorderedContainer(
+                      color: Colors.black.withValues(alpha: 0.8),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CustomSubtitleLarge(
+                              text: localizationManager.homeNotEventDuration,
+                              textColor: context.appColors.onPrimary,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              } else if (pedometerController.isHoliday) {
-                return Positioned(
-                  child: CustomRoundedBorderedContainer(
-                    color: Colors.black.withValues(alpha: 0.8),
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CustomSubtitleLarge(
-                            text: localizationManager.homeNotEventDuration,
-                            textColor: context.appColors.onPrimary,
-                          ),
-                        ],
+                  );
+                } else if (pedometerController.isReachedMaxStepCount) {
+                  return Positioned(
+                    child: CustomRoundedBorderedContainer(
+                      color: Colors.black.withValues(alpha: 0.8),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CustomSubtitleLarge(
+                              text: localizationManager
+                                  .homeReachedTodaysMaxStepCount,
+                              textColor: context.appColors.onPrimary,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              } else if (pedometerController.isReachedMaxStepCount) {
-                return Positioned(
-                  child: CustomRoundedBorderedContainer(
-                    color: Colors.black.withValues(alpha: 0.8),
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CustomSubtitleLarge(
-                            text: localizationManager
-                                .homeReachedTodaysMaxStepCount,
-                            textColor: context.appColors.onPrimary,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              } else {
-                return const SizedBox.shrink();
-              }
-            },
-          ),
+                  );
+                } else {
+                  return const SizedBox.shrink();
+                }
+              },
+            ),
         ],
       ),
     );
