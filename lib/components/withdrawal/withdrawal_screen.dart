@@ -6,6 +6,7 @@ import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
@@ -41,16 +42,13 @@ class WithdrawalScreen extends StatelessWidget {
             const SizedBox(height: 24),
             CustomTitleLarge(text: localizationManager.withdrawalNotes),
             const SizedBox(height: 16),
-            CustomBodyLarge(
-                text: '1. ${localizationManager.withdrawalNote1}'),
+            CustomBodyLarge(text: '1. ${localizationManager.withdrawalNote1}'),
             // const SizedBox(height: 10),
             // CustomBodyLarge(text: context.tr('withdrawal_notes', gender: '2')),
             const SizedBox(height: 10),
-            CustomBodyLarge(
-                text: '2. ${localizationManager.withdrawalNote3}'),
+            CustomBodyLarge(text: '2. ${localizationManager.withdrawalNote3}'),
             const SizedBox(height: 10),
-            CustomBodyLarge(
-                text: '3. ${localizationManager.withdrawalNote4}'),
+            CustomBodyLarge(text: '3. ${localizationManager.withdrawalNote4}'),
             const SizedBox(height: 24),
             CustomWideButton(
               onTap: () async {
@@ -70,17 +68,21 @@ class WithdrawalScreen extends StatelessWidget {
                         title: localizationManager.withdrawalSuccess,
                         content: localizationManager.withdrawalSuccessMessage,
                         onTap: () async {
-                          await Get.find<PedometerController>().stopForegroundService();
-                          await Get.find<PedometerController>().stopBackgroundService();
-                          await Get.find<LocationController>().stopForegroundService();
-                          await Get.find<LocationController>().stopBackgroundService();
+                          await Get.find<PedometerController>()
+                              .stopForegroundService();
+                          await Get.find<PedometerController>()
+                              .stopBackgroundService();
 
+                          await Get.find<LocationController>()
+                              .stopForegroundService();
+                          await Get.find<LocationController>()
+                              .stopBackgroundService();
+
+                          await PrefsManager().clear();
                           context.read<UserController>().add(SignOut());
-
                           // NavigatorKeyManager().pushNamedAndRemoveUntil(RouteNames.signIn);
-                        }
+                        },
                       );
-                      PrefsManager().withDrawal();
                       // PrefsManager().resetSavedStudentIdAndPassword();
                     }
                   } else {
@@ -105,6 +107,13 @@ class WithdrawalScreen extends StatelessWidget {
               },
               buttonText: localizationManager.withdrawal,
               buttonColor: Colors.redAccent,
+              height: 60.w,
+              autoSizeText: true,
+              borderRadius: 10,
+              padding: EdgeInsets.symmetric(
+                horizontal: 16.w,
+                vertical: 10.w,
+              ),
             ),
           ],
         ),

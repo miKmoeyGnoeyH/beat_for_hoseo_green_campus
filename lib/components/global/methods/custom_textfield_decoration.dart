@@ -7,7 +7,7 @@ InputDecoration buildCustomInputDecoration(BuildContext context, String? hintTex
   return InputDecoration(
     counterText: "",
     hintText: hintText,
-    hintStyle: CustomTexts.bodyLarge.copyWith(
+    hintStyle: CustomLargeTexts.bodyLarge.copyWith(
       color: context.appColors.onBackground.withOpacity(0.5),
     ),
     enabledBorder: buildCustomEnabledBorder(context),

@@ -30,7 +30,7 @@ class PrefsManager {
     _prefs.remove(key);
   }
 
-  Future<void> withDrawal() async {
+  Future<void> clear() async {
     _ensurePrefs();
     await _prefs.clear();
   }
@@ -104,6 +104,11 @@ class PrefsManager {
     _prefs.setInt("weeklyWalkCount", weeklyWalkCount);
     _prefs.setInt("monthlyWalkCount", monthlyWalkCount);
     return _prefs.setInt("totalWalkCount", totalWalkCount);
+  }
+
+  Future<void> removeStepsAfterLastboot() {
+    _ensurePrefs();
+    return _prefs.remove("stepsAfterLastboot");
   }
 
   Future<void> setStepsAfterLastboot(int steps) {

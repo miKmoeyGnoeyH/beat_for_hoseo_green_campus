@@ -128,7 +128,7 @@ class _RegisterSignScreenState extends State<RegisterSignScreen> {
                     padding: EdgeInsets.symmetric(vertical: 32.h),
                     child: Text(
                       localizationManager.generalDone,
-                      style: CustomTexts.subtitleLarge
+                      style: CustomLargeTexts.subtitleLarge
                           .copyWith(color: context.appColors.onPrimary),
                     ),
                   ),

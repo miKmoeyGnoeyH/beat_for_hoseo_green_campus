@@ -1,4 +1,3 @@
-
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,15 +15,12 @@ class CustomEmptyAppBar extends StatelessWidget {
     return CustomAppBar(
       hasBorder: true,
       pinned: true,
-      leading: Padding(
-        padding: EdgeInsets.only(left: 20.w),
-        child: GestureDetector(
-          onTap: () => NavigatorKeyManager().pop(),
-          child: Icon(
-            Icons.arrow_back_ios,
-            color: context.appColors.primary,
-            size: 24.w,
-          ),
+      leading: GestureDetector(
+        onTap: () => NavigatorKeyManager().pop(),
+        child: Icon(
+          Icons.arrow_back_ios,
+          color: context.appColors.primary,
+          size: 24.w,
         ),
       ),
     );

@@ -1,4 +1,3 @@
-
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/theme/texts/custom_texts.dart';
@@ -27,11 +26,13 @@ class HomeBottomNavigationBar extends StatelessWidget {
       child: BottomNavigationBar(
         currentIndex: currentIndex,
         selectedItemColor: context.appColors.primary,
-        selectedLabelStyle: CustomTexts.bodyMedium,
+        selectedLabelStyle: CustomLargeTexts.bodyMedium,
         unselectedItemColor: context.appColors.onBackground,
-        unselectedLabelStyle: CustomTexts.bodyMedium,
+        unselectedLabelStyle: CustomLargeTexts.bodyMedium,
         backgroundColor: context.appColors.background,
-        onTap: onTap,
+        onTap: (index) {
+          onTap?.call(index, context);
+        },
         items: [
           BottomNavigationBarItem(
             icon: const Icon(Icons.qr_code_rounded),
@@ -54,6 +55,6 @@ class HomeBottomNavigationBar extends StatelessWidget {
     );
   }
 
-  final Function(int)? onTap;
+  final Function(int, BuildContext)? onTap;
   final int currentIndex;
 }

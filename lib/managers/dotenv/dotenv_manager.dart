@@ -55,4 +55,5 @@ class DotEnvManager {
   String get withdrawal => dotenv.env['WITHDRAW'] ?? "";
   String get holidayList => dotenv.env['HOLIDAY_LIST'] ?? "";
   String get emailVerify => dotenv.env['EMAIL_VERIFY'] ?? "";
+  String get resetPasswordCodeVerify => dotenv.env['RESET_PASSWORD_CODE_VERIFY'] ?? "";
 }

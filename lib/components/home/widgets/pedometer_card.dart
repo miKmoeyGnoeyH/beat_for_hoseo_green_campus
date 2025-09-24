@@ -29,7 +29,6 @@ class _PedometerCardState extends State<PedometerCard> {
 
   @override
   void initState() {
-    PermissionManager.ensureLocationAndActivityPermissionInitialized();
     super.initState();
   }
 
@@ -74,8 +73,8 @@ class _PedometerCardState extends State<PedometerCard> {
                             Obx(
                               () {
                                 return CustomHeadlineLarge(
-                                  text: NumberFormat("###,###,###,###")
-                                      .format(pedometerController.todayWalkCount),
+                                  text: NumberFormat("###,###,###,###").format(
+                                      pedometerController.todayWalkCount),
                                   textColor: context.appColors.onPrimary,
                                 );
                               },
@@ -102,26 +101,41 @@ class _PedometerCardState extends State<PedometerCard> {
               ),
             ),
           ),
-          if (!PermissionManager.isLocationPermissionGrantedStatic! ||
-              !PermissionManager.isActivityPermissionGrantedStatic!)
+          if ((PermissionManager.isLocationPermissionGrantedStatic != null &&
+                  !PermissionManager.isLocationPermissionGrantedStatic!) ||
+              (PermissionManager.isActivityPermissionGrantedStatic != null &&
+                  !PermissionManager.isActivityPermissionGrantedStatic!))
             Positioned(
               child: CustomRoundedBorderedContainer(
                 color: Colors.black.withValues(alpha: 0.8),
                 child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CustomSubtitleLarge(
-                        text: localizationManager
-                            .homeBEATRequiresLocationAndActivityPermissionTitle,
-                        textColor: context.appColors.onPrimary,
-                      ),
-                      const SizedBox(height: 10),
-                      CustomTextButtonWrap(
-                        text: localizationManager.homeGotoSettings,
-                        onTap: AppSettings.openAppSettings,
-                      )
-                    ],
+                  child: Padding(
+                    padding: EdgeInsets.all(5.w),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CustomSubtitleLarge(
+                          text: localizationManager
+                              .homeBEATRequiresLocationAndActivityPermissionTitle,
+                          textColor: context.appColors.onPrimary,
+                          maxLines: 2,
+                          textAlign: TextAlign.center,
+                        ),
+                        if (Localizations.localeOf(context).languageCode == "ko")
+                          CustomBodyLarge(
+                            text: localizationManager
+                                .homePleaseChangeTheLocationAndActivityPermissions,
+                            textColor: context.appColors.onPrimary,
+                            maxLines: 2,
+                            textAlign: TextAlign.center,
+                          ),
+                        const SizedBox(height: 10),
+                        CustomTextButtonWrap(
+                          text: localizationManager.homeGotoSettings,
+                          onTap: AppSettings.openAppSettings,
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -129,19 +143,42 @@ class _PedometerCardState extends State<PedometerCard> {
           else
             Obx(
               () {
-                if (pedometerController.isHoliday) {
+                if (!pedometerController.isInValidArea) {
                   return Positioned(
                     child: CustomRoundedBorderedContainer(
                       color: Colors.black.withValues(alpha: 0.8),
                       child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CustomSubtitleLarge(
-                              text: localizationManager.homeNotEventDuration,
-                              textColor: context.appColors.onPrimary,
-                            ),
-                          ],
+                        child: Padding(
+                          padding: EdgeInsets.all(5.w),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CustomSubtitleLarge(
+                                text: localizationManager.homeNotInValidArea,
+                                textColor: context.appColors.onPrimary,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                } else if (pedometerController.isHoliday) {
+                  return Positioned(
+                    child: CustomRoundedBorderedContainer(
+                      color: Colors.black.withValues(alpha: 0.8),
+                      child: Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(5.w),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CustomSubtitleLarge(
+                                text: localizationManager.homeNotEventDuration,
+                                textColor: context.appColors.onPrimary,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -151,15 +188,18 @@ class _PedometerCardState extends State<PedometerCard> {
                     child: CustomRoundedBorderedContainer(
                       color: Colors.black.withValues(alpha: 0.8),
                       child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CustomSubtitleLarge(
-                              text: localizationManager
-                                  .homeReachedTodaysMaxStepCount,
-                              textColor: context.appColors.onPrimary,
-                            ),
-                          ],
+                        child: Padding(
+                          padding: EdgeInsets.all(5.w),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CustomSubtitleLarge(
+                                text: localizationManager
+                                    .homeReachedTodaysMaxStepCount,
+                                textColor: context.appColors.onPrimary,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

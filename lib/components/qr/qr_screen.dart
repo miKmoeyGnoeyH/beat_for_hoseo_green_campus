@@ -161,7 +161,7 @@ class _QrScreenState extends State<QrScreen> {
                                 .add(DataListRequest());
 
                             pageIndexController
-                                .setIndex(pageIndexController.homeIndex);
+                                .setIndex(pageIndexController.homeIndex, context);
                           });
                     } else {
                       await customShowDialog(
@@ -193,7 +193,7 @@ class _QrScreenState extends State<QrScreen> {
 
                   NavigatorKeyManager().pushNamed(RouteNames.surveyDetail);
 
-                  pageIndexController.setIndex(pageIndexController.homeIndex);
+                  pageIndexController.setIndex(pageIndexController.homeIndex, context);
 
                   isScanning = false;
                   startScanTimer();

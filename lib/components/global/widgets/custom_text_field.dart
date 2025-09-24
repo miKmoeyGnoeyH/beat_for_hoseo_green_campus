@@ -1,4 +1,6 @@
 import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.dart';
+import 'package:beat_flutter/components/global/widgets/texts/custom_body_medium.dart';
+import 'package:beat_flutter/components/global/widgets/texts/custom_hintstyle.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_label_large.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_subtitle_large.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
@@ -26,6 +28,9 @@ class CustomTextField extends StatefulWidget {
     this.inputFormatters,
     this.obscureText = false,
     this.autovalidateMode,
+    this.counterText,
+    this.focusNode,
+    this.ensureErrorTextSpace = false,
   });
 
   @override
@@ -45,6 +50,9 @@ class CustomTextField extends StatefulWidget {
   final List<TextInputFormatter>? inputFormatters;
   final bool obscureText;
   final AutovalidateMode? autovalidateMode;
+  final String? counterText;
+  final FocusNode? focusNode;
+  final bool ensureErrorTextSpace;
 }
 
 class _CustomTextFieldState extends State<CustomTextField> {
@@ -83,6 +91,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
               child: Form(
                 key: widget.formKey,
                 child: TextFormField(
+                  textAlignVertical: TextAlignVertical.bottom,
+                  focusNode: widget.focusNode,
                   errorBuilder: (_, __) => const SizedBox.shrink(),
                   cursorColor: context.appColors.primary,
                   cursorErrorColor: context.appColors.error,
@@ -94,7 +104,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   inputFormatters: widget.inputFormatters,
                   obscureText: widget.obscureText,
                   autovalidateMode: widget.autovalidateMode,
-                  style: CustomTexts.bodyLarge,
+                  style: CustomLargeTexts.hintStyle,
                   validator: (value) {
                     final result = widget.validator?.call(value);
                     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -131,13 +141,19 @@ class _CustomTextFieldState extends State<CustomTextField> {
                       ),
                     ),
                     hintText: widget.hintText,
-                    hintStyle: CustomTexts.bodyLarge.copyWith(
+                    hintStyle: CustomLargeTexts.hintStyle.copyWith(
                       color: context.appColors.disabled,
                     ),
-                    errorStyle: CustomTexts.bodyLarge.copyWith(
+                    errorStyle: CustomLargeTexts.bodyLarge.copyWith(
                       color: context.appColors.error,
                     ),
                     counterText: '',
+                    suffix: widget.maxLength != null
+                        ? CustomBodyMedium(
+                      text: '${widget.textEditingController?.text.length ?? 0}/${widget.maxLength}',
+                      textColor: context.appColors.disabled,
+                    )
+                        : null,
                   ),
                 ),
               ),
@@ -147,13 +163,24 @@ class _CustomTextFieldState extends State<CustomTextField> {
           ],
         ),
         if (_errorText != null)
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 5.w),
-            child: CustomBodyLarge(
-              text: _errorText!,
-              textColor: context.appColors.error,
-            ),
-          ),
+          AnimatedSize(
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.easeInOut,
+            child:
+            // _errorText != null
+            //     ?
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 5.w),
+              child: CustomBodyLarge(
+                text: _errorText!,
+                textColor: context.appColors.error,
+              ),
+            )
+                // : SizedBox(height: 49.w), // 최소 한 줄 공간은 차지
+          )
+        else
+          if (widget.ensureErrorTextSpace)
+            SizedBox(height: 58.w),
       ],
     );
   }

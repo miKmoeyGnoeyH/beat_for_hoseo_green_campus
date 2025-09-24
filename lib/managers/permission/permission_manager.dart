@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:beat_flutter/managers/prefs/prefs_manager.dart';
@@ -7,7 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 /// 권한 관리를 담당하는 클래스
 abstract class PermissionManager {
-  static const _channel = MethodChannel("com.beat.walkreport/channel");
+  static const _channel = MethodChannel("com.beat.walkreport/pedometer");
 
   static bool? isLocationPermissionGrantedStatic;
   static bool? isActivityPermissionGrantedStatic;
@@ -107,6 +108,7 @@ abstract class PermissionManager {
     final isLocationWhenInUseGranted = await PermissionManager.isLocationWhenInUsePermissionGranted();
     final isLocationAlwaysGranted = await PermissionManager.isLocationAlwaysPermissionGranted();
 
+    // 포어그라운드 동작 허용: 앱 사용 중 혹은 항상 허용 중 하나만 있어도 true
     return isLocationWhenInUseGranted || isLocationAlwaysGranted;
   }
 

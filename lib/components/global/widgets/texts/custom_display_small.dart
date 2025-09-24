@@ -16,7 +16,7 @@ class CustomDisplaySmall extends StatelessWidget {
   Widget build(BuildContext context) {
     return AutoSizeText(
       text ?? '',
-      style: CustomTexts.displaySmall
+      style: CustomLargeTexts.displaySmall
           .copyWith(color: textColor ?? context.appColors.onBackground),
     );
   }

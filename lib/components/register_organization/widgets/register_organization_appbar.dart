@@ -15,7 +15,7 @@ class RegisterBasicAppbar extends StatelessWidget {
     return CustomAppBar(
       title: Text(
         text ?? '',
-        style: CustomTexts.displaySmall,
+        style: CustomLargeTexts.displaySmall,
       ),
       iconTheme: IconThemeData(
         color: context.appColors.primary,

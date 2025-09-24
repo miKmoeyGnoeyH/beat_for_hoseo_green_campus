@@ -33,7 +33,7 @@ class CustomBottomAppbar extends StatelessWidget {
           child: AutoSizeText(
             maxLines: 1,
             text ?? '',
-            style: CustomTexts.titleLarge.copyWith(
+            style: CustomLargeTexts.titleLarge.copyWith(
               color: textColor ?? context.appColors.onPrimary,
             ),
           ),

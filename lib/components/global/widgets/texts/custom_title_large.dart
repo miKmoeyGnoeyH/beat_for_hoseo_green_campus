@@ -19,7 +19,7 @@ class CustomTitleLarge extends StatelessWidget {
       text ?? '',
       maxLines: maxLines,
       // overflow: TextOverflow.ellipsis,
-      style: CustomTexts.titleLarge.copyWith(
+      style: CustomLargeTexts.titleLarge.copyWith(
         color: textColor ?? context.appColors.onBackground,
       ),
     );

@@ -15,7 +15,7 @@ class CustomHeadlineMedium extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text ?? '',
-      style: CustomTexts.headlineMedium.copyWith(
+      style: CustomLargeTexts.headlineMedium.copyWith(
         color: textColor ?? context.appColors.onBackground,
       ),
     );

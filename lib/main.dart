@@ -1,4 +1,4 @@
- import 'dart:developer';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:beat_flutter/controller/location/location_controller.dart';
@@ -22,16 +22,16 @@ import 'managers/prefs/prefs_manager.dart';
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   log("main.dart : _firebaseMessagingBackgroundHandler() : message.data : ${message.data}");
-  if(message.notification != null) {
+  if (message.notification != null) {
     log('main.dart : _firebaseMessagingBackgroundHandler() : message.notification.title : ${message.notification!.title.toString()}');
     log('main.dart : _firebaseMessagingBackgroundHandler() : message.notification.body : ${message.notification!.body.toString()}');
   }
 }
 
- // @pragma('vm:entry-point')
- // void notificationTapBackground(NotificationResponse notificationResponse) {
- //   // handle action
- // }
+// @pragma('vm:entry-point')
+// void notificationTapBackground(NotificationResponse notificationResponse) {
+//   // handle action
+// }
 
 // TODO : 전체적으로 리팩토링 한 번 싹 조져주기
 Future<void> main() async {
@@ -47,8 +47,10 @@ Future<void> main() async {
   await EasyLocalization.ensureInitialized();
   await DotEnvManager().init();
 
-  final PedometerController pedometerController = Get.put<PedometerController>(PedometerController(), permanent: true);
-  final LocationController locationController = Get.put<LocationController>(LocationController(), permanent: true);
+  final PedometerController pedometerController =
+      Get.put<PedometerController>(PedometerController(), permanent: true);
+  final LocationController locationController =
+      Get.put<LocationController>(LocationController(), permanent: true);
 
   pedometerController.initializeService();
   locationController.initializeService();
@@ -85,7 +87,7 @@ Future<void> main() async {
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     log('main.dart : main() : message.data : ${message.data.toString()}');
-    if(message.notification != null) {
+    if (message.notification != null) {
       log('main.dart : main() : message.notification.title : ${message.notification!.title.toString()}');
       log('main.dart : main() : message.notification.body : ${message.notification!.body.toString()}');
     }

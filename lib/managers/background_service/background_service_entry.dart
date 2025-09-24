@@ -30,7 +30,7 @@ Future<bool> startPedometerTimerBackgroundIOS(ServiceInstance service) async {
   await EasyLocalization.ensureInitialized();
   await BEATLogger.ensureInitialized();
 
-  PermissionManager.updateLocationAndActivityPemission();
+  await PermissionManager.updateLocationAndActivityPemission();
 
   return true;
 }
@@ -48,7 +48,7 @@ Future<bool> startLocationTimerBackgroundIOS(ServiceInstance service) async {
   await EasyLocalization.ensureInitialized();
   await BEATLogger.ensureInitialized();
 
-  PermissionManager.updateLocationAndActivityPemission();
+  await PermissionManager.updateLocationAndActivityPemission();
 
   return true;
 }

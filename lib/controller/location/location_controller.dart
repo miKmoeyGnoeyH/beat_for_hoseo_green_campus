@@ -10,6 +10,7 @@ import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/managers/logger/beat_logger.dart';
 import 'package:beat_flutter/managers/notification/local_notification.dart';
 import 'package:beat_flutter/managers/permission/permission_manager.dart';
+import 'package:beat_flutter/managers/prefs/prefs_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,7 +29,7 @@ class LatLng {
 class LocationController extends GetxController {
   /// iOS 네이티브와 통신하기 위한 MethodChannel
   /// 모든 백그라운드 작업(걸음 수 동기화, 랭킹 집계, 자정 초기화)이 이 채널을 통해 이루어짐
-  static const _channel = MethodChannel("com.beat.walkreport/channel");
+  static const _channel = MethodChannel("com.beat.walkreport/location");
 
   // 위치
   final Rx<LatLng?> _locationData = Rx<LatLng?>(null);
@@ -124,7 +125,8 @@ class LocationController extends GetxController {
   Future<bool> getIsHolidayTest() async {
     final DateTime now = DateTime.now();
 
-    BEATLogger.d("LocationController : getIsHolidayTest : now: $now, now.day: ${now.day}, now.weekday: ${now.weekday}");
+    BEATLogger.d(
+        "LocationController : getIsHolidayTest : now: $now, now.day: ${now.day}, now.weekday: ${now.weekday}");
 
     return now.weekday == DateTime.saturday || now.day == DateTime.sunday;
   }
@@ -173,7 +175,7 @@ class LocationController extends GetxController {
   void startForegroundService() async {
     BEATLogger.d("LocationController : startForegroundService()");
 
-    await PermissionManager.ensureLocationAndActivityPermissionInitialized();
+    await PermissionManager.updateLocationAndActivityPemission();
 
     await fetchLocation();
     checkIsValidArea();
@@ -207,7 +209,7 @@ class LocationController extends GetxController {
     WidgetsFlutterBinding.ensureInitialized();
     DartPluginRegistrant.ensureInitialized();
 
-    PermissionManager.updateLocationAndActivityPemission();
+    await PermissionManager.updateLocationAndActivityPemission();
     await EasyLocalization.ensureInitialized();
 
     await fetchLocation();
@@ -218,7 +220,9 @@ class LocationController extends GetxController {
       final int sendToTime = Get.find<PedometerController>().sendToTime;
 
       setMethodCallHandler();
-      await _channel.invokeMethod("startBackgroundTasks",
+
+      await _channel.invokeMethod("stopBackgroundTasks");
+      _channel.invokeMethod("startBackgroundTasks",
           {"isHoliday": isHoliday, "sendToTime": sendToTime});
     }
 
@@ -227,10 +231,12 @@ class LocationController extends GetxController {
 
   Future<void> stopBackgroundService() async {
     BEATLogger.d("LocationController : stopBackgroundService()");
-    FlutterBackgroundService().invoke("stop");
+    FlutterBackgroundService().invoke("stopService");
 
-    await _channel.invokeMethod("stopBackgroundTasks");
-    _channel.setMethodCallHandler(null);
+    if (Platform.isIOS) {
+      _channel.invokeMethod("stopBackgroundTasks");
+      _channel.setMethodCallHandler(null);
+    }
 
     stopUpdateLocationTimer();
     stopMidnightTimer();
@@ -302,20 +308,26 @@ class LocationController extends GetxController {
   }
 
   Future<void> fetchLocation() async {
-    await PermissionManager.ensureLocationAndActivityPermissionInitialized();
+    await PermissionManager.updateLocationAndActivityPemission();
     if (!PermissionManager.isLocationPermissionGrantedStatic!) return;
 
-    final location = Location();
-    final newLocationData = await location.getLocation();
+    try {
+      final location = Location();
+      final newLocationData = await location.getLocation();
 
-    if (newLocationData.latitude == null || newLocationData.longitude == null) {
+      if (newLocationData.latitude == null || newLocationData.longitude == null) {
+        return;
+      }
+
+      locationData = LatLng(
+        newLocationData.latitude!,
+        newLocationData.longitude!,
+      );
+    } catch (e) {
+      BEATLogger.e("LocationController : fetchLocation error: $e");
+      // 권한 변경 직후 등 예외 상황에서 크래시 방지
       return;
     }
-
-    locationData = LatLng(
-      newLocationData.latitude!,
-      newLocationData.longitude!,
-    );
   }
 
   List<LatLng> asanArea = [
@@ -419,6 +431,7 @@ class LocationController extends GetxController {
     if (!isPointInAsanArea() && !isPointInCheonanArea()) {
       if (!pedometerController.isInValidArea) return;
       pedometerController.isInValidArea = false;
+
       BEATLogger.d(
           "LocationController : checkIsValidArea() : User Location Out of Range : ${locationData?.lat}, ${locationData?.lng}");
 
@@ -429,6 +442,7 @@ class LocationController extends GetxController {
     } else {
       if (pedometerController.isInValidArea) return;
       pedometerController.isInValidArea = true;
+
       BEATLogger.d(
           "LocationController : checkIsValidArea() : User Location Back in Range : ${locationData?.lat}, ${locationData?.lng}");
 
@@ -443,9 +457,6 @@ class LocationController extends GetxController {
   void checkIsValidAreaIOSBackground(double lat, double lon) async {
     final PedometerController pedometerController =
         Get.find<PedometerController>();
-    final DateTime now = DateTime.now();
-
-    // log("LocationController : checkIsValidArea() : isPointInAsanArea(): ${isPointInAsanArea()}, isPointInCheonanArea(): ${isPointInCheonanArea()}, pedometerController.isInValidArea.value: ${pedometerController.isInValidArea.value}");
 
     if (PermissionManager.isLocationPermissionGrantedStatic == null ||
         (PermissionManager.isLocationPermissionGrantedStatic == null &&
@@ -458,17 +469,9 @@ class LocationController extends GetxController {
         !isPointInCheonanAreaIOSBackground(lat, lon)) {
       if (!pedometerController.isInValidArea) return;
       pedometerController.isInValidArea = false;
+
       BEATLogger.d(
           "LocationController : checkIsValidAreaIOSBackground() : User Location Out of Range : ${locationData?.lat}, ${locationData?.lng}");
-
-      // if (now.hour < endHour &&
-      //     now.minute < endMinute &&
-      //     now.second < endSecond) {
-      //   LocalNotificationManager.showValidAreaNotification(
-      //     localizationManager.lnOutOfRangeTitle,
-      //     localizationManager.lnOutOfRangeBody,
-      //   );
-      // }
 
       LocalNotificationManager.showValidAreaNotification(
         localizationManager.lnOutOfRangeTitle,
@@ -477,17 +480,9 @@ class LocationController extends GetxController {
     } else {
       if (pedometerController.isInValidArea) return;
       pedometerController.isInValidArea = true;
+
       BEATLogger.d(
           "LocationController : checkIsValidAreaIOSBackground() : User Location Back in Range : ${locationData?.lat}, ${locationData?.lng}");
-
-      // if (now.hour < endHour &&
-      //     now.minute < endMinute &&
-      //     now.second < endSecond) {
-      //   LocalNotificationManager.showValidAreaNotification(
-      //     localizationManager.lnBackInRangeTitle,
-      //     localizationManager.lnBackInRangeBody,
-      //   );
-      // }
 
       LocalNotificationManager.showValidAreaNotification(
         localizationManager.lnBackInRangeTitle,
@@ -500,7 +495,7 @@ class LocationController extends GetxController {
   Future<void> _syncWalkDataInBackground() async {
     BEATLogger.d("LocationController : _syncWalkDataInBackground()");
     try {
-      PermissionManager.ensureLocationAndActivityPermissionInitialized();
+      await PermissionManager.updateLocationAndActivityPemission();
       if (PermissionManager.isActivityPermissionGrantedStatic! &&
           PermissionManager.isLocationPermissionGrantedStatic!) {
         final pedometerController = Get.find<PedometerController>();
@@ -518,7 +513,7 @@ class LocationController extends GetxController {
   Future<void> _syncRankingInBackground() async {
     BEATLogger.d("LocationController : _syncRankingInBackground()");
     try {
-      PermissionManager.ensureLocationAndActivityPermissionInitialized();
+      await PermissionManager.updateLocationAndActivityPemission();
       if (PermissionManager.isActivityPermissionGrantedStatic! &&
           PermissionManager.isLocationPermissionGrantedStatic!) {
         final pedometerController = Get.find<PedometerController>();

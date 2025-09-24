@@ -37,14 +37,26 @@ class SettingsScreen extends StatelessWidget {
             CustomHeadlineMedium(text: localizationManager.settingsAppbarTitle),
             SizedBox(height: 24.w),
             CustomWideButton(
+              height: 60.w,
+              autoSizeText: true,
+              borderRadius: 10,
+              padding: EdgeInsets.symmetric(
+                horizontal: 16.w,
+                vertical: 10.w,
+              ),
               onTap: () async {
-                await Get.find<PedometerController>().stopForegroundService();
-                await Get.find<PedometerController>().stopBackgroundService();
-                await Get.find<LocationController>().stopForegroundService();
-                await Get.find<LocationController>().stopBackgroundService();
+                await Get.find<PedometerController>()
+                    .stopForegroundService();
+                await Get.find<PedometerController>()
+                    .stopBackgroundService();
 
-                PrefsManager().resetSavedStudentIdAndPassword();
+                await Get.find<LocationController>()
+                    .stopForegroundService();
+                await Get.find<LocationController>()
+                    .stopBackgroundService();
 
+                // PrefsManager().withDrawal();
+                PrefsManager().clear();
                 userBloc.add(SignOut());
               },
               buttonColor: context.appColors.primary,
@@ -52,6 +64,13 @@ class SettingsScreen extends StatelessWidget {
             ),
             SizedBox(height: 10.w),
             CustomWideButton(
+              height: 60.w,
+              autoSizeText: true,
+              borderRadius: 10,
+              padding: EdgeInsets.symmetric(
+                horizontal: 16.w,
+                vertical: 10.w,
+              ),
               onTap: () {
                 NavigatorKeyManager().pushNamed(RouteNames.withdrawal);
               },

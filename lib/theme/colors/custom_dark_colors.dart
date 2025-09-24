@@ -4,7 +4,7 @@ import 'if_custom_colors.dart';
 
 class CustomDarkColors implements CustomColors {
   @override
-  Color get primary => const Color(0xff222BA3);
+  Color get primary => const Color(0xff3A4CE0);
 
   @override
   Color get onPrimary => const Color(0xffffffff);
@@ -22,13 +22,13 @@ class CustomDarkColors implements CustomColors {
   Color get onTertiary => Colors.transparent;
 
   @override
-  Color get surface => const Color(0xff00000c);
+  Color get surface => const Color(0xff0c0c0c);
 
   @override
   Color get onSurface => const Color(0xffffffff);
 
   @override
-  Color get background => const Color(0xff00000c);
+  Color get background => const Color(0xff0c0c0c);
 
   @override
   Color get onBackground => const Color(0xffffffff);

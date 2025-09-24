@@ -52,18 +52,18 @@ class _VoteNeuroSelectBottomSheetState
                   if (context.deviceLocale.toString() != "ko_KR")
                     TextSpan(
                       text: context.tr('vote_to'),
-                      style: CustomTexts.titleLarge
+                      style: CustomLargeTexts.titleLarge
                           .copyWith(color: context.appColors.onBackground),
                     ),
                   TextSpan(
                     text: widget.eventName,
-                    style: CustomTexts.titleLarge
+                    style: CustomLargeTexts.titleLarge
                         .copyWith(color: context.appColors.primary),
                   ),
                   if (context.deviceLocale.toString() == "ko_KR")
                     TextSpan(
                       text: context.tr('vote_to'),
-                      style: CustomTexts.titleLarge
+                      style: CustomLargeTexts.titleLarge
                           .copyWith(color: context.appColors.onBackground),
                     ),
                 ],
@@ -77,12 +77,12 @@ class _VoteNeuroSelectBottomSheetState
                 children: [
                   TextSpan(
                     text: '${context.tr('neuroes_in_hand')} ',
-                    style: CustomTexts.subtitleLarge
+                    style: CustomLargeTexts.subtitleLarge
                         .copyWith(color: context.appColors.onBackground),
                   ),
                   TextSpan(
                     text: userController.state.neuroesInHand,
-                    style: CustomTexts.subtitleLarge
+                    style: CustomLargeTexts.subtitleLarge
                         .copyWith(color: context.appColors.primary),
                   ),
                 ],

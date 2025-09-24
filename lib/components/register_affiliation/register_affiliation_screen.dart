@@ -34,6 +34,22 @@ class RegisterAffiliationScreen extends StatefulWidget {
 class _RegisterAffiliationScreenState extends State<RegisterAffiliationScreen> {
   final LocalizationManager localizationManager = LocalizationManager();
 
+  final FocusNode affiliationFocusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    affiliationFocusNode.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    affiliationFocusNode.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -41,9 +57,9 @@ class _RegisterAffiliationScreenState extends State<RegisterAffiliationScreen> {
         FocusScope.of(context).unfocus();
       },
       child: CustomScaffold(
-        top: false,
-        isScrollable: false,
-        hasScrollBody: false,
+        // top: false,
+        // isScrollable: false,
+        // hasScrollBody: false,
         appBar: RegisterBasicAppbar(
           text: localizationManager.raAppbarTitle,
         ),
@@ -54,6 +70,11 @@ class _RegisterAffiliationScreenState extends State<RegisterAffiliationScreen> {
             children: [
               CustomTextField(
                 // maxLength: 10,
+                ensureErrorTextSpace: true,
+                focusNode: affiliationFocusNode,
+                maxLines: affiliationFocusNode.hasFocus
+                    ? 2
+                    : 1,
                 hintText: localizationManager.raAffiliationHint,
                 onChanged: (value) {
                   registerDepartmentController.department = value;
@@ -75,6 +96,7 @@ class _RegisterAffiliationScreenState extends State<RegisterAffiliationScreen> {
                 },
                 autovalidateMode: AutovalidateMode.onUserInteraction,
               ),
+              SizedBox(height: 35.w),
             ],
           ),
         ),

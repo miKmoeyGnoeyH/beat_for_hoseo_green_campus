@@ -22,7 +22,7 @@ class SignInTextField extends StatelessWidget {
       children: [
         Text(
           title,
-          style: CustomTexts.titleLarge.copyWith(
+          style: CustomLargeTexts.titleLarge.copyWith(
             color: context.appColors.onBackground,
           ),
         ),

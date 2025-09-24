@@ -10,7 +10,7 @@ class CustomBodyMedium extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text ?? '',
-      style: CustomTexts.bodyMedium.copyWith(
+      style: CustomLargeTexts.bodyMedium.copyWith(
         color: textColor ?? context.appColors.onBackground,
       ),
       maxLines: maxLines,

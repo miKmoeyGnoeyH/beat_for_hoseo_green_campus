@@ -3,6 +3,7 @@ import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/managers/navigator/arguments/register_arguments.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../managers/navigator/navigator_key_manager.dart';
 import '../../../managers/navigator/routes.dart';
@@ -21,6 +22,13 @@ class SignInRegisterButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomWideButton(
+      height: 60.w,
+      autoSizeText: true,
+      borderRadius: 10,
+      padding: EdgeInsets.symmetric(
+        horizontal: 16.w,
+        vertical: 10.w,
+      ),
       onTap: () {
         FocusScope.of(context).unfocus();
         onTap();

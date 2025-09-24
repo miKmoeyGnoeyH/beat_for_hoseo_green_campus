@@ -12,7 +12,7 @@ class CustomAppBar extends StatelessWidget {
     this.actions,
     this.iconTheme,
     this.hasBorder = true,
-    this.pinned = false,
+    this.pinned = true,
     super.key,
   });
 

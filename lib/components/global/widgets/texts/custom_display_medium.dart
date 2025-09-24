@@ -17,7 +17,7 @@ class CustomDisplayMedium extends StatelessWidget {
     return AutoSizeText(
       text ?? '',
       maxLines: maxLines,
-      style: CustomTexts.displayMedium
+      style: CustomLargeTexts.displayMedium
           .copyWith(color: textColor ?? context.appColors.onBackground),
     );
   }

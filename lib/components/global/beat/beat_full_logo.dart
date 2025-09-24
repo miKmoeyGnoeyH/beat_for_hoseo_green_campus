@@ -12,7 +12,7 @@ class BeatFullLogo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 75.w),
+        padding: EdgeInsets.symmetric(vertical: 50.w),
         child: SvgPicture.asset("assets/svg/beat_hgc_logo_primary.svg"),
         // Image.asset(
         //   'assets/images/beat_full_logo.png',

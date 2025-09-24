@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
@@ -37,24 +38,27 @@ class _SignPreviewState extends State<SignPreview> {
         color: context.appColors.background,
         child: registerSignController.handSignatureControl.isFilled
             ? Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.w),
-          child: Image.memory(
-            base64Decode(registerSignController.signatureBase64),
-            fit: BoxFit.cover,
-          ),
-        )
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.w),
+                child: Image.memory(
+                  base64Decode(registerSignController.signatureBase64),
+                  fit: BoxFit.cover,
+                ),
+              )
             : Center(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w),
-            child: AutoSizeText(
-              localizationManager.spSignContent,
-              maxLines: 1,
-              style: CustomTexts.bodyLarge.copyWith(
-                color: context.appColors.onBackground,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: CustomBodyLarge(
+                    text: localizationManager.spSignContent,
+                  ),
+                  // child: AutoSizeText(
+                  //   localizationManager.spSignContent,
+                  //   maxLines: 1,
+                  //   style: CustomLargeTexts.bodyLarge.copyWith(
+                  //     color: context.appColors.onBackground,
+                  //   ),
+                  // ),
+                ),
               ),
-            ),
-          ),
-        ),
       ),
     );
   }

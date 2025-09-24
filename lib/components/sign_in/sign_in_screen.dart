@@ -1,4 +1,5 @@
 import 'package:beat_flutter/components/global/widgets/custom_circular_progress_indicator.dart';
+import 'package:beat_flutter/components/global/widgets/custom_text_field.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
@@ -20,13 +21,43 @@ import 'widgets/sign_in_register_button.dart';
 import 'widgets/sign_in_sid_field.dart';
 import 'widgets/sign_in_sign_in_button.dart';
 
-class SignInScreen extends StatelessWidget {
-  final TextEditingController _studentIdController =
+class SignInScreen extends StatefulWidget {
+  @override
+  State<SignInScreen> createState() => _SignInScreenState();
+
+  const SignInScreen({super.key});
+}
+
+class _SignInScreenState extends State<SignInScreen> {
+  final TextEditingController emailController =
       TextEditingController(text: PrefsManager().getSavedStudentId());
-  final TextEditingController _nicknameController =
+
+  final TextEditingController passwordController =
       TextEditingController(text: PrefsManager().getSavedPassword());
 
+  final FocusNode emailFocusNode = FocusNode();
+
+  final FocusNode passwordFocusNode = FocusNode();
+
   final LocalizationManager localizationManager = LocalizationManager();
+
+  @override
+  void initState() {
+    emailFocusNode.addListener(() {
+      setState(() {});
+    });
+    passwordFocusNode.addListener(() {
+      setState(() {});
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    emailFocusNode.dispose();
+    passwordFocusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,35 +84,51 @@ class SignInScreen extends StatelessWidget {
         onTap: () => FocusScope.of(context).unfocus(),
         onTapDown: (_) => FocusScope.of(context).unfocus(),
         child: CustomScaffold(
-          top: true,
+          top: false,
           isScrollable: false,
           hasScrollBody: false,
           backgroundColor: context.appColors.background,
           body: Center(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
-              child: Column(
-                children: [
-                  const BeatFullLogo(),
-                  SignInSIDField(studentIdController: _studentIdController),
-                  SizedBox(height: 24.w),
-                  SignInPasswordField(nicknameController: _nicknameController),
-                  SizedBox(height: 36.w),
-                  SignInSignInButton(
-                    studentIdController: _studentIdController,
-                    nicknameController: _nicknameController,
-                  ),
-                  SizedBox(height: 12.w),
-                  SignInRegisterButton(),
-                  SizedBox(height: 24.w),
-                  GestureDetector(
-                    onTap: onForgotPasswordTap,
-                    child: CustomBodyLarge(
-                      text: localizationManager.signInForgotPassword,
-                      // textColor: context.appColors.disabled,
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                child: Column(
+                  children: [
+                    const BeatFullLogo(),
+                    CustomTextField(
+                      textEditingController: emailController,
+                      focusNode: emailFocusNode,
+                      labelText: localizationManager.signInSidOrId,
+                      hintText: localizationManager.signInSidOrIdHint,
+                      maxLines: emailFocusNode.hasFocus ? 2 : 1,
                     ),
-                  ),
-                ],
+                    // SignInSIDField(studentIdController: emailController),
+                    SizedBox(height: 24.w),
+                    CustomTextField(
+                      textEditingController: passwordController,
+                      focusNode: passwordFocusNode,
+                      labelText: localizationManager.signInPassword,
+                      hintText: localizationManager.signInPasswordHint,
+                      obscureText: true,
+                    ),
+                    // SignInPasswordField(nicknameController: passwordController),
+                    SizedBox(height: 36.w),
+                    SignInSignInButton(
+                      studentIdController: emailController,
+                      nicknameController: passwordController,
+                    ),
+                    SizedBox(height: 12.w),
+                    SignInRegisterButton(),
+                    SizedBox(height: 24.w),
+                    GestureDetector(
+                      onTap: onForgotPasswordTap,
+                      child: CustomBodyLarge(
+                        text: localizationManager.signInForgotPassword,
+                        // textColor: context.appColors.disabled,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -94,6 +141,4 @@ class SignInScreen extends StatelessWidget {
     // log("forgot password");
     NavigatorKeyManager().pushNamed(RouteNames.resetPassword);
   }
-
-  SignInScreen({super.key});
 }

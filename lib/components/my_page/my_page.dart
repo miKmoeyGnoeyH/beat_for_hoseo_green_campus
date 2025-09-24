@@ -117,8 +117,8 @@ TableRow buildMyPageTableRow(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            CustomBodyMedium(text: label),
-            CustomBodyMedium(text: content),
+            CustomBodyLarge(text: label),
+            CustomBodyLarge(text: content),
           ],
         ),
       ),

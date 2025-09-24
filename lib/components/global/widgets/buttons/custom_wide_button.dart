@@ -46,7 +46,7 @@ class CustomWideButton extends StatelessWidget {
                         ? buttonTextStyle!.copyWith(
                             color: textColor ?? context.appColors.onPrimary,
                           )
-                        : CustomTexts.subtitleLarge.copyWith(
+                        : CustomLargeTexts.subtitleLarge.copyWith(
                             color: textColor ?? context.appColors.onPrimary,
                           ),
                     maxLines: maxLines ?? 1,
@@ -57,7 +57,7 @@ class CustomWideButton extends StatelessWidget {
                         ? buttonTextStyle!.copyWith(
                             color: textColor ?? context.appColors.onPrimary,
                           )
-                        : CustomTexts.subtitleLarge.copyWith(
+                        : CustomLargeTexts.subtitleLarge.copyWith(
                             color: textColor ?? context.appColors.onPrimary,
                           ),
                     maxLines: maxLines ?? 1,

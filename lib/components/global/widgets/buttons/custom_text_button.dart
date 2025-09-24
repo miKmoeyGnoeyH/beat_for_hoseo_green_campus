@@ -45,7 +45,7 @@ class CustomTextButton extends StatelessWidget {
               child: autoSizeText
                   ? AutoSizeText(
                       text,
-                      style: CustomTexts.bodyLarge.copyWith(
+                      style: CustomLargeTexts.bodyLarge.copyWith(
                         color: textColor ?? context.appColors.onPrimary,
                       ),
                       maxLines: maxLines,

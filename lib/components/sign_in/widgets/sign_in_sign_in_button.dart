@@ -2,6 +2,7 @@ import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../controller/user_controller.dart';
 import '../../../data/models/user_model.dart';
@@ -26,6 +27,13 @@ class SignInSignInButton extends StatelessWidget {
 
     return BlocBuilder<UserController, User>(
       builder: (context, state) => CustomWideButton(
+        height: 60.w,
+        autoSizeText: true,
+        borderRadius: 10,
+        padding: EdgeInsets.symmetric(
+          horizontal: 16.w,
+          vertical: 10.w,
+        ),
         onTap: state is IsLoading
             ? () {}
             : () {

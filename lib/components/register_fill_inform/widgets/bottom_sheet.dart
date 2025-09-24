@@ -1,7 +1,11 @@
+import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.dart';
+import 'package:beat_flutter/components/global/widgets/texts/custom_subtitle_large.dart';
+import 'package:beat_flutter/components/global/widgets/texts/custom_subtitle_medium.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 import '../../../controller/register_fill_inform/register_agreement_controller.dart';
 import '../../../theme/texts/custom_texts.dart';
@@ -35,180 +39,58 @@ class _StatefulBottomSheetState extends State<StatefulBottomSheet> {
       radiusTopRight: true,
       radiusTopLeft: true,
       width: double.infinity,
+      height: 600.w,
       color: context.appColors.background,
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 36.w),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text.rich(
-              TextSpan(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CustomSubtitleLarge(text: localizationManager.rfiTermsOfAgreement),
+              SizedBox(height: 20.w),
+              CustomSubtitleMedium(text: "1. ${localizationManager.rfiToaPurpose}"),
+              CustomBodyLarge(text: localizationManager.rfiToaPurposeContent),
+              SizedBox(height: 16.w),
+              CustomSubtitleMedium(text: "2. ${localizationManager.rfiToaItems}"),
+              CustomBodyLarge(text: localizationManager.rfiToaItemsContent),
+              SizedBox(height: 16.w),
+              CustomSubtitleMedium(text: "3. ${localizationManager.rfiToaRetention}"),
+              CustomBodyLarge(text: localizationManager.rfiToaRetentionContent),
+              SizedBox(height: 16.w),
+              CustomSubtitleMedium(text: "4. ${localizationManager.rfiToaRightToRefusal}"),
+              CustomBodyLarge(text: localizationManager.rfiToaRightToRefusalContent),
+              SizedBox(height: 16.w),
+              CustomSubtitleMedium(text: localizationManager.rfiDoYouAgree),
+              SizedBox(height: 20.w),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  TextSpan(
-                    text: localizationManager.rfiTermsOfAgreement,
-                    style: CustomTexts.subtitleLarge
-                        .copyWith(color: context.appColors.onBackground),
+                  CustomSubtitleLarge(
+                    text: localizationManager.rfiIAgree,
                   ),
-                  WidgetSpan(child: Container()),
-                  TextSpan(
-                    children: [
-                      TextSpan(
-                        text: '1.',
-                        style: CustomTexts.subtitleMedium
-                            .copyWith(color: context.appColors.onBackground),
+                  Transform.scale(
+                    scale: 1.2,
+                    child: Checkbox(
+                      value: registerAgreementProvider.isAgreementChecked,
+                      activeColor: context.appColors.primary,
+                      checkColor: context.appColors.onPrimary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      TextSpan(
-                        children: [
-                          WidgetSpan(
-                            child: SizedBox(width: 5.w),
-                          ),
-                          TextSpan(
-                            text: localizationManager.rfiToaPurpose,
-                            style: CustomTexts.subtitleMedium.copyWith(
-                                color: context.appColors.onBackground),
-                          ),
-                        ],
-                      ),
-                    ],
+                      onChanged: (value) {
+                        setState(() {
+                          widget.setIsAgreementChecked(value!);
+                          Get.back();
+                        });
+                      },
+                    ),
                   ),
-                  TextSpan(
-                    children: [
-                      TextSpan(
-                        text: localizationManager.rfiToaPurposeContent,
-                        style: CustomTexts.bodyLarge
-                            .copyWith(color: context.appColors.onBackground),
-                      ),
-                    ],
-                  ),
-                  WidgetSpan(child: Container()),
-                  TextSpan(
-                    children: [
-                      TextSpan(
-                        text: '2.',
-                        style: CustomTexts.subtitleMedium
-                            .copyWith(color: context.appColors.onBackground),
-                      ),
-                      TextSpan(
-                        children: [
-                          WidgetSpan(
-                            child: SizedBox(width: 5.w),
-                          ),
-                          TextSpan(
-                            text: localizationManager.rfiToaItems,
-                            style: CustomTexts.subtitleMedium.copyWith(
-                                color: context.appColors.onBackground),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  TextSpan(
-                    children: [
-                      TextSpan(
-                        text: localizationManager.rfiToaItemsContent,
-                        style: CustomTexts.bodyLarge
-                            .copyWith(color: context.appColors.onBackground),
-                      ),
-                    ],
-                  ),
-                  WidgetSpan(child: Container()),
-                  TextSpan(
-                    children: [
-                      TextSpan(
-                        text: '3.',
-                        style: CustomTexts.subtitleMedium
-                            .copyWith(color: context.appColors.onBackground),
-                      ),
-                      TextSpan(
-                        children: [
-                          WidgetSpan(
-                            child: SizedBox(width: 5.w),
-                          ),
-                          TextSpan(
-                            text: localizationManager.rfiToaRetention,
-                            style: CustomTexts.subtitleMedium.copyWith(
-                                color: context.appColors.onBackground),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  TextSpan(
-                    children: [
-                      TextSpan(
-                        text: localizationManager.rfiToaRetentionContent,
-                        style: CustomTexts.bodyLarge
-                            .copyWith(color: context.appColors.onBackground),
-                      ),
-                    ],
-                  ),
-                  WidgetSpan(child: Container()),
-                  TextSpan(
-                    children: [
-                      TextSpan(
-                        text: '4.',
-                        style: CustomTexts.subtitleMedium
-                            .copyWith(color: context.appColors.onBackground),
-                      ),
-                      TextSpan(
-                        children: [
-                          WidgetSpan(
-                            child: SizedBox(width: 5.w),
-                          ),
-                          TextSpan(
-                            text: localizationManager.rfiToaRightToRefusal,
-                            style: CustomTexts.subtitleMedium.copyWith(
-                                color: context.appColors.onBackground),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  TextSpan(
-                    children: [
-                      TextSpan(
-                        text: localizationManager.rfiToaRightToRefusalContent,
-                        style: CustomTexts.bodyLarge
-                            .copyWith(color: context.appColors.onBackground),
-                      ),
-                    ],
-                  ),
-                  WidgetSpan(child: Container()),
-                  TextSpan(
-                    text: localizationManager.rfiDoYouAgree,
-                    style: CustomTexts.subtitleLarge
-                        .copyWith(color: context.appColors.onBackground),
-                  ),
-                  WidgetSpan(child: Container()),
                 ],
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  localizationManager.rfiIAgree,
-                  style: CustomTexts.subtitleLarge
-                      .copyWith(color: context.appColors.onBackground),
-                ),
-                Transform.scale(
-                  scale: 1.2,
-                  child: Checkbox(
-                    value: registerAgreementProvider.isAgreementChecked,
-                    activeColor: context.appColors.primary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        widget.setIsAgreementChecked(value!);
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

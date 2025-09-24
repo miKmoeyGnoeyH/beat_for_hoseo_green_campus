@@ -1,4 +1,5 @@
 import 'package:beat_flutter/components/global/beat/gc_point.dart';
+import 'package:beat_flutter/components/global/widgets/texts/custom_subtitle_medium.dart';
 import 'package:beat_flutter/data/models/data_models.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -15,7 +16,7 @@ TableRow buildQuestDetailTableRewardRow({required String reward}) {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            CustomSubtitleLarge(
+            CustomSubtitleMedium(
               text: LocalizationManager().qdTotalReward,
             ),
             Row(
@@ -23,7 +24,7 @@ TableRow buildQuestDetailTableRewardRow({required String reward}) {
               children: [
                 GreenCampusPoint(width: 25.w),
                 SizedBox(width: 5.w),
-                CustomSubtitleLarge(
+                CustomSubtitleMedium(
                   text: reward,
                 ),
               ],
@@ -49,7 +50,7 @@ TableRow buildQuestDetailTableQuestTypeRow({required EventType? questType}) {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            CustomSubtitleLarge(
+            CustomSubtitleMedium(
               text: LocalizationManager().qdQuestType,
             ),
             Column(
@@ -73,7 +74,7 @@ TableRow buildQuestDetailTableLocationRow({required String? questLocation}) {
   return TableRow(
     children: [
       TableCell(
-        child: CustomSubtitleLarge(
+        child: CustomSubtitleMedium(
           text: 'location'.tr(),
         ),
       ),
@@ -99,7 +100,7 @@ TableRow buildQuestDetailTableQuestRequirementRow(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            CustomSubtitleLarge(
+            CustomSubtitleMedium(
               text: LocalizationManager().qdQuestRequirement,
             ),
             Column(
@@ -134,7 +135,7 @@ TableRow buildQuestDetailTableBonusRewardRow({required String? bonusReward}) {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            CustomSubtitleLarge(
+            CustomSubtitleMedium(
               text: LocalizationManager().qdBonusReward,
             ),
             Column(

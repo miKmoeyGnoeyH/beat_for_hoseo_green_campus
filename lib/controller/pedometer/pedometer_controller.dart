@@ -19,7 +19,7 @@ import 'package:http/http.dart' as http;
 class PedometerController extends GetxController {
   /// iOS 네이티브와 통신하기 위한 MethodChannel
   /// iOS의 모든 백그라운드 작업(걸음 수 동기화, 랭킹 집계, 자정 초기화)이 이 채널을 통해 이루어짐
-  static const _channel = MethodChannel("com.beat.walkreport/channel");
+  static const _channel = MethodChannel("com.beat.walkreport/pedometer");
 
   // 언어
   final LocalizationManager localizationManager = LocalizationManager();
@@ -29,7 +29,11 @@ class PedometerController extends GetxController {
 
   String get authorization => _authorization;
 
-  void setAuthorization(String authorization) => _authorization = authorization;
+  void setAuthorization(String authorization) {
+    _authorization = authorization;
+    // 로그인 성공 시점에 서버/저장값 복원
+    getWalkHitory();
+  }
 
   // 랭킹 집계 서버 전송 시각
   int _sendToTime = 0;
@@ -61,7 +65,7 @@ class PedometerController extends GetxController {
   /// 최초 앱 실행 시점에 시스템에 기록된 부팅 이후 걸음 수가 몇 걸음이었는지를 기억하고
   /// 이후 걸음 수 이벤트에서 이 값과 갱신된 걸음 수의 차이를 계산함.
   /// 이 값은 매일 자정에만 초기화되며, 걸음 수는 일 단위로 측정되므로 내부 저장소에 저장될 필요가 있다.
-  int? _stepsAfterLastBoot;
+  int? stepsAfterLastBoot;
 
   /// 걸음 수 이벤트 발생 시 걸음 수가 반드시 1씩 증가하는 것이 아님.
   /// 이 값은 직전 걸음 수 이벤트의 걸음 수를 기록하고, 걸음 수 이벤트 발생 시
@@ -156,11 +160,11 @@ class PedometerController extends GetxController {
     // 위 문제를 해결하기 위해 리스너 등록 로직과 시점이 변경되어야 할 수 있음.
     _lastReportedTime = PrefsManager().getLastReportedTime();
     _lastReportedSteps = PrefsManager().getLastReportedSteps();
-    _stepsAfterLastBoot = PrefsManager().getStepsAfterLastboot();
+    stepsAfterLastBoot = PrefsManager().getStepsAfterLastboot();
     _walkReports.assignAll(PrefsManager().getUnsentStepsList());
 
     BEATLogger.d(
-        "PedometerController created : _lastReportedTime: $_lastReportedTime, _lastReportedSteps: $_lastReportedSteps, _stepsAfterLastBoot: $_stepsAfterLastBoot, _walkReports: $_walkReports");
+        "PedometerController created : _lastReportedTime: $_lastReportedTime, _lastReportedSteps: $_lastReportedSteps, _stepsAfterLastBoot: $stepsAfterLastBoot, _walkReports: $_walkReports");
 
     ever<List<Map<String, dynamic>>>(
       _walkReports,
@@ -250,153 +254,81 @@ class PedometerController extends GetxController {
   /// 기기가 재부팅된 경우.
   /// 이 경우 _stepsAfterLastBoot를 event.steps로 재초기화
   void onStepCount(StepCount event) {
-    if (PermissionManager.isActivityPermissionGrantedStatic == null ||
-        !PermissionManager.isActivityPermissionGrantedStatic!) {
-      // BEATLogger.d(
-      //     "PedometerController : onStepCount : PermissionManager.isActivityPermissionGrantedStatic : ${PermissionManager.isActivityPermissionGrantedStatic.toString()}");
-      PermissionManager.updateLocationAndActivityPemission();
-      return;
-    }
-    if (!isEventDuration || !isInValidArea || isHoliday) {
-      // BEATLogger.d(
-      //     "PedometerController : onStepCount : isEventDuartion : $isEventDuration, isInValidArea: $isInValidArea, isHoliday: $isHoliday}");
-      return;
+    // 1) 베이스라인은 항상 갱신 (최초 실행 또는 재부팅 보정)
+    if (stepsAfterLastBoot == null ||
+        (stepsAfterLastBoot != null && stepsAfterLastBoot! > event.steps)) {
+      stepsAfterLastBoot = event.steps;
+      PrefsManager().setStepsAfterLastboot(stepsAfterLastBoot!);
     }
 
-    if (_stepsAfterLastBoot == null ||
-        (_stepsAfterLastBoot != null && _stepsAfterLastBoot! > event.steps)) {
-      _stepsAfterLastBoot = event.steps;
-
-      // BEATLogger.d(
-      //     "PedometerController : onStepCount : _stepsAfterLastBoot is null. Set _stepsAfterLastBoot to event.steps");
-      // BEATLogger.d(
-      //     "PedometerController : onStepCount : _stepsAfterLastBoot : $_stepsAfterLastBoot, event.steps: ${event.steps}, totalWalkCount: $totalWalkCount, _previousSteps: $_previousSteps, _lastReportedSteps: $_lastReportedSteps");
-
-      PrefsManager().setStepsAfterLastboot(_stepsAfterLastBoot!);
-      // BEATLogger.d(
-      //     "PedometerController : onStepCount : Saved _stepsAfterLastBoot to PrefsManager: ${PrefsManager().getStepsAfterLastboot()}");
-    }
-
+    // 2) 이전 디바이스 스텝을 항상 최신으로 유지
     if (_previousSteps == null ||
         (_previousSteps != null && _previousSteps! > event.steps)) {
       _previousSteps = event.steps;
-      // BEATLogger.d(
-      //     "PedometerController : onStepCount : _previousSteps is null or greater than event.steps. Set _previousSteps to event.steps");
     }
 
     int diff = event.steps - _previousSteps!;
-    _previousSteps = event.steps;
+    _previousSteps = event.steps; // 항상 따라감
 
-    // BEATLogger.d(
-    //     "PedometerController : onStepCount : todayWalkCount: $todayWalkCount, event.steps: ${event.steps}, totalWalkCount: $totalWalkCount, diff: $diff, _previousSteps: $_previousSteps, _stepsAfterLastBoot: $_stepsAfterLastBoot, _lastReportedSteps: $_lastReportedSteps");
-
-    if (diff > 0) {
-      // if (steps + diff > maxDailySteps) {
-      //   diff = diff - (steps + diff - maxDailySteps);
-      //   steps = maxDailySteps;
-      //   todayWalkCount += diff;
-      //   weeklyWalkCount += diff;
-      //   monthlyWalkCount += diff;
-      //   totalWalkCount += diff;
-      //
-      //   LocalNotificationManager.showNotification(
-      //     localizationManager.lnReachedTodaysMaxStepCount,
-      //     localizationManager.lnOutOfRangeBody,
-      //   );
-      //
-      //   removeListeners();
-      // } else {
-      //   steps += diff;
-      //   todayWalkCount += diff;
-      //   weeklyWalkCount += diff;
-      //   monthlyWalkCount += diff;
-      //   totalWalkCount += diff;
-      // }
-
-      // steps += diff;
-      todayWalkCount += diff;
-      weeklyWalkCount += diff;
-      monthlyWalkCount += diff;
-      totalWalkCount += diff;
+    // 3) 합산은 조건 만족할 때만 (권한/시간/영역/휴일)
+    if (PermissionManager.isActivityPermissionGrantedStatic == null ||
+        !PermissionManager.isActivityPermissionGrantedStatic! ||
+        !isEventDuration || !isInValidArea || isHoliday || diff <= 0) {
+      return;
     }
 
-    // log("PedometerController : todayWalkCount : $todayWalkCount, onStepCount : event.steps: ${event.steps}, _stepsAfterLastBoot: $_stepsAfterLastBoot, totalWalkCount: $totalWalkCount, _previousSteps: $_previousSteps, _lastReportedSteps: $_lastReportedSteps");
+    // steps += diff;
+    todayWalkCount += diff;
+    weeklyWalkCount += diff;
+    monthlyWalkCount += diff;
+    totalWalkCount += diff;
+    // 증가 시점마다 즉시 영속화해 앱 재시작 시 초기화 방지
+    PrefsManager().setSteps(
+      todayWalkCount,
+      weeklyWalkCount,
+      monthlyWalkCount,
+      totalWalkCount,
+    );
   }
 
   /// iOS 백그라운드 걸음 수 이벤트 처리
   void onStepCountFromNative(int stepsFromNative) {
-    if (PermissionManager.isActivityPermissionGrantedStatic == null ||
-        !PermissionManager.isActivityPermissionGrantedStatic!) {
-      // BEATLogger.d(
-      //     "PedometerController : onStepCount : PermissionManager.isActivityPermissionGrantedStatic : ${PermissionManager.isActivityPermissionGrantedStatic.toString()}");
-      PermissionManager.updateLocationAndActivityPemission();
-      return;
-    }
-    if (!isEventDuration || !isInValidArea || isHoliday) {
-      // BEATLogger.d(
-      //     "PedometerController : onStepCount : isEventDuartion : $isEventDuration, isInValidArea: $isInValidArea, isHoliday: $isHoliday}");
-      return;
+    // 1) 베이스라인은 항상 갱신
+    if (stepsAfterLastBoot == null ||
+        (stepsAfterLastBoot != null &&
+            stepsAfterLastBoot! > stepsFromNative)) {
+      stepsAfterLastBoot = stepsFromNative;
+      PrefsManager().setStepsAfterLastboot(stepsAfterLastBoot!);
     }
 
-    if (_stepsAfterLastBoot == null ||
-        (_stepsAfterLastBoot != null &&
-            _stepsAfterLastBoot! > stepsFromNative)) {
-      _stepsAfterLastBoot = stepsFromNative;
-
-      // BEATLogger.d(
-      //     "PedometerController : onStepCount : _stepsAfterLastBoot is null. Set _stepsAfterLastBoot to stepsFromNative");
-      // BEATLogger.d(
-      //     "PedometerController : onStepCount : _stepsAfterLastBoot : $_stepsAfterLastBoot, stepsFromNative: $stepsFromNative, totalWalkCount: $totalWalkCount, _previousSteps: $_previousSteps, _lastReportedSteps: $_lastReportedSteps");
-
-      PrefsManager().setStepsAfterLastboot(_stepsAfterLastBoot!);
-      // BEATLogger.d(
-      //     "PedometerController : onStepCount : Saved _stepsAfterLastBoot to PrefsManager: ${PrefsManager().getStepsAfterLastboot()}");
-    }
-
+    // 2) 이전 디바이스 스텝을 항상 최신으로 유지
     if (_previousSteps == null ||
         (_previousSteps != null && _previousSteps! > stepsFromNative)) {
       _previousSteps = stepsFromNative;
-      // BEATLogger.d(
-      //     "PedometerController : onStepCount : _previousSteps is null or greater than event.steps. Set _previousSteps to event.steps");
     }
 
     int diff = stepsFromNative - _previousSteps!;
     _previousSteps = stepsFromNative;
 
-    // BEATLogger.d(
-    //     "PedometerController : onStepCount : todayWalkCount: $todayWalkCount, stepsFromNative: $stepsFromNative, totalWalkCount: $totalWalkCount, diff: $diff, _previousSteps: $_previousSteps, _stepsAfterLastBoot: $_stepsAfterLastBoot, _lastReportedSteps: $_lastReportedSteps");
-
-    if (diff > 0) {
-      // if (steps + diff > maxDailySteps) {
-      //   diff = diff - (steps + diff - maxDailySteps);
-      //   steps = maxDailySteps;
-      //   todayWalkCount += diff;
-      //   weeklyWalkCount += diff;
-      //   monthlyWalkCount += diff;
-      //   totalWalkCount += diff;
-      //
-      //   LocalNotificationManager.showNotification(
-      //     localizationManager.lnReachedTodaysMaxStepCount,
-      //     localizationManager.lnOutOfRangeBody,
-      //   );
-      //
-      //   removeListeners();
-      // } else {
-      //   steps += diff;
-      //   todayWalkCount += diff;
-      //   weeklyWalkCount += diff;
-      //   monthlyWalkCount += diff;
-      //   totalWalkCount += diff;
-      // }
-
-      // steps += diff;
-      todayWalkCount += diff;
-      weeklyWalkCount += diff;
-      monthlyWalkCount += diff;
-      totalWalkCount += diff;
+    // 3) 합산은 조건 만족할 때만
+    if (PermissionManager.isActivityPermissionGrantedStatic == null ||
+        !PermissionManager.isActivityPermissionGrantedStatic! ||
+        !isEventDuration || !isInValidArea || isHoliday || diff <= 0) {
+      return;
     }
 
-    // log("PedometerController : todayWalkCount : $todayWalkCount, onStepCount : stepsFromNative: $stepsFromNative, _stepsAfterLastBoot: $_stepsAfterLastBoot, totalWalkCount: $totalWalkCount, _previousSteps: $_previousSteps, _lastReportedSteps: $_lastReportedSteps");
+    // steps += diff;
+    todayWalkCount += diff;
+    weeklyWalkCount += diff;
+    monthlyWalkCount += diff;
+    totalWalkCount += diff;
+    // 증가 시점마다 즉시 영속화
+    PrefsManager().setSteps(
+      todayWalkCount,
+      weeklyWalkCount,
+      monthlyWalkCount,
+      totalWalkCount,
+    );
   }
 
   /// iOS 백그라운드 걸음 수 이벤트 처리
@@ -465,7 +397,7 @@ class PedometerController extends GetxController {
       PrefsManager().setSteps(
           todayWalkCount, weeklyWalkCount, monthlyWalkCount, totalWalkCount);
       BEATLogger.d(
-          "PedometerController : getWalkHistory : todayWalkCount: $todayWalkCount, weeklyWalkCount: $weeklyWalkCount, monthlyWalkCount: $monthlyWalkCount, totalWalkCount: $totalWalkCount, _lastReportedSteps: $_lastReportedSteps, _stepsAfterLastBoot: $_stepsAfterLastBoot");
+          "PedometerController : getWalkHistory : todayWalkCount: $todayWalkCount, weeklyWalkCount: $weeklyWalkCount, monthlyWalkCount: $monthlyWalkCount, totalWalkCount: $totalWalkCount, _lastReportedSteps: $_lastReportedSteps, _stepsAfterLastBoot: $stepsAfterLastBoot");
     } catch (e) {
       BEATLogger.d("PedometerController : getWalkHitory() : ${e.toString()}");
     }
@@ -574,10 +506,10 @@ class PedometerController extends GetxController {
 
     if (Platform.isIOS) {
       setMethodCallHandler();
-      _channel.invokeMethod("stopActivityUpdates");
+      await _channel.invokeMethod("stopActivityUpdates");
       _channel.invokeMethod("startActivityUpdates");
 
-      _channel.invokeMethod("stopPedometer");
+      await _channel.invokeMethod("stopPedometer");
       _channel.invokeMethod("startPedometer");
     } else {
       initPlatformState();
@@ -593,13 +525,14 @@ class PedometerController extends GetxController {
 
     await PrefsManager().setSteps(
         todayWalkCount, weeklyWalkCount, monthlyWalkCount, totalWalkCount);
-    if (_stepsAfterLastBoot != null) {
-      await PrefsManager().setStepsAfterLastboot(_stepsAfterLastBoot!);
+
+    if (stepsAfterLastBoot != null) {
+      await PrefsManager().setStepsAfterLastboot(stepsAfterLastBoot!);
     }
 
     if (Platform.isIOS) {
-      await _channel.invokeMethod("stopPedometer");
-      await _channel.invokeMethod("stopActivityUpdates");
+      _channel.invokeMethod("stopPedometer");
+      _channel.invokeMethod("stopActivityUpdates");
       _channel.setMethodCallHandler(null);
     }
 
@@ -618,12 +551,19 @@ class PedometerController extends GetxController {
 
     if (Platform.isIOS) {
       setMethodCallHandler();
-      _channel.invokeMethod("stopActivityUpdates");
+      await _channel.invokeMethod("stopActivityUpdates");
       _channel.invokeMethod("startActivityUpdates");
 
-      _channel.invokeMethod("stopPedometer");
+      await _channel.invokeMethod("stopPedometer");
       _channel.invokeMethod("startPedometer");
+    } else {
+      initPlatformState();
+
+      startReportTimer();
+      startRankReportTimer();
+      getWalkHitory();
     }
+
 
     FlutterBackgroundService().startService();
   }
@@ -634,13 +574,13 @@ class PedometerController extends GetxController {
 
     await PrefsManager().setSteps(
         todayWalkCount, weeklyWalkCount, monthlyWalkCount, totalWalkCount);
-    if (_stepsAfterLastBoot != null) {
-      await PrefsManager().setStepsAfterLastboot(_stepsAfterLastBoot!);
+    if (stepsAfterLastBoot != null) {
+      await PrefsManager().setStepsAfterLastboot(stepsAfterLastBoot!);
     }
 
     if (Platform.isIOS) {
-      await _channel.invokeMethod("stopPedometer");
-      await _channel.invokeMethod("stopActivityUpdates");
+      _channel.invokeMethod("stopPedometer");
+      _channel.invokeMethod("stopActivityUpdates");
       _channel.setMethodCallHandler(null);
     }
 

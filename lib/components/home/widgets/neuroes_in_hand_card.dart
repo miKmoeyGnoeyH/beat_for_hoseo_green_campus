@@ -33,48 +33,46 @@ class PointsInHandCard extends StatelessWidget {
           RouteNames.neuroHistory,
           arguments: userController.state.authorization,
         ),
-        child: CustomRoundedBorderedContainer(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.w),
-            child: Stack(
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.w),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            color: context.appColors.primary,
+          ),
+          child: Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/gc_points.png'),
+                // fit: BoxFit.contain,
+                scale: 10.0,
+                alignment: Alignment.centerRight,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Positioned(
-                  right: 0,
-                  top: 10.w,
-                  child: const GreenCampusPoints(),
+                CustomSubtitleLarge(
+                  text: localizationManager.homePointsInHand,
+                  textColor: context.appColors.onPrimary,
                 ),
-                Positioned(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CustomSubtitleLarge(
-                            text: localizationManager.homePointsInHand,
-                            textColor: context.appColors.onPrimary,
-                          ),
-                          BlocBuilder<UserController, User>(
-                            builder: (context, state) => CustomHeadlineLarge(
-                              text: state is Member
-                                  ? NumberFormat("###,###,###,###")
-                                      .format(int.parse(state.neuroesInHand))
-                                  : '',
-                              textColor: context.appColors.onPrimary,
-                            ),
-                          ),
-                          CustomBodyLarge(
-                            text: localizationManager.homeTapToCheckYourHistory,
-                            textColor: context.appColors.onPrimary,
-                          )
-                        ],
-                      ),
-                      // const Neuroes(),
-                      // const GreenCampusPoints()
-                    ],
+                BlocBuilder<UserController, User>(
+                  builder: (context, state) => CustomHeadlineLarge(
+                    text: state is Member
+                        ? NumberFormat("###,###,###,###")
+                            .format(int.parse(state.neuroesInHand))
+                        : '',
+                    textColor: context.appColors.onPrimary,
                   ),
                 ),
+                SizedBox(
+                  child: CustomBodyLarge(
+                    text: localizationManager
+                        .homeTapToCheckYourHistory,
+                    textColor: context.appColors.onPrimary,
+                    maxLines: 2,
+                  ),
+                )
               ],
             ),
           ),

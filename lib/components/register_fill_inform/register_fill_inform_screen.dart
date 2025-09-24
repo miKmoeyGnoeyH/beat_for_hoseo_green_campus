@@ -62,6 +62,12 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController passwordCheckController = TextEditingController();
 
+  final FocusNode nameFocusNode = FocusNode();
+  final FocusNode nicknameFocusNode = FocusNode();
+  final FocusNode sidFocusNode = FocusNode();
+  final FocusNode passwordFocusNode = FocusNode();
+  final FocusNode passwordCheckFocusNode = FocusNode();
+
   final LocalizationManager localizationManager = LocalizationManager();
 
   late final int? maxIDLength;
@@ -72,7 +78,34 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
             localizationManager.generalStudent
         ? 8
         : null;
+
+    nameFocusNode.addListener(() {
+      setState(() {});
+    });
+    nicknameFocusNode.addListener(() {
+      setState(() {});
+    });
+    sidFocusNode.addListener(() {
+      setState(() {});
+    });
+    passwordFocusNode.addListener(() {
+      setState(() {});
+    });
+    passwordCheckFocusNode.addListener(() {
+      setState(() {});
+    });
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    nameFocusNode.dispose();
+    nicknameFocusNode.dispose();
+    sidFocusNode.dispose();
+    passwordFocusNode.dispose();
+    passwordCheckFocusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -94,7 +127,8 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
               customShowDialog(
                 context: context,
                 title: localizationManager.rfiEmailSentTitle,
-                content: localizationManager.rfiEmailSentMessage,
+                content: localizationManager.rfiEmailSentMessage(
+                    "${registerSidController.idController.text}$mailDomain"),
               );
             } else if (state is IDError) {
               _isEmailButtonEnabled = true;
@@ -188,8 +222,10 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                   CustomTextField(
                     textEditingController:
                         registerNameController.nameController,
+                    focusNode: nameFocusNode,
                     labelText: localizationManager.rfiName,
                     hintText: localizationManager.rfiNameHint,
+                    maxLength: 30,
                     inputFormatters: [onlyEnglishAndKoreanInputFormatter()],
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -215,14 +251,17 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                   CustomTextField(
                     textEditingController:
                         registerNicknameController.nicknameController,
+                    focusNode: nicknameFocusNode,
                     labelText: localizationManager.rfiNickname,
                     hintText: localizationManager.rfiNicknameHint,
+                    maxLines: nicknameFocusNode.hasFocus ? 2 : 1,
                     maxLength: 10,
                     inputFormatters: [
                       onlyEnglishAndKoreanAndNumberInputFormatter()
                     ],
                     onChanged: (value) {
                       registerNicknameController.add(NicknameChanged());
+                      setState(() {});
                     },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -244,44 +283,47 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                       return null;
                     },
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    actions: [
-                      BlocBuilder<RegisterNicknameController, NicknameState>(
-                        builder: (context, state) => CustomWideButton(
-                          width: 120.w,
-                          height: 50.w,
-                          autoSizeText: true,
-                          borderRadius: 10,
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 16.w,
-                            vertical: 10.w,
-                          ),
-                          onTap: (state is NicknameChecked)
-                              ? () {}
-                              : _isNicknameButtonEnabled
-                                  ? () async {
-                                      FocusScope.of(context).unfocus();
-                                      _isNicknameButtonEnabled = false;
-                                      registerNicknameController
-                                          .add(NicknameRequest());
-                                    }
-                                  : () {},
-                          buttonText: state is NicknameChecked
-                              ? localizationManager.rfiNicknameChecked
-                              : localizationManager.rfiValidateNickname,
-                          buttonColor: (state is NicknameChecked)
-                              ? context.appColors.disabled
-                              : _isNicknameButtonEnabled
-                                  ? context.appColors.primary
-                                  : context.appColors.disabled,
-                        ),
+                    // actions: [
+                    //
+                    // ],
+                  ),
+                  SizedBox(height: 16.w),
+                  BlocBuilder<RegisterNicknameController, NicknameState>(
+                    builder: (context, state) => CustomWideButton(
+                      // width: 120.w,
+                      height: 50.w,
+                      autoSizeText: true,
+                      borderRadius: 10,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: 10.w,
                       ),
-                    ],
+                      onTap: (state is NicknameChecked)
+                          ? () {}
+                          : _isNicknameButtonEnabled
+                              ? () async {
+                                  FocusScope.of(context).unfocus();
+                                  _isNicknameButtonEnabled = false;
+                                  registerNicknameController
+                                      .add(NicknameRequest());
+                                }
+                              : () {},
+                      buttonText: state is NicknameChecked
+                          ? localizationManager.rfiNicknameChecked
+                          : localizationManager.rfiValidateNickname,
+                      buttonColor: (state is NicknameChecked)
+                          ? context.appColors.disabled
+                          : _isNicknameButtonEnabled
+                              ? context.appColors.primary
+                              : context.appColors.disabled,
+                    ),
                   ),
                   SizedBox(height: 35.w),
                   // TODO: 학생이면 8자리 학번, 교직원은 꼭 교번이 아닐 수 있음
                   // 학번
                   CustomTextField(
                     textEditingController: registerSidController.idController,
+                    focusNode: sidFocusNode,
                     labelText: registerOrganizationController!.organization ==
                             localizationManager.generalStudent
                         ? localizationManager.rfiStudentId
@@ -295,6 +337,12 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                                 localizationManager.generalStudent
                             ? TextInputType.number
                             : null,
+                    maxLines: registerOrganizationController!.organization ==
+                            localizationManager.generalStudent
+                        ? 1
+                        : sidFocusNode.hasFocus
+                            ? 2
+                            : 1,
                     maxLength: maxIDLength,
                     inputFormatters:
                         registerOrganizationController!.organization ==
@@ -303,6 +351,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                             : [denySpaceFormatter()],
                     onChanged: (value) {
                       registerSidController.add(IDChanged());
+                      setState(() {});
                     },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -325,55 +374,56 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                       return null;
                     },
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    actions: [
-                      BlocBuilder<RegisterIDController, IDState>(
-                        builder: (context, state) => CustomWideButton(
-                          width: 120.w,
-                          height: 50.w,
-                          autoSizeText: true,
-                          borderRadius: 10,
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 16.w,
-                            vertical: 10.w,
-                          ),
-                          onTap: (state is IDSent ||
-                                  state is IDEmailChecking ||
-                                  state is IDEmailChecked ||
-                                  state is IDEmailNotChecked ||
-                                  state is IDEmailCheckError)
-                              ? () {}
-                              : _isEmailButtonEnabled
-                                  ? () async {
-                                      FocusScope.of(context).unfocus();
-                                      _isEmailButtonEnabled = false;
-                                      registerSidController.add(
-                                        EmailRequest(
-                                          registerSidController
-                                              .idController.text,
-                                          category,
-                                        ),
-                                      );
-                                    }
-                                  : () {},
-                          buttonText: (state is IDSent ||
-                                  state is IDEmailChecking ||
-                                  state is IDEmailChecked ||
-                                  state is IDEmailNotChecked ||
-                                  state is IDEmailCheckError)
-                              ? localizationManager.rfiMailSent
-                              : localizationManager.rfiValidateMail,
-                          buttonColor: (state is IDSent ||
-                                  state is IDEmailChecking ||
-                                  state is IDEmailChecked ||
-                                  state is IDEmailNotChecked ||
-                                  state is IDEmailCheckError)
-                              ? context.appColors.disabled
-                              : _isEmailButtonEnabled
-                                  ? context.appColors.primary
-                                  : context.appColors.disabled,
-                        ),
+                    // actions: [
+                    //
+                    // ],
+                  ),
+                  SizedBox(height: 16.w),
+                  BlocBuilder<RegisterIDController, IDState>(
+                    builder: (context, state) => CustomWideButton(
+                      // width: 120.w,
+                      height: 50.w,
+                      autoSizeText: true,
+                      borderRadius: 10,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: 10.w,
                       ),
-                    ],
+                      onTap: (state is IDSent ||
+                              state is IDEmailChecking ||
+                              state is IDEmailChecked ||
+                              state is IDEmailNotChecked ||
+                              state is IDEmailCheckError)
+                          ? () {}
+                          : _isEmailButtonEnabled
+                              ? () async {
+                                  FocusScope.of(context).unfocus();
+                                  _isEmailButtonEnabled = false;
+                                  registerSidController.add(
+                                    EmailRequest(
+                                      registerSidController.idController.text,
+                                      category,
+                                    ),
+                                  );
+                                }
+                              : () {},
+                      buttonText: (state is IDSent ||
+                              state is IDEmailChecking ||
+                              state is IDEmailChecked ||
+                              state is IDEmailNotChecked ||
+                              state is IDEmailCheckError)
+                          ? localizationManager.rfiMailSent
+                          : localizationManager.rfiValidateMail,
+                      buttonColor: (state is IDSent ||
+                              state is IDEmailChecking ||
+                              state is IDEmailChecked ||
+                              state is IDEmailNotChecked ||
+                              state is IDEmailCheckError)
+                          ? context.appColors.disabled
+                          : _isEmailButtonEnabled
+                              ? context.appColors.primary
+                              : context.appColors.disabled,
+                    ),
                   ),
                   BlocBuilder<RegisterIDController, IDState>(
                     builder: (context, state) {
@@ -398,7 +448,13 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                           state is IDEmailNotChecked ||
                           state is IDEmailCheckError) {
                         return CustomWideButton(
+                          height: 50.w,
+                          autoSizeText: true,
                           borderRadius: 10,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 10.w,
+                          ),
                           buttonText: (state is IDEmailChecked)
                               ? localizationManager.rfiEmailVerified
                               : localizationManager.rfiCheckMailVerify,
@@ -424,14 +480,20 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                   SizedBox(height: 35.w),
                   CustomTextField(
                     textEditingController: passwordController,
+                    focusNode: passwordFocusNode,
                     labelText: localizationManager.rfiPassword,
+                    maxLines: passwordFocusNode.hasFocus
+                        ? 2
+                        : 1,
                     hintText: localizationManager.rfiPasswordHint,
-                    obscureText: true,
+                    obscureText: passwordController.text.isEmpty ? false : true,
+                    onChanged: (value) {
+                      setState(() {});
+                    },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return localizationManager.rfiPasswordIsEmpty;
-                      }
-                      if (!passwordRegex.hasMatch(value)) {
+                      } else if (!passwordRegex.hasMatch(value)) {
                         return localizationManager.rfiPasswordRuleErrorContent;
                       }
                       return null;
@@ -440,9 +502,18 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                   ),
                   SizedBox(height: 35.w),
                   CustomTextField(
+                    textEditingController: passwordCheckController,
+                    focusNode: passwordCheckFocusNode,
+                    maxLines: passwordCheckFocusNode.hasFocus
+                        ? 2
+                        : 1,
                     labelText: localizationManager.rfiPasswordCheck,
                     hintText: localizationManager.rfiPasswordCheckHint,
-                    obscureText: true,
+                    obscureText:
+                        passwordCheckController.text.isEmpty ? false : true,
+                    onChanged: (value) {
+                      setState(() {});
+                    },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         _isPasswordValid = false;
@@ -463,6 +534,13 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                   CustomBodyLarge(text: localizationManager.rfiWdintsContent),
                   SizedBox(height: 35.w),
                   CustomWideButton(
+                    height: 50.w,
+                    autoSizeText: true,
+                    borderRadius: 10,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: 10.w,
+                    ),
                     onTap: () => NavigatorKeyManager().pushNamed(
                       RouteNames.registerSign,
                       arguments: RegisterSignArguments(

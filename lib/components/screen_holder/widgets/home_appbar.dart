@@ -33,7 +33,7 @@ class HomeAppbar extends StatelessWidget {
           ),
         ],
       ),
-      textStyle: CustomTexts.bodyMedium,
+      textStyle: CustomLargeTexts.bodyMedium,
       actions: const [
         HomeLeaderboardButton(),
         // HomeInformationButton(),

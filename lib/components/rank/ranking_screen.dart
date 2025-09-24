@@ -111,7 +111,7 @@ class _RankingScreenState extends State<RankingScreen> {
                                       // rankListController.rankList[index].type,
                                       keys[key],
                                     ),
-                                    buttonTextStyle: CustomTexts.bodyLarge,
+                                    buttonTextStyle: CustomLargeTexts.bodyLarge,
                                     textColor: index == currentIndex
                                         ? context.appColors.onPrimary
                                         : context.appColors.defaultTextColor,
@@ -158,8 +158,8 @@ class _RankingScreenState extends State<RankingScreen> {
     final List<String> keys = data.keys.toList();
 
     double appBarHeight = kToolbarHeight;
-    double textsHeight = 120.w;
-    double rankCardHeight = 68.w;
+    double textsHeight = 100.w;
+    double rankCardHeight = 65.w;
     double paddingHeight = 16.w;
     double extraSpacingHeight = 50.w;
 

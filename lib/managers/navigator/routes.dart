@@ -1,8 +1,9 @@
 import 'dart:developer';
 
-import 'package:beat_flutter/components/forgot_password/reset_password.dart';
 import 'package:beat_flutter/components/notice_detail/notice_detail.dart';
 import 'package:beat_flutter/components/oss_licenses/oss_licenses.dart';
+import 'package:beat_flutter/components/reset_password/reset_password.dart';
+import 'package:beat_flutter/components/reset_password/reset_password_org.dart';
 import 'package:beat_flutter/components/survey_detail/survey_detail.dart';
 import 'package:beat_flutter/controller/home/controllers/quest_list_controller.dart';
 import 'package:beat_flutter/controller/home/controllers/survey_detail_controller.dart';
@@ -11,6 +12,7 @@ import 'package:beat_flutter/controller/rank/rank_controller_test.dart';
 import 'package:beat_flutter/controller/screen_holder/page_index_controller.dart';
 import 'package:beat_flutter/data/provider/rank_list_provider.dart';
 import 'package:beat_flutter/data/repository/rank_list_repository.dart';
+import 'package:beat_flutter/managers/navigator/arguments/reset_password_arguments.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -196,6 +198,7 @@ abstract class Routes {
         {
           final ScreenHolderArguments arguments =
               settings.arguments as ScreenHolderArguments;
+
           return MaterialPageRoute(
             builder: (context) {
               Get.put(SurveyDetailController());
@@ -279,9 +282,12 @@ abstract class Routes {
 
       case RouteNames.noticeDetail:
         {
-          final NotificationModel notificationModel = settings.arguments as NotificationModel;
+          final NotificationModel notificationModel =
+              settings.arguments as NotificationModel;
           return MaterialPageRoute(
-            builder: (context) => NoticeDetail(notificationModel: notificationModel,),
+            builder: (context) => NoticeDetail(
+              notificationModel: notificationModel,
+            ),
           );
         }
 
@@ -292,8 +298,15 @@ abstract class Routes {
           );
         }
 
+      // case RouteNames.resetPasswordOrg:
+      //   {
+      //     return MaterialPageRoute(builder: (context) => ResetPasswordOrg());
+      //   }
+
       case RouteNames.resetPassword:
         {
+          // final ResetPasswordArguments resetPasswordArguments =
+          // settings.arguments as ResetPasswordArguments;
           return MaterialPageRoute(
             builder: (context) => const ResetPassword(),
           );

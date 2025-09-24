@@ -49,8 +49,8 @@ class _ScreenHolderState extends State<ScreenHolder>
         break;
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:
-        // await Get.find<PedometerController>().stopForegroundService();
-        // await Get.find<LocationController>().stopForegroundService();
+        await Get.find<PedometerController>().stopForegroundService();
+        await Get.find<LocationController>().stopForegroundService();
 
         Get.find<PedometerController>().startBackgroundService();
         Get.find<LocationController>().startBackgroundService();
@@ -78,19 +78,17 @@ class _ScreenHolderState extends State<ScreenHolder>
   void showDialogIfPermissionDenied() async {
     final bool isLocationPermissionGranted =
         await PermissionManager.requestLocationPermission();
-    final bool isCameraPermissionGranted =
-        await PermissionManager.requestCameraPermission();
     final bool isActivityPermissionGranted =
         await PermissionManager.requestActivityPermission();
-
-    PermissionManager.updateLocationAndActivityPemission();
+    final bool isCameraPermissionGranted =
+        await PermissionManager.requestCameraPermission();
 
     if (!isLocationPermissionGranted) {
       await customConfirmDialog(
         context: context,
         title: localizationManager.homeBEATRequiresLocationPermissionTitle,
         content: localizationManager.homeBEATRequiresLocationPermissionContent,
-        onConfirmTap: () => AppSettings.openAppSettings(),
+        onConfirmTap: () => AppSettings.openAppSettings(asAnotherTask: true),
         confirmText: localizationManager.homeGotoSettings,
         cancelText: localizationManager.homeLater,
       );
@@ -100,7 +98,7 @@ class _ScreenHolderState extends State<ScreenHolder>
         context: context,
         title: localizationManager.homeBEATRequiresActivityPermissionTitle,
         content: localizationManager.homeBEATRequiresActivityPermissionContent,
-        onConfirmTap: () => AppSettings.openAppSettings(),
+        onConfirmTap: () => AppSettings.openAppSettings(asAnotherTask: true),
         confirmText: localizationManager.homeGotoSettings,
         cancelText: localizationManager.homeLater,
       );
@@ -110,24 +108,26 @@ class _ScreenHolderState extends State<ScreenHolder>
         context: context,
         title: localizationManager.qrBEATRequiresCameraPermissionTitle,
         content: localizationManager.qrBEATRequiresCameraPermissionContent,
-        onConfirmTap: () => AppSettings.openAppSettings(),
+        onConfirmTap: () => AppSettings.openAppSettings(asAnotherTask: true),
         confirmText: localizationManager.homeGotoSettings,
         cancelText: localizationManager.homeLater,
       );
     }
 
+    await PermissionManager.updateLocationAndActivityPemission();
     Get.find<PedometerController>().startForegroundService();
     Get.find<LocationController>().startForegroundService();
   }
 
   @override
   Widget build(BuildContext context) {
-    Future<void> onPullDown() {
+    Future<void> onPullDown() async {
       final UserController userController = context.read<UserController>();
       userController.add(GetMyNeuro());
       context.read<QuestListController>().add(DataListRequest());
       context.read<SurveyListController>().add(DataListRequest());
       Get.find<PedometerController>().getWalkHitory();
+      await PermissionManager.updateLocationAndActivityPemission();
       return Future.delayed(const Duration(seconds: 0));
     }
 

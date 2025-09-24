@@ -24,4 +24,5 @@ abstract class RouteNames {
   static const String ossLicenses = '/oss_licenses';
   static const String resetPassword = '/reset_password';
   static const String surveyDetail = '/survey_detail';
+  // static const String resetPasswordOrg = '/reset_password_org';
 }

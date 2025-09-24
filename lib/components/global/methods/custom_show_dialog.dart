@@ -30,7 +30,7 @@ Future<dynamic> customShowDialog(
       title: title != null
           ? Text(
               title,
-              style: CustomTexts.titleLarge
+              style: CustomLargeTexts.titleLarge
                   .copyWith(color: context.appColors.onBackground),
             )
           : null,
@@ -40,7 +40,7 @@ Future<dynamic> customShowDialog(
               width: context.width * 0.7,
               child: Text(
                 content,
-                style: CustomTexts.bodyLarge
+                style: CustomLargeTexts.bodyLarge
                     .copyWith(color: context.appColors.onBackground),
               ),
             )
@@ -59,7 +59,7 @@ Future<dynamic> customShowDialog(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Text(
                   buttonText ?? context.tr('confirm'),
-                  style: CustomTexts.subtitleLarge
+                  style: CustomLargeTexts.subtitleLarge
                       .copyWith(color: context.appColors.onPrimary),
                 ),
               ),
@@ -96,7 +96,7 @@ Future<dynamic> customConfirmDialog(
       title: title != null
           ? Text(
               title,
-              style: CustomTexts.titleLarge
+              style: CustomLargeTexts.titleLarge
                   .copyWith(color: context.appColors.onBackground),
             )
           : null,
@@ -106,7 +106,7 @@ Future<dynamic> customConfirmDialog(
               width: context.width * 0.7,
               child: Text(
                 content,
-                style: CustomTexts.bodyLarge
+                style: CustomLargeTexts.bodyLarge
                     .copyWith(color: context.appColors.onBackground),
               ),
             )
@@ -125,7 +125,7 @@ Future<dynamic> customConfirmDialog(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Text(
                   confirmText ?? LocalizationManager().generalConfirm,
-                  style: CustomTexts.subtitleLarge
+                  style: CustomLargeTexts.subtitleLarge
                       .copyWith(color: context.appColors.onPrimary),
                 ),
               ),
@@ -145,7 +145,7 @@ Future<dynamic> customConfirmDialog(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Text(
                   cancelText ?? LocalizationManager().generalCancel,
-                  style: CustomTexts.subtitleLarge
+                  style: CustomLargeTexts.subtitleLarge
                       .copyWith(color: context.appColors.onPrimary),
                 ),
               ),

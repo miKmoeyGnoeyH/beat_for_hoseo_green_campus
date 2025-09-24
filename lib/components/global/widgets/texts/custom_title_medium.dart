@@ -13,7 +13,7 @@ class CustomTitleMedium extends StatelessWidget {
       text ?? '',
       maxLines: maxLines,
       overflow: TextOverflow.ellipsis,
-      style: CustomTexts.titleMedium.copyWith(
+      style: CustomLargeTexts.titleMedium.copyWith(
         color: textColor ?? context.appColors.onBackground,
         overflow: maxLines == null ? null : TextOverflow.ellipsis,
       ),

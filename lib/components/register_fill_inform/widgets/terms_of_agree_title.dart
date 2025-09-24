@@ -30,7 +30,7 @@ class TermsOfAgreementTitle extends StatelessWidget {
       },
       child: AutoSizeText(
         localizationManager.rfiTermsOfAgreement,
-        style: CustomTexts.subtitleLarge.copyWith(
+        style: CustomLargeTexts.subtitleLarge.copyWith(
           color: context.appColors.onBackground,
         ),
         maxLines: 1,

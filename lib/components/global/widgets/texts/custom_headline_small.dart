@@ -15,7 +15,7 @@ class CustomHeadlineSmall extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text ?? '',
-      style: CustomTexts.headlineSmall.copyWith(
+      style: CustomLargeTexts.headlineSmall.copyWith(
         color: textColor ?? context.appColors.onBackground,
       ),
     );

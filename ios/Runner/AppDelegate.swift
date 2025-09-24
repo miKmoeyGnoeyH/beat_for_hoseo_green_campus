@@ -14,7 +14,8 @@ let activityManager = CMMotionActivityManager()
 @objc class AppDelegate: FlutterAppDelegate, CLLocationManagerDelegate {
     
     var locationManager: CLLocationManager?
-    var flutterChannel: FlutterMethodChannel?
+    var pedometerChannel: FlutterMethodChannel?
+    var locationChannel: FlutterMethodChannel?
     var sendToTime: Int = 0 // 랭킹 집계 시간 (초)
     
     override func application(
@@ -36,7 +37,7 @@ let activityManager = CMMotionActivityManager()
         
         // BGTask 등록
         // BGTask 등록 - 백그라운드에서 작업을 실행하기 위한 iOS 시스템 레벨 태스크
-        // 실제 Flutter 통신은 모두 "com.beat.walkreport/channel"을 통해 이루어짐
+        // 실제 Flutter 통신은 pedometer/location 각 채널을 통해 이루어짐
         BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.beat.app.walkreport", using: nil) { task in
             self.handleWalkReportTask(task: task as! BGProcessingTask)
         }
@@ -59,12 +60,20 @@ let activityManager = CMMotionActivityManager()
     
     // MARK: - MethodChannel 세팅
     func setupMethodChannel(controller: FlutterViewController) {
-        flutterChannel = FlutterMethodChannel(
-            name: "com.beat.walkreport/channel",
+        // 보행 채널
+        pedometerChannel = FlutterMethodChannel(
+            name: "com.beat.walkreport/pedometer",
             binaryMessenger: controller.binaryMessenger
         )
-        
-        flutterChannel?.setMethodCallHandler { [weak self] (call, result) in
+
+        // 위치 채널
+        locationChannel = FlutterMethodChannel(
+            name: "com.beat.walkreport/location",
+            binaryMessenger: controller.binaryMessenger
+        )
+
+        // 위치 관련 핸들러만 위치 채널에 등록
+        locationChannel?.setMethodCallHandler { [weak self] (call, result) in
             guard let self = self else { return }
             
             if call.method == "startBackgroundTasks" {
@@ -99,20 +108,32 @@ let activityManager = CMMotionActivityManager()
                     }
                 }
                 result("Holiday status updated")
-            } else if call.method == "isMotionPermissionGranted" {
-                // 하드웨어 지원 여부와 권한 상태를 모두 확인
+            } else {
+                result(FlutterMethodNotImplemented)
+            }
+        }
+
+        // 보행 관련 핸들러는 보행 채널에 등록
+        pedometerChannel?.setMethodCallHandler { [weak self] (call, result) in
+            guard let self = self else { return }
+
+            if call.method == "isMotionPermissionGranted" {
                 let hardwareAvailable = CMPedometer.isStepCountingAvailable()
                 let permissionGranted = CMMotionActivityManager.authorizationStatus() == .authorized
                 let granted = hardwareAvailable && permissionGranted
                 result(granted)
             } else if call.method == "startPedometer" {
                 startPedometer()
+                result("Pedometer Started")
             } else if call.method == "stopPedometer" {
                 stopPedometer()
+                result("Pedometer Stopped")
             } else if call.method == "startActivityUpdates" {
                 startActivityUpdates()
+                result("ActivityUpdate Started")
             } else if call.method == "stopActivityUpdates" {
                 stopActivityUpdates()
+                result("ActivityUpdate Stopped")
             } else {
                 result(FlutterMethodNotImplemented)
             }
@@ -158,23 +179,25 @@ let activityManager = CMMotionActivityManager()
     
     // MARK: - Pedometer
     func startPedometer() {
-        stopPedometer()
-        
-        if CMPedometer.isStepCountingAvailable() {
-            pedometer.startUpdates(from: Date()) { data, error in
-                if let steps = data?.numberOfSteps {
-                    DispatchQueue.main.async {
-                        self.flutterChannel?.invokeMethod(
-                            "updateStepsFromNative",
-                            arguments: ["steps": steps]
-                        )
+            stopPedometer()
+            
+            if CMPedometer.isStepCountingAvailable() {
+                pedometer.startUpdates(from: Date()) { data, error in
+                    if let steps = data?.numberOfSteps {
+                        DispatchQueue.main.async {
+                            self.pedometerChannel?.invokeMethod(
+                                "updateStepsFromNative",
+                                arguments: ["steps": steps]
+                            )
+                        }
+                        print("iOS: updateStepsFromNative called")
                     }
                 }
             }
         }
-    }
     
     func stopPedometer() {
+        print("iOS : stopPedometer() called")
         pedometer.stopUpdates();
     }
     
@@ -184,13 +207,13 @@ let activityManager = CMMotionActivityManager()
                 guard let activity = activity else { return }
                 
                 if activity.walking {
-                    self.flutterChannel?.invokeMethod("updatePedestrianStatus", arguments: ["status": "walking"])
+                    self.pedometerChannel?.invokeMethod("updatePedestrianStatus", arguments: ["status": "walking"])
                 } else if activity.running {
-                    self.flutterChannel?.invokeMethod("updatePedestrianStatus", arguments: ["status": "walking"])
+                    self.pedometerChannel?.invokeMethod("updatePedestrianStatus", arguments: ["status": "walking"])
                 } else if activity.stationary {
-                    self.flutterChannel?.invokeMethod("updatePedestrianStatus", arguments: ["status": "stopped"])
+                    self.pedometerChannel?.invokeMethod("updatePedestrianStatus", arguments: ["status": "stopped"])
                 } else {
-                    self.flutterChannel?.invokeMethod("updatePedestrianStatus", arguments: ["status": "unknown"])
+                    self.pedometerChannel?.invokeMethod("updatePedestrianStatus", arguments: ["status": "unknown"])
                 }
             }
         }
@@ -217,7 +240,7 @@ let activityManager = CMMotionActivityManager()
         let lon = location.coordinate.longitude
         
         DispatchQueue.main.async {
-            self.flutterChannel?.invokeMethod("backgroundLocationUpdate", arguments: [
+            self.locationChannel?.invokeMethod("backgroundLocationUpdate", arguments: [
                 "latitude": lat,
                 "longitude": lon
             ])
@@ -381,14 +404,14 @@ let activityManager = CMMotionActivityManager()
             return
         }
         
-        // Flutter와 통신하기 위한 MethodChannel 생성 (모든 작업이 같은 채널 사용)
-        flutterChannel = FlutterMethodChannel(
-            name: "com.beat.walkreport/channel",
+        // 위치 채널 사용
+        locationChannel = FlutterMethodChannel(
+            name: "com.beat.walkreport/location",
             binaryMessenger: controller.binaryMessenger
         )
-        
+
         DispatchQueue.main.async {
-            self.flutterChannel?.invokeMethod("syncWalkDataInBackground", arguments: nil) { result in
+            self.locationChannel?.invokeMethod("syncWalkDataInBackground", arguments: nil) { result in
                 print("📬 걸음 수 동기화 완료: \(String(describing: result))")
                 completion(true)
             }
@@ -402,15 +425,15 @@ let activityManager = CMMotionActivityManager()
             return
         }
         
-        // Flutter와 통신하기 위한 MethodChannel 생성 (모든 작업이 같은 채널 사용)
-        flutterChannel = FlutterMethodChannel(
-            name: "com.beat.walkreport/channel",
+        // 위치 채널 사용
+        locationChannel = FlutterMethodChannel(
+            name: "com.beat.walkreport/location",
             binaryMessenger: controller.binaryMessenger
         )
         
         print("📊 Flutter와 통신하여 랭킹 집계 시작")
         DispatchQueue.main.async {
-            self.flutterChannel?.invokeMethod("syncRankingInBackground", arguments: nil) { result in
+            self.locationChannel?.invokeMethod("syncRankingInBackground", arguments: nil) { result in
                 print("📊 랭킹 집계 완료: \(String(describing: result))")
                 completion(true)
             }
@@ -424,15 +447,15 @@ let activityManager = CMMotionActivityManager()
             return
         }
         
-        // Flutter와 통신하기 위한 MethodChannel 생성 (모든 작업이 같은 채널 사용)
-        flutterChannel = FlutterMethodChannel(
-            name: "com.beat.walkreport/channel",
+        // 위치 채널 사용
+        locationChannel = FlutterMethodChannel(
+            name: "com.beat.walkreport/location",
             binaryMessenger: controller.binaryMessenger
         )
         
         print("🌙 Flutter와 통신하여 자정 초기화 시작")
         DispatchQueue.main.async {
-            self.flutterChannel?.invokeMethod("midnightReset", arguments: nil) { result in
+            self.locationChannel?.invokeMethod("midnightReset", arguments: nil) { result in
                 print("🌙 자정 초기화 완료: \(String(describing: result))")
                 completion(true)
             }
@@ -455,7 +478,7 @@ let activityManager = CMMotionActivityManager()
             let second = calendar.component(.second, from: date)
             
             if hour == 0 && minute == 0 && second == 0 {
-                self.flutterChannel?.invokeMethod("midnightReset", arguments: nil)
+                self.locationChannel?.invokeMethod("midnightReset", arguments: nil)
             }
         }
         
@@ -469,7 +492,7 @@ let activityManager = CMMotionActivityManager()
                 let second = calendar.component(.second, from: date)
                 
                 if hour >= 18 && minute >= 0 && second >= 0 {
-                    self.flutterChannel?.invokeMethod("eventDurationReset", arguments: nil)
+                    self.locationChannel?.invokeMethod("eventDurationReset", arguments: nil)
                 }
             }
         }
