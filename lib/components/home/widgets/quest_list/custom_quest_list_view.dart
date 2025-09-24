@@ -4,6 +4,7 @@ import 'package:beat_flutter/components/global/widgets/texts/custom_title_medium
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../data/models/data_models.dart';
 import 'quest_card.dart';
@@ -70,14 +71,14 @@ class _CustomQuestListViewState extends State<CustomQuestListView> {
         .length;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
+      padding: EdgeInsets.symmetric(vertical: 10.w),
       child: Column(
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
+                padding: EdgeInsets.symmetric(horizontal: 10.w),
                 child:
                     CustomHeadlineSmall(text: localizationManager.homeQRQuest),
               ),
@@ -89,9 +90,9 @@ class _CustomQuestListViewState extends State<CustomQuestListView> {
                           .where((e) =>
                               (e as QuestModel).eventType == EventType.qr)
                           .length,
-                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      padding: EdgeInsets.symmetric(vertical: 20.w),
                       separatorBuilder: (context, index) =>
-                          const SizedBox(height: 16),
+                          SizedBox(height: 24.w),
                       itemBuilder: (context, index) {
                         final List<DataModel> qrQuests = widget.list
                             .where((e) =>
@@ -105,10 +106,10 @@ class _CustomQuestListViewState extends State<CustomQuestListView> {
                       },
                     )
                   : Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 10),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 10.w, vertical: 10.w),
                       child: SizedBox(
-                        height: 30,
+                        height: 30.w,
                         width: double.infinity,
                         child: CustomBodyLarge(
                           text: localizationManager.homeNoQuests,
@@ -118,12 +119,12 @@ class _CustomQuestListViewState extends State<CustomQuestListView> {
                     ),
             ],
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.w),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
+                padding: EdgeInsets.symmetric(horizontal: 10.w),
                 child: CustomHeadlineSmall(
                     text: localizationManager.homeWalkQuest),
               ),
@@ -131,14 +132,14 @@ class _CustomQuestListViewState extends State<CustomQuestListView> {
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: 10),
+                        SizedBox(height: 10.w),
                         walkDailyQuestsLength != 0
                             ? Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 10.w),
                                     child: CustomTitleMedium(
                                       text: localizationManager.homeDaily,
                                     ),
@@ -153,10 +154,10 @@ class _CustomQuestListViewState extends State<CustomQuestListView> {
                                                 .eventPeriodType ==
                                             EventPeriodType.daily)
                                         .length,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 20),
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 20.w),
                                     separatorBuilder: (context, index) =>
-                                        const SizedBox(height: 16),
+                                        SizedBox(height: 24.w),
                                     itemBuilder: (context, index) {
                                       final List<DataModel> walkDailyQuests =
                                           walkQuests
@@ -182,8 +183,8 @@ class _CustomQuestListViewState extends State<CustomQuestListView> {
                                 children: [
                                   // const SizedBox(height: 10),
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 10.w),
                                     child: CustomTitleMedium(
                                       text: localizationManager.homeWeekly,
                                     ),
@@ -198,10 +199,10 @@ class _CustomQuestListViewState extends State<CustomQuestListView> {
                                                 .eventPeriodType ==
                                             EventPeriodType.weekly)
                                         .length,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 20),
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 20.w),
                                     separatorBuilder: (context, index) =>
-                                        const SizedBox(height: 16),
+                                        SizedBox(height: 24.w),
                                     itemBuilder: (context, index) {
                                       final List<DataModel> walkWeeklyQuests =
                                           walkQuests
@@ -227,8 +228,8 @@ class _CustomQuestListViewState extends State<CustomQuestListView> {
                                 children: [
                                   // const SizedBox(height: 10),
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 10.w),
                                     child: CustomTitleMedium(
                                       text: localizationManager.homeMonthly,
                                     ),
@@ -243,10 +244,10 @@ class _CustomQuestListViewState extends State<CustomQuestListView> {
                                                 .eventPeriodType ==
                                             EventPeriodType.monthly)
                                         .length,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 20),
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 20.w),
                                     separatorBuilder: (context, index) =>
-                                        const SizedBox(height: 16),
+                                        SizedBox(height: 24.w),
                                     itemBuilder: (context, index) {
                                       final List<DataModel> walkMonthlyQuests =
                                           walkQuests
@@ -269,10 +270,10 @@ class _CustomQuestListViewState extends State<CustomQuestListView> {
                       ],
                     )
                   : Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 10),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 10.w, vertical: 10.w),
                       child: SizedBox(
-                        height: 30,
+                        height: 30.w,
                         width: double.infinity,
                         child: CustomBodyLarge(
                           text: localizationManager.homeNoQuests,

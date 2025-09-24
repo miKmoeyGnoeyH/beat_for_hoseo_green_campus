@@ -1,4 +1,3 @@
-
 import 'package:beat_flutter/components/global/widgets/custom_circular_progress_indicator.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
@@ -8,6 +7,7 @@ import 'package:beat_flutter/managers/navigator/routes.dart';
 import 'package:beat_flutter/managers/prefs/prefs_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../controller/user_controller.dart';
@@ -59,21 +59,21 @@ class SignInScreen extends StatelessWidget {
           backgroundColor: context.appColors.background,
           body: Center(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: Column(
                 children: [
                   const BeatFullLogo(),
                   SignInSIDField(studentIdController: _studentIdController),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.w),
                   SignInPasswordField(nicknameController: _nicknameController),
-                  const SizedBox(height: 36),
+                  SizedBox(height: 36.w),
                   SignInSignInButton(
                     studentIdController: _studentIdController,
                     nicknameController: _nicknameController,
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12.w),
                   SignInRegisterButton(),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.w),
                   GestureDetector(
                     onTap: onForgotPasswordTap,
                     child: CustomBodyLarge(

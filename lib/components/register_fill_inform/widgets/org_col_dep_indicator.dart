@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'org_col_dep_label.dart';
 
@@ -17,9 +18,9 @@ class OrgColDepIndicator extends StatelessWidget {
       child: Row(
         children: [
           OrgColDepLabel(text: orgText),
-          const SizedBox(width: 15),
+          SizedBox(width: 15.w),
           colText != '' ? OrgColDepLabel(text: colText) : const SizedBox(),
-          const SizedBox(width: 15),
+          SizedBox(width: 15.w),
           OrgColDepLabel(text: depText),
         ],
       ),

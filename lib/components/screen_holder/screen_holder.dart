@@ -45,7 +45,7 @@ class _ScreenHolderState extends State<ScreenHolder>
         Get.find<PedometerController>().startForegroundService();
         Get.find<LocationController>().startForegroundService();
 
-        // Get.find<PedometerController>().addWalkReport();
+        setState(() {});
         break;
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:
@@ -126,10 +126,8 @@ class _ScreenHolderState extends State<ScreenHolder>
       final UserController userController = context.read<UserController>();
       userController.add(GetMyNeuro());
       context.read<QuestListController>().add(DataListRequest());
-      // context.read<QuizListController>().add(DataListRequest());
       context.read<SurveyListController>().add(DataListRequest());
       Get.find<PedometerController>().getWalkHitory();
-      // context.read<VoteListController>().add(VoteListRequest(userController.state.authorization));
       return Future.delayed(const Duration(seconds: 0));
     }
 

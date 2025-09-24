@@ -2,7 +2,8 @@
   "general": {
     "student": "Student",
     "confirm": "Confirm",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "done": "Done"
   },
   "home": {
     "points_in_hand": "Points in Hand",
@@ -150,14 +151,27 @@
     "sid_or_employee_id_hint": "Please enter your Student ID or Employee ID.",
     "employee_mail": "Employee Mail",
     "employee_mail_hint": "Please enter the part before @hoseo.edu.",
+    "sid_is_empty": "Please enter your student ID.",
+    "sid_too_short": "Student ID is too short.",
+    "mail_is_empty": "Please enter your email.",
+    "mail_too_short": "Email is too short.",
     "id": "ID",
     "id_hint": "Please enter a 4-digit number to use as your ID.",
     "validate_mail": "Verify Email",
+    "mail_sent": "Email Sent",
     "invalid_mail_title": "Invalid Email",
     "invalid_mail_content": "Please enter a valid email address.",
+    "check_mail_verify": "Mail Verification Completed",
+    "email_verified": "Verified",
+    "email_check_success_title": "Mail Verification Completed",
+    "email_check_success_content": "Your mail verification has been completed.",
+    "email_not_check_title": "Please Verify Your Mail",
+    "email_not_check_content": "Mail verification has not been completed. Please check your inbox, complete the verification, and then press the button.",
+    "email_check_failed_title": "Mail Verification Failed",
+    "email_check_failed_content": "An issue occurred while checking mail verification. Please try again later.",
     "validate_id": "Check Duplicate",
     "email_sent_title": "Email Sent",
-    "email_sent_message": "A confirmation email has been sent. Please check your inbox.",
+    "email_sent_message": "A verification email has been sent. Please check your inbox, complete the verification, and then press the 'Mail Verification Completed' button below.",
     "email_sent_error_title": "Email Sending Failed",
     "email_sent_error_message": "Failed to send the email. Please try again.",
     "id_check_title": "ID Duplicate Check Complete",
@@ -177,9 +191,13 @@
     "unusable_nickname": "Unavailable Nickname",
     "nickname_has_initial_consonant": "The nickname contains initial consonants.",
     "inapropriate_nickname_message": "The nickname contains words that cannot be used. Please re-enter.",
+    "nickname_is_empty": "Please enter a nickname.",
+    "nickname_too_short": "Nickname is too Short",
     "nickname_hint": "Please enter a nickname.",
     "password": "Password",
     "password_hint": "At least 8 characters, including uppercase, lowercase, numbers, and special characters.",
+    "password_is_empty": "Please enter your password.",
+    "password_check_is_empty": "Please confirm your password.",
     "password_check": "Confirm Password",
     "password_check_hint": "Please re-enter your password.",
     "password_rule_error_title": "Check Password Requirements",
@@ -209,6 +227,13 @@
     "to_sign_in_screen": "Go to Sign In",
     "sign_up_failed": "Sign-Up Failed",
     "sign_up_failed_message": "Sign-up failed. Please try again."
+  },
+  "sign_page": {
+    "sign_failed": "Signature Failed",
+    "failed_to_convert_signature_content": "Failed to convert signature. Please try again."
+  },
+  "sign_preview": {
+    "sign_content": "Please complete your signature by pressing the 'Sign' button."
   },
   "reset_password": {
     "appbar_title": "Change Password",
@@ -250,6 +275,10 @@
     "email": "Email",
     "nickname": "Nickname",
     "change_password": "Change Password"
+  },
+  "history": {
+    "history": "History",
+    "history_desc": "Record of point usage and acquisition."
   },
   "bottom_navigation_bar": {
     "qr": "QR",
@@ -375,7 +404,6 @@
   "faculty_and_staff": "Faculty and Staff",
   "forgot_nickname": "Find Nickname",
   "forgot_sid": "Find Student ID",
-  "history": "History",
   "history_desc": "Record of point usage and acquisition.",
   "i_agree": "I agree.",
   "in_progress": "In Progress",

@@ -6,6 +6,7 @@ import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../controller/home/controllers/data_controller.dart';
 import '../../controller/home/events/data_events.dart';
@@ -44,20 +45,20 @@ class _QuestDetailScreenState extends State<QuestDetailScreen> {
             ? SingleChildScrollView(
                 child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                      EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.w),
                   child: Column(
                     children: [
                       DetailLabelAndTItle(
                         labelText: 'Quest',
                         title: (state.dataModel! as QuestDetailModel).eventName,
                       ),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 20.w),
                       (state.dataModel! as QuestDetailModel).hasImage
                           ? DetailImage(
                               imageUrl:
                                   '${DotEnvManager().questImage}${(state.dataModel! as QuestDetailModel).eventId}')
                           : SizedBox(
-                              height: 150,
+                              height: 150.w,
                               child: Center(
                                 child: CustomBodyLarge(
                                   text: localizationManager.qdNoImage,
@@ -65,18 +66,18 @@ class _QuestDetailScreenState extends State<QuestDetailScreen> {
                                 ),
                               ),
                             ),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 20.w),
                       DetailDesc(
                         description: (state.dataModel! as QuestDetailModel)
                             .descriptionLong,
                       ),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 20.w),
                       QuestDetailTable(
                         child: QuestDetailTableContents(
                           state.dataModel! as QuestDetailModel,
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 20.w),
                       SizedBox(
                         width: double.infinity,
                         child: Column(
@@ -92,8 +93,8 @@ class _QuestDetailScreenState extends State<QuestDetailScreen> {
                             (state.dataModel! as QuestDetailModel).eventType ==
                                     EventType.qr
                                 ? ListView.separated(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 20),
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 20.w),
                                     shrinkWrap: true,
                                     physics:
                                         const NeverScrollableScrollPhysics(),
@@ -107,7 +108,7 @@ class _QuestDetailScreenState extends State<QuestDetailScreen> {
                                       );
                                     },
                                     separatorBuilder: (context, index) {
-                                      return const SizedBox(height: 20);
+                                      return SizedBox(height: 20.w);
                                     },
                                     itemCount:
                                         ((state.dataModel! as QuestDetailModel)

@@ -1,6 +1,7 @@
 import 'package:beat_flutter/components/home/widgets/home_contents.dart';
 import 'package:beat_flutter/components/home/widgets/pedometer_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'widgets/neuroes_in_hand_card.dart';
 
@@ -25,16 +26,16 @@ class HomeScreen extends StatelessWidget {
           // padding: EdgeInsets.zero,
           children: [
             SizedBox(
-              height: 160,
+              height: 180.w,
               child: PageView(
                 controller: pageController,
                 children: widgets,
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: Column(
-                children: [HomeContents(), SizedBox(height: 20)],
+                children: [const HomeContents(), SizedBox(height: 20.w)],
               ),
             )
           ],

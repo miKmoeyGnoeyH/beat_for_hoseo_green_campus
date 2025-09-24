@@ -2,6 +2,7 @@
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../theme/texts/custom_texts.dart';
 
@@ -26,14 +27,14 @@ class CustomBottomAppbar extends StatelessWidget {
         ),
       ),
       child: BottomAppBar(
-        height: context.width * 0.15,
+        height: 56.w,
         color: backgroundColor ?? context.appColors.primary,
         child: Center(
           child: AutoSizeText(
             maxLines: 1,
             text ?? '',
             style: CustomTexts.titleLarge.copyWith(
-              color: context.appColors.onPrimary,
+              color: textColor ?? context.appColors.onPrimary,
             ),
           ),
         ),

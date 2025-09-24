@@ -5,6 +5,7 @@ import 'package:beat_flutter/managers/navigator/navigator_key_manager.dart';
 import 'package:beat_flutter/managers/navigator/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../../data/models/data_models.dart';
@@ -36,7 +37,7 @@ class SurveyCard extends StatelessWidget {
         borderWidth: 0.5,
         // height: context.height * 0.12,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.w),
           child: SurveyCardContents(
             index: index,
             surveyModel: surveyModel,

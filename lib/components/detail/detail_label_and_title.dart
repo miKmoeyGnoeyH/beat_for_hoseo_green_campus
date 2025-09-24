@@ -2,6 +2,7 @@
 import 'package:beat_flutter/components/global/beat/gc_point.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../global/widgets/texts/custom_subtitle_large.dart';
 import '../global/widgets/texts/custom_title_large.dart';
@@ -23,7 +24,7 @@ class DetailLabelAndTItle extends StatelessWidget {
           text: labelText,
           textColor: context.appColors.primary,
         ),
-        const SizedBox(height: 5),
+        SizedBox(height: 5.w),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -39,9 +40,9 @@ class DetailLabelAndTItle extends StatelessWidget {
                         text: neuro.toString(),
                         textColor: context.appColors.primary,
                       ),
-                      const SizedBox(width: 5),
+                      SizedBox(width: 5.w),
                       // const Neuro(width: 25),
-                      const GreenCampusPoint(width: 25),
+                      GreenCampusPoint(width: 25.w),
                     ],
                   )
                 : const SizedBox(),

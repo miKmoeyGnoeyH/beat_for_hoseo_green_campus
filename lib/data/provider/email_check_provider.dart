@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
@@ -14,7 +15,7 @@ class IDCheckProvider {
     IDState emailState = IDNotSent();
     final String requestUrl = DotEnvManager().emailRequest;
 
-    log("IDCheckProvider : emailRequest : requestUrl : $requestUrl, email : $email, category : $category");
+    // log("IDCheckProvider : emailRequest : requestUrl : $requestUrl, email : $email, category : $category");
 
     try {
       final http.Response response = await _httpClient
@@ -24,7 +25,7 @@ class IDCheckProvider {
           }))
           .timeout(const Duration(seconds: 10));
 
-      log("IDCheckProvider : emailRequest : response : ${response.body}");
+      // log("IDCheckProvider : emailRequest : response : ${response.body}");
 
       if (response.statusCode == 200) {
         emailState = IDSent();
@@ -34,6 +35,38 @@ class IDCheckProvider {
       }
     } catch (e) {
       log(e.toString());
+    }
+
+    return emailState;
+  }
+
+  Future<IDState> emailVerify(String email) async {
+    IDState emailState = IDNotSent();
+    final String requestUrl = DotEnvManager().emailVerify;
+
+    log("IDCheckProvider : emailVerify : requestUrl : $requestUrl, email : $email");
+
+    try {
+      final http.Response response = await _httpClient
+          .get(Uri.parse(requestUrl).replace(queryParameters: {
+            'email': email,
+          }))
+          .timeout(const Duration(seconds: 10));
+
+      log("IDCheckProvider : emailVerify : response : ${response.body}");
+
+      if (response.statusCode == 200) {
+        if (jsonDecode(response.body) == true) {
+          emailState = IDEmailChecked();
+        } else {
+          emailState = IDEmailNotChecked();
+        }
+      } else {
+        throw Exception();
+      }
+    } catch (e) {
+      log(e.toString());
+      emailState = IDEmailCheckError("");
     }
 
     return emailState;

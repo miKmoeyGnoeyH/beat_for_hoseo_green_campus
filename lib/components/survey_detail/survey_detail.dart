@@ -19,6 +19,7 @@ import 'package:beat_flutter/managers/navigator/navigator_key_manager.dart';
 import 'package:beat_flutter/managers/navigator/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
@@ -38,9 +39,9 @@ class SurveyDetail extends StatelessWidget {
           const CustomEmptyAppBar(),
           SliverFillRemaining(
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 16,
+              padding: EdgeInsets.symmetric(
+                horizontal: 20.w,
+                vertical: 16.w,
               ),
               child: surveyDetailController.obx(
                   (state) {
@@ -52,7 +53,7 @@ class SurveyDetail extends StatelessWidget {
                           labelText: localizationManager.sdSurvey,
                           title: state.title,
                         ),
-                        const SizedBox(height: 20),
+                        SizedBox(height: 20.w),
                         SurveyQuestions(questionList: state.questionList),
                       ],
                     );
@@ -117,11 +118,16 @@ class SurveyDetail extends StatelessWidget {
           context: context,
           title: localizationManager.sdSubmitCompletedTitle,
           content: localizationManager.sdSubmitCompletedContent,
-          onTap: () => NavigatorKeyManager().pushNamedAndRemoveUntil(
-            RouteNames.screenHolder,
-            arguments: ScreenHolderArguments(userController.state.authorization,
-                userController.state.sendToTime),
-          ),
+          onTap: ()
+          {
+            userController.add(GetMyNeuro());
+            NavigatorKeyManager().pushNamedAndRemoveUntil(
+              RouteNames.screenHolder,
+              arguments: ScreenHolderArguments(
+                  userController.state.authorization,
+                  userController.state.sendToTime),
+            );
+          },
         );
       } else {
         throw Exception();

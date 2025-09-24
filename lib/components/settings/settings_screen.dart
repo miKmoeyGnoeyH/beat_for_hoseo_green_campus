@@ -9,8 +9,10 @@ import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/managers/navigator/navigator_key_manager.dart';
 import 'package:beat_flutter/managers/navigator/routes.dart';
 import 'package:beat_flutter/managers/package_info/package_info_manager.dart';
+import 'package:beat_flutter/managers/prefs/prefs_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart' hide Trans;
 
 import '../../controller/user_controller.dart';
@@ -28,24 +30,27 @@ class SettingsScreen extends StatelessWidget {
       isScrollable: false,
       appBar: const CustomEmptyAppBar(),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 32),
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 32.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustomHeadlineMedium(text: localizationManager.settingsAppbarTitle),
-            const SizedBox(height: 24),
+            SizedBox(height: 24.w),
             CustomWideButton(
-              onTap: () {
-                Get.find<PedometerController>().stopForegroundService();
-                Get.find<PedometerController>().stopBackgroundService();
-                Get.find<LocationController>().stopForegroundService();
-                Get.find<LocationController>().stopBackgroundService();
+              onTap: () async {
+                await Get.find<PedometerController>().stopForegroundService();
+                await Get.find<PedometerController>().stopBackgroundService();
+                await Get.find<LocationController>().stopForegroundService();
+                await Get.find<LocationController>().stopBackgroundService();
+
+                PrefsManager().resetSavedStudentIdAndPassword();
+
                 userBloc.add(SignOut());
               },
               buttonColor: context.appColors.primary,
               buttonText: localizationManager.settingsSignOut,
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: 10.w),
             CustomWideButton(
               onTap: () {
                 NavigatorKeyManager().pushNamed(RouteNames.withdrawal);
@@ -53,14 +58,14 @@ class SettingsScreen extends StatelessWidget {
               buttonText: localizationManager.settingsWithdrawal,
               buttonColor: Colors.redAccent,
             ),
-            const SizedBox(height: 30),
+            SizedBox(height: 30.w),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CustomTitleMedium(
                   text: localizationManager.settingsOSSLicenses,
                 ),
-                const SizedBox(height: 5),
+                SizedBox(height: 5.w),
                 GestureDetector(
                   onTap: () {
                     NavigatorKeyManager().pushNamed(RouteNames.ossLicenses);
@@ -71,33 +76,33 @@ class SettingsScreen extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CustomTitleMedium(
-                  text: localizationManager.settingsAppInquiry,
-                ),
-                const SizedBox(height: 5),
-                CustomBodyLarge(
-                  text: "${localizationManager.settingsEmail}: ${localizationManager.settingsEmailAddress}",
-                ),
-                CustomBodyLarge(
-                  text: "${localizationManager.settingsPhone}: ${localizationManager.settingsPhoneNumber}",
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20.w),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CustomTitleMedium(
                   text: localizationManager.settingsVersion,
                 ),
-                const SizedBox(height: 5),
+                SizedBox(height: 5.w),
                 CustomBodyLarge(
                   text:
-                      "${PackageInfoManager.instance.version}(${PackageInfoManager.instance.buildNumber})",
+                  "${PackageInfoManager.instance.version}(${PackageInfoManager.instance.buildNumber})",
+                ),
+              ],
+            ),
+            SizedBox(height: 20.w),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CustomTitleMedium(
+                  text: localizationManager.settingsAppInquiry,
+                ),
+                SizedBox(height: 5.w),
+                CustomBodyLarge(
+                  text: "${localizationManager.settingsEmail}: ${localizationManager.settingsEmailAddress}",
+                ),
+                CustomBodyLarge(
+                  text: "${localizationManager.settingsPhone}: ${localizationManager.settingsPhoneNumber}",
                 ),
               ],
             ),

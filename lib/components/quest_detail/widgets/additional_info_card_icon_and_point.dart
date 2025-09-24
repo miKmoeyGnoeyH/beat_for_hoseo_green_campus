@@ -1,6 +1,7 @@
 import 'package:beat_flutter/components/global/beat/gc_point.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_subtitle_large.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AdditionalInfoCardIconAndPoint extends StatelessWidget {
   const AdditionalInfoCardIconAndPoint({
@@ -16,8 +17,8 @@ class AdditionalInfoCardIconAndPoint extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // const Neuro(),
-          const GreenCampusPoint(width: 25),
-          const SizedBox(height: 5),
+          GreenCampusPoint(width: 25.w),
+          SizedBox(height: 5.w),
           CustomSubtitleLarge(
             text: point,
             textColor: textColor,

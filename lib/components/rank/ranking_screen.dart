@@ -11,6 +11,7 @@ import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/theme/texts/custom_texts.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../global/widgets/texts/custom_body_large.dart';
@@ -52,9 +53,10 @@ class _RankingScreenState extends State<RankingScreen> {
         backgroundColor: context.appColors.surface,
         surfaceTintColor: context.appColors.surface,
         shape: Border(
-            bottom: BorderSide(
-                color: context.appColors.borderColor.withValues(alpha: 0.2),
-                width: 0.5)),
+          bottom: BorderSide(
+              color: context.appColors.borderColor.withValues(alpha: 0.2),
+              width: 0.5),
+        ),
       ),
       body: SafeArea(
         child: rankListController.obx(
@@ -74,35 +76,36 @@ class _RankingScreenState extends State<RankingScreen> {
                   Column(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(top: 16, bottom: 10),
+                        padding: EdgeInsets.only(top: 16.w, bottom: 10.w),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 20),
+                                  EdgeInsets.symmetric(horizontal: 20.w),
                               child: CustomDisplayMedium(
                                 text: localizationManager.rankingRanking,
                                 textColor: context.appColors.defaultTextColor,
                               ),
                             ),
-                            const SizedBox(height: 10),
+                            SizedBox(height: 16.w),
                             SizedBox(
-                              height: 50,
+                              height: 50.w,
                               child: ListView.separated(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 20.w,
                                 ),
                                 scrollDirection: Axis.horizontal,
                                 itemBuilder: (context, index) {
                                   // if (index % 2 != 0) return const SizedBox.shrink();
                                   final int key = index * 2;
                                   return CustomWideButton(
+                                    width: 130.w,
                                     borderWidth: 0.5,
-                                    autoSizeText: false,
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 20,
-                                      vertical: 10,
+                                    autoSizeText: true,
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 20.w,
+                                      vertical: 10.w,
                                     ),
                                     buttonText: getButtonTextByFieldName(
                                       // rankListController.rankList[index].type,
@@ -119,7 +122,7 @@ class _RankingScreenState extends State<RankingScreen> {
                                   );
                                 },
                                 separatorBuilder: (_, __) =>
-                                    const SizedBox(width: 10),
+                                    SizedBox(width: 10.w),
                                 itemCount: (state.data.length / 2).ceil(),
                               ),
                             )
@@ -154,16 +157,16 @@ class _RankingScreenState extends State<RankingScreen> {
   double getPageHeight(Map<String, List<RankItemModel>> data) {
     final List<String> keys = data.keys.toList();
 
-    const double appBarHeight = kToolbarHeight;
-    const double textsHeight = 100;
-    const double rankCardHeight = 61;
-    const double paddingHeight = 16;
-    const double extraSpacingHeight = 50;
+    double appBarHeight = kToolbarHeight;
+    double textsHeight = 120.w;
+    double rankCardHeight = 68.w;
+    double paddingHeight = 16.w;
+    double extraSpacingHeight = 50.w;
 
-    final double spacingHeight = (40 +
+    final double spacingHeight = (40.w +
         (((data[keys[currentIndex]]!.length - 1).toDouble() +
                 (data[keys[currentIndex + 1]]!.length - 1).toDouble()) *
-            10));
+            10.w));
     // final double spacingHeight = (40 + ((19 + 19) * 10));
     final double contentHeight = (data[keys[currentIndex]]!.length.toDouble() +
             data[keys[currentIndex + 1]]!.length.toDouble()) *
@@ -195,50 +198,50 @@ class _RankingScreenState extends State<RankingScreen> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 10),
+                SizedBox(height: 10.w),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: CustomBodyLarge(text: getDescByFieldName(keys[key])),
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 16.w),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child:
                       CustomHeadlineSmall(text: getTitleByFieldName(keys[key])),
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 16.w),
                 ListView.separated(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   padding:
-                      const EdgeInsets.only(left: 20, right: 20, bottom: 16),
+                      EdgeInsets.only(left: 20.w, right: 20.w, bottom: 16.w),
                   itemBuilder: (_, index) =>
                       RankingCard(data[keys[key]]![index], index + 1),
                   // itemBuilder: (_, index) =>
                   //     RankingCard(data[keys[key]]![0], 0),
                   itemCount: data[keys[key]]!.length,
                   // itemCount: 20,
-                  separatorBuilder: (_, __) => const SizedBox(height: 10),
+                  separatorBuilder: (_, __) => SizedBox(height: 16.w),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20.w),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: CustomHeadlineSmall(
                       text: getTitleByFieldName(keys[key + 1])),
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10.w),
                 ListView.separated(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   padding:
-                      const EdgeInsets.only(left: 20, right: 20, bottom: 16),
+                      EdgeInsets.only(left: 20.w, right: 20.w, bottom: 16.w),
                   itemBuilder: (_, index) =>
                       RankingCard(data[keys[key + 1]]![index], index + 1),
                   // itemBuilder: (_, index) =>
                   //     RankingCard(data[keys[key + 1]]![0], 0),
                   itemCount: data[keys[key + 1]]!.length,
                   // itemCount: 20,
-                  separatorBuilder: (_, __) => const SizedBox(height: 10),
+                  separatorBuilder: (_, __) => SizedBox(height: 16.w),
                 ),
                 const SizedBox(height: 50),
               ],

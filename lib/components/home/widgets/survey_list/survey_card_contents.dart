@@ -1,5 +1,6 @@
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../data/models/data_models.dart';
 import 'survey_card_title_and_desc.dart';
@@ -23,7 +24,7 @@ class SurveyCardContents extends StatelessWidget {
           title: surveyModel.title,
           content: localizationManager.homeSurveyDesc,
         ),
-        const SizedBox(width: 20),
+        SizedBox(width: 20.w),
       ],
     );
   }

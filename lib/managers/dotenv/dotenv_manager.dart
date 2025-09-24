@@ -54,4 +54,5 @@ class DotEnvManager {
   String get walkRecordUrl => dotenv.env['WALK_RECORD'] ?? "";
   String get withdrawal => dotenv.env['WITHDRAW'] ?? "";
   String get holidayList => dotenv.env['HOLIDAY_LIST'] ?? "";
+  String get emailVerify => dotenv.env['EMAIL_VERIFY'] ?? "";
 }

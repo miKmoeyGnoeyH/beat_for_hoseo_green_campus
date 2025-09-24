@@ -1,6 +1,7 @@
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../texts/custom_body_large.dart';
 
@@ -27,7 +28,7 @@ class CustomRefreshButton extends StatelessWidget {
                   Icons.refresh_rounded,
                   color: context.appColors.onBackground,
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10.w),
                 CustomBodyLarge(text: text ?? localizationManager.errorsConnectionError),
               ],
             ),

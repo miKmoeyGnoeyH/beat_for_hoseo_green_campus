@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../controller/user_controller.dart';
 import '../../../data/models/user_model.dart';
@@ -21,6 +22,7 @@ class HomeAppbar extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomAppBar(
       title: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           const BeatLogoSmall(),
           const SizedBox(width: 12),

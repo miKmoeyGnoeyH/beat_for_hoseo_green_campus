@@ -1,8 +1,10 @@
 import 'package:beat_flutter/components/global/methods/custom_show_dialog.dart';
+import 'package:beat_flutter/components/register_fill_inform/widgets/rfi_regexp.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/managers/navigator/arguments/register_arguments.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../controller/register/register_college_controller.dart';
 import '../../controller/register/register_department_controller.dart';
@@ -41,51 +43,59 @@ class _RegisterAffiliationScreenState extends State<RegisterAffiliationScreen> {
       child: CustomScaffold(
         top: false,
         isScrollable: false,
+        hasScrollBody: false,
         appBar: RegisterBasicAppbar(
           text: localizationManager.raAppbarTitle,
         ),
         body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Center(
-            child: CustomTextField(
-              // maxLength: 10,
-              hintText: localizationManager.raAffiliationHint,
-              onChanged: (value) {
-                registerDepartmentController.department = value;
-                isLengthValid = value.length >= minLength;
-                setState(() {});
-              },
-            ),
+          padding: EdgeInsets.symmetric(horizontal: 20.w),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CustomTextField(
+                // maxLength: 10,
+                hintText: localizationManager.raAffiliationHint,
+                onChanged: (value) {
+                  registerDepartmentController.department = value;
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    _isAffiliationValid = false;
+                    return localizationManager.raAffiliationHint;
+                  } else if (value.length < minLength) {
+                    _isAffiliationValid = false;
+                    return localizationManager.raAffiliationHint;
+                  } else if (initialConsonantRegExp.hasMatch(value)) {
+                    _isAffiliationValid = false;
+                    return localizationManager
+                        .raInappropriateAffiliationContent;
+                  }
+                  _isAffiliationValid = true;
+                  return null;
+                },
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+              ),
+            ],
           ),
         ),
         bottomNavigationBar: CustomBottomAppbarButton(
-          onTap: isLengthValid
+          onTap: _isAffiliationValid
               ? () {
-                  if (RegExp(r'[ㅏ-ㅣㄱ-ㅎ]').hasMatch(registerDepartmentController.department)) {
-                    customShowDialog(
-                      context: context,
-                      title: localizationManager.raInappropriateAffiliationTitle,
-                      content:
-                          localizationManager.raInappropriateAffiliationContent,
-                    );
-                  } else {
-                    NavigatorKeyManager().pushNamed(
-                      RouteNames.registerFillInform,
-                      arguments: RegisterArguments(
-                        registerOrganizationController:
-                            registerOrganizationController,
-                        registerCollegeController: registerCollegeController,
-                        registerDepartmentController:
-                            registerDepartmentController,
-                      ),
-                    );
-                  }
-
+                  NavigatorKeyManager().pushNamed(
+                    RouteNames.registerFillInform,
+                    arguments: RegisterArguments(
+                      registerOrganizationController:
+                          registerOrganizationController,
+                      registerCollegeController: registerCollegeController,
+                      registerDepartmentController:
+                          registerDepartmentController,
+                    ),
+                  );
                 }
               : () {},
           text: localizationManager
               .rcContinueWith(registerDepartmentController.department),
-          backgroundColor: isLengthValid
+          backgroundColor: _isAffiliationValid
               ? context.appColors.primary
               : context.appColors.disabled,
         ),
@@ -103,5 +113,5 @@ class _RegisterAffiliationScreenState extends State<RegisterAffiliationScreen> {
       widget.registerDepartmentController;
 
   final int minLength = 1;
-  bool isLengthValid = false;
+  bool _isAffiliationValid = false;
 }

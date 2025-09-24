@@ -2,6 +2,7 @@ import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.d
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../data/models/data_models.dart';
 import 'survey_card.dart';
@@ -22,8 +23,8 @@ class CustomSurveyListView extends StatelessWidget {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: list.length,
-            padding: const EdgeInsets.symmetric(vertical: 20),
-            separatorBuilder: (context, index) => const SizedBox(height: 16),
+            padding: EdgeInsets.symmetric(vertical: 20.w),
+            separatorBuilder: (context, index) => SizedBox(height: 24.w),
             itemBuilder: (context, index) {
               return SurveyCard(
                 index: index,
@@ -32,7 +33,7 @@ class CustomSurveyListView extends StatelessWidget {
             },
           )
         : SizedBox(
-          height: 300,
+          height: 300.w,
           width: double.infinity,
           child: Center(
             child: CustomBodyLarge(

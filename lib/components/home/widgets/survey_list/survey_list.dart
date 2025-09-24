@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../controller/home/controllers/survey_list_controller.dart';
 import '../../../../controller/home/events/data_events.dart';
@@ -21,15 +22,15 @@ class HomeSurveyList extends StatelessWidget {
     return BlocBuilder<SurveyListController, DataListState>(
       builder: (context, state) {
         if (state is DataListLoading) {
-          return const SizedBox(
-            height: 400,
-            child: Center(
+          return SizedBox(
+            height: 400.w,
+            child: const Center(
               child: CustomCircularProgressIndicator(),
             ),
           );
         } else if (state is DataListLoadingError) {
           return SizedBox(
-            height: 400,
+            height: 400.w,
             child: CustomRefreshButton(
                 onTap: () => surveyListController.add(DataListRequest())),
           );

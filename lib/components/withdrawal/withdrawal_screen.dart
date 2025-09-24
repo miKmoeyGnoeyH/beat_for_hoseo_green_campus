@@ -69,18 +69,19 @@ class WithdrawalScreen extends StatelessWidget {
                         context: context,
                         title: localizationManager.withdrawalSuccess,
                         content: localizationManager.withdrawalSuccessMessage,
-                        onTap: () {
-                          Get.find<PedometerController>().stopForegroundService();
-                          Get.find<PedometerController>().stopBackgroundService();
-                          Get.find<LocationController>().stopForegroundService();
-                          Get.find<LocationController>().stopBackgroundService();
+                        onTap: () async {
+                          await Get.find<PedometerController>().stopForegroundService();
+                          await Get.find<PedometerController>().stopBackgroundService();
+                          await Get.find<LocationController>().stopForegroundService();
+                          await Get.find<LocationController>().stopBackgroundService();
 
                           context.read<UserController>().add(SignOut());
 
                           // NavigatorKeyManager().pushNamedAndRemoveUntil(RouteNames.signIn);
                         }
                       );
-                      PrefsManager().resetSavedStudentIdAndPassword();
+                      PrefsManager().withDrawal();
+                      // PrefsManager().resetSavedStudentIdAndPassword();
                     }
                   } else {
                     if (context.mounted) {

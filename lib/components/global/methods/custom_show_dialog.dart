@@ -40,7 +40,7 @@ Future<dynamic> customShowDialog(
               width: context.width * 0.7,
               child: Text(
                 content,
-                style: CustomTexts.bodyLLarge
+                style: CustomTexts.bodyLarge
                     .copyWith(color: context.appColors.onBackground),
               ),
             )

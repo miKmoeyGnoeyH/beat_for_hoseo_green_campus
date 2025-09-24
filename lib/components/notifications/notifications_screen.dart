@@ -4,6 +4,7 @@ import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../controller/notification/notification_controller.dart';
 import '../../data/states/data_list_state.dart';
@@ -33,7 +34,7 @@ class NotificationsScreen extends StatelessWidget {
         builder: (context, state) {
           if (state is DataListLoadingSuccess) {
             return ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.w),
               children: [
                 CustomDisplayMedium(
                   text: localizationManager.noticeLabel,
@@ -45,9 +46,9 @@ class NotificationsScreen extends StatelessWidget {
                             notificationsController.state.dataList,
                       )
                     : Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        padding: EdgeInsets.symmetric(vertical: 16.w),
                         child: SizedBox(
-                          height: 30,
+                          height: 30.w,
                           width: double.infinity,
                           child: CustomBodyLarge(
                             text: localizationManager.noticeNoNotices,

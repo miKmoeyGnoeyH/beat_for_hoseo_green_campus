@@ -1,6 +1,7 @@
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../theme/texts/custom_texts.dart';
 import '../custom_rounded_bordered_container.dart';
@@ -18,6 +19,9 @@ class CustomWideButton extends StatelessWidget {
     this.padding,
     this.autoSizeText = true,
     this.buttonTextStyle,
+    this.borderRadius,
+    this.height,
+    this.width,
   });
 
   @override
@@ -26,13 +30,15 @@ class CustomWideButton extends StatelessWidget {
       onTap: onTap,
       child: CustomRoundedBorderedContainer(
         color: buttonColor ?? context.appColors.background,
-        height: 56,
+        width: width ?? double.infinity,
+        height: height ?? 56.w,
         borderColor: borderColor,
         borderWidth: borderWidth ?? 0.2,
+        borderRadius: borderRadius,
         child: Center(
           child: Padding(
             padding: padding ??
-                const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
+                EdgeInsets.symmetric(horizontal: 10.w, vertical: 16.w),
             child: autoSizeText
                 ? AutoSizeText(
                     buttonText ?? '',
@@ -72,4 +78,7 @@ class CustomWideButton extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final bool autoSizeText;
   final TextStyle? buttonTextStyle;
+  final double? borderRadius;
+  final double? height;
+  final double? width;
 }

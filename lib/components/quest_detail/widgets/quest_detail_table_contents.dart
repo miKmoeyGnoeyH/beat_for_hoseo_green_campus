@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../data/models/data_models.dart';
 import '../methods/buildQuestDetailTableRows.dart';
@@ -12,7 +13,7 @@ class QuestDetailTableContents extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.w),
       child: Table(
         // columnWidths: const {0: FractionColumnWidth(.6)},
         // defaultVerticalAlignment: TableCellVerticalAlignment.middle,

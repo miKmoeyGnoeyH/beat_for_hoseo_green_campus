@@ -37,6 +37,7 @@ class LocalizationManager {
   String get generalStudent => "general".tr(gender: "student");
   String get generalConfirm => "general".tr(gender: "confirm");
   String get generalCancel => "general".tr(gender: "cancel");
+  String get generalDone => "general".tr(gender: "done");
 
   // home
   String get homePointsInHand => "home".tr(gender: "points_in_hand");
@@ -185,11 +186,24 @@ class LocalizationManager {
   String get rfiSidOrEmployeeIdHint => "register_fill_inform_page".tr(gender: "sid_or_employee_id_hint");
   String get rfiEmployeeMail => "register_fill_inform_page".tr(gender: "employee_mail");
   String get rfiEmployeeMailHint => "register_fill_inform_page".tr(gender: "employee_mail_hint");
+  String get rfiSidIsEmpty => "register_fill_inform_page".tr(gender: "sid_is_empty");
+  String get rfiSidTooShort => "register_fill_inform_page".tr(gender: "sid_too_short");
+  String get rfiMailIsEmpty => "register_fill_inform_page".tr(gender: "mail_is_empty");
+  String get rfiMailTooShort => "register_fill_inform_page".tr(gender: "mail_too_short");
   String get rfiId => "register_fill_inform_page".tr(gender: "id");
   String get rfiIdHint => "register_fill_inform_page".tr(gender: "id_hint");
   String get rfiValidateMail => "register_fill_inform_page".tr(gender: "validate_mail");
+  String get rfiMailSent => "register_fill_inform_page".tr(gender: "mail_sent");
   String get rfiInvalidMailTitle => "register_fill_inform_page".tr(gender: "invalid_mail_title");
   String get rfiInvalidMailContent => "register_fill_inform_page".tr(gender: "invalid_mail_content");
+  String get rfiCheckMailVerify => "register_fill_inform_page".tr(gender: "check_mail_verify");
+  String get rfiEmailVerified => "register_fill_inform_page".tr(gender: "email_verified");
+  String get rfiEmailCheckSuccessTitle => "register_fill_inform_page".tr(gender: "email_check_success_title");
+  String get rfiEmailCheckSuccessContent => "register_fill_inform_page".tr(gender: "email_check_success_content");
+  String get rfiEmailNotCheckTitle => "register_fill_inform_page".tr(gender: "email_not_check_title");
+  String get rfiEmailNotCheckContent => "register_fill_inform_page".tr(gender: "email_not_check_content");
+  String get rfiEmailCheckFailedTitle => "register_fill_inform_page".tr(gender: "email_check_failed_title");
+  String get rfiEmailCheckFailedContent => "register_fill_inform_page".tr(gender: "email_check_failed_content");
   String get rfiValidateId => "register_fill_inform_page".tr(gender: "validate_id");
   String get rfiEmailSentTitle => "register_fill_inform_page".tr(gender: "email_sent_title");
   String get rfiEmailSentMessage => "register_fill_inform_page".tr(gender: "email_sent_message");
@@ -212,9 +226,13 @@ class LocalizationManager {
   String get rfiUnusableNickname => "register_fill_inform_page".tr(gender: "unusable_nickname");
   String get rfiNicknameHasInitialConsonant => "register_fill_inform_page".tr(gender: "nickname_has_initial_consonant");
   String get rfiInappropriateNicknameMessage => "register_fill_inform_page".tr(gender: "inapropriate_nickname_message");
+  String get rfiNicknameIsEmpty => "register_fill_inform_page".tr(gender: "nickname_is_empty");
+  String get rfiNicknameTooShort => "register_fill_inform_page".tr(gender: "nickname_too_short");
   String get rfiNicknameHint => "register_fill_inform_page".tr(gender: "nickname_hint");
   String get rfiPassword => "register_fill_inform_page".tr(gender: "password");
   String get rfiPasswordHint => "register_fill_inform_page".tr(gender: "password_hint");
+  String get rfiPasswordIsEmpty => "register_fill_inform_page".tr(gender: "password_is_empty");
+  String get rfiPasswordCheckIsEmpty => "register_fill_inform_page".tr(gender: "password_check_is_empty");
   String get rfiPasswordCheck => "register_fill_inform_page".tr(gender: "password_check");
   String get rfiPasswordCheckHint => "register_fill_inform_page".tr(gender: "password_check_hint");
   String get rfiPasswordRuleErrorTitle => "register_fill_inform_page".tr(gender: "password_rule_error_title");
@@ -244,6 +262,13 @@ class LocalizationManager {
   String get rfiToSignInScreen => "register_fill_inform_page".tr(gender: "to_sign_in_screen");
   String get rfiSignUpFailed => "register_fill_inform_page".tr(gender: "sign_up_failed");
   String get rfiSignUpFailedMessage => "register_fill_inform_page".tr(gender: "sign_up_failed_message");
+
+  // Sign Page
+  String get signSignFailed => "sign_page".tr(gender: "sign_failed");
+  String get signFailedToConvertSignatureContent => "sign_page".tr(gender: "failed_to_convert_signature_content");
+
+  // Sign Preview
+  String get spSignContent => "sign_preview".tr(gender: "sign_content");
 
   // Terms of Agreement
   String get toa => "terms_of_agreement".tr();
@@ -296,6 +321,10 @@ class LocalizationManager {
   String get mpEmail => "my_page".tr(gender: "email");
   String get mpNickname => "my_page".tr(gender: "nickname");
   String get mpChangePassword => "my_page".tr(gender: "change_password");
+
+  // History
+  String get historyHistory => "history".tr(gender: "history");
+  String get historyHistoryDesc => "history".tr(gender: "history_desc");
 
   // bottom navigation bar
   String get bnbQR => "bottom_navigation_bar".tr(gender: "qr");

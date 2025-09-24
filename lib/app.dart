@@ -6,6 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import 'components/global/widgets/custom_theme_app.dart';
@@ -39,24 +40,27 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     return CustomThemeApp(
       child: BlocProvider(
         create: (context) => UserController(),
-        child: GetMaterialApp(
-          builder: (context, child) {
-            return MediaQuery(
-              data: MediaQuery.of(context).copyWith(
-                textScaler: TextScaler.noScaling,
-              ),
-              child: child!,
-            );
-          },
-          theme: ThemeData.light(),
-          darkTheme: ThemeData.dark(),
-          debugShowCheckedModeBanner: false,
-          localizationsDelegates: context.localizationDelegates,
-          supportedLocales: context.supportedLocales,
-          navigatorKey: NavigatorKeyManager().navigatorKey,
-          onGenerateRoute: Routes.onGenerateRoute,
-          home: SignInScreen(),
-          // initialRoute: RouteNames.signIn,
+        child: ScreenUtilInit(
+          designSize: const Size(375, 812),
+          child: GetMaterialApp(
+            builder: (context, child) {
+              return MediaQuery(
+                data: MediaQuery.of(context).copyWith(
+                  textScaler: TextScaler.noScaling,
+                ),
+                child: child!,
+              );
+            },
+            theme: ThemeData.light(),
+            darkTheme: ThemeData.dark(),
+            debugShowCheckedModeBanner: false,
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            navigatorKey: NavigatorKeyManager().navigatorKey,
+            onGenerateRoute: Routes.onGenerateRoute,
+            home: SignInScreen(),
+            // initialRoute: RouteNames.signIn,
+          ),
         ),
       ),
     );

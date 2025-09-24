@@ -1,6 +1,7 @@
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../controller/register_fill_inform/register_agreement_controller.dart';
 import '../../../theme/texts/custom_texts.dart';
@@ -36,7 +37,7 @@ class _StatefulBottomSheetState extends State<StatefulBottomSheet> {
       width: double.infinity,
       color: context.appColors.background,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 36),
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 36.w),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -58,8 +59,8 @@ class _StatefulBottomSheetState extends State<StatefulBottomSheet> {
                       ),
                       TextSpan(
                         children: [
-                          const WidgetSpan(
-                            child: SizedBox(width: 5),
+                          WidgetSpan(
+                            child: SizedBox(width: 5.w),
                           ),
                           TextSpan(
                             text: localizationManager.rfiToaPurpose,
@@ -89,8 +90,8 @@ class _StatefulBottomSheetState extends State<StatefulBottomSheet> {
                       ),
                       TextSpan(
                         children: [
-                          const WidgetSpan(
-                            child: SizedBox(width: 5),
+                          WidgetSpan(
+                            child: SizedBox(width: 5.w),
                           ),
                           TextSpan(
                             text: localizationManager.rfiToaItems,
@@ -120,8 +121,8 @@ class _StatefulBottomSheetState extends State<StatefulBottomSheet> {
                       ),
                       TextSpan(
                         children: [
-                          const WidgetSpan(
-                            child: SizedBox(width: 5),
+                          WidgetSpan(
+                            child: SizedBox(width: 5.w),
                           ),
                           TextSpan(
                             text: localizationManager.rfiToaRetention,
@@ -151,8 +152,8 @@ class _StatefulBottomSheetState extends State<StatefulBottomSheet> {
                       ),
                       TextSpan(
                         children: [
-                          const WidgetSpan(
-                            child: SizedBox(width: 5),
+                          WidgetSpan(
+                            child: SizedBox(width: 5.w),
                           ),
                           TextSpan(
                             text: localizationManager.rfiToaRightToRefusal,
@@ -172,17 +173,6 @@ class _StatefulBottomSheetState extends State<StatefulBottomSheet> {
                       ),
                     ],
                   ),
-                  // WidgetSpan(
-                  //   child: Container(
-                  //     padding: const EdgeInsets.only(left: 20),
-                  //     child: Text(
-                  //       context.tr('terms_of_agreement_content',
-                  //           gender: 'right_to_refusal_content'),
-                  //       style: CustomTexts.bodyLarge
-                  //           .copyWith(color: context.appColors.onBackground),
-                  //     ),
-                  //   ),
-                  // ),
                   WidgetSpan(child: Container()),
                   TextSpan(
                     text: localizationManager.rfiDoYouAgree,
@@ -201,17 +191,20 @@ class _StatefulBottomSheetState extends State<StatefulBottomSheet> {
                   style: CustomTexts.subtitleLarge
                       .copyWith(color: context.appColors.onBackground),
                 ),
-                Checkbox(
-                  value: registerAgreementProvider.isAgreementChecked,
-                  activeColor: context.appColors.primary,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                Transform.scale(
+                  scale: 1.2,
+                  child: Checkbox(
+                    value: registerAgreementProvider.isAgreementChecked,
+                    activeColor: context.appColors.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        widget.setIsAgreementChecked(value!);
+                      });
+                    },
                   ),
-                  onChanged: (value) {
-                    setState(() {
-                      widget.setIsAgreementChecked(value!);
-                    });
-                  },
                 ),
               ],
             ),

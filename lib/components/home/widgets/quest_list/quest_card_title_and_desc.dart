@@ -35,6 +35,7 @@ class QuestCardTitleAndDesc extends StatelessWidget {
           ),
           const SizedBox(height: 5),
           CustomSubtitleLarge(text: questModel.eventName),
+          // const CustomSubtitleLarge(text: "VeryVeryLongLongEventName", maxLines: 1,),
           const SizedBox(height: 5),
           CustomBodyLarge(
             text: questModel.descriptionShort,

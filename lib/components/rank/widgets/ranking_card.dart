@@ -3,6 +3,7 @@ import 'package:beat_flutter/controller/user_controller.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../data/models/data_models.dart';
 import '../../global/widgets/custom_rounded_bordered_container.dart';
@@ -24,7 +25,7 @@ class RankingCard extends StatelessWidget {
       borderWidth: 0.5,
       color: context.appColors.background.withValues(alpha: 0.2),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.w),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

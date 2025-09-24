@@ -1,6 +1,7 @@
 import 'package:beat_flutter/controller/home/controllers/quest_list_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../controller/home/events/data_events.dart';
 import '../../../../data/states/data_list_state.dart';
@@ -21,15 +22,15 @@ class HomeQuestList extends StatelessWidget {
     return BlocBuilder<QuestListController, DataListState>(
       builder: (context, state) {
         if (state is DataListLoading) {
-          return const SizedBox(
-            height: 400,
-            child: Center(
+          return SizedBox(
+            height: 400.w,
+            child: const Center(
               child: CustomCircularProgressIndicator(),
             ),
           );
         } else if (state is DataListLoadingError) {
           return SizedBox(
-            height: 400,
+            height: 400.w,
             child: CustomRefreshButton(
                 onTap: () => questListController.add(DataListRequest())),
           );

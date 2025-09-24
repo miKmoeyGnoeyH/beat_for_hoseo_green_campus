@@ -1,53 +1,162 @@
+import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.dart';
+import 'package:beat_flutter/components/global/widgets/texts/custom_label_large.dart';
+import 'package:beat_flutter/components/global/widgets/texts/custom_subtitle_large.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../theme/texts/custom_texts.dart';
 import '../methods/custom_textfield_decoration.dart';
 
-class CustomTextField extends StatelessWidget {
+class CustomTextField extends StatefulWidget {
   const CustomTextField({
     super.key,
+    this.formKey,
     this.textEditingController,
-    this.keyboardType,
-    this.maxLength,
+    this.validator,
+    this.labelText,
     this.hintText,
+    this.keyboardType,
+    this.maxLines = 1,
+    this.enabled = true,
+    this.actions,
     this.onChanged,
+    this.maxLength,
     this.inputFormatters,
     this.obscureText = false,
+    this.autovalidateMode,
   });
 
   @override
+  State<CustomTextField> createState() => _CustomTextFieldState();
+
+  final GlobalKey<FormState>? formKey;
+  final TextEditingController? textEditingController;
+  final String? Function(String?)? validator;
+  final String? labelText;
+  final String? hintText;
+  final int maxLines;
+  final TextInputType? keyboardType;
+  final bool enabled;
+  final List<Widget>? actions;
+  final void Function(String)? onChanged;
+  final int? maxLength;
+  final List<TextInputFormatter>? inputFormatters;
+  final bool obscureText;
+  final AutovalidateMode? autovalidateMode;
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: Theme.of(context).copyWith(
-        textSelectionTheme: TextSelectionThemeData(
-          cursorColor: context.appColors.primary,
-          selectionColor: context.appColors.primary,
-          selectionHandleColor: context.appColors.primary,
+    List<Widget> actions = [];
+    if (widget.actions != null) {
+      for (int i = 0; i < widget.actions!.length; i++) {
+        actions.add(widget.actions![i]);
+        if (i < widget.actions!.length - 1) {
+          actions.add(SizedBox(width: 5.w)); // Add spacing between actions
+        }
+      }
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (widget.labelText != null)
+          Row(
+            children: [
+              CustomSubtitleLarge(
+                text: widget.labelText!,
+              ),
+            ],
+          ),
+        SizedBox(height: 6.w),
+        Row(
+          children: [
+            Flexible(
+              child: Form(
+                key: widget.formKey,
+                child: TextFormField(
+                  errorBuilder: (_, __) => const SizedBox.shrink(),
+                  cursorColor: context.appColors.primary,
+                  cursorErrorColor: context.appColors.error,
+                  enabled: widget.enabled,
+                  maxLines: widget.maxLines,
+                  maxLength: widget.maxLength,
+                  controller: widget.textEditingController,
+                  keyboardType: widget.keyboardType,
+                  inputFormatters: widget.inputFormatters,
+                  obscureText: widget.obscureText,
+                  autovalidateMode: widget.autovalidateMode,
+                  style: CustomTexts.bodyLarge,
+                  validator: (value) {
+                    final result = widget.validator?.call(value);
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      if (_errorText != result) {
+                        setState(() => _errorText = result);
+                      }
+                    });
+                    return result != null ? "" : null;
+                  },
+                  // validator: widget.validator,
+                  onChanged: (_) => setState(() {
+                    widget.onChanged?.call(_);
+                    // _errorText = null;
+                  }),
+                  decoration: InputDecoration(
+                    // isDense: true,
+                    focusColor: context.appColors.primary,
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: context.appColors.primary,
+                        width: 1,
+                      ),
+                    ),
+                    errorBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: context.appColors.error,
+                        width: 1,
+                      ),
+                    ),
+                    focusedErrorBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: context.appColors.error,
+                        width: 1,
+                      ),
+                    ),
+                    hintText: widget.hintText,
+                    hintStyle: CustomTexts.bodyLarge.copyWith(
+                      color: context.appColors.disabled,
+                    ),
+                    errorStyle: CustomTexts.bodyLarge.copyWith(
+                      color: context.appColors.error,
+                    ),
+                    counterText: '',
+                  ),
+                ),
+              ),
+            ),
+            if (widget.actions != null) SizedBox(width: 5.w),
+            ...actions,
+          ],
         ),
-      ),
-      child: TextField(
-        controller: textEditingController,
-        keyboardType: keyboardType,
-        maxLength: maxLength,
-        cursorColor: context.appColors.primary,
-        onChanged: onChanged,
-        inputFormatters: inputFormatters,
-        style: CustomTexts.bodyLLarge.copyWith(
-          color: context.appColors.onBackground,
-        ),
-        decoration: buildCustomInputDecoration(context, hintText),
-        obscureText: obscureText,
-      ),
+        if (_errorText != null)
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 5.w),
+            child: CustomBodyLarge(
+              text: _errorText!,
+              textColor: context.appColors.error,
+            ),
+          ),
+      ],
     );
   }
 
-  final TextEditingController? textEditingController;
-  final TextInputType? keyboardType;
-  final int? maxLength;
-  final String? hintText;
-  final Function(String)? onChanged;
-  final List<TextInputFormatter>? inputFormatters;
-  final bool obscureText;
+  String? _errorText;
 }

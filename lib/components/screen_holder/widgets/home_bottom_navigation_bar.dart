@@ -1,6 +1,7 @@
 
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
+import 'package:beat_flutter/theme/texts/custom_texts.dart';
 import 'package:flutter/material.dart';
 
 class HomeBottomNavigationBar extends StatelessWidget {
@@ -26,7 +27,9 @@ class HomeBottomNavigationBar extends StatelessWidget {
       child: BottomNavigationBar(
         currentIndex: currentIndex,
         selectedItemColor: context.appColors.primary,
+        selectedLabelStyle: CustomTexts.bodyMedium,
         unselectedItemColor: context.appColors.onBackground,
+        unselectedLabelStyle: CustomTexts.bodyMedium,
         backgroundColor: context.appColors.background,
         onTap: onTap,
         items: [

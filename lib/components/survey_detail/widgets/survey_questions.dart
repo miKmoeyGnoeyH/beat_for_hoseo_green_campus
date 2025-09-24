@@ -1,6 +1,7 @@
 import 'package:beat_flutter/components/survey_detail/widgets/survey_question.dart';
 import 'package:beat_flutter/data/models/data_models.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SurveyQuestions extends StatelessWidget {
   const SurveyQuestions({super.key, required this.questionList});
@@ -15,7 +16,7 @@ class SurveyQuestions extends StatelessWidget {
         index: index,
         surveyQuestionModel: questionList[index],
       ),
-      separatorBuilder: (context, index) => const SizedBox(height: 20),
+      separatorBuilder: (context, index) => SizedBox(height: 24.w),
       itemCount: questionList.length,
       // itemCount: 5,
     );

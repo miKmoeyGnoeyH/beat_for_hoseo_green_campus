@@ -12,9 +12,7 @@ abstract class ThemeFactory {
         return CustomDarkColors();
       case Brightness.light:
         return CustomLightColors();
-      default:
-        return CustomLightColors();
-    }
+      }
   }
 
   static Brightness get systemBrightness =>

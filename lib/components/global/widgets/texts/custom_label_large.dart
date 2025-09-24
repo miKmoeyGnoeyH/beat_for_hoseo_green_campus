@@ -16,7 +16,7 @@ class CustomLabelLarge extends StatelessWidget {
     return Text(
       text ?? '',
       style: CustomTexts.labelLarge.copyWith(
-        color: textColor ?? context.appColors.onBackground.withOpacity(0.5),
+        color: textColor ?? context.appColors.onBackground.withValues(alpha: 0.5),
       ),
       maxLines: maxLines,
       overflow: maxLines == null ? null : TextOverflow.ellipsis,

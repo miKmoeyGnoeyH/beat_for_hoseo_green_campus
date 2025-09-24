@@ -19,6 +19,7 @@ import 'package:beat_flutter/managers/navigator/navigator_key_manager.dart';
 import 'package:beat_flutter/managers/navigator/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
@@ -26,13 +27,21 @@ import '../../../../data/models/data_models.dart';
 import 'quest_card_icon_and_neuro.dart';
 import 'quest_card_title_and_desc.dart';
 
-class QuestCardContents extends StatelessWidget {
-  QuestCardContents({
+class QuestCardContents extends StatefulWidget {
+  const QuestCardContents({
     super.key,
     required this.index,
     required this.questModel,
   });
 
+  @override
+  State<QuestCardContents> createState() => _QuestCardContentsState();
+
+  final int index;
+  final QuestModel questModel;
+}
+
+class _QuestCardContentsState extends State<QuestCardContents> {
   final PedometerController pedometerController =
       Get.find<PedometerController>();
 
@@ -46,8 +55,8 @@ class QuestCardContents extends StatelessWidget {
 
     // 보상 수령 가능 조건 달성 여부 확인
     // 해당 퀘스트가 QR 퀘스트인 경우
-    if (questModel.eventType == EventType.qr) {
-      final QuestQRModel questQRModel = questModel as QuestQRModel;
+    if (widget.questModel.eventType == EventType.qr) {
+      final QuestQRModel questQRModel = widget.questModel as QuestQRModel;
       isQuestRequirementSatisfied =
           questQRModel.successCount >= questQRModel.requiredCount;
       // 해당 퀘스트가 걸음 수 퀘스트인 경우
@@ -61,20 +70,23 @@ class QuestCardContents extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             QuestCardTitleAndDesc(
-              questModel: questModel,
-              index: index,
+              questModel: widget.questModel,
+              index: widget.index,
               // eventName: questModel.eventName,
               // eventType: questModel.eventType,
               // descriptionShort: questModel.descriptionShort,
             ),
-            const SizedBox(width: 20),
+            // const SizedBox(width: 30),
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: QuestCardIconAndPoint(neuro: questModel.neuro.toString()),
+              padding: EdgeInsets.all(8.w),
+              child: QuestCardIconAndPoint(
+                neuro: widget.questModel.neuro.toString(),
+              ),
             ),
           ],
         ),
-        questModel.eventType == EventType.qr
+        SizedBox(height: 10.w),
+        widget.questModel.eventType == EventType.qr
             ? Row(
                 children: [
                   Flexible(
@@ -83,28 +95,31 @@ class QuestCardContents extends StatelessWidget {
                       children: [
                         CustomBodyLarge(
                           text:
-                              "${(questModel as QuestQRModel).successCount} / ${(questModel as QuestQRModel).totalCount}",
+                              "${(widget.questModel as QuestQRModel).successCount} / ${(widget.questModel as QuestQRModel).totalCount}",
                           textColor: context.appColors.disabled,
                         ),
-                        const SizedBox(height: 5),
+                        const SizedBox(height: 10),
                         LinearProgressIndicator(
                           color: context.appColors.primary,
                           backgroundColor: context.appColors.disabled,
                           borderRadius: BorderRadius.circular(50),
-                          value: ((questModel as QuestQRModel).successCount) /
-                              ((questModel as QuestQRModel).totalCount),
+                          value: ((widget.questModel as QuestQRModel)
+                                  .successCount) /
+                              ((widget.questModel as QuestQRModel).totalCount),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(width: 10),
-                  questModel.hasSuccess
+                  SizedBox(width: 15.w),
+                  widget.questModel.hasSuccess
                       ? CustomTextButton(
                           text: localizationManager.homeClaimed,
                           buttonColor: context.appColors.disabled,
                           borderRadius: 5,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 5, vertical: 5),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 5.w,
+                            vertical: 5.w,
+                          ),
                         )
                       : CustomTextButton(
                           text: localizationManager.homeClaim,
@@ -112,8 +127,10 @@ class QuestCardContents extends StatelessWidget {
                               ? context.appColors.primary
                               : context.appColors.disabled,
                           borderRadius: 5,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 5, vertical: 5),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 5.w,
+                            vertical: 5.w,
+                          ),
                           onTap: isQuestRequirementSatisfied
                               ? () => onClaimButtonTap(context)
                               : () {},
@@ -123,12 +140,13 @@ class QuestCardContents extends StatelessWidget {
             : Obx(
                 () {
                   final QuestWalkModel questWalkModel =
-                      questModel as QuestWalkModel;
+                      widget.questModel as QuestWalkModel;
 
                   // 해당 퀘스트가 일일 퀘스트인 경우
                   if (questWalkModel.eventPeriodType == EventPeriodType.daily) {
-                    isQuestRequirementSatisfied = pedometerController.todayWalkCount >=
-                        questWalkModel.requiredWalkCount;
+                    isQuestRequirementSatisfied =
+                        pedometerController.todayWalkCount >=
+                            questWalkModel.requiredWalkCount;
                     // 해당 퀘스트가 주간 퀘스트인 경우
                   } else if (questWalkModel.eventPeriodType ==
                       EventPeriodType.weekly) {
@@ -147,17 +165,20 @@ class QuestCardContents extends StatelessWidget {
                   }
 
                   int steps;
-                  if ((questModel as QuestWalkModel).eventPeriodType ==
+                  if ((widget.questModel as QuestWalkModel).eventPeriodType ==
                       EventPeriodType.daily) {
                     steps = pedometerController.todayWalkCount;
-                  } else if ((questModel as QuestWalkModel).eventPeriodType ==
-                      EventPeriodType.weekly)
+                  } else if ((widget.questModel as QuestWalkModel)
+                          .eventPeriodType ==
+                      EventPeriodType.weekly) {
                     steps = pedometerController.weeklyWalkCount;
-                  else if ((questModel as QuestWalkModel).eventPeriodType ==
-                      EventPeriodType.monthly)
+                  } else if ((widget.questModel as QuestWalkModel)
+                          .eventPeriodType ==
+                      EventPeriodType.monthly) {
                     steps = pedometerController.monthlyWalkCount;
-                  else
+                  } else {
                     steps = 0;
+                  }
 
                   return Row(
                     children: [
@@ -167,29 +188,31 @@ class QuestCardContents extends StatelessWidget {
                           children: [
                             CustomBodyLarge(
                               text:
-                                  "$steps / ${(questModel as QuestWalkModel).requiredWalkCount}",
+                                  "$steps / ${(widget.questModel as QuestWalkModel).requiredWalkCount}",
                               textColor: context.appColors.disabled,
                             ),
-                            const SizedBox(height: 5),
+                            SizedBox(height: 10.w),
                             LinearProgressIndicator(
                               color: context.appColors.primary,
                               backgroundColor: context.appColors.disabled,
                               borderRadius: BorderRadius.circular(50),
                               value: steps /
-                                  ((questModel as QuestWalkModel)
+                                  ((widget.questModel as QuestWalkModel)
                                       .requiredWalkCount),
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      questModel.hasSuccess
+                      SizedBox(width: 15.w),
+                      widget.questModel.hasSuccess
                           ? CustomTextButton(
                               text: localizationManager.homeClaimed,
                               buttonColor: context.appColors.disabled,
                               borderRadius: 5,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 5, vertical: 5),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 5.w,
+                                vertical: 5.w,
+                              ),
                             )
                           : CustomTextButton(
                               text: localizationManager.homeClaim,
@@ -197,8 +220,10 @@ class QuestCardContents extends StatelessWidget {
                                   ? context.appColors.primary
                                   : context.appColors.disabled,
                               borderRadius: 5,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 5, vertical: 5),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 5.w,
+                                vertical: 5.w,
+                              ),
                               onTap: isQuestRequirementSatisfied
                                   ? () => onClaimButtonTap(context)
                                   : () {},
@@ -268,9 +293,9 @@ class QuestCardContents extends StatelessWidget {
   Future<http.Response> requestReward(String authorization) async {
     log("QuestCardContents : onClaimButtonTap");
     final String authorization = pedometerController.authorization;
-    final int eventId = questModel.eventId;
+    final int eventId = widget.questModel.eventId;
     const bool hasSuccess = true;
-    final String requestUrl = questModel.eventType == EventType.qr
+    final String requestUrl = widget.questModel.eventType == EventType.qr
         ? "${DotEnvManager().questQRCheckUrl}$eventId?hasSuccess=$hasSuccess"
         : "${DotEnvManager().questWalkCheckUrl}$eventId?hasSuccess=$hasSuccess";
 
@@ -280,7 +305,4 @@ class QuestCardContents extends StatelessWidget {
   }
 
   bool isQuestRequirementSatisfied = false;
-
-  final int index;
-  final QuestModel questModel;
 }

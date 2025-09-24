@@ -8,6 +8,7 @@ import 'package:beat_flutter/data/models/data_models.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
 class NoticeDetail extends StatelessWidget {
@@ -22,7 +23,7 @@ class NoticeDetail extends StatelessWidget {
         appBar: const CustomEmptyAppBar(),
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -30,24 +31,26 @@ class NoticeDetail extends StatelessWidget {
                   labelText: localizationManager.noticeLabel,
                   title: notificationModel.title,
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10.w),
                 CustomSubtitleLarge(
                   text: DateFormat("yyyy-MM-dd HH:mm:ss")
                       .format(notificationModel.createdAt),
                   textColor: context.appColors.disabled,
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20.w),
                 CustomRoundedBorderedContainer(
                   width: double.infinity,
                   borderWidth: 0.5,
                   color: context.appColors.background,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 16),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 20.w,
+                      vertical: 16.w,
+                    ),
                     child: CustomBodyLarge(text: notificationModel.body),
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20.w),
               ],
             ),
           ),

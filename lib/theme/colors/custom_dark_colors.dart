@@ -40,10 +40,13 @@ class CustomDarkColors implements CustomColors {
   Color get onError => const Color(0xffffffff);
 
   @override
-  Color get disabled => const Color(0xffffffff).withOpacity(0.3);
+  Color get disabled => const Color(0xffffffff).withValues(alpha: 0.5);
 
   @override
-  Color get borderColor => const Color(0xffffffff).withOpacity(0.3);
+  Color get disabledTextColor => const Color(0xffffffff);
+
+  @override
+  Color get borderColor => const Color(0xffffffff).withValues(alpha: 0.5);
 
   @override
   Color get defaultTextColor => const Color(0xffffffff);

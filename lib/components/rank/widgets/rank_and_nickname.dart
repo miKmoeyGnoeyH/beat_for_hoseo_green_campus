@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../data/models/data_models.dart';
 import '../../global/beat/crown_bronze.dart';
@@ -29,12 +30,12 @@ class RankAndNickname extends StatelessWidget {
             const CrownBronze()
           else
             Padding(
-              padding: const EdgeInsets.only(left: 10, right: 8),
+              padding: EdgeInsets.only(left: 10.w, right: 8.w),
               child: CustomTitleLarge(
                 text: rank.toString(),
               ),
             ),
-        const SizedBox(width: 16),
+        SizedBox(width: 16.w),
         CustomBodyLarge(
           text: ranking.nickname,
         )

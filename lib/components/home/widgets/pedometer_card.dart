@@ -9,6 +9,7 @@ import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/managers/permission/permission_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:get/get.dart';
@@ -40,50 +41,62 @@ class _PedometerCardState extends State<PedometerCard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.w),
       child: Stack(
         children: [
           CustomRoundedBorderedContainer(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.w),
+              child: Stack(
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CustomSubtitleLarge(
-                        text: localizationManager.homeStepCount,
-                        textColor: context.appColors.onPrimary,
-                      ),
-                      Obx(
-                        () {
-                          return CustomHeadlineLarge(
-                            text: NumberFormat("###,###,###,###")
-                                .format(pedometerController.todayWalkCount),
-                            textColor: context.appColors.onPrimary,
-                          );
-                        },
-                      ),
-                      Obx(
-                        () {
-                          return CustomBodyLarge(
-                            text: localizationManager.homeTotalSteps(
-                              NumberFormat("###,###,###,###").format(
-                                pedometerController.monthlyWalkCount,
-                              ),
-                            ),
-                            textColor: context.appColors.onPrimary,
-                          );
-                        },
-                      ),
-                    ],
+                  Positioned(
+                    right: 0,
+                    top: 10.w,
+                    child: SvgPicture.asset(
+                      "assets/svg/footstep.svg",
+                      width: 80.w,
+                      colorFilter:
+                          const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                    ),
                   ),
-                  SvgPicture.asset(
-                    "assets/svg/footstep.svg",
-                    width: 80,
-                    colorFilter:
-                        const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                  Positioned(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CustomSubtitleLarge(
+                              text: localizationManager.homeStepCount,
+                              textColor: context.appColors.onPrimary,
+                            ),
+                            Obx(
+                              () {
+                                return CustomHeadlineLarge(
+                                  text: NumberFormat("###,###,###,###")
+                                      .format(pedometerController.todayWalkCount),
+                                  textColor: context.appColors.onPrimary,
+                                );
+                              },
+                            ),
+                            Obx(
+                              () {
+                                return CustomBodyLarge(
+                                  text: localizationManager.homeTotalSteps(
+                                    NumberFormat("###,###,###,###").format(
+                                      pedometerController.monthlyWalkCount,
+                                    ),
+                                  ),
+                                  textColor: context.appColors.onPrimary,
+                                  maxLines: 1,
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

@@ -1,6 +1,7 @@
 
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../data/models/data_models.dart';
 import '../../../../managers/navigator/navigator_key_manager.dart';
@@ -26,7 +27,7 @@ class QuestCard extends StatelessWidget {
         borderWidth: 0.5,
         // height: context.height * 0.15,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.w),
           child: QuestCardContents(
             index: index,
             questModel: questModel,

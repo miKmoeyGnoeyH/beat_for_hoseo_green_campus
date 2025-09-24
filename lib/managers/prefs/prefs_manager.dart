@@ -30,6 +30,11 @@ class PrefsManager {
     _prefs.remove(key);
   }
 
+  Future<void> withDrawal() async {
+    _ensurePrefs();
+    await _prefs.clear();
+  }
+
   // 전송 못한 걸음 수 리스트 저장
   Future<void> setUnsentStepsList(List<Map<String, dynamic>> list) {
     _ensurePrefs();

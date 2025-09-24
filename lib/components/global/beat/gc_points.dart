@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class GreenCampusPoints extends StatelessWidget {
   const GreenCampusPoints({
@@ -9,7 +10,7 @@ class GreenCampusPoints extends StatelessWidget {
   Widget build(BuildContext context) {
     return Image.asset(
       'assets/images/gc_points.png',
-      width: 80,
+      width: 90.w,
     );
   }
 }

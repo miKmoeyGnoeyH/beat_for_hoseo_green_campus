@@ -2,12 +2,15 @@ import 'dart:convert';
 
 import 'package:beat_flutter/components/global/methods/custom_input_formatters.dart';
 import 'package:beat_flutter/components/global/widgets/custom_circular_progress_indicator.dart';
+import 'package:beat_flutter/components/global/widgets/custom_text_field.dart';
+import 'package:beat_flutter/components/register_fill_inform/widgets/rfi_regexp.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
@@ -87,36 +90,42 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
             if (Get.isDialogOpen == true) Get.back();
 
             if (state is IDSent) {
+              _isCheckEmailVerifyButtonEnabled = true;
               customShowDialog(
                 context: context,
                 title: localizationManager.rfiEmailSentTitle,
-                // registerOrganizationController!.organization ==
-                //         localizationManager.generalStudent
-                //     ? localizationManager.rfiEmailSentTitle
-                //     : localizationManager.rfiIdCheckTitle,
                 content: localizationManager.rfiEmailSentMessage,
-                // registerOrganizationController!.organization ==
-                //         localizationManager.generalStudent
-                //     ? localizationManager.rfiEmailSentMessage
-                //     : localizationManager.rfiIdCheckMessage,
               );
             } else if (state is IDError) {
               _isEmailButtonEnabled = true;
               customShowDialog(
                 context: context,
                 title: localizationManager.rfiEmailSentErrorTitle,
-                // registerOrganizationController!.organization ==
-                //         localizationManager.generalStudent
-                //     ? localizationManager.rfiEmailSentErrorTitle
-                //     : localizationManager.rfiIdCheckErrorTitle,
                 content: state.msg,
-                // registerOrganizationController!.organization ==
-                //         localizationManager.generalStudent
-                //     ? localizationManager.rfiEmailSentErrorMessage
-                //     : localizationManager.rfiIdCheckErrorMessage,
               );
-            } else if (state is IDSending) {
+            } else if (state is IDSending || state is IDEmailChecking) {
               Get.dialog(const CustomCircularProgressIndicator());
+            } else if (state is IDEmailChecked) {
+              _isCheckEmailVerifyButtonEnabled = false;
+              customShowDialog(
+                context: context,
+                title: localizationManager.rfiEmailCheckSuccessTitle,
+                content: localizationManager.rfiEmailCheckSuccessContent,
+              );
+            } else if (state is IDEmailNotChecked) {
+              _isCheckEmailVerifyButtonEnabled = true;
+              customShowDialog(
+                context: context,
+                title: localizationManager.rfiEmailNotCheckTitle,
+                content: localizationManager.rfiEmailNotCheckContent,
+              );
+            } else if (state is IDEmailCheckError) {
+              _isCheckEmailVerifyButtonEnabled = true;
+              customShowDialog(
+                context: context,
+                title: localizationManager.rfiEmailCheckFailedTitle,
+                content: localizationManager.rfiEmailCheckFailedContent,
+              );
             }
           },
         ),
@@ -125,6 +134,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
             if (Get.isDialogOpen == true) Get.back();
 
             if (state is NicknameChecked) {
+              _isNicknameButtonEnabled = false;
               customShowDialog(
                 context: context,
                 title: localizationManager.rfiNicknameCheckedTitle,
@@ -159,7 +169,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
             text: localizationManager.rfiAppbarTitle,
           ),
           body: Padding(
-            padding: const EdgeInsets.only(left: 20.0, right: 20, top: 10),
+            padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 10.w),
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -173,222 +183,285 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                         ? registerDepartmentController!.department
                         : '',
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 35.w),
                   // 이름
-                  RegisterNameTextField(
-                    registerNameController: registerNameController,
+                  CustomTextField(
+                    textEditingController:
+                        registerNameController.nameController,
+                    labelText: localizationManager.rfiName,
+                    hintText: localizationManager.rfiNameHint,
+                    inputFormatters: [onlyEnglishAndKoreanInputFormatter()],
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        _isNameValid = false;
+                        return localizationManager.rfiNameIsEmpty;
+                      } else if (initialConsonantRegExp.hasMatch(value)) {
+                        _isNameValid = false;
+                        return localizationManager.rfiNameHasInitialConsonant;
+                      } else if (customProfanityFilter.hasMatch(value)) {
+                        _isNameValid = false;
+                        return localizationManager.rfiInavailableNameMessage;
+                      }
+                      _isNameValid = true;
+                      return null;
+                    },
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                   ),
-                  const SizedBox(height: 20),
+                  // RegisterNameTextField(
+                  //   registerNameController: registerNameController,
+                  // ),
+                  SizedBox(height: 35.w),
                   // 닉네임
-                  CustomSubtitleLarge(text: localizationManager.rfiNickname),
-                  Row(
-                    children: [
-                      RegisterNicknameTextField(
-                        registerNicknameController: registerNicknameController,
-                        onChanged: (value) {
-                          registerNicknameController.add(NicknameChanged());
-                          if (value.length >= 2) {
-                            _isNicknameButtonEnabled = true;
-                          } else {
-                            _isNicknameButtonEnabled = false;
-                          }
-                          setState(() {});
-                        },
-                      ),
-                      const SizedBox(width: 10),
+                  CustomTextField(
+                    textEditingController:
+                        registerNicknameController.nicknameController,
+                    labelText: localizationManager.rfiNickname,
+                    hintText: localizationManager.rfiNicknameHint,
+                    maxLength: 10,
+                    inputFormatters: [
+                      onlyEnglishAndKoreanAndNumberInputFormatter()
+                    ],
+                    onChanged: (value) {
+                      registerNicknameController.add(NicknameChanged());
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        _isNicknameButtonEnabled = false;
+                        return localizationManager.rfiNicknameIsEmpty;
+                      } else if (value.length < 2) {
+                        _isNicknameButtonEnabled = false;
+                        return localizationManager.rfiNicknameTooShort;
+                      } else if (initialConsonantRegExp.hasMatch(value)) {
+                        _isNicknameButtonEnabled = false;
+                        return localizationManager
+                            .rfiNicknameHasInitialConsonant;
+                      } else if (customProfanityFilter.hasMatch(value)) {
+                        _isNicknameButtonEnabled = false;
+                        return localizationManager
+                            .rfiInappropriateNicknameMessage;
+                      }
+                      _isNicknameButtonEnabled = true;
+                      return null;
+                    },
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    actions: [
                       BlocBuilder<RegisterNicknameController, NicknameState>(
-                        builder: (context, state) => Flexible(
-                          child: CustomWideButton(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 5,
-                              vertical: 5,
-                            ),
-                            onTap: _isNicknameButtonEnabled
-                                ? () async {
-                                    FocusScope.of(context).unfocus();
-                                    final String text =
-                                        registerNicknameController
-                                            .nicknameController.text;
-
-                                    if (registerNicknameController
-                                        .nicknameController.text.isEmpty) {
-                                      customShowDialog(
-                                        context: context,
-                                        title: localizationManager
-                                            .rfiUnusableNickname,
-                                        content:
-                                            localizationManager.rfiNicknameHint,
-                                      );
-
-                                      return;
-                                    }
-
-                                    if (RegExp(r'[ㅏ-ㅣㄱ-ㅎ]').hasMatch(
-                                        registerNicknameController
-                                            .nicknameController.text)) {
-                                      customShowDialog(
-                                        context: context,
-                                        title: localizationManager
-                                            .rfiUnusableNickname,
-                                        content: localizationManager
-                                            .rfiNicknameHasInitialConsonant,
-                                      );
-
-                                      return;
-                                    }
-
-                                    if (customProfanityFilter.hasMatch(
-                                        registerNicknameController
-                                            .nicknameController.text)) {
-                                      customShowDialog(
-                                        context: context,
-                                        title: localizationManager
-                                            .rfiInappropriateNickname,
-                                        content: localizationManager
-                                            .rfiInappropriateNicknameMessage,
-                                      );
-
-                                      return;
-                                    } else {
+                        builder: (context, state) => CustomWideButton(
+                          width: 120.w,
+                          height: 50.w,
+                          autoSizeText: true,
+                          borderRadius: 10,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 10.w,
+                          ),
+                          onTap: (state is NicknameChecked)
+                              ? () {}
+                              : _isNicknameButtonEnabled
+                                  ? () async {
+                                      FocusScope.of(context).unfocus();
                                       _isNicknameButtonEnabled = false;
                                       registerNicknameController
                                           .add(NicknameRequest());
                                     }
-                                  }
-                                : () {},
-                            buttonText: state is NicknameChecked
-                                ? localizationManager.rfiNicknameChecked
-                                : localizationManager.rfiValidateNickname,
-                            buttonColor: _isNicknameButtonEnabled
-                                ? context.appColors.primary
-                                : context.appColors.disabled,
-                          ),
+                                  : () {},
+                          buttonText: state is NicknameChecked
+                              ? localizationManager.rfiNicknameChecked
+                              : localizationManager.rfiValidateNickname,
+                          buttonColor: (state is NicknameChecked)
+                              ? context.appColors.disabled
+                              : _isNicknameButtonEnabled
+                                  ? context.appColors.primary
+                                  : context.appColors.disabled,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 35.w),
                   // TODO: 학생이면 8자리 학번, 교직원은 꼭 교번이 아닐 수 있음
                   // 학번
-                  CustomSubtitleLarge(
-                    text: registerOrganizationController!.organization ==
+                  CustomTextField(
+                    textEditingController: registerSidController.idController,
+                    labelText: registerOrganizationController!.organization ==
                             localizationManager.generalStudent
                         ? localizationManager.rfiStudentId
                         : localizationManager.rfiEmployeeMail,
-                    // registerOrganizationController!.organization ==
-                    //         localizationManager.generalStudent
-                    //     ? localizationManager.rfiStudentId
-                    //     : localizationManager.rfiId,
-                  ),
-                  Row(
-                    children: [
-                      RegisterSIDTextField(
-                          maxLength: maxIDLength,
-                          registerSidController: registerSidController,
-                          hintText:
-                              registerOrganizationController!.organization ==
-                                      localizationManager.generalStudent
-                                  ? localizationManager.rfiStudentIdHint
-                                  : localizationManager.rfiEmployeeMailHint,
-                          // registerOrganizationController!.organization ==
-                          //         localizationManager.generalStudent
-                          //     ? localizationManager.rfiStudentIdHint
-                          //     : localizationManager.rfiIdHint,
-                          inputFormatters:
-                              registerOrganizationController!.organization ==
-                                      localizationManager.generalStudent
-                                  ? [
-                                      onlyDigitsInputFormatter(),
-                                    ]
-                                  : [
-                                      FilteringTextInputFormatter.deny(' '),
-                                    ],
-                          keyboardType:
-                              registerOrganizationController!.organization ==
-                                      localizationManager.generalStudent
-                                  ? TextInputType.number
-                                  : null,
-                          onChanged: (value) {
-                            registerSidController.add(IDChanged());
-
-                            if (registerOrganizationController!.organization ==
-                                localizationManager.generalStudent) {
-                              if (value.length >= maxIDLength!) {
-                                _isEmailButtonEnabled = true;
-                              } else {
-                                _isEmailButtonEnabled = false;
-                              }
-                            } else {
-                              if (value.isNotEmpty) {
-                                _isEmailButtonEnabled = true;
-                              } else {
-                                _isEmailButtonEnabled = false;
-                              }
-                            }
-
-                            setState(() {});
-                          }),
-                      const SizedBox(width: 10),
+                    hintText: registerOrganizationController!.organization ==
+                            localizationManager.generalStudent
+                        ? localizationManager.rfiStudentIdHint
+                        : localizationManager.rfiEmployeeMailHint,
+                    keyboardType:
+                        registerOrganizationController!.organization ==
+                                localizationManager.generalStudent
+                            ? TextInputType.number
+                            : null,
+                    maxLength: maxIDLength,
+                    inputFormatters:
+                        registerOrganizationController!.organization ==
+                                localizationManager.generalStudent
+                            ? [onlyDigitsInputFormatter()]
+                            : [denySpaceFormatter()],
+                    onChanged: (value) {
+                      registerSidController.add(IDChanged());
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        _isEmailButtonEnabled = false;
+                        return localizationManager.rfiMailIsEmpty;
+                      }
+                      if (registerOrganizationController!.organization ==
+                          localizationManager.generalStudent) {
+                        if (value.length < maxIDLength!) {
+                          _isEmailButtonEnabled = false;
+                          return localizationManager.rfiSidTooShort;
+                        }
+                      } else {
+                        if (!emailRegExp.hasMatch(value)) {
+                          _isEmailButtonEnabled = false;
+                          return localizationManager.rfiInvalidMailContent;
+                        }
+                      }
+                      _isEmailButtonEnabled = true;
+                      return null;
+                    },
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    actions: [
                       BlocBuilder<RegisterIDController, IDState>(
-                        builder: (context, state) => Flexible(
-                          child: CustomWideButton(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 5,
-                              vertical: 5,
-                            ),
-                            onTap: _isEmailButtonEnabled
-                                ? () async {
-                                    final RegExp emailRegexp = RegExp(r"^(?=.{1,64}$)([A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+)?)$");
-
-                                    if (!emailRegexp.hasMatch(registerSidController.idController.text)) {
-                                      await customShowDialog(
-                                        context: context,
-                                        title: localizationManager.rfiInvalidMailTitle,
-                                        content:
-                                        localizationManager.rfiInvalidMailContent,
-                                      );
-                                      _isEmailButtonEnabled = false;
-                                      return;
-                                    }
-
-                                    _isEmailButtonEnabled = false;
-                                    registerSidController.add(
-                                      EmailRequest(
-                                        registerSidController.idController.text,
-                                        category,
-                                      ),
-                                    );
-                                  }
-                                : () {},
-                            buttonText:
-                                registerOrganizationController!.organization ==
-                                        localizationManager.generalStudent
-                                    ? localizationManager.rfiValidateMail
-                                    : localizationManager.rfiValidateMail,
-                            buttonColor: _isEmailButtonEnabled
-                                ? context.appColors.primary
-                                : context.appColors.disabled,
+                        builder: (context, state) => CustomWideButton(
+                          width: 120.w,
+                          height: 50.w,
+                          autoSizeText: true,
+                          borderRadius: 10,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 10.w,
                           ),
+                          onTap: (state is IDSent ||
+                                  state is IDEmailChecking ||
+                                  state is IDEmailChecked ||
+                                  state is IDEmailNotChecked ||
+                                  state is IDEmailCheckError)
+                              ? () {}
+                              : _isEmailButtonEnabled
+                                  ? () async {
+                                      FocusScope.of(context).unfocus();
+                                      _isEmailButtonEnabled = false;
+                                      registerSidController.add(
+                                        EmailRequest(
+                                          registerSidController
+                                              .idController.text,
+                                          category,
+                                        ),
+                                      );
+                                    }
+                                  : () {},
+                          buttonText: (state is IDSent ||
+                                  state is IDEmailChecking ||
+                                  state is IDEmailChecked ||
+                                  state is IDEmailNotChecked ||
+                                  state is IDEmailCheckError)
+                              ? localizationManager.rfiMailSent
+                              : localizationManager.rfiValidateMail,
+                          buttonColor: (state is IDSent ||
+                                  state is IDEmailChecking ||
+                                  state is IDEmailChecked ||
+                                  state is IDEmailNotChecked ||
+                                  state is IDEmailCheckError)
+                              ? context.appColors.disabled
+                              : _isEmailButtonEnabled
+                                  ? context.appColors.primary
+                                  : context.appColors.disabled,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
-                  RegisterPasswordTextField(
-                    registerPasswordController: passwordController,
-                    onChanged: null,
+                  BlocBuilder<RegisterIDController, IDState>(
+                    builder: (context, state) {
+                      if (state is IDSent ||
+                          state is IDEmailChecking ||
+                          state is IDEmailChecked ||
+                          state is IDEmailNotChecked ||
+                          state is IDEmailCheckError) {
+                        return SizedBox(
+                          height: 20.w,
+                        );
+                      } else {
+                        return const SizedBox.shrink();
+                      }
+                    },
                   ),
-                  const SizedBox(height: 20),
-                  RegisterPasswordCheckTextField(
-                    registerPasswordCheckController: passwordCheckController,
-                    onChanged: null,
+                  BlocBuilder<RegisterIDController, IDState>(
+                    builder: (context, state) {
+                      if (state is IDSent ||
+                          state is IDEmailChecking ||
+                          state is IDEmailChecked ||
+                          state is IDEmailNotChecked ||
+                          state is IDEmailCheckError) {
+                        return CustomWideButton(
+                          borderRadius: 10,
+                          buttonText: (state is IDEmailChecked)
+                              ? localizationManager.rfiEmailVerified
+                              : localizationManager.rfiCheckMailVerify,
+                          buttonColor: _isCheckEmailVerifyButtonEnabled
+                              ? context.appColors.primary
+                              : context.appColors.disabled,
+                          onTap: _isCheckEmailVerifyButtonEnabled
+                              ? () {
+                                  FocusScope.of(context).unfocus();
+                                  _isCheckEmailVerifyButtonEnabled = false;
+                                  registerSidController.add(
+                                    EmailVerify(
+                                        "${registerSidController.idController.text}$mailDomain"),
+                                  );
+                                }
+                              : () {},
+                        );
+                      } else {
+                        return const SizedBox.shrink();
+                      }
+                    },
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 35.w),
+                  CustomTextField(
+                    textEditingController: passwordController,
+                    labelText: localizationManager.rfiPassword,
+                    hintText: localizationManager.rfiPasswordHint,
+                    obscureText: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return localizationManager.rfiPasswordIsEmpty;
+                      }
+                      if (!passwordRegex.hasMatch(value)) {
+                        return localizationManager.rfiPasswordRuleErrorContent;
+                      }
+                      return null;
+                    },
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                  ),
+                  SizedBox(height: 35.w),
+                  CustomTextField(
+                    labelText: localizationManager.rfiPasswordCheck,
+                    hintText: localizationManager.rfiPasswordCheckHint,
+                    obscureText: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        _isPasswordValid = false;
+                        return localizationManager.rfiPasswordCheckIsEmpty;
+                      } else if (value != passwordController.text) {
+                        _isPasswordValid = false;
+                        return localizationManager.rfiPasswordMismatchContent;
+                      }
+                      _isPasswordValid = true;
+                      return null;
+                    },
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                  ),
+                  SizedBox(height: 35.w),
                   CustomSubtitleLarge(
                       text: localizationManager.rfiWhyDoINeedToSign),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10.w),
                   CustomBodyLarge(text: localizationManager.rfiWdintsContent),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 35.w),
                   CustomWideButton(
                     onTap: () => NavigatorKeyManager().pushNamed(
                       RouteNames.registerSign,
@@ -399,14 +472,14 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                     buttonText: localizationManager.rfiSign,
                     buttonColor: context.appColors.primary,
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 35.w),
                   SignPreview(registerSignController: registerSignController),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 35.w),
                   TermsOfAgreement(
                     registerAgreementController: registerAgreementController,
                     setIsAgreementChecked: setIsAgreementChecked,
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 35.w),
                   // const SizedBox(height: 20),
                 ],
               ),
@@ -416,48 +489,16 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
             builder: (context, sidState) =>
                 BlocBuilder<RegisterNicknameController, NicknameState>(
               builder: (context, nicknameState) {
-                _isSignUpButtonEnabled = sidState is IDSent &&
+                _isSignUpButtonEnabled = _isNameValid &&
                     nicknameState is NicknameChecked &&
+                    sidState is IDEmailChecked &&
+                    _isPasswordValid &&
+                    registerSignController.handSignatureControl.isFilled &&
                     registerAgreementController.isAgreementChecked;
 
                 return CustomBottomAppbarButton(
                   onTap: _isSignUpButtonEnabled
                       ? () async {
-                          if (registerNameController
-                              .nameController.text.isEmpty) {
-                            await customShowDialog(
-                              context: context,
-                              title: localizationManager.rfiInavailableName,
-                              content: localizationManager.rfiNameIsEmpty,
-                            );
-
-                            return;
-                          }
-
-                          if (RegExp(r'[ㅏ-ㅣㄱ-ㅎ]').hasMatch(
-                              registerNameController.nameController.text)) {
-                            await customShowDialog(
-                              context: context,
-                              title: localizationManager.rfiInavailableName,
-                              content: localizationManager
-                                  .rfiNameHasInitialConsonant,
-                            );
-
-                            return;
-                          }
-
-                          if (customProfanityFilter.hasMatch(
-                              registerNameController.nameController.text)) {
-                            await customShowDialog(
-                              context: context,
-                              title: localizationManager.rfiInavailableName,
-                              content:
-                                  localizationManager.rfiInavailableNameMessage,
-                            );
-
-                            return;
-                          }
-
                           _isSignUpButtonEnabled = false;
                           final UserProvider userProvider = UserProvider();
                           final String studentId =
@@ -466,38 +507,11 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                               registerNameController.nameController.text;
                           final String nickname = registerNicknameController
                               .nicknameController.text;
-                          final String department =
-                              context.deviceLocale.toString() == "ko_KR"
-                                  ? registerDepartmentController!.department
-                                  : context.tr(
-                                      registerDepartmentController!.department);
-
-                          final passwordRegex = RegExp(
-                            r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9])\S{8,}$',
-                          );
-                          if (!passwordRegex
-                              .hasMatch(passwordController.text)) {
-                            await customShowDialog(
-                              context: context,
-                              title:
-                                  localizationManager.rfiPasswordRuleErrorTitle,
-                              content: localizationManager
-                                  .rfiPasswordRuleErrorContent,
-                            );
-                            return;
-                          } else {
-                            if (passwordController.text !=
-                                passwordCheckController.text) {
-                              await customShowDialog(
-                                context: context,
-                                title: localizationManager
-                                    .rfiPasswordMismatchTitle,
-                                content: localizationManager
-                                    .rfiPasswordMismatchContent,
-                              );
-                              return;
-                            }
-                          }
+                          // final String department =
+                          //     context.deviceLocale.toString() == "ko_KR"
+                          //         ? registerDepartmentController!.department
+                          //         : context.tr(
+                          //             registerDepartmentController!.department);
 
                           if (!registerSignController
                               .handSignatureControl.isFilled) {
@@ -581,7 +595,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                   text: localizationManager.rfiSignUp,
                   textColor: _isSignUpButtonEnabled
                       ? context.appColors.onPrimary
-                      : context.appColors.onBackground,
+                      : context.appColors.disabledTextColor,
                 );
               },
             ),
@@ -646,4 +660,6 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
   bool _isEmailButtonEnabled = false;
   bool _isNicknameButtonEnabled = false;
   bool _isSignUpButtonEnabled = false;
+  bool _isPasswordValid = false;
+  bool _isCheckEmailVerifyButtonEnabled = false;
 }

@@ -3,6 +3,7 @@ import 'package:beat_flutter/data/models/data_models.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../global/widgets/texts/custom_body_large.dart';
 import '../../global/widgets/texts/custom_subtitle_large.dart';
@@ -20,8 +21,8 @@ TableRow buildQuestDetailTableRewardRow({required String reward}) {
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const GreenCampusPoint(width: 25),
-                const SizedBox(width: 5),
+                GreenCampusPoint(width: 25.w),
+                SizedBox(width: 5.w),
                 CustomSubtitleLarge(
                   text: reward,
                 ),
@@ -54,9 +55,9 @@ TableRow buildQuestDetailTableQuestTypeRow({required EventType? questType}) {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 10),
+                SizedBox(height: 10.w),
                 CustomBodyLarge(text: questTypeString),
-                const SizedBox(height: 10),
+                SizedBox(height: 10.w),
               ],
             ),
           ],
@@ -80,9 +81,9 @@ TableRow buildQuestDetailTableLocationRow({required String? questLocation}) {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 10),
+            SizedBox(height: 10.w),
             CustomBodyLarge(text: questLocation),
-            const SizedBox(height: 10),
+            SizedBox(height: 10.w),
           ],
         ),
       ),
@@ -104,9 +105,9 @@ TableRow buildQuestDetailTableQuestRequirementRow(
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 10),
+                SizedBox(height: 10.w),
                 CustomBodyLarge(text: questRequirement),
-                const SizedBox(height: 10),
+                SizedBox(height: 10.w),
               ],
             )
           ],
@@ -139,9 +140,9 @@ TableRow buildQuestDetailTableBonusRewardRow({required String? bonusReward}) {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 10),
+                SizedBox(height: 10.w),
                 CustomBodyLarge(text: bonusReward),
-                const SizedBox(height: 10),
+                SizedBox(height: 10.w),
               ],
             )
           ],

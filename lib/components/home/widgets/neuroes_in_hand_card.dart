@@ -4,6 +4,7 @@ import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../controller/user_controller.dart';
 import '../../../data/models/user_model.dart';
@@ -26,7 +27,7 @@ class PointsInHandCard extends StatelessWidget {
     final UserController userController = context.read<UserController>();
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.w),
       child: GestureDetector(
         onTap: () => NavigatorKeyManager().pushNamed(
           RouteNames.neuroHistory,
@@ -34,56 +35,45 @@ class PointsInHandCard extends StatelessWidget {
         ),
         child: CustomRoundedBorderedContainer(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.w),
+            child: Stack(
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomSubtitleLarge(
-                      text: localizationManager.homePointsInHand,
-                      textColor: context.appColors.onPrimary,
-                    ),
-                    BlocBuilder<UserController, User>(
-                      builder: (context, state) => CustomHeadlineLarge(
-                        text: state is Member
-                            ? NumberFormat("###,###,###,###")
-                                .format(int.parse(state.neuroesInHand))
-                            : '',
-                        textColor: context.appColors.onPrimary,
-                      ),
-                    ),
-                    CustomBodyLarge(
-                      text: localizationManager.homeTapToCheckYourHistory,
-                      textColor: context.appColors.onPrimary,
-                    )
-                  ],
+                Positioned(
+                  right: 0,
+                  top: 10.w,
+                  child: const GreenCampusPoints(),
                 ),
-                // const Neuroes(),
-                Stack(
-                  children: [
-                    Container(
-                      width: 80,
-                      decoration: BoxDecoration(
-                        // color: Colors.red,
-                        borderRadius: BorderRadius.circular(100),
-                        // shape: BoxShape.circle,
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color(0xff00000c),
-                            blurRadius: 55,
-                            spreadRadius: -25,
+                Positioned(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CustomSubtitleLarge(
+                            text: localizationManager.homePointsInHand,
+                            textColor: context.appColors.onPrimary,
                           ),
-                          // BoxShadow(color: context.appColors.primary)
+                          BlocBuilder<UserController, User>(
+                            builder: (context, state) => CustomHeadlineLarge(
+                              text: state is Member
+                                  ? NumberFormat("###,###,###,###")
+                                      .format(int.parse(state.neuroesInHand))
+                                  : '',
+                              textColor: context.appColors.onPrimary,
+                            ),
+                          ),
+                          CustomBodyLarge(
+                            text: localizationManager.homeTapToCheckYourHistory,
+                            textColor: context.appColors.onPrimary,
+                          )
                         ],
                       ),
-                    ),
-                    const Align(
-                      alignment: Alignment.center,
-                      child: GreenCampusPoints(),
-                    ),
-                  ],
+                      // const Neuroes(),
+                      // const GreenCampusPoints()
+                    ],
+                  ),
                 ),
               ],
             ),

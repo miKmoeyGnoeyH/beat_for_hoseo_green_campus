@@ -286,17 +286,16 @@ class _ResetPasswordState extends State<ResetPassword> {
           title: localizationManager.rpResetPasswordSuccessTitle,
           content: localizationManager.rpResetPasswordSuccessContent,
           onTap: () {
-            context.read<UserController>().add(SignOut());
-
             Get.find<PedometerController>().stopForegroundService();
             Get.find<PedometerController>().stopBackgroundService();
             Get.find<LocationController>().stopForegroundService();
             Get.find<LocationController>().stopBackgroundService();
 
-            PrefsManager().resetSavedStudentIdAndPassword();
+            context.read<UserController>().add(SignOut());
             // NavigatorKeyManager().pushNamedAndRemoveUntil(RouteNames.signIn);
           },
         );
+        PrefsManager().resetSavedStudentIdAndPassword();
       } else {
         customShowDialog(
           context: context,

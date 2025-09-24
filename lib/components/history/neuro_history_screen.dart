@@ -1,8 +1,10 @@
 
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
+import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../controller/neuro_history/controllers/neuro_history_controller.dart';
 import '../../controller/neuro_history/events/neuro_history_event.dart';
@@ -23,6 +25,8 @@ class NeuroHistoryScreen extends StatefulWidget {
 }
 
 class _NeuroHistoryScreenState extends State<NeuroHistoryScreen> {
+  final LocalizationManager localizationManager = LocalizationManager();
+
   @override
   Widget build(BuildContext context) {
     final NeuroHistoryController neuroHistoryController =
@@ -31,18 +35,18 @@ class _NeuroHistoryScreenState extends State<NeuroHistoryScreen> {
     return CustomScaffold(
       appBar: const CustomEmptyAppBar(),
       body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.w),
         children: [
           CustomDisplayMedium(
-            text: context.tr('history'),
+            text: localizationManager.historyHistory,
             textColor: context.appColors.defaultTextColor,
           ),
-          CustomBodyLarge(text: context.tr('history_desc')),
+          CustomBodyLarge(text: localizationManager.historyHistoryDesc),
           BlocBuilder<NeuroHistoryController, NeuroHistoryState>(
             builder: (context, state) {
               if (state is NeuroHistoryLoadingError) {
                 return SizedBox(
-                  height: 500,
+                  height: 500.w,
                   child: CustomRefreshButton(
                       onTap: () =>
                           neuroHistoryController.add(NeuroHistoryRequestEvent())),

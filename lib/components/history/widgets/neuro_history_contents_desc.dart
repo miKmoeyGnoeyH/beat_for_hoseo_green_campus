@@ -1,6 +1,7 @@
 
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../global/widgets/texts/custom_body_large.dart';
 import '../../global/widgets/texts/custom_label_large.dart';
@@ -24,10 +25,12 @@ class NeuroHistoryContentsDesc extends StatelessWidget {
             text: type,
             textColor: context.appColors.primary,
           ),
+          SizedBox(height: 6.w),
           CustomSubtitleLarge(
             text: historyName,
-            maxLines: 2,
+            maxLines: 1,
           ),
+          SizedBox(height: 6.w),
           CustomBodyLarge(
             text: checkTime,
           ),

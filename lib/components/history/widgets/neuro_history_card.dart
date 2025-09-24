@@ -2,6 +2,7 @@
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../data/models/neuro_history_model.dart';
 import '../../global/widgets/custom_rounded_bordered_container.dart';
@@ -20,7 +21,7 @@ class NeuroHistoryCard extends StatelessWidget {
       color: context.appColors.background,
       borderWidth: 0.5,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.w),
         child: Row(
           children: [
             NeuroHistoryContentsDesc(
@@ -28,7 +29,7 @@ class NeuroHistoryCard extends StatelessWidget {
               historyName: neuroHistory.historyName,
               checkTime: DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.parse(neuroHistory.checkTime)),
             ),
-            const SizedBox(width: 16),
+            SizedBox(width: 16.w),
             QuestCardIconAndPoint(
               neuro: neuroHistory.neuro >= 0
                   ? '+${neuroHistory.neuro.toString()}'

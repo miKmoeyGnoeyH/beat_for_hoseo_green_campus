@@ -5,6 +5,7 @@ import 'package:beat_flutter/components/quest_detail/widgets/additional_info_car
 import 'package:beat_flutter/data/models/data_models.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class QuestDetailAdditionalInfoCard extends StatelessWidget {
   const QuestDetailAdditionalInfoCard({super.key, required this.qrMissionDTO});
@@ -16,7 +17,7 @@ class QuestDetailAdditionalInfoCard extends StatelessWidget {
       borderWidth: 0.5,
       // height: context.height * 0.15,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.w),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
