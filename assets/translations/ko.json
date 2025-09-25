@@ -1,10 +1,12 @@
 {
   "general": {
-  "student": "학생",
-  "confirm": "확인",
-  "cancel": "취소",
-  "done": "완료"
-},
+    "student": "학생",
+    "confirm": "확인",
+    "cancel": "취소",
+    "done": "완료",
+    "initial_notification_title": "BEAT가 실행 중입니다.",
+    "initial_notification_content": "위치가 걸음 수를 기록 중입니다."
+  },
   "home": {
     "points_in_hand": "보유 포인트",
     "tap_to_check_your_history": "기록을 확인하시려면 터치하세요!",

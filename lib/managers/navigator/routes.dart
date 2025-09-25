@@ -8,6 +8,7 @@ import 'package:beat_flutter/components/survey_detail/survey_detail.dart';
 import 'package:beat_flutter/controller/home/controllers/quest_list_controller.dart';
 import 'package:beat_flutter/controller/home/controllers/survey_detail_controller.dart';
 import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
+import 'package:beat_flutter/controller/activity_service_controller.dart';
 import 'package:beat_flutter/controller/rank/rank_controller_test.dart';
 import 'package:beat_flutter/controller/screen_holder/page_index_controller.dart';
 import 'package:beat_flutter/data/provider/rank_list_provider.dart';
@@ -204,9 +205,9 @@ abstract class Routes {
               Get.put(SurveyDetailController());
               Get.put(PageIndexController());
 
-              Get.find<PedometerController>()
+              Get.find<ActivityServiceController>()
                   .setAuthorization(arguments.authorization);
-              Get.find<PedometerController>()
+              Get.find<ActivityServiceController>()
                   .setSendToTime(arguments.sendToTime);
 
               return MultiBlocProvider(

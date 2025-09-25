@@ -9,7 +9,7 @@ abstract class ThemeFactory {
   static CustomColors get getAppColorsDependsOnSystemBrightness {
     switch (systemBrightness) {
       case Brightness.dark:
-        return CustomDarkColors();
+        return CustomLightColors();
       case Brightness.light:
         return CustomLightColors();
       }

@@ -40,6 +40,26 @@ void startLocationTimerForeground(ServiceInstance service) async {
   return;
 }
 
+/// 통합 서비스용 진입점 (ActivityServiceController)
+@pragma('vm:entry-point')
+void startActivityServiceForeground(ServiceInstance service) {
+  // 통합 서비스 포어그라운드 진입점: 필요 시 알림/핸들러 구성
+  return;
+}
+
+@pragma('vm:entry-point')
+Future<bool> startActivityServiceBackgroundIOS(ServiceInstance service) async {
+  await DotEnvManager().ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
+  DartPluginRegistrant.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
+  await BEATLogger.ensureInitialized();
+
+  await PermissionManager.updateLocationAndActivityPemission();
+
+  return true;
+}
+
 @pragma('vm:entry-point')
 Future<bool> startLocationTimerBackgroundIOS(ServiceInstance service) async {
   await DotEnvManager().ensureInitialized();

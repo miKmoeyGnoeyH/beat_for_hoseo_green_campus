@@ -1,7 +1,6 @@
 import 'dart:developer';
 
-import 'package:beat_flutter/controller/location/location_controller.dart';
-import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
+import 'package:beat_flutter/controller/activity_service_controller.dart';
 import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:flutter/material.dart';
@@ -68,14 +67,9 @@ class WithdrawalScreen extends StatelessWidget {
                         title: localizationManager.withdrawalSuccess,
                         content: localizationManager.withdrawalSuccessMessage,
                         onTap: () async {
-                          await Get.find<PedometerController>()
+                          await Get.find<ActivityServiceController>()
                               .stopForegroundService();
-                          await Get.find<PedometerController>()
-                              .stopBackgroundService();
-
-                          await Get.find<LocationController>()
-                              .stopForegroundService();
-                          await Get.find<LocationController>()
+                          await Get.find<ActivityServiceController>()
                               .stopBackgroundService();
 
                           await PrefsManager().clear();

@@ -12,8 +12,7 @@ import 'package:beat_flutter/components/global/widgets/custom_scaffold.dart';
 import 'package:beat_flutter/components/global/widgets/custom_text_field.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_subtitle_large.dart';
 import 'package:beat_flutter/components/register_fill_inform/widgets/rfi_regexp.dart';
-import 'package:beat_flutter/controller/location/location_controller.dart';
-import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
+import 'package:beat_flutter/controller/activity_service_controller.dart';
 import 'package:beat_flutter/controller/user_controller.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
@@ -476,10 +475,8 @@ class _ResetPasswordState extends State<ResetPassword> {
           title: localizationManager.rpResetPasswordSuccessTitle,
           content: localizationManager.rpResetPasswordSuccessContent,
           onTap: () {
-            Get.find<PedometerController>().stopForegroundService();
-            Get.find<PedometerController>().stopBackgroundService();
-            Get.find<LocationController>().stopForegroundService();
-            Get.find<LocationController>().stopBackgroundService();
+            Get.find<ActivityServiceController>().stopForegroundService();
+            Get.find<ActivityServiceController>().stopBackgroundService();
 
             context.read<UserController>().add(SignOut());
             PrefsManager().clear();

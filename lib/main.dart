@@ -16,6 +16,7 @@ import 'package:get/get.dart' hide Trans;
 
 import 'app.dart';
 import 'controller/pedometer/pedometer_controller.dart';
+import 'controller/activity_service_controller.dart';
 import 'firebase_options.dart';
 import 'managers/prefs/prefs_manager.dart';
 
@@ -51,9 +52,10 @@ Future<void> main() async {
       Get.put<PedometerController>(PedometerController(), permanent: true);
   final LocationController locationController =
       Get.put<LocationController>(LocationController(), permanent: true);
+  final ActivityServiceController activityServiceController =
+      Get.put<ActivityServiceController>(ActivityServiceController(), permanent: true);
 
-  pedometerController.initializeService();
-  locationController.initializeService();
+  await activityServiceController.initializeService();
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

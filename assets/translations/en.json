@@ -3,7 +3,9 @@
     "student": "Student",
     "confirm": "Confirm",
     "cancel": "Cancel",
-    "done": "Done"
+    "done": "Done",
+    "initial_notification_title": "BEAT is running.",
+    "initial_notification_content": "Location and steps are being recorded."
   },
   "home": {
     "points_in_hand": "Points in Hand",

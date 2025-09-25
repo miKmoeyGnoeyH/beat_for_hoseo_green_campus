@@ -2,8 +2,7 @@ import 'package:app_settings/app_settings.dart';
 import 'package:beat_flutter/components/global/methods/custom_show_dialog.dart';
 import 'package:beat_flutter/components/my_page/my_page.dart';
 import 'package:beat_flutter/controller/home/controllers/quest_list_controller.dart';
-import 'package:beat_flutter/controller/location/location_controller.dart';
-import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
+import 'package:beat_flutter/controller/activity_service_controller.dart';
 import 'package:beat_flutter/controller/screen_holder/page_index_controller.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
@@ -39,21 +38,15 @@ class _ScreenHolderState extends State<ScreenHolder>
     debugPrint('didChangeAppLifecycleState: $state');
     switch (state) {
       case AppLifecycleState.resumed:
-        await Get.find<PedometerController>().stopBackgroundService();
-        await Get.find<LocationController>().stopBackgroundService();
-
-        Get.find<PedometerController>().startForegroundService();
-        Get.find<LocationController>().startForegroundService();
+        await Get.find<ActivityServiceController>().stopBackgroundService();
+        Get.find<ActivityServiceController>().startForegroundService();
 
         setState(() {});
         break;
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:
-        await Get.find<PedometerController>().stopForegroundService();
-        await Get.find<LocationController>().stopForegroundService();
-
-        Get.find<PedometerController>().startBackgroundService();
-        Get.find<LocationController>().startBackgroundService();
+        await Get.find<ActivityServiceController>().stopForegroundService();
+        Get.find<ActivityServiceController>().startBackgroundService();
         break;
       case AppLifecycleState.detached:
       default:
@@ -115,8 +108,7 @@ class _ScreenHolderState extends State<ScreenHolder>
     }
 
     await PermissionManager.updateLocationAndActivityPemission();
-    Get.find<PedometerController>().startForegroundService();
-    Get.find<LocationController>().startForegroundService();
+    Get.find<ActivityServiceController>().startForegroundService();
   }
 
   @override
@@ -126,7 +118,7 @@ class _ScreenHolderState extends State<ScreenHolder>
       userController.add(GetMyNeuro());
       context.read<QuestListController>().add(DataListRequest());
       context.read<SurveyListController>().add(DataListRequest());
-      Get.find<PedometerController>().getWalkHitory();
+      Get.find<ActivityServiceController>().getWalkHistory();
       await PermissionManager.updateLocationAndActivityPemission();
       return Future.delayed(const Duration(seconds: 0));
     }

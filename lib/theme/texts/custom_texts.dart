@@ -6,102 +6,121 @@ abstract class CustomLargeTexts {
   static const double letterSpacing = 0;
 
   static TextStyle get headlineLarge => TextStyle(
+    fontFamily: "Pretendard",
     fontSize: 36.0,
     fontWeight: FontWeights.medium,
     letterSpacing: letterSpacing,
   );
   static TextStyle get headlineMedium => TextStyle(
+    fontFamily: "Pretendard",
     fontSize: 26.0,
     fontWeight: FontWeights.medium,
     letterSpacing: letterSpacing,
   );
   static TextStyle get headlineSmall => TextStyle(
+    fontFamily: "Pretendard",
     fontSize: 22.0,
     fontWeight: FontWeights.medium,
     letterSpacing: letterSpacing,
   );
 
   static TextStyle get displayLarge => TextStyle(
+    fontFamily: "Pretendard",
     fontSize: 36.0,
     fontWeight: FontWeights.regular,
     letterSpacing: letterSpacing,
   );
   static TextStyle get displayMedium => TextStyle(
+    fontFamily: "Pretendard",
     fontSize: 26.0,
     fontWeight: FontWeights.regular,
     letterSpacing: letterSpacing,
   );
   static TextStyle get displaySmall => TextStyle(
+    fontFamily: "Pretendard",
     fontSize: 22.0,
     fontWeight: FontWeights.regular,
     letterSpacing: letterSpacing,
   );
 
   static TextStyle get titleLarge => TextStyle(
+    fontFamily: "Pretendard",
     fontSize: 22.0,
     fontWeight: FontWeights.medium,
     letterSpacing: letterSpacing,
   );
   static TextStyle get titleMedium => TextStyle(
+    fontFamily: "Pretendard",
     fontSize: 18.0,
     fontWeight: FontWeights.medium,
     letterSpacing: letterSpacing,
   );
   static TextStyle get titleSmall => TextStyle(
+    fontFamily: "Pretendard",
     fontSize: 16.0,
     fontWeight: FontWeights.medium,
     letterSpacing: letterSpacing,
   );
 
   static TextStyle get subtitleLarge => TextStyle(
+    fontFamily: "Pretendard",
     fontSize: 18.0,
     fontWeight: FontWeights.medium,
     letterSpacing: letterSpacing,
   );
   static TextStyle get subtitleMedium => TextStyle(
+    fontFamily: "Pretendard",
     fontSize: 16.0,
     fontWeight: FontWeights.medium,
     letterSpacing: letterSpacing,
   );
   static TextStyle get subtitleSmall => TextStyle(
+    fontFamily: "Pretendard",
     fontSize: 14.0,
     fontWeight: FontWeights.medium,
     letterSpacing: letterSpacing,
   );
 
   static TextStyle get hintStyle => TextStyle(
+    fontFamily: "Pretendard",
     fontSize: 26.0,
     fontWeight: FontWeights.regular,
     letterSpacing: letterSpacing,
   );
 
   static TextStyle get bodyLarge => TextStyle(
+    fontFamily: "Pretendard",
     fontSize: 16.0,
     fontWeight: FontWeights.regular,
     letterSpacing: letterSpacing,
   );
   static TextStyle get bodyMedium => TextStyle(
+    fontFamily: "Pretendard",
     fontSize: 14.0,
     fontWeight: FontWeights.regular,
     letterSpacing: letterSpacing,
   );
   static TextStyle get bodySmall => TextStyle(
+    fontFamily: "Pretendard",
     fontSize: 12.0,
     fontWeight: FontWeights.regular,
     letterSpacing: letterSpacing,
   );
 
   static TextStyle get labelLarge => TextStyle(
+    fontFamily: "Pretendard",
     fontSize: 16.0,
     fontWeight: FontWeights.regular,
     letterSpacing: letterSpacing,
   );
   static TextStyle get labelMedium => TextStyle(
+    fontFamily: "Pretendard",
     fontSize: 14.0,
     fontWeight: FontWeights.regular,
     letterSpacing: letterSpacing,
   );
   static TextStyle get labelSmall => TextStyle(
+    fontFamily: "Pretendard",
     fontSize: 12.0,
     fontWeight: FontWeights.regular,
     letterSpacing: letterSpacing,

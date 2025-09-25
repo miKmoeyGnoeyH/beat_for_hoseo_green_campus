@@ -2,8 +2,7 @@ import 'package:beat_flutter/components/global/widgets/buttons/custom_wide_butto
 import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_headline_medium.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_title_medium.dart';
-import 'package:beat_flutter/controller/location/location_controller.dart';
-import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
+import 'package:beat_flutter/controller/activity_service_controller.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/managers/navigator/navigator_key_manager.dart';
@@ -45,14 +44,9 @@ class SettingsScreen extends StatelessWidget {
                 vertical: 10.w,
               ),
               onTap: () async {
-                await Get.find<PedometerController>()
+                await Get.find<ActivityServiceController>()
                     .stopForegroundService();
-                await Get.find<PedometerController>()
-                    .stopBackgroundService();
-
-                await Get.find<LocationController>()
-                    .stopForegroundService();
-                await Get.find<LocationController>()
+                await Get.find<ActivityServiceController>()
                     .stopBackgroundService();
 
                 // PrefsManager().withDrawal();
