@@ -27,7 +27,7 @@ class PointsInHandCard extends StatelessWidget {
     final UserController userController = context.read<UserController>();
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.w),
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: GestureDetector(
         onTap: () => NavigatorKeyManager().pushNamed(
           RouteNames.neuroHistory,

@@ -43,6 +43,7 @@
     "not_in_valid_area": "이벤트 진행 지역이 아닙니다.",
     "not_event_duration": "행사 진행 시간이 아닙니다.",
     "reached_todays_max_step_count": "오늘의 최대 걸음 수에 도달했습니다.",
+    "pause_step_count": "걸음 수 측정이 일시중지되었습니다.",
     "go_to_settings": "설정",
     "later": "나중에"
   },

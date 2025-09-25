@@ -34,7 +34,10 @@ class CustomLightColors implements CustomColors {
   Color get onBackground => const Color(0xff000000);
 
   @override
-  Color get error => const Color(0xffff0000);
+  Color get error => const Color(0xffff1010);
+
+  @override
+  Color get errorButton => const Color(0xffe00000);
 
   @override
   Color get onError => const Color(0xffffffff);

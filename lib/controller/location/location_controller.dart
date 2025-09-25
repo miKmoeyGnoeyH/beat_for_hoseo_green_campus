@@ -216,7 +216,8 @@ class LocationController extends GetxController {
     checkIsValidArea();
 
     if (Platform.isIOS) {
-      final bool isHoliday = await getIsHolidayTest();
+      final bool isHoliday = await getIsHoliday();
+      // final bool isHoliday = await getIsHolidayTest();
       final int sendToTime = Get.find<PedometerController>().sendToTime;
 
       setMethodCallHandler();

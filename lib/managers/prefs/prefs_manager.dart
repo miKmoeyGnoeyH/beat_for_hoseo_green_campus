@@ -36,9 +36,9 @@ class PrefsManager {
   }
 
   // 전송 못한 걸음 수 리스트 저장
-  Future<void> setUnsentStepsList(List<Map<String, dynamic>> list) {
+  Future<void> setUnsentStepsList(List<Map<String, dynamic>> list) async {
     _ensurePrefs();
-    return _prefs.setString("unsentStepsList", jsonEncode(list));
+    await _prefs.setString("unsentStepsList", jsonEncode(list));
   }
 
   List<Map<String, dynamic>> getUnsentStepsList() {
@@ -59,9 +59,9 @@ class PrefsManager {
     return <Map<String, dynamic>>[];
   }
 
-  Future<void> setLastReportedTime(DateTime dateTime) {
+  Future<void> setLastReportedTime(DateTime dateTime) async {
     _ensurePrefs();
-    return _prefs.setString("lastReportedTime", dateTime.toIso8601String());
+    await _prefs.setString("lastReportedTime", dateTime.toIso8601String());
   }
 
   DateTime getLastReportedTime() {
@@ -79,9 +79,9 @@ class PrefsManager {
     }
   }
 
-  Future<void> setLastReportedSteps(int steps) {
+  Future<void> setLastReportedSteps(int steps) async {
     _ensurePrefs();
-    return _prefs.setInt("lastReportedSteps", steps);
+    await _prefs.setInt("lastReportedSteps", steps);
   }
 
   int getLastReportedSteps() {
@@ -98,22 +98,24 @@ class PrefsManager {
     return (todayWalkCount, weeklyWalkCount, monthlyWalkCount, totalWalkCount);
   }
 
-  Future<void> setSteps(int todayWalkCount, int weeklyWalkCount, int monthlyWalkCount, int totalWalkCount) {
+  Future<void> setSteps(int todayWalkCount, int weeklyWalkCount, int monthlyWalkCount, int totalWalkCount) async {
     _ensurePrefs();
-    _prefs.setInt("todayWalkCount", todayWalkCount);
-    _prefs.setInt("weeklyWalkCount", weeklyWalkCount);
-    _prefs.setInt("monthlyWalkCount", monthlyWalkCount);
-    return _prefs.setInt("totalWalkCount", totalWalkCount);
+    await Future.wait([
+      _prefs.setInt("todayWalkCount", todayWalkCount),
+      _prefs.setInt("weeklyWalkCount", weeklyWalkCount),
+      _prefs.setInt("monthlyWalkCount", monthlyWalkCount),
+      _prefs.setInt("totalWalkCount", totalWalkCount),
+    ]);
   }
 
-  Future<void> removeStepsAfterLastboot() {
+  Future<void> removeStepsAfterLastboot() async {
     _ensurePrefs();
-    return _prefs.remove("stepsAfterLastboot");
+    await _prefs.remove("stepsAfterLastboot");
   }
 
-  Future<void> setStepsAfterLastboot(int steps) {
+  Future<void> setStepsAfterLastboot(int steps) async {
     _ensurePrefs();
-    return _prefs.setInt("stepsAfterLastboot", steps);
+    await _prefs.setInt("stepsAfterLastboot", steps);
   }
 
   int? getStepsAfterLastboot() {

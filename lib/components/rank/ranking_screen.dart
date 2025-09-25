@@ -6,11 +6,13 @@ import 'package:beat_flutter/components/global/widgets/custom_circular_progress_
 import 'package:beat_flutter/components/global/widgets/texts/custom_headline_small.dart';
 import 'package:beat_flutter/components/rank/widgets/ranking_card.dart';
 import 'package:beat_flutter/controller/rank/rank_controller_test.dart';
+import 'package:beat_flutter/controller/user_controller.dart';
 import 'package:beat_flutter/data/models/data_models.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/theme/texts/custom_texts.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
@@ -81,8 +83,7 @@ class _RankingScreenState extends State<RankingScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
-                              padding:
-                                  EdgeInsets.symmetric(horizontal: 20.w),
+                              padding: EdgeInsets.symmetric(horizontal: 20.w),
                               child: CustomDisplayMedium(
                                 text: localizationManager.rankingRanking,
                                 textColor: context.appColors.defaultTextColor,
@@ -266,15 +267,21 @@ class _RankingScreenState extends State<RankingScreen> {
   }
 
   String getTitleByFieldName(String type) {
+    final UserController userController = context.read<UserController>();
+
     switch (type) {
       case 'pointRankerList':
         return localizationManager.rankingPointRankerList;
       case 'pointCategoryRankerList':
-        return localizationManager.rankingPointRankerListStudent;
+        return userController.state.category == "student"
+            ? localizationManager.rankingPointRankerListStudent
+            : localizationManager.rankingPointRankerListEmployee;
       case 'walkRankerList':
         return localizationManager.rankingWalkRankerList;
       case 'walkCategoryRankerList':
-        return localizationManager.rankingWalkRankerListStudent;
+        return userController.state.category == "student"
+            ? localizationManager.rankingWalkRankerListStudent
+            : localizationManager.rankingWalkRankerListEmployee;
       default:
         return type;
     }

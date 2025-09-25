@@ -38,11 +38,12 @@
     "beat_requires_activity_permission_title": "BEAT Requires Activity Permission",
     "beat_requires_activity_permission_content": "BEAT requires activity permission to track your steps. Please enable activity permission in your device settings.",
     "beat_requires_location_and_activity_permission_title": "BEAT Requires Location and Activity Permissions",
-    "please_change_the_location_and_activity_permissions_to_always_allow": "Please set location and activity permissions to Always Allow in your device settings.",
+    "please_change_the_location_and_activity_permissions_to_always_allow": "Please set location and activity permissions to\nAlways Allow in your device settings.",
     "beat_requires_location_and_activity_permission_content": "BEAT requires location and activity permissions to track steps and scan QR codes. Please set these permissions to Always Allow in your device settings.",
     "not_in_valid_area": "You are not in a valid area.",
     "not_event_duration": "Not within the event duration.",
     "reached_todays_max_step_count": "You've reached today's maximum step count.",
+    "pause_step_count": "Step counting paused.",
     "go_to_settings": "Go to Settings",
     "later": "Later"
   },

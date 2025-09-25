@@ -21,194 +21,124 @@ class PedometerCard extends StatefulWidget {
   State<PedometerCard> createState() => _PedometerCardState();
 }
 
-class _PedometerCardState extends State<PedometerCard> {
+class _PedometerCardState extends State<PedometerCard>
+    with WidgetsBindingObserver {
   final LocalizationManager localizationManager = LocalizationManager();
+  late Future<void> _permissionFuture;
 
   final PedometerController pedometerController =
       Get.find<PedometerController>();
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        setState(() {
+          _permissionFuture =
+              PermissionManager.updateLocationAndActivityPemission();
+        });
+        break;
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.paused:
+      case AppLifecycleState.detached:
+      default:
+        break;
+    }
+    super.didChangeAppLifecycleState(state);
+  }
+
+  @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
+    _permissionFuture = PermissionManager.updateLocationAndActivityPemission();
+    // Future.delayed(const Duration(seconds: 10));
     super.initState();
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.w),
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: Stack(
         children: [
-          CustomRoundedBorderedContainer(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.w),
-              child: Stack(
-                children: [
-                  Positioned(
-                    right: 0,
-                    top: 10.w,
-                    child: SvgPicture.asset(
-                      "assets/svg/footstep.svg",
-                      width: 80.w,
-                      colorFilter:
-                          const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                    ),
-                  ),
-                  Positioned(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CustomSubtitleLarge(
-                              text: localizationManager.homeStepCount,
-                              textColor: context.appColors.onPrimary,
-                            ),
-                            Obx(
-                              () {
-                                return CustomHeadlineLarge(
-                                  text: NumberFormat("###,###,###,###").format(
-                                      pedometerController.todayWalkCount),
-                                  textColor: context.appColors.onPrimary,
-                                );
-                              },
-                            ),
-                            Obx(
-                              () {
-                                return CustomBodyLarge(
-                                  text: localizationManager.homeTotalSteps(
-                                    NumberFormat("###,###,###,###").format(
-                                      pedometerController.monthlyWalkCount,
-                                    ),
-                                  ),
-                                  textColor: context.appColors.onPrimary,
-                                  maxLines: 1,
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          if ((PermissionManager.isLocationPermissionGrantedStatic != null &&
-                  !PermissionManager.isLocationPermissionGrantedStatic!) ||
-              (PermissionManager.isActivityPermissionGrantedStatic != null &&
-                  !PermissionManager.isActivityPermissionGrantedStatic!))
-            Positioned(
-              child: CustomRoundedBorderedContainer(
-                color: Colors.black.withValues(alpha: 0.8),
-                child: Center(
+          FutureBuilder(
+            future: _permissionFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState != ConnectionState.done) {
+                return const CustomRoundedBorderedContainer();
+              } else {
+                return CustomRoundedBorderedContainer(
                   child: Padding(
-                    padding: EdgeInsets.all(5.w),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.w),
+                    child: Stack(
                       children: [
-                        CustomSubtitleLarge(
-                          text: localizationManager
-                              .homeBEATRequiresLocationAndActivityPermissionTitle,
-                          textColor: context.appColors.onPrimary,
-                          maxLines: 2,
-                          textAlign: TextAlign.center,
-                        ),
-                        if (Localizations.localeOf(context).languageCode == "ko")
-                          CustomBodyLarge(
-                            text: localizationManager
-                                .homePleaseChangeTheLocationAndActivityPermissions,
-                            textColor: context.appColors.onPrimary,
-                            maxLines: 2,
-                            textAlign: TextAlign.center,
+                        Positioned(
+                          right: 0,
+                          top: 10.w,
+                          child: SvgPicture.asset(
+                            "assets/svg/footstep.svg",
+                            width: 80.w,
+                            colorFilter: const ColorFilter.mode(
+                                Colors.white, BlendMode.srcIn),
                           ),
-                        const SizedBox(height: 10),
-                        CustomTextButtonWrap(
-                          text: localizationManager.homeGotoSettings,
-                          onTap: AppSettings.openAppSettings,
-                        )
+                        ),
+                        Positioned(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  CustomSubtitleLarge(
+                                    text: localizationManager.homeStepCount,
+                                    textColor: context.appColors.onPrimary,
+                                  ),
+                                  Obx(
+                                    () {
+                                      return CustomHeadlineLarge(
+                                        text: NumberFormat("###,###,###,###")
+                                            .format(pedometerController
+                                                .todayWalkCount),
+                                        textColor: context.appColors.onPrimary,
+                                      );
+                                    },
+                                  ),
+                                  Obx(
+                                    () {
+                                      return CustomBodyLarge(
+                                        text:
+                                            localizationManager.homeTotalSteps(
+                                          NumberFormat("###,###,###,###")
+                                              .format(
+                                            pedometerController
+                                                .monthlyWalkCount,
+                                          ),
+                                        ),
+                                        textColor: context.appColors.onPrimary,
+                                        maxLines: 1,
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),
-                ),
-              ),
-            )
-          else
-            Obx(
-              () {
-                if (!pedometerController.isInValidArea) {
-                  return Positioned(
-                    child: CustomRoundedBorderedContainer(
-                      color: Colors.black.withValues(alpha: 0.8),
-                      child: Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(5.w),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              CustomSubtitleLarge(
-                                text: localizationManager.homeNotInValidArea,
-                                textColor: context.appColors.onPrimary,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                } else if (pedometerController.isHoliday) {
-                  return Positioned(
-                    child: CustomRoundedBorderedContainer(
-                      color: Colors.black.withValues(alpha: 0.8),
-                      child: Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(5.w),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              CustomSubtitleLarge(
-                                text: localizationManager.homeNotEventDuration,
-                                textColor: context.appColors.onPrimary,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                } else if (pedometerController.isReachedMaxStepCount) {
-                  return Positioned(
-                    child: CustomRoundedBorderedContainer(
-                      color: Colors.black.withValues(alpha: 0.8),
-                      child: Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(5.w),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              CustomSubtitleLarge(
-                                text: localizationManager
-                                    .homeReachedTodaysMaxStepCount,
-                                textColor: context.appColors.onPrimary,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                } else {
-                  return const SizedBox.shrink();
-                }
-              },
-            ),
+                );
+              }
+            },
+          ),
         ],
       ),
     );

@@ -11,12 +11,13 @@ import 'package:beat_flutter/managers/logger/beat_logger.dart';
 import 'package:beat_flutter/managers/permission/permission_manager.dart';
 import 'package:beat_flutter/managers/prefs/prefs_manager.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:get/get.dart';
 import 'package:pedometer/pedometer.dart';
 import 'package:http/http.dart' as http;
 
-class PedometerController extends GetxController {
+class PedometerController extends GetxController with WidgetsBindingObserver {
   /// iOS 네이티브와 통신하기 위한 MethodChannel
   /// iOS의 모든 백그라운드 작업(걸음 수 동기화, 랭킹 집계, 자정 초기화)이 이 채널을 통해 이루어짐
   static const _channel = MethodChannel("com.beat.walkreport/pedometer");
@@ -144,6 +145,30 @@ class PedometerController extends GetxController {
   /// [_rankReportTimer] : 매 시 59분 특정 초에 서버에 걸음 수를 동기화
   Timer? _rankReportTimer;
 
+  /// 디바운스 저장용 타이머(고주파 이벤트에서 I/O를 줄이기 위함)
+  Timer? _persistDebounceTimer;
+
+  /// 저장을 즉시 실행(필요 시 대기)
+  Future<void> persistStepsNow() async {
+    await PrefsManager().setSteps(
+      todayWalkCount,
+      weeklyWalkCount,
+      monthlyWalkCount,
+      totalWalkCount,
+    );
+    if (stepsAfterLastBoot != null) {
+      await PrefsManager().setStepsAfterLastboot(stepsAfterLastBoot!);
+    }
+  }
+
+  /// 짧은 지연 후 저장(여러 번 호출되면 마지막 호출만 적용)
+  void persistStepsDebounced({Duration delay = const Duration(seconds: 2)}) {
+    _persistDebounceTimer?.cancel();
+    _persistDebounceTimer = Timer(delay, () {
+      persistStepsNow();
+    });
+  }
+
   /// 생성자
   /// 걷기 상태, 걸음 수 스트림을 초기화하고
   /// 내부 저장소에 저장된 최종 보고 걸음 수를 읽어옴
@@ -217,6 +242,28 @@ class PedometerController extends GetxController {
     );
   }
 
+  @override
+  void onInit() {
+    super.onInit();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void onClose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.onClose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached) {
+      // 백그라운드/중단 시 즉시 저장해 유실 방지
+      persistStepsNow();
+    }
+  }
+
   /// 걷기 상태, 걸음 수 스트림 초기화
   Future<void> initPlatformState() async {
     _pedestrianStatusStream = Pedometer.pedestrianStatusStream;
@@ -233,12 +280,8 @@ class PedometerController extends GetxController {
     status = event.status;
 
     if (status == "stopped") {
-      PrefsManager().setSteps(
-        todayWalkCount,
-        weeklyWalkCount,
-        monthlyWalkCount,
-        totalWalkCount,
-      );
+      // 정지 시점에는 가까운 시일 내 저장을 보장
+      persistStepsDebounced(delay: const Duration(milliseconds: 500));
     }
   }
 
@@ -285,13 +328,8 @@ class PedometerController extends GetxController {
     weeklyWalkCount += diff;
     monthlyWalkCount += diff;
     totalWalkCount += diff;
-    // 증가 시점마다 즉시 영속화해 앱 재시작 시 초기화 방지
-    PrefsManager().setSteps(
-      todayWalkCount,
-      weeklyWalkCount,
-      monthlyWalkCount,
-      totalWalkCount,
-    );
+    // 증가 시점에서는 디바운스로 저장해 I/O 과도 발생 방지
+    persistStepsDebounced();
   }
 
   /// iOS 백그라운드 걸음 수 이벤트 처리
@@ -327,13 +365,8 @@ class PedometerController extends GetxController {
     weeklyWalkCount += diff;
     monthlyWalkCount += diff;
     totalWalkCount += diff;
-    // 증가 시점마다 즉시 영속화
-    PrefsManager().setSteps(
-      todayWalkCount,
-      weeklyWalkCount,
-      monthlyWalkCount,
-      totalWalkCount,
-    );
+    // 증가 시점에서는 디바운스로 저장
+    persistStepsDebounced();
   }
 
   /// iOS 백그라운드 걸음 수 이벤트 처리
@@ -400,7 +433,7 @@ class PedometerController extends GetxController {
         totalWalkCount = savedTotal;
         _lastReportedSteps = lastReportedSteps;
       }
-      PrefsManager().setSteps(
+      await PrefsManager().setSteps(
           todayWalkCount, weeklyWalkCount, monthlyWalkCount, totalWalkCount);
       BEATLogger.d(
           "PedometerController : getWalkHistory : todayWalkCount: $todayWalkCount, weeklyWalkCount: $weeklyWalkCount, monthlyWalkCount: $monthlyWalkCount, totalWalkCount: $totalWalkCount, _lastReportedSteps: $_lastReportedSteps, _stepsAfterLastBoot: $stepsAfterLastBoot");
@@ -430,14 +463,14 @@ class PedometerController extends GetxController {
     _lastReportedTime = now;
     _lastReportedSteps = totalWalkCount;
 
-    PrefsManager().setSteps(
+    await PrefsManager().setSteps(
       todayWalkCount,
       weeklyWalkCount,
       monthlyWalkCount,
       totalWalkCount,
     );
-    PrefsManager().setLastReportedTime(_lastReportedTime);
-    PrefsManager().setLastReportedSteps(_lastReportedSteps);
+    await PrefsManager().setLastReportedTime(_lastReportedTime);
+    await PrefsManager().setLastReportedSteps(_lastReportedSteps);
 
     // TODO: 출시 때는 삭제해야됨
     BEATLogger.d(
@@ -524,17 +557,16 @@ class PedometerController extends GetxController {
     startReportTimer();
     startRankReportTimer();
     getWalkHitory();
+
+    // 앱 포어그라운드 진입 직후 한 번 저장(직전 프로세스 종료로 인한 유실 최소화)
+    persistStepsDebounced(delay: const Duration(seconds: 1));
   }
 
   Future<void> stopForegroundService() async {
     BEATLogger.d("PedometerController : stopForegroundService()");
 
-    await PrefsManager().setSteps(
-        todayWalkCount, weeklyWalkCount, monthlyWalkCount, totalWalkCount);
-
-    if (stepsAfterLastBoot != null) {
-      await PrefsManager().setStepsAfterLastboot(stepsAfterLastBoot!);
-    }
+    // 종료 시점에는 반드시 저장을 즉시 보장
+    await persistStepsNow();
 
     if (Platform.isIOS) {
       _channel.invokeMethod("stopPedometer");
@@ -577,11 +609,7 @@ class PedometerController extends GetxController {
     BEATLogger.d("PedometerController : stopBackgroundService()");
     FlutterBackgroundService().invoke("stopService");
 
-    await PrefsManager().setSteps(
-        todayWalkCount, weeklyWalkCount, monthlyWalkCount, totalWalkCount);
-    if (stepsAfterLastBoot != null) {
-      await PrefsManager().setStepsAfterLastboot(stepsAfterLastBoot!);
-    }
+    await persistStepsNow();
 
     if (Platform.isIOS) {
       _channel.invokeMethod("stopPedometer");
@@ -670,6 +698,10 @@ class PedometerController extends GetxController {
 
     _stepCountSubscription = null;
     _pedestrianStatusSubscription = null;
+
+    // 디바운스 타이머 정리
+    _persistDebounceTimer?.cancel();
+    _persistDebounceTimer = null;
   }
 
   @override

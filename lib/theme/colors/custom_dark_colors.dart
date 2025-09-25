@@ -37,6 +37,9 @@ class CustomDarkColors implements CustomColors {
   Color get error => const Color(0xffFF0000);
 
   @override
+  Color get errorButton => const Color(0xffFF0000);
+
+  @override
   Color get onError => const Color(0xffffffff);
 
   @override

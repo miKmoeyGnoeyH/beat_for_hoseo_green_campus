@@ -18,6 +18,7 @@ abstract class CustomColors {
 
   Color get error;
   Color get onError;
+  Color get errorButton;
 
   Color get disabled;
   Color get disabledTextColor;

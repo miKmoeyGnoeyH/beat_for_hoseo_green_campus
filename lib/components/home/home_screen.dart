@@ -1,6 +1,7 @@
 import 'package:beat_flutter/components/global/widgets/custom_rounded_bordered_container.dart';
 import 'package:beat_flutter/components/home/widgets/home_contents.dart';
 import 'package:beat_flutter/components/home/widgets/pedometer_card.dart';
+import 'package:beat_flutter/components/home/widgets/permission_required_card.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/permission/permission_manager.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
+class _HomeScreenState extends State<HomeScreen> {
   final PageController pageController = PageController();
   late Future<void> _permissionFuture;
 
@@ -26,34 +27,14 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   ];
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async {
-    debugPrint('didChangeAppLifecycleState: $state');
-    switch (state) {
-      case AppLifecycleState.resumed:
-        setState(() {
-          _permissionFuture =
-              PermissionManager.updateLocationAndActivityPemission();
-        });
-        break;
-      case AppLifecycleState.inactive:
-      case AppLifecycleState.paused:
-      case AppLifecycleState.detached:
-      default:
-        break;
-    }
-    super.didChangeAppLifecycleState(state);
-  }
-
-  @override
   void initState() {
-    WidgetsBinding.instance.addObserver(this);
     _permissionFuture = PermissionManager.updateLocationAndActivityPemission();
     super.initState();
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    pageController.dispose();
     super.dispose();
   }
 
@@ -64,49 +45,42 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       physics: const NeverScrollableScrollPhysics(),
       // shrinkWrap: true,
       children: [
-        Column(
-          // shrinkWrap: true,
-          // padding: EdgeInsets.zero,
-          children: [
-            SizedBox(
-              width: double.infinity,
-              height: 170.w,
-              child: FutureBuilder(
-                  future: _permissionFuture,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState != ConnectionState.done) {
-                      return Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 24.w, vertical: 16.w),
-                        child: CustomRoundedBorderedContainer(
-                          color: context.appColors.primary,
-                        ),
-                      );
-                    }
-                    return PageView(
-                      controller: pageController,
-                      children: widgets,
-                    );
-                  }),
-            ),
-            SmoothPageIndicator(
-              controller: pageController,
-              count: widgets.length,
-              effect: SlideEffect(
-                activeDotColor: context.appColors.primary,
-                dotColor: context.appColors.disabled,
-                dotWidth: 10.w,
-                dotHeight: 10.w,
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 16.w),
+          child: Column(
+            // shrinkWrap: true,
+            // padding: EdgeInsets.zero,
+            children: [
+              PermissionRequiredCard(),
+              // SizedBox(height: 16.w),
+              SizedBox(
+                width: double.infinity,
+                height: 138.w,
+                child: PageView(
+                  controller: pageController,
+                  children: widgets,
+                ),
               ),
-            ),
-            SizedBox(height: 16.w),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
-              child: Column(
-                children: [const HomeContents(), SizedBox(height: 20.w)],
+              SizedBox(height: 10.w),
+              SmoothPageIndicator(
+                controller: pageController,
+                count: widgets.length,
+                effect: ColorTransitionEffect(
+                  dotWidth: 10.w,
+                  dotHeight: 10.w,
+                  dotColor: context.appColors.disabled,
+                  activeDotColor: context.appColors.primary,
+                ),
               ),
-            )
-          ],
+              SizedBox(height: 16.w),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                child: Column(
+                  children: [const HomeContents(), SizedBox(height: 20.w)],
+                ),
+              )
+            ],
+          ),
         )
       ],
     );

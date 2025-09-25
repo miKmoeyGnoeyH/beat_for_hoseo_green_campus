@@ -80,6 +80,7 @@ class LocalizationManager {
   String get homeNotInValidArea => "home".tr(gender: "not_in_valid_area");
   String get homeNotEventDuration => "home".tr(gender: "not_event_duration");
   String get homeReachedTodaysMaxStepCount => "home".tr(gender: "reached_todays_max_step_count");
+  String get homePauseStepCount => "home".tr(gender: "pause_step_count");
   String get homeGotoSettings => "home".tr(gender: "go_to_settings");
   String get homeLater => "home".tr(gender: "later");
 
