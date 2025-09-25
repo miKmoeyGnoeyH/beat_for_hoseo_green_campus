@@ -3,6 +3,8 @@ import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.d
 import 'package:beat_flutter/components/global/widgets/texts/custom_headline_medium.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_title_medium.dart';
 import 'package:beat_flutter/controller/activity_service_controller.dart';
+import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
+import 'package:beat_flutter/controller/screen_holder/page_index_controller.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/managers/navigator/navigator_key_manager.dart';
@@ -44,12 +46,17 @@ class SettingsScreen extends StatelessWidget {
                 vertical: 10.w,
               ),
               onTap: () async {
-                await Get.find<ActivityServiceController>()
-                    .stopForegroundService();
-                await Get.find<ActivityServiceController>()
-                    .stopBackgroundService();
+                ActivityServiceController activityServiceController =
+                    Get.find<ActivityServiceController>();
 
-                // PrefsManager().withDrawal();
+                activityServiceController.addWalkReport();
+
+                await activityServiceController.stopForegroundService();
+                await activityServiceController.stopBackgroundService();
+
+                PageIndexController pageIndexController = Get.find<PageIndexController>();
+                pageIndexController.setIndex(pageIndexController.homeIndex, context);
+
                 PrefsManager().clear();
                 userBloc.add(SignOut());
               },

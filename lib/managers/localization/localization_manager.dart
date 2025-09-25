@@ -19,6 +19,8 @@ class LocalizationManager {
   String get lnEventDurationFallback => "오늘의 행사 진행이 시작되었습니다.";
   String get lnEventDurationEndedFallback => "오늘의 행사 진행 시간이 종료되었습니다.";
   String get lnReachedTodaysMaxStepCountFallback => "오늘의 최대 걸음 수에 도달했습니다.";
+  String get initialNotificationTitleFallback => "BEAT가 실행 중입니다.";
+  String get initialNotificationContentFallback => "위치와 걸음 수를 기록 중입니다.";
 
   // 백그라운드에서 안전하게 번역을 가져오는 메서드
   String getSafeTranslation(String key, String fallback) {
@@ -33,11 +35,14 @@ class LocalizationManager {
       return fallback;
     }
   }
+
   // genenral
   String get generalStudent => "general".tr(gender: "student");
   String get generalConfirm => "general".tr(gender: "confirm");
   String get generalCancel => "general".tr(gender: "cancel");
   String get generalDone => "general".tr(gender: "done");
+  String get generalInitialNotificationTitle => getSafeTranslation("general.initial_notification_title", initialNotificationTitleFallback);
+  String get generalInitialNotificationContent => getSafeTranslation("general.initial_notification_content", initialNotificationContentFallback);
 
   // home
   String get homePointsInHand => "home".tr(gender: "points_in_hand");

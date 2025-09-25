@@ -120,6 +120,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     // _errorText = null;
                   }),
                   decoration: InputDecoration(
+                    filled: true,
+                    fillColor: widget.enabled ? context.appColors.surface
+                        : context.appColors.onSurface.withValues(alpha: 0.1),
+                    contentPadding: EdgeInsets.symmetric(vertical: 5.w),
                     // isDense: true,
                     focusColor: context.appColors.primary,
                     focusedBorder: UnderlineInputBorder(
@@ -137,6 +141,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     focusedErrorBorder: UnderlineInputBorder(
                       borderSide: BorderSide(
                         color: context.appColors.error,
+                        width: 1,
+                      ),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: context.appColors.disabled,
                         width: 1,
                       ),
                     ),

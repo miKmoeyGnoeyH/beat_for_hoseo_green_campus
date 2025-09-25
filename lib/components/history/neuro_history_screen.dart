@@ -61,6 +61,7 @@ class _NeuroHistoryScreenState extends State<NeuroHistoryScreen> {
               }
             },
           ),
+          SizedBox(height: 60.w),
         ],
       ),
     );

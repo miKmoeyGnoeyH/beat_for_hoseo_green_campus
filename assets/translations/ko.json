@@ -5,7 +5,7 @@
     "cancel": "취소",
     "done": "완료",
     "initial_notification_title": "BEAT가 실행 중입니다.",
-    "initial_notification_content": "위치가 걸음 수를 기록 중입니다."
+    "initial_notification_content": "위치와 걸음 수를 기록 중입니다."
   },
   "home": {
     "points_in_hand": "보유 포인트",
@@ -138,7 +138,7 @@
   },
   "register_affiliation": {
     "appbar_title": "부서",
-    "affiliation_hint": "소속 부서를 입력해 주세요(최소 1자 이상).",
+    "affiliation_hint": "소속 부서 또는 학과명을 입력해 주세요.",
     "continue_with": "{}(으)로 계속",
     "inappropriate_affiliation_title": "소속 부서를 다시 한 번 확인해 주세요.",
     "inappropriate_affiliation_content": "소속 부서에 초성이 포함되어 있습니다. 소속 부서를 다시 한 번 확인해 주세요."
@@ -256,7 +256,7 @@
     "validate_mail_error_title": "메일 전송 실패",
     "validate_mail_error_content": "메일 전송에 실패했습니다. 잠시 후 다시 시도해 주세요.",
     "validation_code": "인증 코드",
-    "validation_code_hint": "학번/교번 이메일로 발송된 인증 코드를 입력해 주세요.",
+    "validation_code_hint": "이메일로 발송된 인증 코드를 입력해 주세요.",
     "validation_code_is_empty": "인증 코드를 입력해 주세요.",
     "validation_code_is_too_short": "인증 코드가 너무 짧습니다.",
     "verify_code": "코드 확인",
@@ -344,7 +344,7 @@
     "view_detail": "상세 보기",
     "app_inquiry": "앱 관련 문의",
     "email": "이메일",
-    "email_address": "hsu.dclab01@gmail.com",
+    "email_address": "hsu.greencampus@gmail.com",
     "phone": "전화번호",
     "phone_number": "041-540-5695",
     "version": "버전"

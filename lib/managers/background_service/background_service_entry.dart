@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
+import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/managers/logger/beat_logger.dart';
 import 'package:beat_flutter/managers/permission/permission_manager.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:easy_localization/easy_localization.dart';
+
+ 
 
 
 /// 포어그라운드에서는 안드로이드와 iOS 동작이 동일함
@@ -44,6 +47,14 @@ void startLocationTimerForeground(ServiceInstance service) async {
 @pragma('vm:entry-point')
 void startActivityServiceForeground(ServiceInstance service) {
   // 통합 서비스 포어그라운드 진입점: 필요 시 알림/핸들러 구성
+  final LocalizationManager localizationManager = LocalizationManager();
+
+  final backgroundService = FlutterBackgroundService();
+  backgroundService.invoke("updateNotification", {
+    "title": localizationManager.generalInitialNotificationTitle,
+    "content": localizationManager.generalInitialNotificationContent,
+  });
+
   return;
 }
 
@@ -56,6 +67,14 @@ Future<bool> startActivityServiceBackgroundIOS(ServiceInstance service) async {
   await BEATLogger.ensureInitialized();
 
   await PermissionManager.updateLocationAndActivityPemission();
+
+  final LocalizationManager localizationManager = LocalizationManager();
+  final backgroundService = FlutterBackgroundService();
+
+  backgroundService.invoke("updateNotification", {
+    "title": localizationManager.generalInitialNotificationTitle,
+    "content": localizationManager.generalInitialNotificationContent,
+  });
 
   return true;
 }

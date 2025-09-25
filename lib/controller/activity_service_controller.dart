@@ -35,8 +35,8 @@ class ActivityServiceController extends GetxController {
         isForegroundMode: true,
         autoStartOnBoot: false,
         notificationChannelId: "activity_service_channel",
-        initialNotificationTitle: "BEAT is running",
-        initialNotificationContent: "Tracking steps and location in background",
+        initialNotificationTitle: localizationManager.generalInitialNotificationTitle,
+        initialNotificationContent: localizationManager.generalInitialNotificationContent,
       ),
     );
   }
@@ -93,6 +93,10 @@ class ActivityServiceController extends GetxController {
 
   Future<void> getWalkHistory() async {
     await pedometerController.getWalkHitory();
+  }
+
+  void addWalkReport() {
+    pedometerController.addWalkReport();
   }
 }
 

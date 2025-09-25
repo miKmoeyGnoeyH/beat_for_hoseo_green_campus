@@ -43,21 +43,36 @@ class _SignInScreenState extends State<SignInScreen> {
 
   @override
   void initState() {
-    emailFocusNode.addListener(() {
-      setState(() {});
-    });
-    passwordFocusNode.addListener(() {
-      setState(() {});
-    });
+    for (final node in [
+      emailFocusNode,
+      passwordFocusNode,
+    ]) {
+      node.addListener(_onAnyFocusChange);
+    }
+
+    emailController.addListener(() => setState(() {}));
+    passwordController.addListener(() => setState(() {}));
+
     super.initState();
   }
 
   @override
   void dispose() {
-    emailFocusNode.dispose();
-    passwordFocusNode.dispose();
+    for (final node in [
+      emailFocusNode,
+      passwordFocusNode,
+    ]) {
+      node.addListener(_onAnyFocusChange);
+      node.dispose();
+    }
+
+    emailController.dispose();
+    passwordController.dispose();
+
     super.dispose();
   }
+
+  void _onAnyFocusChange() => setState(() {});
 
   @override
   Widget build(BuildContext context) {

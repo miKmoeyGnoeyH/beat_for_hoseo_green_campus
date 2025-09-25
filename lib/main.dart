@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:beat_flutter/controller/location/location_controller.dart';
+import 'package:beat_flutter/controller/screen_holder/page_index_controller.dart';
 import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
 import 'package:beat_flutter/managers/logger/beat_logger.dart';
 import 'package:beat_flutter/managers/notification/local_notification.dart';
@@ -50,12 +51,16 @@ Future<void> main() async {
 
   final PedometerController pedometerController =
       Get.put<PedometerController>(PedometerController(), permanent: true);
+
   final LocationController locationController =
       Get.put<LocationController>(LocationController(), permanent: true);
+
   final ActivityServiceController activityServiceController =
       Get.put<ActivityServiceController>(ActivityServiceController(), permanent: true);
 
   await activityServiceController.initializeService();
+
+  Get.put(PageIndexController(), permanent: true);
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

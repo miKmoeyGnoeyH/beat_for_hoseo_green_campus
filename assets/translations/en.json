@@ -136,7 +136,7 @@
   },
   "register_affiliation": {
     "appbar_title": "Affiliation",
-    "affiliation_hint": "Please enter your affiliation (at least 1 character).",
+    "affiliation_hint": "Please enter your department or affiliation.",
     "continue_with": "Continue with {}",
     "inappropriate_affiliation_title": "Please check your affiliation again.",
     "inappropriate_affiliation_content": "The name contains initial consonants only. Please check again."
@@ -254,7 +254,7 @@
     "validate_mail_error_title": "Failed to Send Email",
     "validate_mail_error_content": "Could not send the email. Please try again later.",
     "validation_code": "Verification Code",
-    "validation_code_hint": "Enter the verification code sent to your student/staff email.",
+    "validation_code_hint": "Please enter the verification code sent to your email.",
     "validation_code_is_empty": "Please enter the verification code.",
     "validation_code_is_too_short": "The verification code is too short.",
     "verify_code": "Verify Code",
@@ -342,7 +342,7 @@
     "view_detail": "View Details",
     "app_inquiry": "App Inquiry",
     "email": "Email",
-    "email_address": "hsu.dclab01@gmail.com",
+    "email_address": "hsu.greencampus@gmail.com",
     "phone": "Phone",
     "phone_number": "041-540-5695",
     "version": "Version"

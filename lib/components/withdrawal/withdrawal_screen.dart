@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:beat_flutter/controller/activity_service_controller.dart';
+import 'package:beat_flutter/controller/screen_holder/page_index_controller.dart';
 import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:flutter/material.dart';
@@ -71,6 +72,9 @@ class WithdrawalScreen extends StatelessWidget {
                               .stopForegroundService();
                           await Get.find<ActivityServiceController>()
                               .stopBackgroundService();
+
+                          PageIndexController pageIndexController = Get.find<PageIndexController>();
+                          pageIndexController.setIndex(pageIndexController.homeIndex, context);
 
                           await PrefsManager().clear();
                           context.read<UserController>().add(SignOut());

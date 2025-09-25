@@ -203,7 +203,6 @@ abstract class Routes {
           return MaterialPageRoute(
             builder: (context) {
               Get.put(SurveyDetailController());
-              Get.put(PageIndexController());
 
               Get.find<ActivityServiceController>()
                   .setAuthorization(arguments.authorization);

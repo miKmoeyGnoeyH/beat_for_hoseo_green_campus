@@ -79,34 +79,36 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
         ? 8
         : null;
 
-    nameFocusNode.addListener(() {
-      setState(() {});
-    });
-    nicknameFocusNode.addListener(() {
-      setState(() {});
-    });
-    sidFocusNode.addListener(() {
-      setState(() {});
-    });
-    passwordFocusNode.addListener(() {
-      setState(() {});
-    });
-    passwordCheckFocusNode.addListener(() {
-      setState(() {});
-    });
+    for (final node in [
+      nameFocusNode,
+      nicknameFocusNode,
+      sidFocusNode,
+      passwordFocusNode,
+      passwordCheckFocusNode
+    ]) {
+      node.addListener(_onAnyFocusChange);
+    }
 
     super.initState();
   }
 
   @override
   void dispose() {
-    nameFocusNode.dispose();
-    nicknameFocusNode.dispose();
-    sidFocusNode.dispose();
-    passwordFocusNode.dispose();
-    passwordCheckFocusNode.dispose();
+    for (final node in [
+      nameFocusNode,
+      nicknameFocusNode,
+      sidFocusNode,
+      passwordFocusNode,
+      passwordCheckFocusNode
+    ]) {
+      node.removeListener(_onAnyFocusChange);
+      node.dispose();
+    }
+
     super.dispose();
   }
+
+  void _onAnyFocusChange() => setState(() {});
 
   @override
   Widget build(BuildContext context) {
@@ -482,11 +484,15 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                     textEditingController: passwordController,
                     focusNode: passwordFocusNode,
                     labelText: localizationManager.rfiPassword,
-                    maxLines: passwordFocusNode.hasFocus
+                    maxLines: (passwordFocusNode.hasFocus &&
+                            passwordController.text.isEmpty)
                         ? 2
                         : 1,
                     hintText: localizationManager.rfiPasswordHint,
-                    obscureText: passwordController.text.isEmpty ? false : true,
+                    obscureText: (passwordFocusNode.hasFocus &&
+                            passwordController.text.isEmpty)
+                        ? false
+                        : true,
                     onChanged: (value) {
                       setState(() {});
                     },
@@ -504,13 +510,16 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                   CustomTextField(
                     textEditingController: passwordCheckController,
                     focusNode: passwordCheckFocusNode,
-                    maxLines: passwordCheckFocusNode.hasFocus
+                    maxLines: (passwordCheckFocusNode.hasFocus &&
+                            passwordCheckController.text.isEmpty)
                         ? 2
                         : 1,
                     labelText: localizationManager.rfiPasswordCheck,
                     hintText: localizationManager.rfiPasswordCheckHint,
-                    obscureText:
-                        passwordCheckController.text.isEmpty ? false : true,
+                    obscureText: (passwordCheckFocusNode.hasFocus &&
+                            passwordCheckController.text.isEmpty)
+                        ? false
+                        : true,
                     onChanged: (value) {
                       setState(() {});
                     },

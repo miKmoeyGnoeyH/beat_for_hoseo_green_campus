@@ -7,6 +7,7 @@ import 'package:beat_flutter/data/models/data_models.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class SurveyQuestion extends StatefulWidget {
@@ -37,7 +38,7 @@ class _SurveyQuestionState extends State<SurveyQuestion> {
           text: localizationManager.sdQuestion("${widget.index + 1}".padLeft(2, "0")),
           textColor: context.appColors.primary,
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.w),
         CustomRoundedBorderedContainer(
           color: Colors.transparent,
           borderWidth: 0.5,
@@ -47,7 +48,7 @@ class _SurveyQuestionState extends State<SurveyQuestion> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CustomTitleMedium(text: widget.surveyQuestionModel.question),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.w),
                 ListView.separated(
                   physics: const NeverScrollableScrollPhysics(),
                   padding: EdgeInsets.zero,
@@ -69,6 +70,8 @@ class _SurveyQuestionState extends State<SurveyQuestion> {
                           child: CustomBodyLarge(
                             text: widget.surveyQuestionModel.answerList[index]
                                 .description,
+                            textColor: selectedAnswerIndex == index
+                                ? context.appColors.onPrimary : context.appColors.onBackground,
                           ),
                         ),
                       ),

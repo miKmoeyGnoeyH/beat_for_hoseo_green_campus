@@ -273,7 +273,10 @@ class PedometerController extends GetxController {
     // 3) 합산은 조건 만족할 때만 (권한/시간/영역/휴일)
     if (PermissionManager.isActivityPermissionGrantedStatic == null ||
         !PermissionManager.isActivityPermissionGrantedStatic! ||
-        !isEventDuration || !isInValidArea || isHoliday || diff <= 0) {
+        !isEventDuration ||
+        !isInValidArea ||
+        isHoliday ||
+        diff <= 0) {
       return;
     }
 
@@ -295,8 +298,7 @@ class PedometerController extends GetxController {
   void onStepCountFromNative(int stepsFromNative) {
     // 1) 베이스라인은 항상 갱신
     if (stepsAfterLastBoot == null ||
-        (stepsAfterLastBoot != null &&
-            stepsAfterLastBoot! > stepsFromNative)) {
+        (stepsAfterLastBoot != null && stepsAfterLastBoot! > stepsFromNative)) {
       stepsAfterLastBoot = stepsFromNative;
       PrefsManager().setStepsAfterLastboot(stepsAfterLastBoot!);
     }
@@ -313,7 +315,10 @@ class PedometerController extends GetxController {
     // 3) 합산은 조건 만족할 때만
     if (PermissionManager.isActivityPermissionGrantedStatic == null ||
         !PermissionManager.isActivityPermissionGrantedStatic! ||
-        !isEventDuration || !isInValidArea || isHoliday || diff <= 0) {
+        !isEventDuration ||
+        !isInValidArea ||
+        isHoliday ||
+        diff <= 0) {
       return;
     }
 
@@ -357,6 +362,7 @@ class PedometerController extends GetxController {
     try {
       final (savedToday, savedWeekly, savedMonthly, savedTotal) =
           PrefsManager().getSteps();
+      final lastReportedSteps = PrefsManager().getLastReportedSteps();
 
       BEATLogger.d(
           "PedometerController : getWalkHistory : savedToday: $savedToday, savedWeekly: $savedWeekly, savedMonthly: $savedMonthly, savedTotal: $savedTotal, _lastReportedSteps: $_lastReportedSteps");
@@ -386,13 +392,13 @@ class PedometerController extends GetxController {
           monthlyWalkCount = bodyToJson['monthlyWalkCount'];
           totalWalkCount = bodyToJson['totalWalkCount'];
         }
+        _lastReportedSteps = bodyToJson['todayWalkCount'];
       } else {
         todayWalkCount = savedToday;
         weeklyWalkCount = savedWeekly;
         monthlyWalkCount = savedMonthly;
         totalWalkCount = savedTotal;
-        // steps = todayWalkCount;
-        // totalSteps = totalWalkCount;
+        _lastReportedSteps = lastReportedSteps;
       }
       PrefsManager().setSteps(
           todayWalkCount, weeklyWalkCount, monthlyWalkCount, totalWalkCount);
@@ -563,7 +569,6 @@ class PedometerController extends GetxController {
       startRankReportTimer();
       getWalkHitory();
     }
-
 
     FlutterBackgroundService().startService();
   }

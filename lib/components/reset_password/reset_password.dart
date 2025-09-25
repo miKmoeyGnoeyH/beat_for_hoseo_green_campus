@@ -57,6 +57,7 @@ class _ResetPasswordState extends State<ResetPassword> {
 
   bool isValidationCodeButtonEnabled = false;
   bool isValidationCodeCorrect = false;
+  bool isValidationCodeTextFieldEnabled = false;
 
   bool isPasswordValid = false;
 
@@ -64,37 +65,43 @@ class _ResetPasswordState extends State<ResetPassword> {
 
   @override
   void initState() {
-    idController.addListener(() {
-      setState(() {});
-    });
-    validationCodeController.addListener(() {
-      setState(() {});
-    });
-    newPasswordController.addListener(() {
-      setState(() {});
-    });
-    passwordCheckController.addListener(() {
-      setState(() {});
-    });
+    for (final node in [
+      idFocusNode,
+      validationFocusNode,
+      newPasswordFocusNode,
+      passwordCheckFocusNode,
+    ]) {
+      node.addListener(_onAnyFocusChange);
+    }
+
+    idController.addListener(() => setState(() {}));
+    validationCodeController.addListener(() => setState(() {}));
+    newPasswordController.addListener(() => setState(() {}));
+    passwordCheckController.addListener(() => setState(() {}));
 
     super.initState();
   }
 
   @override
   void dispose() {
+    for (final node in [
+      idFocusNode,
+      validationFocusNode,
+      newPasswordFocusNode,
+      passwordCheckFocusNode,
+    ]) {
+      node.removeListener(_onAnyFocusChange);
+      node.dispose();
+    }
+
     idController.dispose();
     validationCodeController.dispose();
     newPasswordController.dispose();
     passwordCheckController.dispose();
-
-    // 👇 FocusNode 정리
-    idFocusNode.dispose();
-    validationFocusNode.dispose();
-    newPasswordFocusNode.dispose();
-    passwordCheckFocusNode.dispose();
-
     super.dispose();
   }
+
+  void _onAnyFocusChange() => setState(() {});
 
   @override
   Widget build(BuildContext context) {
@@ -110,200 +117,221 @@ class _ResetPasswordState extends State<ResetPassword> {
         body: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.w),
-            child: Column(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomTextField(
-                      textEditingController: idController,
-                      focusNode: idFocusNode,
-                      labelText: localizationManager.rpSidOrEmployeeId,
-                      hintText: localizationManager.rpSidOrEmployeeIdHint,
-                      maxLines: idFocusNode.hasFocus ? 2 : 1,
-                      onChanged: (value) {
-                        setState(() {
-                          // 입력 즉시 버튼 상태 업데이트
-                          if (value.isEmpty) {
-                            isValidateMailButtonEnabled = false;
-                          } else if (!emailRegExp.hasMatch(value)) {
-                            isValidateMailButtonEnabled = false;
-                          } else {
-                            isValidateMailButtonEnabled = true;
-                          }
-                          isValidateMailSent = false;
-                          isValidationCodeCorrect = false;
-                        });
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return localizationManager.rpSidOrEmployeeIdIsEmpty;
-                        } else if (!emailRegExp.hasMatch(value)) {
-                          return localizationManager.rpInvalidSidOrEmployeeId;
-                        }
-                        return null;
-                      },
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                    ),
-                    SizedBox(height: 16.w),
-                    CustomWideButton(
-                      // width: 120.w,
-                      height: 50.w,
-                      autoSizeText: true,
-                      borderRadius: 10,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16.w,
-                        vertical: 10.w,
-                      ),
-                      onTap: (isValidateMailButtonEnabled)
-                          ? () async {
-                              FocusScope.of(context).unfocus();
-                              isValidateMailButtonEnabled = false;
-                              onValidateMailButtonTap();
-                            }
-                          : () {},
-                      buttonText: isValidateMailSent
-                          ? localizationManager.rpMailSent
-                          : localizationManager.rpValidateMail,
-                      buttonColor: isValidateMailSent
-                          ? context.appColors.disabled
-                          : isValidateMailButtonEnabled
-                              ? context.appColors.primary
-                              : context.appColors.disabled,
-                    ),
-                  ],
-                ),
-                SizedBox(height: 35.w),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomTextField(
-                      textEditingController: validationCodeController,
-                      focusNode: validationFocusNode,
-                      labelText: localizationManager.rpValidationCode,
-                      hintText: localizationManager.rpValidationCodeHint,
-                      maxLength: maxValidationCodeLength,
-                      maxLines: validationFocusNode.hasFocus ? 2 : 1,
-                      onChanged: (value) {
-                        setState(
-                          () {
+            child: FocusTraversalGroup(
+              child: Column(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomTextField(
+                        textEditingController: idController,
+                        focusNode: idFocusNode,
+                        labelText: localizationManager.rpSidOrEmployeeId,
+                        hintText: localizationManager.rpSidOrEmployeeIdHint,
+                        maxLines: idFocusNode.hasFocus ? 2 : 1,
+                        onChanged: (value) {
+                          setState(() {
+                            // 입력 즉시 버튼 상태 업데이트
                             if (value.isEmpty) {
-                              isValidationCodeButtonEnabled = false;
-                            } else if (value.length < maxValidationCodeLength) {
-                              isValidationCodeButtonEnabled = false;
+                              isValidateMailButtonEnabled = false;
+                            } else if (!emailRegExp.hasMatch(value)) {
+                              isValidateMailButtonEnabled = false;
                             } else {
-                              isValidationCodeButtonEnabled = true;
+                              isValidateMailButtonEnabled = true;
                             }
+                            isValidateMailSent = false;
                             isValidationCodeCorrect = false;
-                          },
-                        );
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return localizationManager.rpValidationCodeIsEmpty;
-                        } else if (value.length < maxValidationCodeLength) {
-                          return localizationManager.rpValidationCodeIsTooShort;
-                        }
-                        return null;
-                      },
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                    ),
-                    SizedBox(height: 16.w),
-                    CustomWideButton(
-                      // width: 120.w,
-                      height: 50.w,
-                      autoSizeText: true,
-                      borderRadius: 10,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16.w,
-                        vertical: 10.w,
+                            isValidationCodeButtonEnabled = false;
+                            // isValidationCodeTextFieldEnabled = true;
+                          });
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return localizationManager.rpSidOrEmployeeIdIsEmpty;
+                          } else if (!emailRegExp.hasMatch(value)) {
+                            return localizationManager.rpInvalidSidOrEmployeeId;
+                          }
+                          return null;
+                        },
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                       ),
-                      onTap: (isValidationCodeButtonEnabled)
-                          ? () async {
-                              FocusScope.of(context).unfocus();
-                              isValidateMailButtonEnabled = false;
-                              onVerifyCodeButtonTap();
-                            }
-                          : () {},
-                      buttonText: isValidationCodeCorrect
-                          ? localizationManager.rpCodeVerified
-                          : localizationManager.rpVerifyCode,
-                      buttonColor: isValidationCodeCorrect
-                          ? context.appColors.disabled
-                          : isValidationCodeButtonEnabled
-                              ? context.appColors.primary
-                              : context.appColors.disabled,
-                    ),
-                  ],
-                ),
-                SizedBox(height: 35.w),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomTextField(
-                      textEditingController: newPasswordController,
-                      focusNode: newPasswordFocusNode,
-                      labelText: localizationManager.rpNewPassword,
-                      hintText: localizationManager.rpNewPasswordHint,
-                      // maxLength: maxValidationCodeLength,
-                      maxLines: newPasswordFocusNode.hasFocus ? 2 : 1,
-                      obscureText:
-                          newPasswordController.text.isEmpty ? false : true,
-                      onChanged: (value) {
-                        setState(() {});
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return localizationManager.rpNewPasswordIsEmpty;
-                        } else if (!passwordRegex.hasMatch(value)) {
-                          return localizationManager.rpPasswordRuleErrorContent;
-                        }
-                        return null;
-                      },
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                    ),
-                  ],
-                ),
-                SizedBox(height: 35.w),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomTextField(
-                      textEditingController: passwordCheckController,
-                      focusNode: passwordCheckFocusNode,
-                      labelText: localizationManager.rpNewPasswordCheck,
-                      hintText: localizationManager.rpNewPasswordCheckHint,
-                      // maxLength: maxValidationCodeLength,
-                      maxLines: passwordCheckFocusNode.hasFocus ? 2 : 1,
-                      obscureText:
-                          passwordCheckController.text.isEmpty ? false : true,
-                      onChanged: (value) {
-                        setState(
-                          () {
-                            if (value.isEmpty) {
-                              isPasswordValid = false;
-                            } else if (value != newPasswordController.text) {
-                              isPasswordValid = false;
-                            } else {
-                              isPasswordValid = true;
-                            }
-                          },
-                        );
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return localizationManager.rpNewPasswordIsEmpty;
-                        } else if (value != newPasswordController.text) {
-                          return localizationManager.rpPasswordMismatchContent;
-                        }
-                        return null;
-                      },
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                    ),
-                  ],
-                ),
-                SizedBox(height: 50.w)
-              ],
+                      SizedBox(height: 16.w),
+                      CustomWideButton(
+                        // width: 120.w,
+                        height: 50.w,
+                        autoSizeText: true,
+                        borderRadius: 10,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 10.w,
+                        ),
+                        onTap: (isValidateMailButtonEnabled)
+                            ? () async {
+                                FocusScope.of(context).unfocus();
+                                isValidateMailButtonEnabled = false;
+                                onValidateMailButtonTap();
+                              }
+                            : () {},
+                        buttonText: isValidateMailSent
+                            ? localizationManager.rpMailSent
+                            : localizationManager.rpValidateMail,
+                        buttonColor: isValidateMailSent
+                            ? context.appColors.disabled
+                            : isValidateMailButtonEnabled
+                                ? context.appColors.primary
+                                : context.appColors.disabled,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 35.w),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomTextField(
+                        textEditingController: validationCodeController,
+                        focusNode: validationFocusNode,
+                        labelText: localizationManager.rpValidationCode,
+                        hintText: localizationManager.rpValidationCodeHint,
+                        maxLength: maxValidationCodeLength,
+                        maxLines: validationFocusNode.hasFocus ? 2 : 1,
+                        onChanged: (value) {
+                          setState(
+                            () {
+                              if (value.isEmpty) {
+                                isValidationCodeButtonEnabled = false;
+                              } else if (value.length <
+                                  maxValidationCodeLength) {
+                                isValidationCodeButtonEnabled = false;
+                              } else {
+                                isValidationCodeButtonEnabled = true;
+                              }
+                              isValidationCodeCorrect = false;
+                            },
+                          );
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return localizationManager.rpValidationCodeIsEmpty;
+                          } else if (value.length < maxValidationCodeLength) {
+                            return localizationManager
+                                .rpValidationCodeIsTooShort;
+                          }
+                          return null;
+                        },
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        enabled: isValidationCodeTextFieldEnabled,
+                      ),
+                      SizedBox(height: 16.w),
+                      CustomWideButton(
+                        // width: 120.w,
+                        height: 50.w,
+                        autoSizeText: true,
+                        borderRadius: 10,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 10.w,
+                        ),
+                        onTap: (!isValidationCodeCorrect &&
+                                isValidationCodeButtonEnabled)
+                            ? () async {
+                                FocusScope.of(context).unfocus();
+                                isValidationCodeButtonEnabled = false;
+                                onVerifyCodeButtonTap();
+                              }
+                            : () {},
+                        buttonText: isValidationCodeCorrect
+                            ? localizationManager.rpCodeVerified
+                            : localizationManager.rpVerifyCode,
+                        buttonColor: isValidationCodeCorrect
+                            ? context.appColors.disabled
+                            : (!isValidationCodeCorrect &&
+                                    isValidationCodeButtonEnabled)
+                                ? context.appColors.primary
+                                : context.appColors.disabled,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 35.w),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomTextField(
+                        textEditingController: newPasswordController,
+                        focusNode: newPasswordFocusNode,
+                        labelText: localizationManager.rpNewPassword,
+                        hintText: localizationManager.rpNewPasswordHint,
+                        // maxLength: maxValidationCodeLength,
+                        maxLines: (newPasswordFocusNode.hasFocus &&
+                                newPasswordController.text.isEmpty)
+                            ? 2
+                            : 1,
+                        obscureText: (newPasswordFocusNode.hasFocus &&
+                                newPasswordController.text.isEmpty)
+                            ? false
+                            : true,
+                        onChanged: (value) {
+                          setState(() {});
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return localizationManager.rpNewPasswordIsEmpty;
+                          } else if (!passwordRegex.hasMatch(value)) {
+                            return localizationManager
+                                .rpPasswordRuleErrorContent;
+                          }
+                          return null;
+                        },
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 35.w),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomTextField(
+                        textEditingController: passwordCheckController,
+                        focusNode: passwordCheckFocusNode,
+                        labelText: localizationManager.rpNewPasswordCheck,
+                        hintText: localizationManager.rpNewPasswordCheckHint,
+                        // maxLength: maxValidationCodeLength,
+                        maxLines: (passwordCheckFocusNode.hasFocus &&
+                                passwordCheckController.text.isEmpty)
+                            ? 2
+                            : 1,
+                        obscureText: (passwordCheckFocusNode.hasFocus &&
+                                passwordCheckController.text.isEmpty)
+                            ? false
+                            : true,
+                        onChanged: (value) {
+                          setState(
+                            () {
+                              if (value.isEmpty) {
+                                isPasswordValid = false;
+                              } else if (value != newPasswordController.text) {
+                                isPasswordValid = false;
+                              } else {
+                                isPasswordValid = true;
+                              }
+                            },
+                          );
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return localizationManager.rpNewPasswordIsEmpty;
+                          } else if (value != newPasswordController.text) {
+                            return localizationManager
+                                .rpPasswordMismatchContent;
+                          }
+                          return null;
+                        },
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 50.w)
+                ],
+              ),
             ),
           ),
         ),
@@ -314,8 +342,8 @@ class _ResetPasswordState extends State<ResetPassword> {
                   onBottomAppbarButtonTap();
                 }
               : () {
-            log("isValidationCodeCorrect: $isValidationCodeCorrect, isPasswordValid: $isPasswordValid");
-          },
+                  log("isValidationCodeCorrect: $isValidationCodeCorrect, isPasswordValid: $isPasswordValid");
+                },
           backgroundColor: _isSignUpButtonEnabled
               ? context.appColors.primary
               : context.appColors.disabled,
@@ -350,6 +378,8 @@ class _ResetPasswordState extends State<ResetPassword> {
           content: localizationManager.rpEmailSentMessage(response.body),
         );
         isValidateMailSent = true;
+        isValidationCodeTextFieldEnabled = true;
+        validationCodeController.clear();
       } else {
         customShowDialog(
           context: context,
@@ -357,6 +387,8 @@ class _ResetPasswordState extends State<ResetPassword> {
           content: response.body,
         );
         isValidateMailSent = false;
+        isValidationCodeTextFieldEnabled = false;
+        validationCodeController.clear();
       }
     } on TimeoutException {
       log("ResetPassword: onValidateMailButtonTap: TimeoutException");
@@ -368,6 +400,8 @@ class _ResetPasswordState extends State<ResetPassword> {
       );
 
       isValidateMailSent = false;
+      isValidationCodeTextFieldEnabled = false;
+      validationCodeController.clear();
     } catch (e) {
       log("ResetPassword: onValidateMailButtonTap: error: $e");
       customShowDialog(
@@ -376,6 +410,8 @@ class _ResetPasswordState extends State<ResetPassword> {
         content: localizationManager.rpValidateMailErrorContent,
       );
       isValidateMailSent = false;
+      isValidationCodeTextFieldEnabled = false;
+      validationCodeController.clear();
     }
   }
 
@@ -384,18 +420,16 @@ class _ResetPasswordState extends State<ResetPassword> {
 
     try {
       final http.Response response = await Get.showOverlay(
-        asyncFunction: () => http
-            .post(
-              Uri.parse(requestUrl),
-              // headers: {
-              //   "Content-Type": "application/json",
-              // },
-              body: {
-                "studentId": idController.text,
-                "authCode": validationCodeController.text,
-              },
-            )
-            .timeout(const Duration(seconds: 10)),
+        asyncFunction: () => http.post(
+          Uri.parse(requestUrl),
+          // headers: {
+          //   "Content-Type": "application/json",
+          // },
+          body: {
+            "studentId": idController.text,
+            "authCode": validationCodeController.text,
+          },
+        ).timeout(const Duration(seconds: 10)),
         loadingWidget: const CustomCircularProgressIndicator(),
       );
 
@@ -409,6 +443,7 @@ class _ResetPasswordState extends State<ResetPassword> {
             content: localizationManager.rpVerifyCodeSuccessContent,
           );
           isValidationCodeCorrect = true;
+          isValidationCodeTextFieldEnabled = false;
         } else {
           customShowDialog(
             context: context,
@@ -416,6 +451,7 @@ class _ResetPasswordState extends State<ResetPassword> {
             content: localizationManager.rpVerifyCodeNotCorrectContent,
           );
           isValidationCodeCorrect = false;
+          isValidationCodeTextFieldEnabled = true;
         }
       } else {
         customShowDialog(
@@ -424,6 +460,7 @@ class _ResetPasswordState extends State<ResetPassword> {
           content: localizationManager.rpVerifyCodeFailedContent,
         );
         isValidationCodeCorrect = false;
+        isValidationCodeTextFieldEnabled = true;
       }
     } on TimeoutException {
       log("ResetPassword: onValidateMailButtonTap: TimeoutException");
@@ -435,6 +472,7 @@ class _ResetPasswordState extends State<ResetPassword> {
       );
 
       isValidationCodeCorrect = false;
+      isValidationCodeTextFieldEnabled = true;
     } catch (e) {
       log("ResetPassword: onValidateMailButtonTap: error: $e");
       customShowDialog(
@@ -443,6 +481,7 @@ class _ResetPasswordState extends State<ResetPassword> {
         content: localizationManager.rpVerifyCodeFailedContent,
       );
       isValidationCodeCorrect = false;
+      isValidationCodeTextFieldEnabled = true;
     }
   }
 
