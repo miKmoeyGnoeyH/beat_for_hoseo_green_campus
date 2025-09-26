@@ -8,6 +8,8 @@ import 'package:beat_flutter/managers/background_service/background_service_entr
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:get/get.dart';
 
+const foregroundServiceNotificationId = 888;
+
 /// Pedometer + Location을 하나의 백그라운드 서비스로 오케스트레이션하는 컨트롤러
 class ActivityServiceController extends GetxController {
   late final PedometerController pedometerController;
@@ -30,13 +32,14 @@ class ActivityServiceController extends GetxController {
         onBackground: startActivityServiceBackgroundIOS,
       ),
       androidConfiguration: AndroidConfiguration(
-        autoStart: false,
+        autoStart: true,
         onStart: startActivityServiceForeground,
         isForegroundMode: true,
         autoStartOnBoot: false,
         notificationChannelId: "activity_service_channel",
         initialNotificationTitle: localizationManager.generalInitialNotificationTitle,
         initialNotificationContent: localizationManager.generalInitialNotificationContent,
+        foregroundServiceNotificationId: foregroundServiceNotificationId
       ),
     );
   }
@@ -99,4 +102,3 @@ class ActivityServiceController extends GetxController {
     pedometerController.addWalkReport();
   }
 }
-

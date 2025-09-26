@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:ui';
+import 'package:beat_flutter/controller/activity_service_controller.dart';
 import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/managers/logger/beat_logger.dart';
@@ -7,6 +8,7 @@ import 'package:beat_flutter/managers/permission/permission_manager.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
  
 
@@ -45,15 +47,47 @@ void startLocationTimerForeground(ServiceInstance service) async {
 
 /// 통합 서비스용 진입점 (ActivityServiceController)
 @pragma('vm:entry-point')
-void startActivityServiceForeground(ServiceInstance service) {
+void startActivityServiceForeground(ServiceInstance service) async {
+  await DotEnvManager().ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
+  DartPluginRegistrant.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
+  await BEATLogger.ensureInitialized();
+
+  await PermissionManager.updateLocationAndActivityPemission();
+
   // 통합 서비스 포어그라운드 진입점: 필요 시 알림/핸들러 구성
   final LocalizationManager localizationManager = LocalizationManager();
 
-  final backgroundService = FlutterBackgroundService();
-  backgroundService.invoke("updateNotification", {
-    "title": localizationManager.generalInitialNotificationTitle,
-    "content": localizationManager.generalInitialNotificationContent,
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+
+  // bring to foreground
+  Timer.periodic(const Duration(seconds: 1), (timer) async {
+    if (service is AndroidServiceInstance) {
+      if (await service.isForegroundService()) {
+        flutterLocalNotificationsPlugin.show(
+          foregroundServiceNotificationId,
+          'COOL SERVICE',
+          'Awesome ${DateTime.now()}',
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              localizationManager.generalInitialNotificationTitle,
+              localizationManager.generalInitialNotificationContent,
+              icon: 'ic_bg_service_small',
+              ongoing: true,
+            ),
+          ),
+        );
+      }
+    }
   });
+
+  // final backgroundService = FlutterBackgroundService();
+  // backgroundService.invoke("updateNotification", {
+  //   "title": localizationManager.generalInitialNotificationTitle,
+  //   "content": localizationManager.generalInitialNotificationContent,
+  // });
 
   return;
 }

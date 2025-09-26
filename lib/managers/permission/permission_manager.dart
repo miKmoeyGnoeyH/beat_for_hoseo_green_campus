@@ -2,8 +2,6 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:beat_flutter/managers/prefs/prefs_manager.dart';
-import 'package:get/get.dart';
-import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -155,34 +153,5 @@ abstract class PermissionManager {
   static Future<void> updateLocationAndActivityPemission() async {
     isLocationPermissionGrantedStatic = await isLocationPermissionGranted();
     isActivityPermissionGrantedStatic = await isActivityPermissionGranted();
-
-    // 권한 상태가 바뀌었을 때 현재까지의 스텝을 즉시 저장해 유실 방지
-    if (Get.isRegistered<PedometerController>()) {
-      try {
-        await Get.find<PedometerController>().persistStepsNow();
-      } catch (_) {}
-    }
-  }
-
-  // 배터리 최적화 무시 여부 확인
-  static Future<bool> isIgnoringBatteryOptimizations() async {
-    if (!Platform.isAndroid) return true;
-    try {
-      final bool result = await _channel.invokeMethod("isIgnoringBatteryOptimizations");
-      return result;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  // 배터리 최적화 무시 요청(사용자 승인 필요)
-  static Future<bool> requestIgnoreBatteryOptimizations() async {
-    if (!Platform.isAndroid) return true;
-    try {
-      final bool result = await _channel.invokeMethod("requestIgnoreBatteryOptimizations");
-      return result;
-    } catch (e) {
-      return false;
-    }
   }
 }

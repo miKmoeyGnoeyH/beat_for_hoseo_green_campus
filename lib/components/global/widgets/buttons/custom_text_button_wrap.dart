@@ -3,6 +3,7 @@ import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.d
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/theme/texts/custom_texts.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomTextButtonWrap extends StatelessWidget {
   const CustomTextButtonWrap({
@@ -37,7 +38,7 @@ class CustomTextButtonWrap extends StatelessWidget {
             border: Border.all(color: borderColor, width: 0.5),
             borderRadius: BorderRadius.circular(borderRadius ?? 12),
           ),
-          padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: padding ?? EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.w),
           child: autoSizeText
               ? AutoSizeText(
             text,

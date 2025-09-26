@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/utils.dart';
 
 import '../../../controller/user_controller.dart';
 import '../../../data/models/user_model.dart';
@@ -25,11 +26,14 @@ class HomeAppbar extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           const BeatLogoSmall(),
-          const SizedBox(width: 12),
+          SizedBox(width: 12.w),
           BlocBuilder<UserController, User>(
             builder: (context, state) => CustomBodyLarge(
               text: state is !Member ? '' : state.nickname,
             ),
+            // builder: (context, state) => Text(
+            //   state is !Member ? '' : state.nickname, style: context.textTheme.bodyLarge,
+            // ),
           ),
         ],
       ),

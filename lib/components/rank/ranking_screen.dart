@@ -133,7 +133,14 @@ class _RankingScreenState extends State<RankingScreen> {
                     ],
                   ),
                   SizedBox(
-                    height: getPageHeight(state.data),
+                    height: measureRankPageHeight(
+                      context,
+                      state.data,
+                      currentIndex,
+                      cardExtent: 67.w,
+                      getDescByFieldName: getDescByFieldName,
+                      getTitleByFieldName: getTitleByFieldName,
+                    ),
                     child: PageView(
                       controller: pageController,
                       onPageChanged: onPageChanged,
@@ -155,31 +162,95 @@ class _RankingScreenState extends State<RankingScreen> {
     );
   }
 
-  double getPageHeight(Map<String, List<RankItemModel>> data) {
-    final List<String> keys = data.keys.toList();
+  double _textHeight({
+    required BuildContext context,
+    required String text,
+    required TextStyle style,
+    required double maxWidth,
+  }) {
+    final tp = TextPainter(
+      text: TextSpan(text: text, style: style),
+      textDirection: TextDirection.ltr,
+      maxLines: null, // 줄 제한 없다면 null, 제한 있으면 숫자 지정
+    )..layout(maxWidth: maxWidth);
+    return tp.size.height;
+  }
 
-    double appBarHeight = kToolbarHeight;
-    double textsHeight = 100.w;
-    double rankCardHeight = 65.w;
-    double paddingHeight = 16.w;
-    double extraSpacingHeight = 50.w;
+  /// rankListPages()에서 i번째 페이지(= keys[i*2], keys[i*2+1])의 총 높이 계산
+  double measureRankPageHeight(
+    BuildContext context,
+    Map<String, List<RankItemModel>> data,
+    int pageIndex, {
+    required double cardExtent, // RankingCard의 고정 높이
+    required String Function(String) getDescByFieldName,
+    required String Function(String) getTitleByFieldName,
+    TextStyle? descStyle,
+    TextStyle? titleStyle,
+  }) {
+    final keys = data.keys.toList();
+    final int k = pageIndex * 2;
+    final double maxTextWidth =
+        MediaQuery.of(context).size.width - 40.w; // 좌우 20.w 패딩
 
-    final double spacingHeight = (40.w +
-        (((data[keys[currentIndex]]!.length - 1).toDouble() +
-                (data[keys[currentIndex + 1]]!.length - 1).toDouble()) *
-            10.w));
-    // final double spacingHeight = (40 + ((19 + 19) * 10));
-    final double contentHeight = (data[keys[currentIndex]]!.length.toDouble() +
-            data[keys[currentIndex + 1]]!.length.toDouble()) *
-        rankCardHeight;
-    // final double contentHeight = (20 + 20) * rankCardHeight;
+    // 스타일이 명시되지 않았다면 대략적인 기본값(프로젝트 테마에 맞게 바꿔도 됨)
+    final dStyle = descStyle ??
+        Theme.of(context).textTheme.bodyLarge ??
+        const TextStyle(fontSize: 16);
+    final tStyle = titleStyle ??
+        Theme.of(context).textTheme.headlineSmall ??
+        const TextStyle(fontSize: 20, fontWeight: FontWeight.w600);
 
-    return (appBarHeight +
-        textsHeight +
-        paddingHeight +
-        extraSpacingHeight +
-        spacingHeight +
-        contentHeight);
+    // 첫 섹션
+    final String key1 = keys[k];
+    final String desc1 = getDescByFieldName(key1);
+    final String title1 = getTitleByFieldName(key1);
+    final int count1 = data[key1]?.length ?? 0;
+
+    final double desc1H = _textHeight(
+        context: context, text: desc1, style: dStyle, maxWidth: maxTextWidth);
+    final double title1H = _textHeight(
+        context: context, text: title1, style: tStyle, maxWidth: maxTextWidth);
+
+    // 두 번째 섹션(짝이 없을 수도 있음)
+    final bool hasSecond = k + 1 < keys.length;
+    final String? key2 = hasSecond ? keys[k + 1] : null;
+    final String title2 = hasSecond ? getTitleByFieldName(key2!) : '';
+    final int count2 = hasSecond ? (data[key2!]?.length ?? 0) : 0;
+    final double title2H = hasSecond
+        ? _textHeight(
+            context: context,
+            text: title2,
+            style: tStyle,
+            maxWidth: maxTextWidth)
+        : 0;
+
+    // ListView.separated의 구분선 간격(= 16.w)과 리스트 하단 패딩(= 16.w)
+    double separatedTotal(int itemCount) {
+      if (itemCount <= 0) return 0;
+      final gaps = (itemCount - 1).clamp(0, 1 << 30) * 16.w;
+      return itemCount * cardExtent + gaps + 16.w; // bottom padding 16.w 포함
+    }
+
+    double h = 0;
+
+    // 페이지 구성 요소들의 높이 합(여기 값들은 질문 코드의 SizedBox 및 패딩 간격과 동일)
+    h += 10.w; // SizedBox(height: 10.w)
+    h += desc1H;
+    h += 16.w; // SizedBox(height: 16.w)
+    h += title1H;
+    h += 16.w; // SizedBox(height: 16.w)
+    h += separatedTotal(count1);
+    h += 20.w; // SizedBox(height: 20.w)
+
+    if (hasSecond) {
+      h += title2H;
+      h += 10.w; // SizedBox(height: 10.w)
+      h += separatedTotal(count2);
+    }
+
+    h += 50.0; // const SizedBox(height: 50)
+
+    return h;
   }
 
   List<Widget> rankListPages(Map<String, List<RankItemModel>> data) {

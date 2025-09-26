@@ -112,6 +112,5 @@ class _AppState extends State<App> with WidgetsBindingObserver {
       default:
         break;
     }
-    super.didChangeAppLifecycleState(state);
   }
 }

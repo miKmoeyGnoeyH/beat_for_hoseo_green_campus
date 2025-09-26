@@ -87,7 +87,7 @@ class _PermissionRequiredCardState extends State<PermissionRequiredCard>
               CustomBodyLarge(
                 text: content,
                 textColor: context.appColors.onPrimary,
-                maxLines: 2,
+                // maxLines: 2,
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 12.w),
@@ -156,23 +156,31 @@ class _PermissionRequiredCardState extends State<PermissionRequiredCard>
           );
         } else {
           // Obx로 동적 조건 처리
-          return Obx(() {
-            Widget inner = const SizedBox.shrink();
-            if (!pedometerController.isInValidArea) {
-              inner = _buildErrorCard(localizationManager.homeNotInValidArea);
-            } else if (pedometerController.isHoliday) {
-              inner = _buildErrorCard(localizationManager.homeNotEventDuration);
-            } else if (pedometerController.isReachedMaxStepCount) {
-              inner = _buildErrorCard(
-                  localizationManager.homeReachedTodaysMaxStepCount);
-            }
+          return Obx(
+            () {
+              Widget inner = const SizedBox.shrink();
+              if (!pedometerController.isInValidArea) {
+                inner = _buildErrorCard(localizationManager.homeNotInValidArea);
+              } else if (pedometerController.isHoliday) {
+                inner =
+                    _buildErrorCard(localizationManager.homeNotEventDuration);
+              } else if (pedometerController.isReachedMaxStepCount) {
+                inner = _buildErrorCard(
+                    localizationManager.homeReachedTodaysMaxStepCount);
+              }
 
-            return AnimatedSize(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
-              child: inner,
-            );
-          });
+              return AnimatedSize(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                child: Column(
+                  children: [
+                    inner,
+                    SizedBox(height: inner is SizedBox ? 0 : 16.w),
+                  ],
+                ),
+              );
+            },
+          );
         }
 
         return AnimatedSize(

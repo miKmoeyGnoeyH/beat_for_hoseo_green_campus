@@ -141,7 +141,7 @@ class LocationController extends GetxController {
 
     _updateLocationTimer = Timer.periodic(
       const Duration(seconds: 5),
-      (t) async {
+          (t) async {
         await PermissionManager
             .ensureLocationAndActivityPermissionInitialized();
         if (!PermissionManager.isLocationPermissionGrantedStatic!) return;
@@ -161,7 +161,7 @@ class LocationController extends GetxController {
 
     _midnightTimer = Timer.periodic(
       const Duration(seconds: 1),
-      (_) {
+          (_) {
         final now = DateTime.now();
         if (now.hour == 0 && now.minute == 0 && now.second == 0) {
           // if (now.minute % 5 == 0 && now.second == 0) {
@@ -276,7 +276,7 @@ class LocationController extends GetxController {
   void setMethodCallHandler() {
     if (Platform.isIOS) {
       _channel.setMethodCallHandler(
-        (call) async {
+            (call) async {
           switch (call.method) {
             case "backgroundLocationUpdate":
               final args = call.arguments as Map?;
@@ -291,8 +291,8 @@ class LocationController extends GetxController {
               break;
 
             case "eventDurationReset":
-              // Get.find<PedometerController>().isEventDuration.value = false;
-              // _stopEventTimers();
+            // Get.find<PedometerController>().isEventDuration.value = false;
+            // _stopEventTimers();
               break;
 
             case "syncWalkDataInBackground":
@@ -420,7 +420,7 @@ class LocationController extends GetxController {
 
   void checkIsValidArea() async {
     final PedometerController pedometerController =
-        Get.find<PedometerController>();
+    Get.find<PedometerController>();
 
     if (PermissionManager.isLocationPermissionGrantedStatic == null ||
         (PermissionManager.isLocationPermissionGrantedStatic == null &&
@@ -457,7 +457,7 @@ class LocationController extends GetxController {
   // iOS 백그라운드 위치 업데이트용
   void checkIsValidAreaIOSBackground(double lat, double lon) async {
     final PedometerController pedometerController =
-        Get.find<PedometerController>();
+    Get.find<PedometerController>();
 
     if (PermissionManager.isLocationPermissionGrantedStatic == null ||
         (PermissionManager.isLocationPermissionGrantedStatic == null &&

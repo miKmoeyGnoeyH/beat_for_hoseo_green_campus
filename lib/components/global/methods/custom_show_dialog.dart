@@ -2,6 +2,7 @@ import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../managers/navigator/navigator_key_manager.dart';
 import '../../../theme/texts/custom_texts.dart';
@@ -24,9 +25,9 @@ Future<dynamic> customShowDialog(
         ),
         borderRadius: BorderRadius.circular(16),
       ),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+      insetPadding: EdgeInsets.symmetric(horizontal: 20.w),
       backgroundColor: context.appColors.background,
-      titlePadding: const EdgeInsets.only(left: 20, right: 20, top: 16),
+      titlePadding: EdgeInsets.only(left: 20.w, right: 20.w, top: 16.w),
       title: title != null
           ? Text(
               title,
@@ -34,7 +35,7 @@ Future<dynamic> customShowDialog(
                   .copyWith(color: context.appColors.onBackground),
             )
           : null,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      contentPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.w),
       content: content != null
           ? SizedBox(
               width: context.width * 0.7,
@@ -46,7 +47,7 @@ Future<dynamic> customShowDialog(
             )
           : null,
       actionsAlignment: MainAxisAlignment.center,
-      actionsPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      actionsPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.w),
       actions: [
         GestureDetector(
           onTap: () {
@@ -56,7 +57,7 @@ Future<dynamic> customShowDialog(
           child: CustomRoundedBorderedContainer(
             child: Center(
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                padding: EdgeInsets.symmetric(vertical: 16.w),
                 child: Text(
                   buttonText ?? context.tr('confirm'),
                   style: CustomLargeTexts.subtitleLarge
