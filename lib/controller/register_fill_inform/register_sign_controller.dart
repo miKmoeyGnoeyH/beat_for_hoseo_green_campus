@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hand_signature/signature.dart';
 
 class RegisterSignController {
@@ -17,12 +16,8 @@ class RegisterSignController {
   RegisterSignController();
 
   Future<void> done() async {
-    ByteData? signature = await handSignatureControl.toImage(
-      background: Colors.transparent,
-      width: 640,
-      height: 360,
-      fit: true,
-    );
+    ByteData? signature =
+        await handSignatureControl.toImage(background: Colors.transparent);
     if (signature == null) {
       throw Exception();
     }

@@ -55,13 +55,13 @@ class UserController extends Bloc<UserEvent, User> {
 
     if (user is Member) {
       final fcmToken = await FirebaseMessaging.instance.getToken();
-      log('user_controller.dart : _signIn : fcmToken : $fcmToken');
+      // log('user_controller.dart : _signIn : fcmToken : $fcmToken');
 
       if (fcmToken == null) {
         user = ErrorUser(localizationManager.errorsConnectionError);
       } else {
         if (await _userProvider.registerToken(user.authorization, fcmToken)) {
-          log("FlutterNativeSplash.remove()");
+          // log("FlutterNativeSplash.remove()");
           FlutterNativeSplash.remove();
           NavigatorKeyManager().pushNamedAndRemoveUntil(
             RouteNames.screenHolder,
@@ -73,7 +73,7 @@ class UserController extends Bloc<UserEvent, User> {
         }
       }
     }
-    log("FlutterNativeSplash.remove()");
+    // log("FlutterNativeSplash.remove()");
 
     FlutterNativeSplash.remove();
 

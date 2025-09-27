@@ -8,7 +8,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../controller/register_fill_inform/register_agreement_controller.dart';
-import '../../../theme/texts/custom_texts.dart';
 import '../../global/widgets/custom_rounded_bordered_container.dart';
 
 class StatefulBottomSheet extends StatefulWidget {

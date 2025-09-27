@@ -1,4 +1,3 @@
-import 'package:beat_flutter/components/global/methods/custom_show_dialog.dart';
 import 'package:beat_flutter/components/register_fill_inform/widgets/rfi_regexp.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';

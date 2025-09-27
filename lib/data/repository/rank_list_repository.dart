@@ -7,10 +7,12 @@ class RankListRepository {
   RankListRepository(this.rankListProvider);
 
   Future<RankListModel> getRankList(String authorization) async {
-
     try {
       final Map<String, dynamic> rankListData = await rankListProvider
           .getRankList(authorization);
+      
+      log("RankListRepository: getRankList: rankListData: $rankListData");
+      
       return RankListModel.fromJson(rankListData);
     } catch (e) {
       log("RankListRepository : getRankList : error : $e");

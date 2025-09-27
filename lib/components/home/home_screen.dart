@@ -1,6 +1,5 @@
-import 'package:beat_flutter/components/global/widgets/custom_rounded_bordered_container.dart';
 import 'package:beat_flutter/components/home/widgets/home_contents.dart';
-import 'package:beat_flutter/components/home/widgets/pedometer_card.dart';
+import 'package:beat_flutter/components/home/widgets/pedometer_card_stack.dart';
 import 'package:beat_flutter/components/home/widgets/permission_required_card.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/permission/permission_manager.dart';
@@ -11,7 +10,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'widgets/neuroes_in_hand_card.dart';
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen({super.key});
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -19,16 +18,14 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final PageController pageController = PageController();
-  late Future<void> _permissionFuture;
 
   final List<Widget> widgets = [
-    const PedometerCard(),
+    const PedometerCardStack(),
     PointsInHandCard(),
   ];
 
   @override
   void initState() {
-    _permissionFuture = PermissionManager.updateLocationAndActivityPemission();
     super.initState();
   }
 
@@ -51,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
             // shrinkWrap: true,
             // padding: EdgeInsets.zero,
             children: [
-              PermissionRequiredCard(),
+              // const PermissionRequiredCard(),
               // SizedBox(height: 16.w),
               SizedBox(
                 width: double.infinity,

@@ -12,7 +12,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class PermissionRequiredCard extends StatefulWidget {
-  PermissionRequiredCard({super.key});
+  const PermissionRequiredCard({super.key});
 
   @override
   State<PermissionRequiredCard> createState() => _PermissionRequiredCardState();
@@ -159,11 +159,11 @@ class _PermissionRequiredCardState extends State<PermissionRequiredCard>
           return Obx(
             () {
               Widget inner = const SizedBox.shrink();
-              if (!pedometerController.isInValidArea) {
-                inner = _buildErrorCard(localizationManager.homeNotInValidArea);
-              } else if (pedometerController.isHoliday) {
+              if (pedometerController.isHoliday) {
                 inner =
                     _buildErrorCard(localizationManager.homeNotEventDuration);
+              } else if (!pedometerController.isInValidArea) {
+                inner = _buildErrorCard(localizationManager.homeNotInValidArea);
               } else if (pedometerController.isReachedMaxStepCount) {
                 inner = _buildErrorCard(
                     localizationManager.homeReachedTodaysMaxStepCount);

@@ -68,10 +68,13 @@ class WithdrawalScreen extends StatelessWidget {
                         title: localizationManager.withdrawalSuccess,
                         content: localizationManager.withdrawalSuccessMessage,
                         onTap: () async {
+                          // await Get.find<ActivityServiceController>()
+                          //     .stopForegroundService();
+                          // await Get.find<ActivityServiceController>()
+                          //     .stopBackgroundService();
+
                           await Get.find<ActivityServiceController>()
-                              .stopForegroundService();
-                          await Get.find<ActivityServiceController>()
-                              .stopBackgroundService();
+                              .stopService();
 
                           PageIndexController pageIndexController = Get.find<PageIndexController>();
                           pageIndexController.setIndex(pageIndexController.homeIndex, context);

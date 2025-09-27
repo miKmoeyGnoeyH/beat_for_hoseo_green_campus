@@ -14,7 +14,9 @@ class PageIndexController extends GetxController {
 
   final LocalizationManager localizationManager = LocalizationManager();
 
+  final int qrIndex = 0;
   final int homeIndex = 1;
+  final int myPageIndex = 2;
 
   void setIndex(int index, BuildContext context) async {
     if (index == 0) {

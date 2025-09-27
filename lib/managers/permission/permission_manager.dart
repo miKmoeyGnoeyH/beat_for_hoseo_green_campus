@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:beat_flutter/managers/prefs/prefs_manager.dart';
@@ -112,13 +111,6 @@ abstract class PermissionManager {
     return isLocationWhenInUseGranted || isLocationAlwaysGranted;
   }
 
-  /// 위치 권한이 거부되었는지 확인 (앱 사용 중이거나 항상)
-  static Future<bool> isLocationPermissionDenied() async {
-    final whenInUseStatus = await Permission.locationWhenInUse.status;
-    final alwaysStatus = await Permission.locationAlways.status;
-    return !whenInUseStatus.isGranted || !alwaysStatus.isGranted;
-  }
-
   /// 활동 인식 권한 요청
   static Future<bool> requestActivityPermission() async {
     final activityRecognitionStatus = await Permission.activityRecognition.request();
@@ -134,18 +126,6 @@ abstract class PermissionManager {
       final activityRecognitionStatus =
       await Permission.activityRecognition.status;
       return activityRecognitionStatus.isGranted;
-    }
-  }
-
-  /// 활동 인식 권한이 거부되었는지 확인
-  static Future<bool> isActivityPermissionDenied() async {
-    if (Platform.isIOS) {
-      final result = await _channel.invokeMethod("isMotionPermissionGranted");
-      return result != true;
-    } else {
-      final activityRecognitionStatus =
-      await Permission.activityRecognition.status;
-      return !activityRecognitionStatus.isGranted;
     }
   }
 

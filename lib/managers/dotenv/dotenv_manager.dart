@@ -49,6 +49,7 @@ class DotEnvManager {
   String get surveyDetail => dotenv.env['SURVEY_DETAIL'] ?? "";
   String get surveyAnswer => dotenv.env['SURVEY_ANSWER'] ?? "";
   String get rankListUrl => dotenv.env['RANK'] ?? "";
+  String get myRankUrl => dotenv.env['MY_RANK'] ?? "";
   String get notice => dotenv.env['NOTICE_LIST'] ?? "";
   String get walkHistoryUrl => dotenv.env['WALK_HISTORY'] ?? "";
   String get walkRecordUrl => dotenv.env['WALK_RECORD'] ?? "";
@@ -56,4 +57,5 @@ class DotEnvManager {
   String get holidayList => dotenv.env['HOLIDAY_LIST'] ?? "";
   String get emailVerify => dotenv.env['EMAIL_VERIFY'] ?? "";
   String get resetPasswordCodeVerify => dotenv.env['RESET_PASSWORD_CODE_VERIFY'] ?? "";
+  String get walkMeanHistory => dotenv.env['WALK_MEAN_HISTORY'] ?? "";
 }

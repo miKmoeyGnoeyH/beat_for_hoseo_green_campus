@@ -3,7 +3,6 @@ import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.d
 import 'package:beat_flutter/components/global/widgets/texts/custom_headline_medium.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_title_medium.dart';
 import 'package:beat_flutter/controller/activity_service_controller.dart';
-import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
 import 'package:beat_flutter/controller/screen_holder/page_index_controller.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
@@ -51,8 +50,9 @@ class SettingsScreen extends StatelessWidget {
 
                 activityServiceController.addWalkReport();
 
-                await activityServiceController.stopForegroundService();
-                await activityServiceController.stopBackgroundService();
+                // await activityServiceController.stopForegroundService();
+                // await activityServiceController.stopBackgroundService();
+                await activityServiceController.stopService();
 
                 PageIndexController pageIndexController = Get.find<PageIndexController>();
                 pageIndexController.setIndex(pageIndexController.homeIndex, context);

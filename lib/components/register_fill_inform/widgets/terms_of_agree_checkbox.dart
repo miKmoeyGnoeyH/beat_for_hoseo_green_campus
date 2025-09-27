@@ -1,6 +1,5 @@
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../controller/register_fill_inform/register_agreement_controller.dart';
 

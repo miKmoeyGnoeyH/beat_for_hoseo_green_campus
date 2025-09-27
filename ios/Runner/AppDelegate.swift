@@ -5,7 +5,6 @@ import flutter_local_notifications
 import BackgroundTasks
 import CoreMotion
 import UserNotifications
-import CoreMotion
 
 let pedometer = CMPedometer()
 let activityManager = CMMotionActivityManager()
@@ -73,6 +72,15 @@ let activityManager = CMMotionActivityManager()
         )
 
         // 위치 관련 핸들러만 위치 채널에 등록
+//         locationChannel 핸들러
+//         "startBackgroundTasks"   4시간 단위 걸음 수 동기화 시작, 랭킹 집계 시작, 자정 초기화 시작
+//                                  위치 추적 시작
+//        
+//         "stopBackgroundTasks"    위치 추적 중지
+//                                  4시간 단위 걸음 수 동기화 중지, 랭킹 집계 중지, 자정 초기화 중지
+//        
+//         "updateHolidayStatus"    isHoliday가 true이면 위치 추적 중지
+//                                  isHoliday가 false이면 위치 추적 재시작
         locationChannel?.setMethodCallHandler { [weak self] (call, result) in
             guard let self = self else { return }
             
@@ -114,6 +122,17 @@ let activityManager = CMMotionActivityManager()
         }
 
         // 보행 관련 핸들러는 보행 채널에 등록
+//         "isMotionPermissionGranted"  활동 권한이 부여되었는지 확인
+//                                      iOS는 안드로이드와 달리 permission_handler 패키지를 사용해 활동 권한을 정확히 받아올 수 없음.
+//                                      메소드 채널을 통해 iOS 네이티브에서 권한 부여 여부를 정확히 확인하고 플러터 UI isolate에 전달
+//        
+//         "startPedometer"             걸음 수 측정 시작. 걸음 수 이벤트 발생 시마다 메소드 채널 핸들러를 통해 플러터 UI isolate에 전달
+//        
+//         "stopPedometer"              걸음 수 측정 중지
+//        
+//         "startActivityUpdates"       보행 상태 추적 시작
+//        
+//         "stopActivityUpdates"        보행 상태 추적 중지
         pedometerChannel?.setMethodCallHandler { [weak self] (call, result) in
             guard let self = self else { return }
 
@@ -179,22 +198,22 @@ let activityManager = CMMotionActivityManager()
     
     // MARK: - Pedometer
     func startPedometer() {
-            stopPedometer()
-            
-            if CMPedometer.isStepCountingAvailable() {
-                pedometer.startUpdates(from: Date()) { data, error in
-                    if let steps = data?.numberOfSteps {
-                        DispatchQueue.main.async {
-                            self.pedometerChannel?.invokeMethod(
-                                "updateStepsFromNative",
-                                arguments: ["steps": steps]
-                            )
-                        }
-                        print("iOS: updateStepsFromNative called")
-                    }
+        stopPedometer()
+
+        if CMPedometer.isStepCountingAvailable() {
+            let from = Calendar.current.startOfDay(for: Date())
+            pedometer.startUpdates(from: from) { data, _ in
+                guard let steps = data?.numberOfSteps else { return }
+                // ✅ 반드시 메인 스레드에서 호출
+                DispatchQueue.main.async {
+                    self.pedometerChannel?.invokeMethod(
+                        "updateStepsFromNative",
+                        arguments: ["steps": steps.intValue]
+                    )
                 }
             }
         }
+    }
     
     func stopPedometer() {
         print("iOS : stopPedometer() called")
@@ -205,15 +224,22 @@ let activityManager = CMMotionActivityManager()
         if CMMotionActivityManager.isActivityAvailable() {
             activityManager.startActivityUpdates(to: OperationQueue.main) { activity in
                 guard let activity = activity else { return }
-                
-                if activity.walking {
-                    self.pedometerChannel?.invokeMethod("updatePedestrianStatus", arguments: ["status": "walking"])
-                } else if activity.running {
-                    self.pedometerChannel?.invokeMethod("updatePedestrianStatus", arguments: ["status": "walking"])
+
+                let status: String
+                if activity.walking || activity.running {
+                    status = "walking"
                 } else if activity.stationary {
-                    self.pedometerChannel?.invokeMethod("updatePedestrianStatus", arguments: ["status": "stopped"])
+                    status = "stopped"
                 } else {
-                    self.pedometerChannel?.invokeMethod("updatePedestrianStatus", arguments: ["status": "unknown"])
+                    status = "unknown"
+                }
+
+                // ✅ 혹시 모를 상황 대비하여 메인 보장
+                DispatchQueue.main.async {
+                    self.pedometerChannel?.invokeMethod(
+                        "updatePedestrianStatus",
+                        arguments: ["status": status]
+                    )
                 }
             }
         }
@@ -279,32 +305,21 @@ let activityManager = CMMotionActivityManager()
         request.requiresExternalPower = false
         
         // 다음 59분 {sendToTime}초까지의 시간 계산
-        let calendar = Calendar.current
+        let cal = Calendar.current
         let now = Date()
-        var targetDate: Date
-        
-        let currentMinute = calendar.component(.minute, from: now)
-        let currentSecond = calendar.component(.second, from: now)
-        
-        if currentMinute > 59 || (currentMinute == 59 && currentSecond >= sendToTime) {
-            // 다음 시간의 59분 {sendToTime}초로 설정
-            targetDate = calendar.date(byAdding: .hour, value: 1, to: calendar.startOfHour(for: now))!
-            targetDate = calendar.date(byAdding: .minute, value: 59, to: targetDate)!
-            targetDate = calendar.date(byAdding: .second, value: sendToTime, to: targetDate)!
-        } else {
-            // 현재 시간의 59분 {sendToTime}초로 설정
-            targetDate = calendar.startOfHour(for: now)
-            targetDate = calendar.date(byAdding: .minute, value: 59, to: targetDate)!
-            targetDate = calendar.date(byAdding: .second, value: sendToTime, to: targetDate)!
+        var target = cal.startOfHour(for: now)
+        target = cal.date(byAdding: .minute, value: 59, to: target)!
+        target = cal.date(byAdding: .second, value: sendToTime, to: target)!
+        if cal.component(.minute, from: now) == 59 && cal.component(.second, from: now) >= sendToTime {
+            target = cal.date(byAdding: .hour, value: 1, to: target)!
         }
-        
-        request.earliestBeginDate = targetDate
+        request.earliestBeginDate = target
         
         do {
             try BGTaskScheduler.shared.submit(request)
-            print("✅ 랭킹 집계 BGTask 스케줄 완료: \(targetDate) (59분 \(sendToTime)초)")
+            print("✅ 랭킹 집계 BGTask 스케줄 완료: \(target) (59분 \(sendToTime)초)")
             print("✅ 현재 시간: \(Date())")
-            print("✅ 다음 실행까지 남은 시간: \(targetDate.timeIntervalSinceNow)초")
+            print("✅ 다음 실행까지 남은 시간: \(target.timeIntervalSinceNow)초")
         } catch {
             print("❌ 랭킹 집계 BGTask 스케줄 실패: \(error)")
         }
@@ -463,52 +478,52 @@ let activityManager = CMMotionActivityManager()
     }
     
     // MARK: - ✅ Flutter 타이머 기능 중 "자정 초기화"만 iOS에서 처리
-    var midnightTimer: Timer?
-    var eventDurationTimer: Timer?
+//    var midnightTimer: Timer?
+//    var eventDurationTimer: Timer?
     
-    func startCustomTimers(isHoliday: Bool) {
-        invalidateCustomTimers()
-        
-        // ✅ 자정 타이머 (공휴일 여부 관계없이 항상 실행)
-        midnightTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
-            let date = Date()
-            let calendar = Calendar.current
-            let hour = calendar.component(.hour, from: date)
-            let minute = calendar.component(.minute, from: date)
-            let second = calendar.component(.second, from: date)
-            
-            if hour == 0 && minute == 0 && second == 0 {
-                self.locationChannel?.invokeMethod("midnightReset", arguments: nil)
-            }
-        }
-        
-        // ✅ 이벤트 타이머 (공휴일 아닐 때만 실행)
-        if !isHoliday {
-            eventDurationTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
-                let date = Date()
-                let calendar = Calendar.current
-                let hour = calendar.component(.hour, from: date)
-                let minute = calendar.component(.minute, from: date)
-                let second = calendar.component(.second, from: date)
-                
-                if hour >= 18 && minute >= 0 && second >= 0 {
-                    self.locationChannel?.invokeMethod("eventDurationReset", arguments: nil)
-                }
-            }
-        }
-        
-        print("✅ Custom timers started (isHoliday: \(isHoliday))")
-    }
-    
-    func invalidateCustomTimers() {
-        midnightTimer?.invalidate()
-        midnightTimer = nil
-        
-        eventDurationTimer?.invalidate()
-        eventDurationTimer = nil
-        
-        print("🛑 Custom timers stopped")
-    }
+//    func startCustomTimers(isHoliday: Bool) {
+//        invalidateCustomTimers()
+//        
+//        // ✅ 자정 타이머 (공휴일 여부 관계없이 항상 실행)
+//        midnightTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+//            let date = Date()
+//            let calendar = Calendar.current
+//            let hour = calendar.component(.hour, from: date)
+//            let minute = calendar.component(.minute, from: date)
+//            let second = calendar.component(.second, from: date)
+//            
+//            if hour == 0 && minute == 0 && second == 0 {
+//                self.locationChannel?.invokeMethod("midnightReset", arguments: nil)
+//            }
+//        }
+//        
+//        // ✅ 이벤트 타이머 (공휴일 아닐 때만 실행)
+////        if !isHoliday {
+////            eventDurationTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+////                let date = Date()
+////                let calendar = Calendar.current
+////                let hour = calendar.component(.hour, from: date)
+////                let minute = calendar.component(.minute, from: date)
+////                let second = calendar.component(.second, from: date)
+////                
+////                if hour >= 18 && minute >= 0 && second >= 0 {
+////                    self.locationChannel?.invokeMethod("eventDurationReset", arguments: nil)
+////                }
+////            }
+////        }
+//        
+//        print("✅ Custom timers started (isHoliday: \(isHoliday))")
+//    }
+//    
+//    func invalidateCustomTimers() {
+//        midnightTimer?.invalidate()
+//        midnightTimer = nil
+//        
+////        eventDurationTimer?.invalidate()
+////        eventDurationTimer = nil
+//        
+//        print("🛑 Custom timers stopped")
+//    }
 }
 
 extension Calendar {

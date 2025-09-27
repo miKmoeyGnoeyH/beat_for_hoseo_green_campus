@@ -3,17 +3,14 @@ import 'dart:developer';
 import 'package:beat_flutter/components/notice_detail/notice_detail.dart';
 import 'package:beat_flutter/components/oss_licenses/oss_licenses.dart';
 import 'package:beat_flutter/components/reset_password/reset_password.dart';
-import 'package:beat_flutter/components/reset_password/reset_password_org.dart';
 import 'package:beat_flutter/components/survey_detail/survey_detail.dart';
 import 'package:beat_flutter/controller/home/controllers/quest_list_controller.dart';
 import 'package:beat_flutter/controller/home/controllers/survey_detail_controller.dart';
-import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
 import 'package:beat_flutter/controller/activity_service_controller.dart';
+import 'package:beat_flutter/controller/my_page/my_page_controller.dart';
 import 'package:beat_flutter/controller/rank/rank_controller_test.dart';
-import 'package:beat_flutter/controller/screen_holder/page_index_controller.dart';
 import 'package:beat_flutter/data/provider/rank_list_provider.dart';
 import 'package:beat_flutter/data/repository/rank_list_repository.dart';
-import 'package:beat_flutter/managers/navigator/arguments/reset_password_arguments.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -203,6 +200,10 @@ abstract class Routes {
           return MaterialPageRoute(
             builder: (context) {
               Get.put(SurveyDetailController());
+              Get.put(MyPageController());
+
+              // Get.find<ActivityServiceController>()
+              //     .setSendToTime(arguments.sendToTime);
 
               Get.find<ActivityServiceController>()
                   .setAuthorization(arguments.authorization);
@@ -232,7 +233,7 @@ abstract class Routes {
 
       case RouteNames.signIn:
         return MaterialPageRoute(
-          builder: (context) => SignInScreen(),
+          builder: (context) => const SignInScreen(),
         );
 
       case RouteNames.voteDetail:
@@ -322,7 +323,7 @@ abstract class Routes {
       default:
         {
           log("Routes: default case");
-          return MaterialPageRoute(builder: (context) => SignInScreen());
+          return MaterialPageRoute(builder: (context) => const SignInScreen());
         }
     }
   }

@@ -19,6 +19,7 @@ class CustomTextButtonWrap extends StatelessWidget {
     this.textColor,
     this.autoSizeText = false,
     this.maxLines = 1,
+    this.borderWidth
   });
 
   @override
@@ -27,7 +28,7 @@ class CustomTextButtonWrap extends StatelessWidget {
       color: Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(borderRadius ?? 12),
-        side: BorderSide(color: borderColor, width: 0.5),
+        side: BorderSide(color: borderColor, width: borderWidth ?? 0.5.w),
       ),
       clipBehavior: Clip.hardEdge,
       child: InkWell(
@@ -35,7 +36,7 @@ class CustomTextButtonWrap extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             color: buttonColor ?? context.appColors.primary,
-            border: Border.all(color: borderColor, width: 0.5),
+            border: Border.all(color: borderColor, width: borderWidth ?? 0.5.w),
             borderRadius: BorderRadius.circular(borderRadius ?? 12),
           ),
           padding: padding ?? EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.w),
@@ -67,4 +68,5 @@ class CustomTextButtonWrap extends StatelessWidget {
   final Color? textColor;
   final bool autoSizeText;
   final int maxLines;
+  final double? borderWidth;
 }

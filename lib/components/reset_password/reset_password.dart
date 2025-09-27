@@ -5,12 +5,10 @@ import 'dart:developer';
 import 'package:beat_flutter/components/global/methods/custom_show_dialog.dart';
 import 'package:beat_flutter/components/global/widgets/appbars/custom_appbar.dart';
 import 'package:beat_flutter/components/global/widgets/buttons/custom_bottom_appbar_button.dart';
-import 'package:beat_flutter/components/global/widgets/buttons/custom_text_button.dart';
 import 'package:beat_flutter/components/global/widgets/buttons/custom_wide_button.dart';
 import 'package:beat_flutter/components/global/widgets/custom_circular_progress_indicator.dart';
 import 'package:beat_flutter/components/global/widgets/custom_scaffold.dart';
 import 'package:beat_flutter/components/global/widgets/custom_text_field.dart';
-import 'package:beat_flutter/components/global/widgets/texts/custom_subtitle_large.dart';
 import 'package:beat_flutter/components/register_fill_inform/widgets/rfi_regexp.dart';
 import 'package:beat_flutter/controller/activity_service_controller.dart';
 import 'package:beat_flutter/controller/user_controller.dart';
@@ -350,7 +348,7 @@ class _ResetPasswordState extends State<ResetPassword> {
           text: localizationManager.rpResetPassword,
           textColor: _isSignUpButtonEnabled
               ? context.appColors.onPrimary
-              : context.appColors.onBackground,
+              : context.appColors.onPrimary,
         ),
       ),
     );
@@ -513,12 +511,14 @@ class _ResetPasswordState extends State<ResetPassword> {
           context: context,
           title: localizationManager.rpResetPasswordSuccessTitle,
           content: localizationManager.rpResetPasswordSuccessContent,
-          onTap: () {
-            Get.find<ActivityServiceController>().stopForegroundService();
-            Get.find<ActivityServiceController>().stopBackgroundService();
+          onTap: () async {
+            // Get.find<ActivityServiceController>().stopForegroundService();
+            // Get.find<ActivityServiceController>().stopBackgroundService();
 
-            context.read<UserController>().add(SignOut());
+            await Get.find<ActivityServiceController>().stopService();
+
             PrefsManager().clear();
+            context.read<UserController>().add(SignOut());
             // NavigatorKeyManager().pushNamedAndRemoveUntil(RouteNames.signIn);
           },
         );

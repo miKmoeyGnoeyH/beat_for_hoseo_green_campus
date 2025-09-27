@@ -12,8 +12,8 @@ class RankListProvider {
     final String requestUrl = DotEnvManager().rankListUrl;
 
     try {
-      final http.Response response = await http.get(
-          Uri.parse(requestUrl), headers: {
+      final http.Response response =
+          await http.get(Uri.parse(requestUrl), headers: {
         'Authorization': authorization,
       }).timeout(
         const Duration(seconds: 5),
@@ -22,7 +22,11 @@ class RankListProvider {
       log("RankListProvider : getRankList : response.statusCode : ${response.statusCode}");
       log("RankListProvider : getRankList : response.body : ${response.body}");
 
-      return jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        throw Exception();
+      }
     } catch (e) {
       log(e.toString());
       rethrow;
@@ -34,15 +38,14 @@ class RankListProvider {
 
     try {
       final http.Response pointResponse =
-      await _httpClient.get(Uri.parse(requestUrl)).timeout(
-        const Duration(seconds: 5),
-      );
-
+          await _httpClient.get(Uri.parse(requestUrl)).timeout(
+                const Duration(seconds: 5),
+              );
 
       if (pointResponse.statusCode == 200) {
         final pointBody = pointResponse.body;
-        final stepResponse = await rootBundle.loadString(
-            "assets/dummy/step_count_rank_dummy.json");
+        final stepResponse = await rootBundle
+            .loadString("assets/dummy/step_count_rank_dummy.json");
 
         // log("RankListProvider : getRankListTest : stepResponse : $stepResponse");
 

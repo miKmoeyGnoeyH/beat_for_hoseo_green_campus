@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../global/widgets/texts/custom_body_large.dart';
-import '../../global/widgets/texts/custom_subtitle_large.dart';
 
 TableRow buildQuestDetailTableRewardRow({required String reward}) {
   return TableRow(

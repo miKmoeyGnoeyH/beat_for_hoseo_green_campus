@@ -3,6 +3,7 @@ import 'package:beat_flutter/components/global/methods/custom_show_dialog.dart';
 import 'package:beat_flutter/components/my_page/my_page.dart';
 import 'package:beat_flutter/controller/home/controllers/quest_list_controller.dart';
 import 'package:beat_flutter/controller/activity_service_controller.dart';
+import 'package:beat_flutter/controller/my_page/my_page_controller.dart';
 import 'package:beat_flutter/controller/screen_holder/page_index_controller.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
@@ -26,45 +27,20 @@ class ScreenHolder extends StatefulWidget {
   State<ScreenHolder> createState() => _ScreenHolderState();
 }
 
-class _ScreenHolderState extends State<ScreenHolder>
-    with WidgetsBindingObserver {
+class _ScreenHolderState extends State<ScreenHolder> {
   final LocalizationManager localizationManager = LocalizationManager();
 
   final PageIndexController pageIndexController =
       Get.find<PageIndexController>();
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async {
-    debugPrint('didChangeAppLifecycleState: $state');
-    switch (state) {
-      case AppLifecycleState.resumed:
-        await Get.find<ActivityServiceController>().stopBackgroundService();
-        Get.find<ActivityServiceController>().startForegroundService();
-
-        setState(() {});
-        break;
-      case AppLifecycleState.inactive:
-      case AppLifecycleState.paused:
-        await Get.find<ActivityServiceController>().stopForegroundService();
-        Get.find<ActivityServiceController>().startBackgroundService();
-        break;
-      case AppLifecycleState.detached:
-      default:
-        break;
-    }
-    super.didChangeAppLifecycleState(state);
-  }
-
-  @override
   void initState() {
-    WidgetsBinding.instance.addObserver(this);
     showDialogIfPermissionDenied();
     super.initState();
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -73,8 +49,6 @@ class _ScreenHolderState extends State<ScreenHolder>
         await PermissionManager.requestLocationPermission();
     final bool isActivityPermissionGranted =
         await PermissionManager.requestActivityPermission();
-    final bool isCameraPermissionGranted =
-        await PermissionManager.requestCameraPermission();
 
     if (!isLocationPermissionGranted) {
       await customConfirmDialog(
@@ -96,30 +70,22 @@ class _ScreenHolderState extends State<ScreenHolder>
         cancelText: localizationManager.homeLater,
       );
     }
-    if (!isCameraPermissionGranted) {
-      await customConfirmDialog(
-        context: context,
-        title: localizationManager.qrBEATRequiresCameraPermissionTitle,
-        content: localizationManager.qrBEATRequiresCameraPermissionContent,
-        onConfirmTap: () => AppSettings.openAppSettings(asAnotherTask: true),
-        confirmText: localizationManager.homeGotoSettings,
-        cancelText: localizationManager.homeLater,
-      );
-    }
 
     await PermissionManager.updateLocationAndActivityPemission();
-    Get.find<ActivityServiceController>().startForegroundService();
+    Get.find<ActivityServiceController>().startService();
   }
 
   @override
   Widget build(BuildContext context) {
     Future<void> onPullDown() async {
       final UserController userController = context.read<UserController>();
+
       userController.add(GetMyNeuro());
+      Get.find<ActivityServiceController>().getWalkHistory();
       context.read<QuestListController>().add(DataListRequest());
       context.read<SurveyListController>().add(DataListRequest());
-      Get.find<ActivityServiceController>().getWalkHistory();
       await PermissionManager.updateLocationAndActivityPemission();
+
       return Future.delayed(const Duration(seconds: 0));
     }
 
@@ -132,8 +98,8 @@ class _ScreenHolderState extends State<ScreenHolder>
           child: Obx(() {
             return NestedScrollView(
               controller: pageIndexController.scrollController,
-              physics: pageIndexController.selectedIndex ==
-                      pageIndexController.homeIndex
+              physics: !(pageIndexController.selectedIndex ==
+                      pageIndexController.qrIndex)
                   ? const AlwaysScrollableScrollPhysics()
                   : const NeverScrollableScrollPhysics(),
               headerSliverBuilder: (context, innerBoxIsScrolled) => const [
@@ -171,7 +137,7 @@ class _ScreenHolderState extends State<ScreenHolder>
 
   final List<Widget> _screens = [
     const QrScreen(),
-    HomeScreen(),
+    const HomeScreen(),
     MyPage(),
     // const VoteScreen()
   ];

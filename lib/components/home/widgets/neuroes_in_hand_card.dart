@@ -1,4 +1,3 @@
-import 'package:beat_flutter/components/global/beat/gc_points.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -10,7 +9,6 @@ import '../../../controller/user_controller.dart';
 import '../../../data/models/user_model.dart';
 import '../../../managers/navigator/navigator_key_manager.dart';
 import '../../../managers/navigator/routes.dart';
-import '../../global/widgets/custom_rounded_bordered_container.dart';
 import '../../global/widgets/texts/custom_body_large.dart';
 import '../../global/widgets/texts/custom_headline_large.dart';
 import '../../global/widgets/texts/custom_subtitle_large.dart';

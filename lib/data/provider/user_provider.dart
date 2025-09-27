@@ -16,7 +16,7 @@ class UserProvider {
   final LocalizationManager localizationManager = LocalizationManager();
 
   Future<User> signIn(String studentId, String password) async {
-    BEATLogger.d("UserProvider: signIn: studentId: $studentId, password: $password");
+    // BEATLogger.d("UserProvider: signIn: studentId: $studentId, password: $password");
 
     final String requestUrl = DotEnvManager().signIn;
     User user = Guest();
@@ -32,7 +32,7 @@ class UserProvider {
         },
       ).timeout(const Duration(seconds: 10));
 
-      BEATLogger.d("UserProvider: signIn: response: ${response.body.toString()}");
+      // BEATLogger.d("UserProvider: signIn: response: ${response.body.toString()}");
 
       if (response.statusCode == 200) {
         PrefsManager().setSavedStudentId(studentId);

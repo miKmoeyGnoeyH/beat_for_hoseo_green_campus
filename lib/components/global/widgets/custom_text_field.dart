@@ -1,7 +1,5 @@
 import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_body_medium.dart';
-import 'package:beat_flutter/components/global/widgets/texts/custom_hintstyle.dart';
-import 'package:beat_flutter/components/global/widgets/texts/custom_label_large.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_subtitle_large.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../theme/texts/custom_texts.dart';
-import '../methods/custom_textfield_decoration.dart';
 
 class CustomTextField extends StatefulWidget {
   const CustomTextField({

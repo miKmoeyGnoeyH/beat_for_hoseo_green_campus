@@ -16,9 +16,7 @@ import '../../data/models/user_model.dart';
 import '../global/beat/beat_full_logo.dart';
 import '../global/widgets/custom_scaffold.dart';
 import '../global/methods/custom_show_dialog.dart';
-import 'widgets/sign_in_nickname_field.dart';
 import 'widgets/sign_in_register_button.dart';
-import 'widgets/sign_in_sid_field.dart';
 import 'widgets/sign_in_sign_in_button.dart';
 
 class SignInScreen extends StatefulWidget {

@@ -30,12 +30,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   }
 }
 
-// @pragma('vm:entry-point')
-// void notificationTapBackground(NotificationResponse notificationResponse) {
-//   // handle action
-// }
-
-// TODO : 전체적으로 리팩토링 한 번 싹 조져주기
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
@@ -48,19 +42,6 @@ Future<void> main() async {
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await EasyLocalization.ensureInitialized();
   await DotEnvManager().init();
-
-  final PedometerController pedometerController =
-      Get.put<PedometerController>(PedometerController(), permanent: true);
-
-  final LocationController locationController =
-      Get.put<LocationController>(LocationController(), permanent: true);
-
-  final ActivityServiceController activityServiceController =
-      Get.put<ActivityServiceController>(ActivityServiceController(), permanent: true);
-
-  await activityServiceController.initializeService();
-
-  Get.put(PageIndexController(), permanent: true);
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -101,6 +82,20 @@ Future<void> main() async {
   });
 
   PackageInfoManager.instance.init();
+
+  final PedometerController pedometerController =
+      Get.put<PedometerController>(PedometerController(), permanent: true);
+
+  final LocationController locationController =
+      Get.put<LocationController>(LocationController(), permanent: true);
+
+  final ActivityServiceController activityServiceController =
+      Get.put<ActivityServiceController>(ActivityServiceController(),
+          permanent: true);
+
+  await activityServiceController.initializeService();
+
+  Get.put(PageIndexController(), permanent: true);
 
   runApp(
     EasyLocalization(
