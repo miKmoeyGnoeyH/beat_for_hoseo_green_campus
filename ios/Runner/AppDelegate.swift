@@ -283,16 +283,34 @@ let activityManager = CMMotionActivityManager()
         print("✅ 모든 BGTask 스케줄 완료 (sendToTime: \(sendToTime))")
     }
     
-    /// 걸음 수 동기화 BGTask 스케줄링 (4시간마다 - Apple 가이드라인 준수)
-    func scheduleWalkReportBGTask() {
+    /// 걸음 수 동기화 BGTask 스케줄링 (매시간 59분 {sendToTime}초)
+    func scheduleWalkReportBGTask(sendToTime: Int) {
         let request = BGProcessingTaskRequest(identifier: "com.beat.app.walkreport")
         request.requiresNetworkConnectivity = true
         request.requiresExternalPower = false
-        request.earliestBeginDate = Date(timeIntervalSinceNow: 14400) // 4시간 후 (Apple 가이드라인)
-        
+
+        // 다음 59분 {sendToTime}초 목표 시각 계산 (랭킹과 동일)
+        let cal = Calendar.current
+        let now = Date()
+
+        // startOfHour(for:) 확장이 없다면 아래 대체 라인 사용:
+        // let startOfHour = cal.dateInterval(of: .hour, for: now)!.start
+        var target = cal.startOfHour(for: now)
+        target = cal.date(byAdding: .minute, value: 59, to: target)!
+        target = cal.date(byAdding: .second, value: sendToTime, to: target)!
+
+        // 지금이 이미 해당 시각을 지난 경우 → 다음 시간으로 밀기
+        if cal.component(.minute, from: now) == 59 && cal.component(.second, from: now) >= sendToTime {
+            target = cal.date(byAdding: .hour, value: 1, to: target)!
+        }
+
+        request.earliestBeginDate = target
+
         do {
             try BGTaskScheduler.shared.submit(request)
-            print("✅ 걸음 수 동기화 BGTask 스케줄 완료 (4시간 후)")
+            print("✅ 걸음 수 동기화 BGTask 스케줄 완료: \(target) (59분 \(sendToTime)초)")
+            print("✅ 현재 시간: \(Date())")
+            print("✅ 다음 실행까지 남은 시간: \(target.timeIntervalSinceNow)초")
         } catch {
             print("❌ 걸음 수 동기화 BGTask 스케줄 실패: \(error)")
         }

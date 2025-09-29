@@ -108,6 +108,10 @@ class ActivityServiceController extends GetxController {
           initialNotificationContent:
               localizationManager.generalInitialNotificationContent,
           foregroundServiceNotificationId: foregroundServiceNotificationId,
+          foregroundServiceTypes: [
+            AndroidForegroundType.location,
+            AndroidForegroundType.dataSync
+          ]
         ),
       );
     } catch (e) {

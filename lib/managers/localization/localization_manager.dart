@@ -101,6 +101,8 @@ class LocalizationManager {
   String get qdAdditionalInformation => "quest_detail".tr(gender: "additional_information");
   String get qdQuestTypeQR => "quest_detail".tr(gender: "quest_type_qr");
   String get qdQuestTypeWalk => "quest_detail".tr(gender: "quest_type_walk");
+  String qdSteps(String arg) => "quest_detail".tr(gender: "steps", args: [arg]);
+  String qdQRs(String arg) => "quest_detail".tr(gender: "qrs", args: [arg]);
 
   // Survey detail
   String get sdSurvey => "survey_detail".tr(gender: "survey");
@@ -190,6 +192,7 @@ class LocalizationManager {
   String get rfiAppbarTitle => "register_fill_inform_page".tr(gender: "appbar_title");
   String get rfiName => "register_fill_inform_page".tr(gender: "name");
   String get rfiInavailableNameMessage => "register_fill_inform_page".tr(gender: "inavailable_name_message");
+  String get rfiInavailableNameMessage2 => "register_fill_inform_page".tr(gender: "inavailable_name_message2");
   String get rfiNameHasInitialConsonant => "register_fill_inform_page".tr(gender: "name_has_initial_consonant");
   String get rfiNameIsEmpty => "register_fill_inform_page".tr(gender: "name_is_empty");
   String get rfiNameHint => "register_fill_inform_page".tr(gender: "name_hint");

@@ -25,42 +25,25 @@ class StepCountStatisticsChart extends StatelessWidget {
     required this.barItems,
   });
 
-  double _niceCeil(double v) {
-    if (v <= 0) return 1;
-    final exp = (math.log(v) / math.ln10).floor();
-    final base = math.pow(10.0, exp).toDouble();
-    final n = v / base;
-    double m;
-    if (n <= 1)
-      m = 1;
-    else if (n <= 2)
-      m = 2;
-    else if (n <= 5)
-      m = 5;
-    else
-      m = 10;
-    return m * base;
-  }
-
   @override
   Widget build(BuildContext context) {
     // 원하는 라벨 개수: 5개(0 포함) → 구간은 4개
     const segments = 4;
 
-// 최댓값
+    // 최댓값
     final rawMax = barItems.isEmpty
         ? 0.0
         : barItems.map((e) => e.value.toDouble()).reduce(math.max);
 
-// 5의 배수 올림
+    // 5의 배수 올림
     double ceilToMultipleOf5(double v) =>
         (v <= 0 ? 5 : (v / 5).ceil() * 5).toDouble();
 
-// 눈금 간격과 우리가 보여줄 마지막 눈금(targetMax)
+    // 눈금 간격과 우리가 보여줄 마지막 눈금(targetMax)
     final interval = ceilToMultipleOf5(rawMax / segments);
     final double targetMax = interval * segments;
 
-// 플롯용 실제 최대값은 살짝 크게(윗쪽 여백)
+    // 플롯용 실제 최대값은 살짝 크게(윗쪽 여백)
     const topHeadroomFactor = 0.15; // 필요시 0.1~0.2 사이로 조절
     final double plotMaxY = targetMax + interval * topHeadroomFactor;
 
@@ -74,6 +57,9 @@ class StepCountStatisticsChart extends StatelessWidget {
           height: 170.w,
           child: BarChart(
             BarChartData(
+              barTouchData: BarTouchData(
+                enabled: false,
+              ),
               rotationQuarterTurns: 1,
               minY: 0,
               maxY: plotMaxY,

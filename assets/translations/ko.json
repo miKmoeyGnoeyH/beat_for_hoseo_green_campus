@@ -46,8 +46,8 @@
     "beat_requires_location_and_activity_permission_title": "BEAT는 위치 및 활동 권한이 필요합니다.",
     "please_change_the_location_and_activity_permissions_to_always_allow": "설정 화면에서 위치 및 활동 권한을\n항상 허용으로 변경해 주세요.",
     "beat_requires_location_and_activity_permission_content": "BEAT는 걸음 수 측정 및 QR 인식을 위해 위치 및 활동 권한이 필요합니다. 설정 화면에서 위치 및 활동 권한을 항상 허용으로 변경해 주세요.",
-    "not_in_valid_area": "이벤트 진행 지역이 아닙니다.",
-    "not_event_duration": "행사 진행 시간이 아닙니다.",
+    "not_in_valid_area": "걸음 수 측정 지역이 아닙니다.",
+    "not_event_duration": "걸음 수 측정 시간이 아닙니다.",
     "reached_todays_max_step_count": "오늘의 최대 걸음 수에 도달했습니다.",
     "pause_step_count": "걸음 수 측정이 일시중지되었습니다.",
     "go_to_settings": "설정",
@@ -63,7 +63,9 @@
     "progress": "진행도",
     "additional_information": "부가 정보",
     "quest_type_qr": "QR",
-    "quest_type_walk": "걷기"
+    "quest_type_walk": "걷기",
+    "steps": "{} 걸음",
+    "qrs": "{} 개"
   },
   "survey_detail": {
     "survey": "설문",
@@ -154,6 +156,7 @@
     "appbar_title": "정보 기입",
     "name": "이름",
     "inavailable_name_message": "이름에 사용할 수 없는 단어가 포함되어 있습니다. 다시 입력해 주세요.",
+    "inavailable_name_message2": "이름에 사용할 수 없는 문자가 포함되어 있습니다. 다시 입력해 주세요.",
     "name_has_initial_consonant": "이름에 초성이 포함되어 있습니다.",
     "name_is_empty": "이름을 입력해 주세요.",
     "name_hint": "이름을 입력해 주세요.",

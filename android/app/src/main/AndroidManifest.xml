@@ -29,6 +29,13 @@
                 android:exported="false"
                 android:foregroundServiceType="location" />
 
+        <service
+                android:name="id.flutter.flutter_background_service.BackgroundService"
+                android:exported="true"
+                android:foregroundServiceType="location|dataSync"
+                tools:node="merge"
+                tools:replace="android:foregroundServiceType" />
+
         <!-- location 서비스 알림 설정(meta-data) -->
         <meta-data
                 android:name="com.lyokone.location.NotificationChannelName"

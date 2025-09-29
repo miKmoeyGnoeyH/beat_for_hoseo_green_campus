@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:beat_flutter/components/global/methods/custom_input_formatters.dart';
 import 'package:beat_flutter/components/global/widgets/custom_circular_progress_indicator.dart';
@@ -227,15 +228,24 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                     labelText: localizationManager.rfiName,
                     hintText: localizationManager.rfiNameHint,
                     maxLength: 30,
-                    inputFormatters: [onlyEnglishAndKoreanInputFormatter()],
+                    // inputFormatters: [onlyEnglishAndKoreanInputFormatter()],
                     validator: (value) {
+                      final raw = value ?? '';
+                      final name = canonicalizeName(raw.trim());
+
                       if (value == null || value.isEmpty) {
                         _isNameValid = false;
                         return localizationManager.rfiNameIsEmpty;
-                      } else if (initialConsonantRegExp.hasMatch(value)) {
+                      // } else if (initialConsonantRegExp.hasMatch(value)) {
+                      } else if (koreanInitialConsonantRegExp.hasMatch(name)) {
                         _isNameValid = false;
                         return localizationManager.rfiNameHasInitialConsonant;
-                      } else if (customProfanityFilter.hasMatch(value)) {
+                      } else if (!intlNameRegExp.hasMatch(name)) {
+                        log("value: $name");
+                        _isNameValid = false;
+                        return localizationManager.rfiInavailableNameMessage2;
+                      }
+                      else if (customProfanityFilter.hasMatch(name)) {
                         _isNameValid = false;
                         return localizationManager.rfiInavailableNameMessage;
                       }
@@ -257,21 +267,24 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                     hintText: localizationManager.rfiNicknameHint,
                     maxLines: nicknameFocusNode.hasFocus ? 2 : 1,
                     maxLength: 10,
-                    inputFormatters: [
-                      onlyEnglishAndKoreanAndNumberInputFormatter()
-                    ],
+                    // inputFormatters: [
+                    //   onlyEnglishAndKoreanAndNumberInputFormatter()
+                    // ],
                     onChanged: (value) {
                       registerNicknameController.add(NicknameChanged());
                       setState(() {});
                     },
                     validator: (value) {
+                      final raw = value ?? '';
+                      final nickname = canonicalizeName(raw.trim());
+
                       if (value == null || value.isEmpty) {
                         _isNicknameButtonEnabled = false;
                         return localizationManager.rfiNicknameIsEmpty;
                       } else if (value.length < 2) {
                         _isNicknameButtonEnabled = false;
                         return localizationManager.rfiNicknameTooShort;
-                      } else if (initialConsonantRegExp.hasMatch(value)) {
+                      } else if (koreanInitialConsonantRegExp.hasMatch(value)) {
                         _isNicknameButtonEnabled = false;
                         return localizationManager
                             .rfiNicknameHasInitialConsonant;

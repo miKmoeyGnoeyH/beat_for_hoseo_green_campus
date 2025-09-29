@@ -1,11 +1,15 @@
+import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 
 import '../../../data/models/data_models.dart';
 import '../methods/buildQuestDetailTableRows.dart';
 
 class QuestDetailTableContents extends StatelessWidget {
-  const QuestDetailTableContents(
+  final LocalizationManager localizationManager = LocalizationManager();
+
+  QuestDetailTableContents(
     this.questDetailModel, {
     super.key,
   });
@@ -26,13 +30,15 @@ class QuestDetailTableContents extends StatelessWidget {
           ),
           buildQuestDetailTableQuestRequirementRow(
             questRequirement: questDetailModel.eventType == EventType.qr
-                ? (questDetailModel.eventLongDTO as EventQRLongDTO)
-                    .qrMissionLongDTO
-                    .successCondition
-                    .toString()
-                : (questDetailModel.eventLongDTO as EventWalkLongDTO)
-                    .walkCount
-                    .toString(),
+                ? localizationManager.qdQRs(NumberFormat("###,###,###,###")
+                    .format((questDetailModel.eventLongDTO as EventQRLongDTO)
+                        .qrMissionLongDTO
+                        .successCondition))
+                : localizationManager.qdSteps(
+                    NumberFormat("###,###,###,###").format(
+                        (questDetailModel.eventLongDTO as EventWalkLongDTO)
+                            .walkCount),
+                  ),
           ),
           if (questDetailModel.eventType == EventType.qr)
             buildQuestDetailTableBonusRewardRow(
