@@ -293,8 +293,9 @@
     "last_week_walk_mean": "지난주 평균",
     "last_month_walk_mean": "지난달 평균",
     "my_total_ranking": "내 전체 랭킹",
-    "total_walk_count": "총 걸음 수",
-    "total_point": "총 적립 포인트",
+    "total_walk_count": "걸음 수",
+    "total_point": "포인트",
+    "nth_place": "{}등",
     "my_category_ranking": "내 {} 랭킹"
   },
   "history": {

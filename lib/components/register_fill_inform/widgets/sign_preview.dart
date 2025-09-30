@@ -2,11 +2,14 @@ import 'dart:convert';
 
 import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../controller/register_fill_inform/register_sign_controller.dart';
+import '../../../theme/texts/custom_texts.dart';
 import '../../global/widgets/custom_rounded_bordered_container.dart';
 
 class SignPreview extends StatefulWidget {
@@ -36,9 +39,14 @@ class _SignPreviewState extends State<SignPreview> {
         child: registerSignController.handSignatureControl.isFilled
             ? Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.w),
-                child: Image.memory(
-                  base64Decode(registerSignController.signatureBase64),
-                  fit: BoxFit.cover,
+                child: Stack(
+                  children: [
+                    Image.memory(
+                      alignment: Alignment.center,
+                      base64Decode(registerSignController.signatureBase64),
+                      fit: BoxFit.cover,
+                    ),
+                  ],
                 ),
               )
             : Center(
@@ -47,13 +55,6 @@ class _SignPreviewState extends State<SignPreview> {
                   child: CustomBodyLarge(
                     text: localizationManager.spSignContent,
                   ),
-                  // child: AutoSizeText(
-                  //   localizationManager.spSignContent,
-                  //   maxLines: 1,
-                  //   style: CustomLargeTexts.bodyLarge.copyWith(
-                  //     color: context.appColors.onBackground,
-                  //   ),
-                  // ),
                 ),
               ),
       ),

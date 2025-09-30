@@ -3,6 +3,8 @@ import 'package:beat_flutter/controller/register_fill_inform/register_sign_contr
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/managers/navigator/navigator_key_manager.dart';
+import 'package:beat_flutter/theme/texts/fontweights.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -44,97 +46,101 @@ class _RegisterSignScreenState extends State<RegisterSignScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomScaffold(
-      isScrollable: false,
-      bottom: true,
-      backgroundColor: context.appColors.background,
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.h, vertical: 20.h),
-        child: Column(
-          children: [
-            Expanded(
-              child: Stack(
-                children: [
-                  AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: Container(
-                      width: context.width,
-                      height: double.infinity,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: context.appColors.borderColor,
-                          width: 0.33,
+    final double textScale = MediaQuery.of(context).size.height / MediaQuery.of(context).size.width;
+
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(textScale)),
+      child: CustomScaffold(
+        isScrollable: false,
+        bottom: true,
+        backgroundColor: context.appColors.background,
+        body: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20.h, vertical: 20.h),
+          child: Column(
+            children: [
+              Expanded(
+                child: Stack(
+                  children: [
+                    AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child: Container(
+                        width: context.width,
+                        height: double.infinity,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: context.appColors.borderColor,
+                            width: 0.33,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
                         ),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: HandSignature(
-                        control: registerSignController.handSignatureControl,
-                        color: context.appColors.onBackground,
-                        width: 1.0,
-                        maxWidth: 5.0,
-                        type: SignatureDrawType.arc,
+                        child: HandSignature(
+                          control: registerSignController.handSignatureControl,
+                          color: context.appColors.onBackground,
+                          width: 1.0,
+                          maxWidth: 5.0,
+                          type: SignatureDrawType.arc,
+                        ),
                       ),
                     ),
-                  ),
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    child: GestureDetector(
-                      onTap: () =>
-                          registerSignController.handSignatureControl.clear(),
-                      child: SizedBox(
-                        child: Padding(
-                          padding: EdgeInsets.all(10.h),
-                          child: Icon(
-                            Icons.refresh_rounded,
-                            color: context.appColors.borderColor,
-                            size: 80.h,
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: GestureDetector(
+                        onTap: () =>
+                            registerSignController.handSignatureControl.clear(),
+                        child: SizedBox(
+                          child: Padding(
+                            padding: EdgeInsets.all(10.h),
+                            child: Icon(
+                              Icons.refresh_rounded,
+                              color: context.appColors.borderColor,
+                              size: 80.h,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: 20.h),
-            GestureDetector(
-              onTap: () async {
-                if (registerSignController.handSignatureControl.isFilled) {
-                  try {
-                    // await registerSignController.signToImage();
-                    await registerSignController.done();
-                    NavigatorKeyManager().pop();
-                  } catch (e) {
-                    if (context.mounted) {
-                      customShowDialog(
-                        context: context,
-                        title: localizationManager.signSignFailed,
-                        content: localizationManager
-                            .signFailedToConvertSignatureContent,
-                      );
+              SizedBox(height: 20.h),
+              GestureDetector(
+                onTap: () async {
+                  if (registerSignController.handSignatureControl.isFilled) {
+                    try {
+                      // await registerSignController.signToImage();
+                      await registerSignController.done();
+                      NavigatorKeyManager().pop();
+                    } catch (e) {
+                      if (context.mounted) {
+                        customShowDialog(
+                          context: context,
+                          title: localizationManager.signSignFailed,
+                          content: localizationManager
+                              .signFailedToConvertSignatureContent,
+                        );
+                      }
                     }
+                  } else {
+                    NavigatorKeyManager().pop();
                   }
-                } else {
-                  NavigatorKeyManager().pop();
-                }
-              },
-              child: CustomRoundedBorderedContainer(
-                width: 1100.h,
-                color: context.appColors.primary,
-                child: Center(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 32.h),
-                    child: Text(
-                      localizationManager.generalDone,
-                      style: CustomLargeTexts.subtitleLarge
-                          .copyWith(color: context.appColors.onPrimary),
+                },
+                child: CustomRoundedBorderedContainer(
+                  width: 1100.h,
+                  color: context.appColors.primary,
+                  child: Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 24.h),
+                      child: Text(
+                        localizationManager.generalDone,
+                        style: CustomLargeTexts.subtitleLarge.copyWith(color: context.appColors.onPrimary),
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

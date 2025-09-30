@@ -130,10 +130,12 @@ class _MyPageState extends State<MyPage> {
                                 label: localizationManager.mpLastWeekMean,
                                 value: myPageController
                                     .state.walkMeanHistoryModel.weeklyWalkCount,
+                                // value: 1000,
                               ),
                               BarItem(
                                 label: localizationManager.mpLastMonthMean,
-                                value: myPageController.state.walkMeanHistoryModel.monthlyWalkCount,
+                                value: myPageController.state
+                                    .walkMeanHistoryModel.monthlyWalkCount,
                                 // value: 1000,
                               ),
                             ],
@@ -152,7 +154,9 @@ class _MyPageState extends State<MyPage> {
                                   color: context.appColors.background,
                                   child: Padding(
                                     padding: EdgeInsets.symmetric(
-                                        horizontal: 20.w, vertical: 16.w),
+                                      horizontal: 20.w,
+                                      vertical: 16.w,
+                                    ),
                                     child: Table(
                                       children: [
                                         buildMyPageTableRow(
@@ -164,17 +168,17 @@ class _MyPageState extends State<MyPage> {
                                         buildMyPageTableRow(
                                           label: localizationManager
                                               .mpTotalWalkCount,
-                                          content: myPageController
+                                          content: localizationManager.mpNthPlace(myPageController
                                               .state.myRankModel.walkRank
-                                              .toString(),
+                                              .toString()),
                                         ),
                                         buildMyPageTableRowSpacing(),
                                         buildMyPageTableRow(
                                           label:
                                               localizationManager.mpTotalPoint,
-                                          content: myPageController
+                                          content: localizationManager.mpNthPlace(myPageController
                                               .state.myRankModel.pointRank
-                                              .toString(),
+                                              .toString()),
                                         ),
                                       ],
                                     ),
@@ -204,17 +208,17 @@ class _MyPageState extends State<MyPage> {
                                         buildMyPageTableRow(
                                           label: localizationManager
                                               .mpTotalWalkCount,
-                                          content: myPageController
-                                              .state.myRankModel.walkCategoryRank
-                                              .toString(),
+                                          content: localizationManager.mpNthPlace(myPageController.state
+                                              .myRankModel.walkCategoryRank
+                                              .toString()),
                                         ),
                                         buildMyPageTableRowSpacing(),
                                         buildMyPageTableRow(
                                           label:
                                               localizationManager.mpTotalPoint,
-                                          content: myPageController
-                                              .state.myRankModel.pointCategoryRank
-                                              .toString(),
+                                          content: localizationManager.mpNthPlace(myPageController.state
+                                              .myRankModel.pointCategoryRank
+                                              .toString()),
                                         ),
                                       ],
                                     ),
@@ -245,16 +249,16 @@ class _MyPageState extends State<MyPage> {
                                       buildMyPageTableRow(
                                         label: localizationManager
                                             .mpTotalWalkCount,
-                                        content: myPageController
+                                        content: localizationManager.mpNthPlace(myPageController
                                             .state.myRankModel.walkRank
-                                            .toString(),
+                                            .toString()),
                                       ),
                                       buildMyPageTableRowSpacing(),
                                       buildMyPageTableRow(
                                         label: localizationManager.mpTotalPoint,
-                                        content: myPageController
+                                        content: localizationManager.mpNthPlace(myPageController
                                             .state.myRankModel.pointRank
-                                            .toString(),
+                                            .toString()),
                                       ),
                                     ],
                                   ),
@@ -280,16 +284,16 @@ class _MyPageState extends State<MyPage> {
                                       buildMyPageTableRow(
                                         label: localizationManager
                                             .mpTotalWalkCount,
-                                        content: myPageController
+                                        content: localizationManager.mpNthPlace(myPageController
                                             .state.myRankModel.walkCategoryRank
-                                            .toString(),
+                                            .toString()),
                                       ),
                                       buildMyPageTableRowSpacing(),
                                       buildMyPageTableRow(
                                         label: localizationManager.mpTotalPoint,
-                                        content: myPageController
+                                        content: localizationManager.mpNthPlace(myPageController
                                             .state.myRankModel.pointCategoryRank
-                                            .toString(),
+                                            .toString()),
                                       ),
                                     ],
                                   ),

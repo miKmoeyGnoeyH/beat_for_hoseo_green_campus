@@ -182,6 +182,10 @@ class PedometerController extends GetxController {
                 }
               }
               _lastReportedSteps = bodyToJson['todayWalkCount'];
+
+              // ✅ 성공 시에만 큐 비우기 및 영속화
+              _walkReports.clear();
+              await PrefsManager().setUnsentStepsList(_walkReports);
             } else {
               if (_lastReportedTime.day != DateTime.now().day) {
                 resetAtMidnight();
@@ -192,14 +196,14 @@ class PedometerController extends GetxController {
                 totalWalkCount = savedTotal;
                 _lastReportedSteps = savedToday;
               }
+
+              // ❌ 실패: 큐 유지, 현재 큐를 영속화
+              await PrefsManager().setUnsentStepsList(reports);
             }
           } catch (e) {
             BEATLogger.d("PedometerController : ever : ${e.toString()}");
-          } finally {
-            _walkReports.clear();
-            PrefsManager().setUnsentStepsList(reports);
-            BEATLogger.d(
-                "PedometerController : ever : unsentStepsList : ${PrefsManager().getUnsentStepsList().toString()}");
+            // 예외: 큐 유지, 현재 큐를 영속화
+            await PrefsManager().setUnsentStepsList(reports);
           }
         },
       );
@@ -409,6 +413,11 @@ class PedometerController extends GetxController {
     try {
       final String lastYmd = PrefsManager().getLastResetYmd();
       final String todayKey = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      // 최초 실행 등으로 저장값이 없을 때는 리셋하지 않고 오늘 날짜만 저장
+      if (lastYmd.isEmpty) {
+        PrefsManager().setLastResetYmd(todayKey);
+        return;
+      }
       if (lastYmd != todayKey) {
         BEATLogger.d(
             "PedometerController : ensureDailyResetGuard() : lastYmd=$lastYmd, today=$todayKey -> reset");

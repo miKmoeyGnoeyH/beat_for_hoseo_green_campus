@@ -769,6 +769,10 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
               }
             }
             lastReportedSteps = bodyToJson['todayWalkCount'];
+
+            // ✅ 성공 시에만 큐 비우기 및 영속화
+            walkReports.clear();
+            await PrefsManager().setUnsentStepsList(walkReports);
           } else {
             if (lastReportedTime.day != DateTime.now().day) {
               resetAtMidnight();
@@ -779,12 +783,14 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
               totalWalkCount = savedTotal;
               lastReportedSteps = savedToday;
             }
+
+            // ❌ 실패: 큐 유지, 현재 큐를 영속화
+            await PrefsManager().setUnsentStepsList(reports);
           }
         } catch (e) {
           log("BackgroundService: send walk report error: $e");
-        } finally {
-          walkReports.clear();
-          PrefsManager().setUnsentStepsList(reports);
+          // 예외: 큐 유지, 현재 큐를 영속화
+          await PrefsManager().setUnsentStepsList(reports);
         }
       },
     );

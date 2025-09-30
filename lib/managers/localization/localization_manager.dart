@@ -332,6 +332,7 @@ class LocalizationManager {
   String get mpMyTotalRanking => "my_page".tr(gender: "my_total_ranking");
   String get mpTotalWalkCount => "my_page".tr(gender: "total_walk_count");
   String get mpTotalPoint => "my_page".tr(gender: "total_point");
+  String mpNthPlace(String arg) => "my_page".tr(gender: "nth_place", args: [arg]);
   String mpCategoryRanking(String arg) => "my_page".tr(gender: "my_category_ranking", args: [arg]);
 
   // History

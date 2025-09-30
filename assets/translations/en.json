@@ -291,8 +291,9 @@
     "last_week_walk_mean": "Last Week Average",
     "last_month_walk_mean": "Last Month Average",
     "my_total_ranking": "My Overall Ranking",
-    "total_walk_count": "Total Steps",
-    "total_point": "Total Earned Points",
+    "total_walk_count": "Steps",
+    "total_point": "Points",
+    "nth_place": "#{}",
     "my_category_ranking": "My {} Ranking"
   },
   "history": {
