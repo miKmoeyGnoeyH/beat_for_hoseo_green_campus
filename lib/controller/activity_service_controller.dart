@@ -64,6 +64,8 @@ class ActivityServiceController extends GetxController {
   late final PedometerController pedometerController;
   late final LocationController locationController;
 
+  String authorization = "";
+
   int sendToTime = 0;
   bool isHoliday = true;
 
@@ -98,21 +100,20 @@ class ActivityServiceController extends GetxController {
           onBackground: startBackgroundServiceIOS,
         ),
         androidConfiguration: AndroidConfiguration(
-          onStart: startServiceAndroid,
-          autoStart: false,
-          isForegroundMode: true,
-          autoStartOnBoot: false,
-          notificationChannelId: notificationChannelId,
-          initialNotificationTitle:
-              localizationManager.generalInitialNotificationTitle,
-          initialNotificationContent:
-              localizationManager.generalInitialNotificationContent,
-          foregroundServiceNotificationId: foregroundServiceNotificationId,
-          foregroundServiceTypes: [
-            AndroidForegroundType.location,
-            AndroidForegroundType.dataSync
-          ]
-        ),
+            onStart: startServiceAndroid,
+            autoStart: false,
+            isForegroundMode: true,
+            autoStartOnBoot: false,
+            notificationChannelId: notificationChannelId,
+            initialNotificationTitle:
+                localizationManager.generalInitialNotificationTitle,
+            initialNotificationContent:
+                localizationManager.generalInitialNotificationContent,
+            foregroundServiceNotificationId: foregroundServiceNotificationId,
+            foregroundServiceTypes: [
+              AndroidForegroundType.location,
+              AndroidForegroundType.dataSync
+            ]),
       );
     } catch (e) {
       print('Failed to initialize background service: $e');
@@ -120,53 +121,21 @@ class ActivityServiceController extends GetxController {
     }
   }
 
-  void updateAndroidForegroundNotification(bool isInValidArea) {
-    if (Platform.isAndroid) {
-      if (isHoliday) {
-        _updateAndroidForegroundNotification(localizationManager.afnTitle,
-            localizationManager.afnNotEventDurationContent);
-      } else {
-        if (!isInValidArea) {
-          _updateAndroidForegroundNotification(localizationManager.afnTitle,
-              localizationManager.afnOutOfRangeContent);
-        } else {
-          _updateAndroidForegroundNotification(localizationManager.afnTitle,
-              localizationManager.afnCountingStepsContent);
-        }
-      }
-    }
-  }
-
-  void _updateAndroidForegroundNotification(
-      String title, String content) async {
-    if (Platform.isAndroid) {
-      final service = FlutterBackgroundService();
-      if (await service.isRunning()) {
-        service.invoke("updateNotification", {
-          "title": title,
-          "content": content,
-        });
-      }
-    }
-  }
-
   Future<void> startService() async {
-    log("startService");
-
-    isHoliday = await _getIsHoliday();
-    // isHoliday = false;
-    pedometerController.isHoliday = isHoliday;
-    pedometerController.getWalkHitory();
-
     try {
       if (Platform.isIOS) {
+        isHoliday = await _getIsHoliday();
+        // isHoliday = false;
+        pedometerController.isHoliday = isHoliday;
+        pedometerController.getWalkHitory();
+
         _setIOSLocationChannelHandler();
 
         await _locationChannel.invokeMethod("stopBackgroundTasks");
-        // _locationChannel.invokeMethod("startBackgroundTasks",
-        //     {"isHoliday": isHoliday, "sendToTime": sendToTime});
         _locationChannel.invokeMethod("startBackgroundTasks",
-            {"isHoliday": false, "sendToTime": sendToTime});
+            {"isHoliday": isHoliday, "sendToTime": sendToTime});
+        // _locationChannel.invokeMethod("startBackgroundTasks",
+        //     {"isHoliday": false, "sendToTime": sendToTime});
 
         _setIOSPedometerChannelHandler();
 
@@ -186,6 +155,8 @@ class ActivityServiceController extends GetxController {
           await service.startService();
         }
 
+        // service.invoke("startBackgroundTasks", {"authorization": authorization, "sendToTime": sendToTime});
+
         return;
       }
     } catch (e) {
@@ -197,59 +168,44 @@ class ActivityServiceController extends GetxController {
   void _setAndroidBackgroundServiceHandler() {
     if (Platform.isAndroid) {
       final service = FlutterBackgroundService();
+
       if (_fbsSubscriptions.isNotEmpty) return;
 
-      _fbsSubscriptions.add(service.on('onStepCountFromNative').listen((data) {
-        log("onStepCountFromNative data: $data");
-
+      _fbsSubscriptions.add(service.on("updateUISteps").listen((data) {
         if (data == null) return;
-        int stepsFromNative = data["stepsFromNative"] ?? 0;
-        pedometerController.onStepCountFromNative(stepsFromNative);
+        pedometerController.todayWalkCount = data["todayWalkCount"] ?? 0;
+        pedometerController.weeklyWalkCount = data["weeklyWalkCount"] ?? 0;
+        pedometerController.monthlyWalkCount = data["monthlyWalkCount"] ?? 0;
+        pedometerController.totalWalkCount = data["totalWalkCount"] ?? 0;
       }));
 
-      // 안드로이드: 보행 상태 변경 전달
-      _fbsSubscriptions
-          .add(service.on('onPedestrianStatusFromNative').listen((data) {
+      _fbsSubscriptions.add(service.on("updateIsInValidArea").listen((data) {
         if (data == null) return;
-        final String status = data['status'] ?? '';
-        pedometerController.onPedestrianStatusChangedFromNative(status);
-      }));
-
-      _fbsSubscriptions
-          .add(service.on("backgroundLocationUpdate").listen((data) {
-        final args = data as Map?;
-        if (args == null) return;
-        final double lat = (args["latitude"] as num).toDouble();
-        final double lon = (args["longitude"] as num).toDouble();
-        locationController.checkIsValidAreaBackground(lat, lon);
+        pedometerController.isInValidArea = data["isInValidArea"] ?? false;
       }));
 
       _fbsSubscriptions.add(service.on("midnightReset").listen((data) {
-        _resetAtMidnight();
+        if (data == null) return;
+        pedometerController.isHoliday = data["isHoliday"] ?? true;
+        pedometerController.todayWalkCount = data["todayWalkCount"] ?? 0;
+        pedometerController.weeklyWalkCount = data["weeklyWalkCount"] ?? 0;
+        pedometerController.monthlyWalkCount = data["monthlyWalkCount"] ?? 0;
+        pedometerController.totalWalkCount = data["totalWalkCount"] ?? 0;
       }));
 
-      _fbsSubscriptions
-          .add(service.on("syncWalkDataInBackground").listen((data) {
-        locationController.syncWalkDataInBackground();
+      _fbsSubscriptions.add(service.on('bg_started').listen((data) {
+        if (data == null) return;
+        log("ActivityServiceController: _setAndroidBackgroundServiceHandler() : bg_started received: data: $data");
+        pedometerController.isHoliday = data["isHoliday"] ?? true;
+        pedometerController.todayWalkCount = data["todayWalkCount"] ?? 0;
+        pedometerController.weeklyWalkCount = data["weeklyWalkCount"] ?? 0;
+        pedometerController.monthlyWalkCount = data["monthlyWalkCount"] ?? 0;
+        pedometerController.totalWalkCount = data["totalWalkCount"] ?? 0;
       }));
 
-      _fbsSubscriptions
-          .add(service.on("syncRankingInBackground").listen((data) {
-        locationController.syncRankingInBackground();
-      }));
-
-      _fbsSubscriptions.add(service.on('bg_ready').listen((_) {
-        service.invoke("setSendToTime", {"value": sendToTime});
-        // service.invoke("updateHolidayStatus", {"isHoliday": isHoliday});
-        service.invoke("updateHolidayStatus", {"isHoliday": false});
-
-        if (isHoliday) {
-          _updateAndroidForegroundNotification(localizationManager.afnTitle,
-              localizationManager.afnNotEventDurationContent);
-        } else {
-          _updateAndroidForegroundNotification(localizationManager.afnTitle,
-              localizationManager.afnCountingStepsContent);
-        }
+      _fbsSubscriptions.add(service.on('bg_ready').listen((data) {
+        log("ActivityServiceController : _setAndroidBackgroundServiceHandler() : bg_ready received");
+        service.invoke("startBackgroundTasks", {"authorization": authorization, "sendToTime": sendToTime});
       }));
     }
   }
@@ -341,7 +297,7 @@ class ActivityServiceController extends GetxController {
     isHoliday = await _getIsHoliday();
 
     pedometerController.isHoliday = isHoliday;
-    pedometerController.resetAtMidnight(DateTime.now());
+    pedometerController.resetAtMidnight();
 
     if (Platform.isIOS) {
       await _locationChannel
@@ -374,7 +330,6 @@ class ActivityServiceController extends GetxController {
       }
       return false;
     } catch (e) {
-      BEATLogger.d("LocationController : getIsHoliday error : ${e.toString()}");
       return false;
     }
     // return false;
@@ -385,20 +340,16 @@ class ActivityServiceController extends GetxController {
   Future<bool> _getIsHolidayTest() async {
     final DateTime now = DateTime.now();
 
-    BEATLogger.d(
-        "LocationController : getIsHolidayTest : now: $now, now.day: ${now.day}, now.weekday: ${now.weekday}");
-
     return now.weekday == DateTime.saturday || now.weekday == DateTime.sunday;
   }
 
   /// 라우팅 인자 위임용 API
   void setAuthorization(String authorization) {
-    log("setAuthorization : $authorization");
+    this.authorization = authorization;
     pedometerController.setAuthorization(authorization);
   }
 
   void setSendToTime(int value) {
-    log("setSendToTime: $value");
     sendToTime = value;
   }
 

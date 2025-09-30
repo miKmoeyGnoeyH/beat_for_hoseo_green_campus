@@ -10,8 +10,8 @@
   "android_foreground_notification": {
     "title": "BEAT",
     "counting_steps_content": "BEAT가 걸음 수를 측정 중입니다.",
-    "out_of_range_content": "이벤트 진행 지역이 아닙니다. 걸음 수 기록이 일시 중지됩니다.",
-    "not_event_duration_content": "행사 진행 시간이 아닙니다. 걸음 수 기록이 일시 중지됩니다."
+    "out_of_range_content": "걸음 수 측정 지역이 아닙니다. 걸음 수 기록이 일시 중지됩니다.",
+    "not_event_duration_content": "걸음 수 측정 시간이 아닙니다. 걸음 수 기록이 일시 중지됩니다."
   },
   "home": {
     "points_in_hand": "보유 포인트",

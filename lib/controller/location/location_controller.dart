@@ -1,12 +1,12 @@
-import 'dart:async';
 
-import 'package:beat_flutter/controller/activity_service_controller.dart';
+
 import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/managers/logger/beat_logger.dart';
 import 'package:beat_flutter/managers/notification/local_notification.dart';
 import 'package:beat_flutter/managers/permission/permission_manager.dart';
 import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
 class LatLng {
@@ -124,8 +124,6 @@ class LocationController extends GetxController {
 
   // 백그라운드 위치 업데이트용
   void checkIsValidAreaBackground(double lat, double lon) async {
-    bool isInValidArea;
-
     final PedometerController pedometerController =
     Get.find<PedometerController>();
 
@@ -137,7 +135,6 @@ class LocationController extends GetxController {
     if (!isPointInAsanAreaBackground(lat, lon) &&
         !isPointInCheonanAreaBackground(lat, lon)) {
       if (!pedometerController.isInValidArea) return;
-      isInValidArea = false;
       pedometerController.isInValidArea = false;
 
       BEATLogger.d(
@@ -147,11 +144,8 @@ class LocationController extends GetxController {
         localizationManager.lnOutOfRangeTitle,
         localizationManager.lnOutOfRangeBody,
       );
-
-      Get.find<ActivityServiceController>().updateAndroidForegroundNotification(isInValidArea);
     } else {
       if (pedometerController.isInValidArea) return;
-      isInValidArea = true;
       pedometerController.isInValidArea = true;
 
       BEATLogger.d(
@@ -161,8 +155,6 @@ class LocationController extends GetxController {
         localizationManager.lnBackInRangeTitle,
         localizationManager.lnBackInRangeBody,
       );
-
-      Get.find<ActivityServiceController>().updateAndroidForegroundNotification(isInValidArea);
     }
   }
 
@@ -200,5 +192,14 @@ class LocationController extends GetxController {
     } catch (e) {
       BEATLogger.e("LocationController : 백그라운드 랭킹 집계 실패: $e");
     }
+  }
+
+  Future<void> getLocation() async {
+    final Position position = await Geolocator.getCurrentPosition();
+
+    locationData = LatLng(
+      position.latitude,
+      position.longitude,
+    );
   }
 }

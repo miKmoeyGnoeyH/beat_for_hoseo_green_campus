@@ -10,8 +10,8 @@
   "android_foreground_notification": {
     "title": "BEAT",
     "counting_steps_content": "BEAT is tracking your steps.",
-    "out_of_range_content": "You are outside the event area. Step tracking is temporarily paused.",
-    "not_event_duration_content": "It is outside event hours. Step tracking is temporarily paused."
+    "out_of_range_content": "This is not a step-tracking area. Step tracking is temporarily paused.",
+    "not_event_duration_content": "It is not the step-tracking time. Step tracking is temporarily paused."
   },
   "home": {
     "points_in_hand": "Points Balance",

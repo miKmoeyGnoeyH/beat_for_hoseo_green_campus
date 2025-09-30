@@ -97,6 +97,25 @@ class PrefsManager {
     final totalWalkCount = _prefs.getInt("totalWalkCount") ?? 0;
     return (todayWalkCount, weeklyWalkCount, monthlyWalkCount, totalWalkCount);
   }
+  int getDeviceStepsLatest() {
+    _ensurePrefs();
+    return _prefs.getInt("deviceStepsLatest") ?? 0;
+  }
+
+  Future<void> setDeviceStepsLatest(int deviceStepsLatest) async {
+    _ensurePrefs();
+    await _prefs.setInt("deviceStepsLatest", deviceStepsLatest);
+  }
+
+  int getDeviceStepsLastHandled() {
+    _ensurePrefs();
+    return _prefs.getInt("deviceStepsLastHandled") ?? 0;
+  }
+
+  Future<void> setDeviceStepsLastHandled(int deviceStepsLastHandled) async {
+    _ensurePrefs();
+    await _prefs.setInt("deviceStepsLastHandled", deviceStepsLastHandled);
+  }
 
   Future<void> setSteps(int todayWalkCount, int weeklyWalkCount, int monthlyWalkCount, int totalWalkCount) async {
     _ensurePrefs();

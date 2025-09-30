@@ -2,12 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:beat_flutter/components/qr/widgets/overlay.dart';
 import 'package:beat_flutter/controller/home/controllers/quest_list_controller.dart';
 import 'package:beat_flutter/controller/home/controllers/survey_detail_controller.dart';
 import 'package:beat_flutter/controller/home/events/data_events.dart';
 import 'package:beat_flutter/controller/location/location_controller.dart';
 import 'package:beat_flutter/controller/screen_holder/page_index_controller.dart';
+import 'package:beat_flutter/controller/user_controller.dart';
 import 'package:beat_flutter/exception/beat_exception.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
@@ -17,13 +17,13 @@ import 'package:beat_flutter/managers/navigator/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile_scanner/mobile_scanner.dart';
 
-import '../../controller/user_controller.dart';
 import '../global/methods/custom_show_dialog.dart';
 import '../global/widgets/custom_circular_progress_indicator.dart';
 import '../global/widgets/regexp/qr_filter.dart';
+import 'widgets/overlay.dart';
 
 class QrScreen extends StatefulWidget {
   const QrScreen({super.key});
@@ -90,7 +90,7 @@ class _QrScreenState extends State<QrScreen> {
             log("requestUrl : $requestUrl");
 
             if (qrRawValueFilterRelease.hasMatch(requestUrl)) {
-            // if (qrRawValueFilterDebug.hasMatch(requestUrl)) {
+              // if (qrRawValueFilterDebug.hasMatch(requestUrl)) {
               customConfirmDialog(
                 context: context,
                 title: localizationManager.qrScanTitle,
@@ -104,9 +104,13 @@ class _QrScreenState extends State<QrScreen> {
 
                   http.Response? response;
 
-                  response = await Get.showOverlay(
-                    asyncFunction: () async {
-                      try {
+                  try {
+                    response = await Get.showOverlay(
+                      asyncFunction: () async {
+                        // throw Exception();
+
+                        await locationController.getLocation();
+
                         if (locationController.locationData == null ||
                             locationController.locationData?.lat == null ||
                             locationController.locationData?.lng == null) {
@@ -115,6 +119,8 @@ class _QrScreenState extends State<QrScreen> {
                             localizationManager.qrLocationFetchErrorContent,
                           );
                         }
+
+                        log("locationcontroller.locationData : ${locationController.locationData}");
 
                         BEATLogger.d(
                             "QrScreen : onDetect : latitude : ${locationController.locationData!.lat}, longitude : ${locationController.locationData!.lng}");
@@ -136,16 +142,16 @@ class _QrScreenState extends State<QrScreen> {
                             .timeout(
                               const Duration(seconds: 5),
                             );
-                      } on BEATException {
-                        return null;
-                      } catch (e) {
-                        log("Get.showOverlay 내부 에러: $e");
-                        return null; // 꼭 리턴해야 자동으로 다이얼로그가 닫힘
-                      }
-                    },
-                    loadingWidget: const CustomCircularProgressIndicator(),
-                  );
-
+                      },
+                      loadingWidget: const CustomCircularProgressIndicator(),
+                    );
+                  } catch (e) {
+                    await customShowDialog(
+                      context: context,
+                      title: localizationManager.qrQRScanFailed,
+                      content: localizationManager.qrErrorOccured,
+                    );
+                  }
                   if (response != null) {
                     if (response.statusCode == 200) {
                       await customShowDialog(
@@ -160,8 +166,8 @@ class _QrScreenState extends State<QrScreen> {
                                 .read<QuestListController>()
                                 .add(DataListRequest());
 
-                            pageIndexController
-                                .setIndex(pageIndexController.homeIndex, context);
+                            pageIndexController.setIndex(
+                                pageIndexController.homeIndex, context);
                           });
                     } else {
                       await customShowDialog(
@@ -176,8 +182,8 @@ class _QrScreenState extends State<QrScreen> {
                   startScanTimer();
                 },
               );
-              } else if (qrSurveyFilterRelease.hasMatch(requestUrl)) {
-            // } else if (qrSurveyFilterDebug.hasMatch(requestUrl)) {
+            } else if (qrSurveyFilterRelease.hasMatch(requestUrl)) {
+              // } else if (qrSurveyFilterDebug.hasMatch(requestUrl)) {
               await customConfirmDialog(
                 context: context,
                 title: localizationManager.qrSurveyQRTitle,
@@ -193,7 +199,8 @@ class _QrScreenState extends State<QrScreen> {
 
                   NavigatorKeyManager().pushNamed(RouteNames.surveyDetail);
 
-                  pageIndexController.setIndex(pageIndexController.homeIndex, context);
+                  pageIndexController.setIndex(
+                      pageIndexController.homeIndex, context);
 
                   isScanning = false;
                   startScanTimer();

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:beat_flutter/controller/location/location_controller.dart';
@@ -128,70 +129,80 @@ class PedometerController extends GetxController {
   PedometerController() {
     // initPlatformState();
 
-    // TODO: 만약 한 기기에서 어떤 사용자가 앱을 사용하다 로그아웃하고, 다른 사용자가 로그인한 경우
-    // 내부 저장소에 저장된 lastReportedSteps, unsentStepsList가 이전 사용자의 것을 사용하게 됨
-    // lastReportedSteps, unsentStepsList는 앱 내에서 측정된 "실제 걸음수"를 저장하기 때문에,
-    // 두 사용자 모두에게 유효한 값이 아닐 수도 있음
-    // _walkReports 리스너 또한 앱 실행 -> 컨트롤러 생성 -> 생성자에서 등록하기 때문에,
-    // 위 문제를 해결하기 위해 리스너 등록 로직과 시점이 변경되어야 할 수 있음.
-    _lastReportedTime = PrefsManager().getLastReportedTime();
-    _lastReportedSteps = PrefsManager().getLastReportedSteps();
-    stepsAfterLastBoot = PrefsManager().getStepsAfterLastboot();
-    _walkReports.assignAll(PrefsManager().getUnsentStepsList());
+    if (Platform.isIOS) {
+      // TODO: 만약 한 기기에서 어떤 사용자가 앱을 사용하다 로그아웃하고, 다른 사용자가 로그인한 경우
+      // 내부 저장소에 저장된 lastReportedSteps, unsentStepsList가 이전 사용자의 것을 사용하게 됨
+      // lastReportedSteps, unsentStepsList는 앱 내에서 측정된 "실제 걸음수"를 저장하기 때문에,
+      // 두 사용자 모두에게 유효한 값이 아닐 수도 있음
+      // _walkReports 리스너 또한 앱 실행 -> 컨트롤러 생성 -> 생성자에서 등록하기 때문에,
+      // 위 문제를 해결하기 위해 리스너 등록 로직과 시점이 변경되어야 할 수 있음.
+      _lastReportedTime = PrefsManager().getLastReportedTime();
+      _lastReportedSteps = PrefsManager().getLastReportedSteps();
+      stepsAfterLastBoot = PrefsManager().getStepsAfterLastboot();
+      _walkReports.assignAll(PrefsManager().getUnsentStepsList());
 
-    ever<List<Map<String, dynamic>>>(
-      _walkReports,
-      (reports) async {
-        if (reports.isEmpty) return;
+      ever<List<Map<String, dynamic>>>(
+        _walkReports,
+        (reports) async {
+          if (reports.isEmpty) return;
 
-        final String requestUrl = DotEnvManager().walkRecordUrl;
-        final (savedToday, savedWeekly, savedMonthly, savedTotal) =
-            PrefsManager().getSteps();
+          final String requestUrl = DotEnvManager().walkRecordUrl;
+          final (savedToday, savedWeekly, savedMonthly, savedTotal) =
+              PrefsManager().getSteps();
 
-        try {
-          final http.Response response = await http.post(
-            Uri.parse(requestUrl),
-            headers: {
-              "Authorization": _authorization,
-              "Content-Type": "application/json",
-            },
-            body: jsonEncode(_walkReports),
-          );
+          try {
+            final http.Response response = await http.post(
+              Uri.parse(requestUrl),
+              headers: {
+                "Authorization": _authorization,
+                "Content-Type": "application/json",
+              },
+              body: jsonEncode(_walkReports),
+            );
 
-          if (response.statusCode == 200) {
-            final bodyToJson = jsonDecode(response.body);
-            if (savedToday >= bodyToJson['todayWalkCount']) {
+            if (response.statusCode == 200) {
+              final bodyToJson = jsonDecode(response.body);
+              if (savedToday >= bodyToJson['todayWalkCount']) {
+                todayWalkCount = savedToday;
+                weeklyWalkCount = savedWeekly;
+                monthlyWalkCount = savedMonthly;
+                totalWalkCount = savedTotal;
+              } else {
+                todayWalkCount = bodyToJson['todayWalkCount'];
+                weeklyWalkCount = bodyToJson['weeklyWalkCount'];
+                monthlyWalkCount = bodyToJson['monthlyWalkCount'];
+                totalWalkCount = bodyToJson['totalWalkCount'];
+              }
+              _lastReportedSteps = bodyToJson['todayWalkCount'];
+              _walkReports.clear();
+            } else {
               todayWalkCount = savedToday;
               weeklyWalkCount = savedWeekly;
               monthlyWalkCount = savedMonthly;
               totalWalkCount = savedTotal;
-            } else {
-              todayWalkCount = bodyToJson['todayWalkCount'];
-              weeklyWalkCount = bodyToJson['weeklyWalkCount'];
-              monthlyWalkCount = bodyToJson['monthlyWalkCount'];
-              totalWalkCount = bodyToJson['totalWalkCount'];
+              _lastReportedSteps = savedToday;
             }
-            _lastReportedSteps = bodyToJson['todayWalkCount'];
-            _walkReports.clear();
-          } else {
-            todayWalkCount = savedToday;
-            weeklyWalkCount = savedWeekly;
-            monthlyWalkCount = savedMonthly;
-            totalWalkCount = savedTotal;
-            _lastReportedSteps = savedToday;
+          } catch (e) {
+            BEATLogger.d("PedometerController : ever : ${e.toString()}");
+          } finally {
+            PrefsManager().setUnsentStepsList(reports);
+            BEATLogger.d(
+                "PedometerController : ever : unsentStepsList : ${PrefsManager().getUnsentStepsList().toString()}");
           }
-        } catch (e) {
-          BEATLogger.d("PedometerController : ever : ${e.toString()}");
-        } finally {
-          PrefsManager().setUnsentStepsList(reports);
-          BEATLogger.d(
-              "PedometerController : ever : unsentStepsList : ${PrefsManager().getUnsentStepsList().toString()}");
-        }
-      },
-    );
+        },
+      );
+    }
   }
 
-  /// iOS 백그라운드 걸음 수 이벤트 처리
+  // TODO: updateUISteps로 대체됨
+  // void onStepCountFromAndroidBackground(int stepsFromBackground) {
+  //   todayWalkCount += stepsFromBackground;
+  //   weeklyWalkCount += stepsFromBackground;
+  //   monthlyWalkCount += stepsFromBackground;
+  //   totalWalkCount += stepsFromBackground;
+  // }
+
+  /// 백그라운드 걸음 수 이벤트 처리
   void onStepCountFromNative(int stepsFromNative) {
     // 1) 베이스라인은 항상 갱신
     if (stepsAfterLastBoot == null ||
@@ -210,8 +221,7 @@ class PedometerController extends GetxController {
     _previousSteps = stepsFromNative;
 
     // 3) 합산은 조건 만족할 때만
-    if (PermissionManager.isActivityPermissionGrantedStatic == null ||
-        !PermissionManager.isActivityPermissionGrantedStatic! ||
+    if (PermissionManager.isActivityPermissionGrantedStatic != true ||
         !isInValidArea ||
         isHoliday ||
         diff <= 0) {
@@ -231,12 +241,6 @@ class PedometerController extends GetxController {
       monthlyWalkCount,
       totalWalkCount,
     );
-
-    // final (savedSteps, savedWeekly, savedMonthly, savedTotal) =
-    //     PrefsManager().getSteps();
-    // final int savedLastReportedSteps = PrefsManager().getLastReportedSteps();
-    // BEATLogger.d(
-    //     "PedometerController : onStepCountFromNative : stepsFromNative : $stepsFromNative, diff : $diff, todayWalkCount : $todayWalkCount, weeklyWalkCount : $weeklyWalkCount, monthlyWalkCount : $monthlyWalkCount, totalWalkCount : $totalWalkCount, savedSteps : $savedSteps, savedWeekly : $savedWeekly, savedMonthly : $savedMonthly, savedTotal : $savedTotal, _lastReportedSteps : $_lastReportedSteps, savedLastReportedSteps : $savedLastReportedSteps, stepsAfterLastBoot : ${stepsAfterLastBoot.toString()}");
   }
 
   /// 백그라운드 걸음 수 이벤트 처리
@@ -250,10 +254,6 @@ class PedometerController extends GetxController {
       );
     }
   }
-
-  // void onStepCountError(error) {
-  //   BEATLogger.d('onStepCountError: $error');
-  // }
 
   /// 서버로부터 걸음 수를 읽어오는 메소드
   /// 내부 저장소에 저장된 오늘, 주간, 월간, 총 걸음 수와 비교해 더 큰 값을 사용
@@ -275,9 +275,6 @@ class PedometerController extends GetxController {
         Uri.parse(requestURL),
         headers: {"Authorization": _authorization},
       );
-
-      // BEATLogger.d(
-      //     "PedometerController : getWalkHitory() response : $response");
 
       if (response.statusCode == 200) {
         BEATLogger.d(
@@ -355,7 +352,7 @@ class PedometerController extends GetxController {
   /// 최하단의 [initPlatformState]는 현재는 필요없지만, 추후 일간 최대 걸음 수를 설정한다면 주석 해제해주어야 한다.
   /// 일간 최대 걸음 수 달성 시 걸음 상태, 걸음 수 리스너가 해제되기 때문에, 이 메소드가 호출되는 시점에 리스너가 해제되어있을 수 있기 때문이다.
   /// 리스너가 해제되어있다면 다시 설정해주어야 한다.
-  void resetAtMidnight(DateTime dateTime) {
+  void resetAtMidnight() {
     BEATLogger.d("PedometerController : resetAtMidnight()");
     final DateTime now = DateTime.now();
 
