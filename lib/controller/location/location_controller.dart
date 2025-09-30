@@ -1,4 +1,4 @@
-
+import 'dart:io';
 
 import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
@@ -125,7 +125,12 @@ class LocationController extends GetxController {
   // 백그라운드 위치 업데이트용
   void checkIsValidAreaBackground(double lat, double lon) async {
     final PedometerController pedometerController =
-    Get.find<PedometerController>();
+        Get.find<PedometerController>();
+
+    // iOS: 자정 보정 가드 (안드로이드 분기 미변경)
+    if (Platform.isIOS) {
+      pedometerController.ensureDailyResetGuard();
+    }
 
     if (PermissionManager.isLocationPermissionGrantedStatic != true) {
       pedometerController.isInValidArea = false;
@@ -162,6 +167,11 @@ class LocationController extends GetxController {
   Future<void> syncWalkDataInBackground() async {
     BEATLogger.d("LocationController : syncWalkDataInBackground()");
     try {
+      // iOS: 자정 보정 가드
+      if (Platform.isIOS) {
+        final pedometerController = Get.find<PedometerController>();
+        pedometerController.ensureDailyResetGuard();
+      }
       await PermissionManager.updateLocationAndActivityPemission();
       if (PermissionManager.isActivityPermissionGrantedStatic! &&
           PermissionManager.isLocationPermissionGrantedStatic!) {
@@ -180,6 +190,11 @@ class LocationController extends GetxController {
   Future<void> syncRankingInBackground() async {
     BEATLogger.d("LocationController : syncRankingInBackground()");
     try {
+      // iOS: 자정 보정 가드
+      if (Platform.isIOS) {
+        final pedometerController = Get.find<PedometerController>();
+        pedometerController.ensureDailyResetGuard();
+      }
       await PermissionManager.updateLocationAndActivityPemission();
       if (PermissionManager.isActivityPermissionGrantedStatic! &&
           PermissionManager.isLocationPermissionGrantedStatic!) {

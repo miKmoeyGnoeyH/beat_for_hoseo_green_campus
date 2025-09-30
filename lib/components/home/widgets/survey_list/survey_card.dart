@@ -29,7 +29,7 @@ class SurveyCard extends StatelessWidget {
         // launchUrl(Uri.parse('${dotenv.env['SURVEY_URL']!}${surveyModel.surveyId}'));
         final UserController userController = context.read<UserController>();
         surveyDetailController.surveyId = surveyModel.surveyId;
-        surveyDetailController.fetchSurveyDetail();
+        surveyDetailController.fetchSurveyDetail(userController.state.authorization);
         NavigatorKeyManager().pushNamed(RouteNames.surveyDetail);
       },
       child: CustomRoundedBorderedContainer(

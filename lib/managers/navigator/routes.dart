@@ -9,6 +9,7 @@ import 'package:beat_flutter/controller/home/controllers/survey_detail_controlle
 import 'package:beat_flutter/controller/activity_service_controller.dart';
 import 'package:beat_flutter/controller/my_page/my_page_controller.dart';
 import 'package:beat_flutter/controller/rank/rank_controller_test.dart';
+import 'package:beat_flutter/controller/user_controller.dart';
 import 'package:beat_flutter/data/provider/rank_list_provider.dart';
 import 'package:beat_flutter/data/repository/rank_list_repository.dart';
 import 'package:flutter/material.dart';
@@ -61,13 +62,19 @@ abstract class Routes {
       case RouteNames.info:
         {
           return MaterialPageRoute(
-            builder: (context) => MultiBlocProvider(
-              providers: [
-                BlocProvider(create: (context) => InfoImageController()),
-                BlocProvider(create: (context) => InfoListController()),
-              ],
-              child: const InfoScreen(),
-            ),
+            builder: (context) {
+              final String authorization =
+                  context.read<UserController>().state.authorization;
+              return MultiBlocProvider(
+                providers: [
+                  BlocProvider(
+                      create: (context) => InfoImageController(authorization)),
+                  BlocProvider(
+                      create: (context) => InfoListController(authorization)),
+                ],
+                child: const InfoScreen(),
+              );
+            },
           );
         }
 
@@ -86,10 +93,15 @@ abstract class Routes {
         {
           final QuestModel questModel = settings.arguments as QuestModel;
           return MaterialPageRoute(
-            builder: (context) => BlocProvider(
-              create: (context) => DataDetailModelController(questModel),
-              child: const QuestDetailScreen(),
-            ),
+            builder: (context) {
+              final String authorization =
+                  context.read<UserController>().state.authorization;
+              return BlocProvider(
+                create: (context) =>
+                    DataDetailModelController(questModel, authorization),
+                child: const QuestDetailScreen(),
+              );
+            },
           );
         }
 
@@ -97,10 +109,15 @@ abstract class Routes {
         {
           final QuizModel arg = settings.arguments as QuizModel;
           return MaterialPageRoute(
-            builder: (context) => BlocProvider(
-              create: (context) => DataDetailModelController(arg),
-              child: const QuizDetailScreen(),
-            ),
+            builder: (context) {
+              final String authorization =
+                  context.read<UserController>().state.authorization;
+              return BlocProvider(
+                create: (context) =>
+                    DataDetailModelController(arg, authorization),
+                child: const QuizDetailScreen(),
+              );
+            },
           );
         }
 
@@ -112,10 +129,14 @@ abstract class Routes {
               RankListRepository(RankListProvider()), authorization));
 
           return MaterialPageRoute(
-            builder: (context) => BlocProvider(
-              create: (context) => RankController(),
-              child: const RankingScreen(),
-            ),
+            builder: (context) {
+              final String authorization =
+                  context.read<UserController>().state.authorization;
+              return BlocProvider(
+                create: (context) => RankController(authorization),
+                child: const RankingScreen(),
+              );
+            },
           );
         }
 
@@ -199,6 +220,9 @@ abstract class Routes {
 
           return MaterialPageRoute(
             builder: (context) {
+              final String authorization =
+                  context.read<UserController>().state.authorization;
+
               Get.put(SurveyDetailController());
               Get.put(MyPageController());
 
@@ -215,8 +239,8 @@ abstract class Routes {
                   BlocProvider(
                       create: (context) =>
                           QuestListController(arguments.authorization)),
-                  BlocProvider(create: (context) => QuizListController()),
-                  BlocProvider(create: (context) => SurveyListController()),
+                  BlocProvider(create: (context) => QuizListController(authorization)),
+                  BlocProvider(create: (context) => SurveyListController(authorization)),
                   // BlocProvider(
                   //   create: (context) =>
                   //       VoteListController(arguments.authorization),
@@ -274,10 +298,14 @@ abstract class Routes {
       case RouteNames.notifications:
         {
           return MaterialPageRoute(
-            builder: (context) => BlocProvider(
-              create: (context) => NotificationsController(),
-              child: NotificationsScreen(),
-            ),
+            builder: (context)
+            {
+              final String authorization = context.read<UserController>().state.authorization;
+              return BlocProvider(
+                create: (context) => NotificationsController(authorization),
+                child: NotificationsScreen(),
+              );
+            },
           );
         }
 

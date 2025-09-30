@@ -49,9 +49,6 @@ class SettingsScreen extends StatelessWidget {
                     Get.find<ActivityServiceController>();
 
                 activityServiceController.addWalkReport();
-
-                // await activityServiceController.stopForegroundService();
-                // await activityServiceController.stopBackgroundService();
                 await activityServiceController.stopService();
 
                 PageIndexController pageIndexController = Get.find<PageIndexController>();

@@ -195,7 +195,7 @@ class _QrScreenState extends State<QrScreen> {
 
                   Get.find<SurveyDetailController>().surveyId =
                       int.parse(surveyId);
-                  Get.find<SurveyDetailController>().fetchSurveyDetail();
+                  Get.find<SurveyDetailController>().fetchSurveyDetail(userBloc.state.authorization);
 
                   NavigatorKeyManager().pushNamed(RouteNames.surveyDetail);
 

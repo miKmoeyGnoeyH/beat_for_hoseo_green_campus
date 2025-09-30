@@ -4,9 +4,9 @@ import 'package:beat_flutter/exception/beat_exception.dart';
 import 'package:beat_flutter/managers/logger/beat_logger.dart';
 
 class SurveyDetailRepository {
-  Future<SurveyDetailModel> fetchSurveyDetail(int surveyId) async {
+  Future<SurveyDetailModel> fetchSurveyDetail(int surveyId, String authorization) async {
     try {
-      final response = await surveyDetailProvider.fetchSurveyDetail(surveyId);
+      final response = await surveyDetailProvider.fetchSurveyDetail(surveyId, authorization);
       return SurveyDetailModel.fromJson(response);
     } on BEATException {
       rethrow;

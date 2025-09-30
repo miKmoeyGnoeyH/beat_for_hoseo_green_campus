@@ -11,7 +11,8 @@ import '../states/data_state.dart';
 class DataDetailProvider {
   final http.Client _httpClient = http.Client();
 
-  Future<DataDetailModelState> fetchData(DataModel dataModel) async {
+  Future<DataDetailModelState> fetchData(
+      DataModel dataModel, String authorization) async {
     // log("DataDetailProvider : fetchData()");
     // log("DataDetailProvider : fetchData() : dataModel.toString() : ${dataModel.toString()}");
 
@@ -33,9 +34,10 @@ class DataDetailProvider {
     // log("DataDetailProvider : fetchData() : requestUrl : $requestUrl");
 
     try {
-      final http.Response response = await _httpClient
-          .get(Uri.parse(requestUrl))
-          .timeout(const Duration(seconds: 5));
+      final http.Response response = await _httpClient.get(
+        Uri.parse(requestUrl),
+        headers: {"Authorization": authorization},
+      ).timeout(const Duration(seconds: 5));
 
       log("DataDetailProvider : fetchData() : response.body : ${response.body.toString()}");
 

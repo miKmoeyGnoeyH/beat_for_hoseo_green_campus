@@ -9,15 +9,16 @@ import '../states/info_image_state.dart';
 import '../states/info_list_state.dart';
 
 class InfoProvider {
-  Future<InfoImageState> getInfoImages() async {
+  Future<InfoImageState> getInfoImages(String authorization) async {
     final String requestUrl = dotenv.env['INFO_IMAGE']!;
     List<Image> images = [];
     int imageId = 1;
 
     try {
-      while (await http
-              .get(Uri.parse('$requestUrl$imageId'))
-              .then((value) => value.statusCode) ==
+      while (await http.get(
+            Uri.parse('$requestUrl$imageId'),
+            headers: {"Authorization": authorization},
+          ).then((value) => value.statusCode) ==
           200) {
         images.add(
           Image.network(
@@ -27,19 +28,22 @@ class InfoProvider {
         );
         imageId++;
       }
-    } catch(e) {
+    } catch (e) {
       return InfoImageError();
     }
 
     return InfoImageLoaded(images);
   }
 
-  Future<InfoListState> getInfoList() async {
+  Future<InfoListState> getInfoList(String authorization) async {
     final String requestUrl = dotenv.env['INFO']!;
     InfoListState infoEventState = InfoListInitial();
 
     try {
-      final http.Response response = await http.get(Uri.parse(requestUrl));
+      final http.Response response = await http.get(
+        Uri.parse(requestUrl),
+        headers: {"Authorization": authorization},
+      );
 
       if (response.statusCode == 200) {
         final body = jsonDecode(utf8.decode(response.bodyBytes));
@@ -47,7 +51,7 @@ class InfoProvider {
       } else {
         infoEventState = InfoListError();
       }
-    } catch(e) {
+    } catch (e) {
       infoEventState = InfoListError();
     }
 

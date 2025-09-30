@@ -7,14 +7,16 @@ import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
 import "package:http/http.dart" as http;
 
 class NoticeProvider {
-  Future<DataListState> fetchDataList() async {
+  Future<DataListState> fetchDataList(String authorization) async {
     final String requestUrl = DotEnvManager().notice;
 
     try {
-      final http.Response response =
-          await http.get(Uri.parse(requestUrl)).timeout(
-                const Duration(seconds: 5),
-              );
+      final http.Response response = await http.get(
+        Uri.parse(requestUrl),
+        headers: {"Authorization": authorization},
+      ).timeout(
+        const Duration(seconds: 5),
+      );
 
       if (response.statusCode == 200) {
         List<DataModel> dataList = [];

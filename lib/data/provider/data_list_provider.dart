@@ -14,7 +14,7 @@ enum DataListType { quest, quiz, survey, rank, notification }
 class DataListProvider {
   final http.Client _httpClient = http.Client();
 
-  Future<DataListState> fetchDataList(DataListType type) async {
+  Future<DataListState> fetchDataList(DataListType type, String authorization) async {
     final String requestUrl;
 
     switch (type) {
@@ -44,10 +44,12 @@ class DataListProvider {
     }
 
     try {
-      final http.Response response =
-          await _httpClient.get(Uri.parse(requestUrl)).timeout(
-                const Duration(seconds: 5),
-              );
+      final http.Response response = await _httpClient.get(
+        Uri.parse(requestUrl),
+        headers: {"Authorization": authorization},
+      ).timeout(
+        const Duration(seconds: 5),
+      );
 
       if (response.statusCode == 200) {
         List<DataModel> dataList = [];
@@ -100,7 +102,8 @@ class DataListProvider {
 
   Future<DataListState> fetchQuestListTest() async {
     List<DataModel> questList = [];
-    final json = await rootBundle.loadString("assets/dummy/event_list_dummy.json");
+    final json =
+        await rootBundle.loadString("assets/dummy/event_list_dummy.json");
     final body = jsonDecode(json);
 
     for (var data in body) {
@@ -112,7 +115,8 @@ class DataListProvider {
 
   Future<DataListState> fetchSurveyListTest() async {
     List<DataModel> questList = [];
-    final json = await rootBundle.loadString("assets/dummy/survey_list_dummy.json");
+    final json =
+        await rootBundle.loadString("assets/dummy/survey_list_dummy.json");
     final body = jsonDecode(json);
 
     for (var data in body) {

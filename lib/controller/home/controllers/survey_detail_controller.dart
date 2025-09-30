@@ -14,7 +14,7 @@ class SurveyDetailController extends GetxController with StateMixin {
     change(null, status: RxStatus.empty());
   }
 
-  Future<void> fetchSurveyDetail() async {
+  Future<void> fetchSurveyDetail(String authorization) async {
     change(null, status: RxStatus.loading());
     isAnsweredEveryQuestion = false;
 
@@ -25,7 +25,7 @@ class SurveyDetailController extends GetxController with StateMixin {
 
     try {
       final SurveyDetailModel surveyDetailModel = await surveyDetailRepository
-          .fetchSurveyDetail(surveyId!);
+          .fetchSurveyDetail(surveyId!, authorization);
       change(surveyDetailModel, status: RxStatus.success());
     } on BEATException {
       change(state, status: RxStatus.error());

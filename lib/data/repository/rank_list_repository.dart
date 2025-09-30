@@ -20,12 +20,12 @@ class RankListRepository {
     }
   }
 
-  Future<List<RankListModelTest>> getRankListTest() async {
+  Future<List<RankListModelTest>> getRankListTest(String authorization) async {
     List<RankListModelTest> retList = [];
 
     try {
       final List<Map<String, dynamic>> rankListData = await rankListProvider
-          .getRankListTest();
+          .getRankListTest(authorization);
       for (var data in rankListData) {
         retList.add(RankListModelTest.fromJson(data));
       }

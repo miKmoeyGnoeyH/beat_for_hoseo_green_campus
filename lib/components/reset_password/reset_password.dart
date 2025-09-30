@@ -12,6 +12,7 @@ import 'package:beat_flutter/components/global/widgets/custom_text_field.dart';
 import 'package:beat_flutter/components/register_fill_inform/widgets/rfi_regexp.dart';
 import 'package:beat_flutter/controller/activity_service_controller.dart';
 import 'package:beat_flutter/controller/user_controller.dart';
+import 'package:beat_flutter/data/models/user_model.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
@@ -484,16 +485,25 @@ class _ResetPasswordState extends State<ResetPassword> {
   }
 
   void onBottomAppbarButtonTap() async {
-    final String requestUrl = DotEnvManager().resetPassword;
+    final UserController userController = context.read<UserController>();
+
+    final String requestUrl = (userController.state is Member)
+        ? DotEnvManager().resetPasswordPrivate
+        : DotEnvManager().resetPasswordPublic;
+
+    final Map<String, String> headers = (userController.state is Member)
+        ? {
+            "Content-Type": "application/json",
+            "Authorization": userController.state.authorization,
+          }
+        : {"Content-Type": "application/json"};
 
     try {
       final http.Response response = await Get.showOverlay(
         asyncFunction: () => http
             .post(
               Uri.parse(requestUrl),
-              headers: {
-                "Content-Type": "application/json",
-              },
+              headers: headers,
               body: jsonEncode({
                 "studentId": idController.text,
                 "authCode": validationCodeController.text,
@@ -515,6 +525,7 @@ class _ResetPasswordState extends State<ResetPassword> {
             // Get.find<ActivityServiceController>().stopForegroundService();
             // Get.find<ActivityServiceController>().stopBackgroundService();
 
+            Get.find<ActivityServiceController>().addWalkReport();
             await Get.find<ActivityServiceController>().stopService();
 
             PrefsManager().clear();

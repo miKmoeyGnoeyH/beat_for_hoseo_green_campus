@@ -33,14 +33,16 @@ class RankListProvider {
     }
   }
 
-  Future<List<Map<String, dynamic>>> getRankListTest() async {
+  Future<List<Map<String, dynamic>>> getRankListTest(
+      String authorization) async {
     final String requestUrl = DotEnvManager().rankListUrl;
 
     try {
-      final http.Response pointResponse =
-          await _httpClient.get(Uri.parse(requestUrl)).timeout(
-                const Duration(seconds: 5),
-              );
+      final http.Response pointResponse = await _httpClient.get(
+          Uri.parse(requestUrl),
+          headers: {"Authorization": authorization}).timeout(
+        const Duration(seconds: 5),
+      );
 
       if (pointResponse.statusCode == 200) {
         final pointBody = pointResponse.body;

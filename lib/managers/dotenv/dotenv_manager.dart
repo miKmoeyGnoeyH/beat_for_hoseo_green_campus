@@ -36,7 +36,8 @@ class DotEnvManager {
   String get nicknameCheck => dotenv.env['NICKNAME_CHECK'] ?? "";
   String get emailRequest => dotenv.env['EMAIL_REQUEST'] ?? "";
   String get resetPasswordEmailRequest => dotenv.env['RESET_PASSWORD_EMAIL_REQUEST'] ?? "";
-  String get resetPassword => dotenv.env['RESET_PASSWORD'] ?? "";
+  String get resetPasswordPrivate => dotenv.env['RESET_PASSWORD_PRIVATE'] ?? "";
+  String get resetPasswordPublic => dotenv.env['RESET_PASSWORD_PUBLIC'] ?? "";
   String get info => dotenv.env['INFO'] ?? "";
   String get infoImage => dotenv.env['INFO_IMAGE'] ?? "";
   String get questList => dotenv.env['QUEST_LIST'] ?? "";

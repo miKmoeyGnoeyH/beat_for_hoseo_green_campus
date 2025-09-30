@@ -62,7 +62,8 @@ class SurveyDetail extends StatelessWidget {
                   onError: (state) {
                     return CustomRefreshButton(
                       onTap: () {
-                        surveyDetailController.fetchSurveyDetail();
+                        final String authorization = context.read<UserController>().state.authorization;
+                        surveyDetailController.fetchSurveyDetail(authorization);
                       },
                     );
                   }),

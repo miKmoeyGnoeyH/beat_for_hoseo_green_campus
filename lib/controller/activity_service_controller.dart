@@ -152,10 +152,12 @@ class ActivityServiceController extends GetxController {
         final service = FlutterBackgroundService();
 
         if (!await service.isRunning()) {
+          BEATLogger.d("service.isRunning");
           await service.startService();
         }
 
-        // service.invoke("startBackgroundTasks", {"authorization": authorization, "sendToTime": sendToTime});
+        service.invoke("startBackgroundTasks",
+            {"authorization": authorization, "sendToTime": sendToTime});
 
         return;
       }
@@ -197,6 +199,7 @@ class ActivityServiceController extends GetxController {
         if (data == null) return;
         log("ActivityServiceController: _setAndroidBackgroundServiceHandler() : bg_started received: data: $data");
         pedometerController.isHoliday = data["isHoliday"] ?? true;
+        pedometerController.isInValidArea = data["isInValidArea"] ?? false;
         pedometerController.todayWalkCount = data["todayWalkCount"] ?? 0;
         pedometerController.weeklyWalkCount = data["weeklyWalkCount"] ?? 0;
         pedometerController.monthlyWalkCount = data["monthlyWalkCount"] ?? 0;
@@ -205,7 +208,8 @@ class ActivityServiceController extends GetxController {
 
       _fbsSubscriptions.add(service.on('bg_ready').listen((data) {
         log("ActivityServiceController : _setAndroidBackgroundServiceHandler() : bg_ready received");
-        service.invoke("startBackgroundTasks", {"authorization": authorization, "sendToTime": sendToTime});
+        service.invoke("startBackgroundTasks",
+            {"authorization": authorization, "sendToTime": sendToTime});
       }));
     }
   }
@@ -302,9 +306,6 @@ class ActivityServiceController extends GetxController {
     if (Platform.isIOS) {
       await _locationChannel
           .invokeMethod("updateHolidayStatus", {"isHoliday": isHoliday});
-    } else {
-      final service = FlutterBackgroundService();
-      service.invoke("updateHolidayStatus", {"isHoliday": isHoliday});
     }
   }
 
@@ -358,6 +359,10 @@ class ActivityServiceController extends GetxController {
   }
 
   void addWalkReport() {
-    pedometerController.addWalkReport();
+    if (Platform.isIOS) {
+      pedometerController.addWalkReport();
+    } else {
+      FlutterBackgroundService().invoke("addWalkReport");
+    }
   }
 }

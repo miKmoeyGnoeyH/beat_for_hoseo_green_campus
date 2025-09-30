@@ -388,6 +388,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                       return null;
                     },
                     autovalidateMode: AutovalidateMode.onUserInteraction,
+                    enabled: registerSidController.state is! IDEmailChecked,
                     // actions: [
                     //
                     // ],
@@ -761,4 +762,5 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
   bool _isSignUpButtonEnabled = false;
   bool _isPasswordValid = false;
   bool _isCheckEmailVerifyButtonEnabled = false;
+  bool _isEmailFieldEnabled = true;
 }

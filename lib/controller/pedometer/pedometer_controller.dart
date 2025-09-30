@@ -12,6 +12,7 @@ import 'package:beat_flutter/managers/prefs/prefs_manager.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class PedometerController extends GetxController {
   /// iOS 네이티브와 통신하기 위한 MethodChannel
@@ -162,29 +163,40 @@ class PedometerController extends GetxController {
 
             if (response.statusCode == 200) {
               final bodyToJson = jsonDecode(response.body);
-              if (savedToday >= bodyToJson['todayWalkCount']) {
-                todayWalkCount = savedToday;
-                weeklyWalkCount = savedWeekly;
-                monthlyWalkCount = savedMonthly;
-                totalWalkCount = savedTotal;
-              } else {
+              if (_lastReportedTime.day != DateTime.now().day) {
                 todayWalkCount = bodyToJson['todayWalkCount'];
                 weeklyWalkCount = bodyToJson['weeklyWalkCount'];
                 monthlyWalkCount = bodyToJson['monthlyWalkCount'];
                 totalWalkCount = bodyToJson['totalWalkCount'];
+              } else {
+                if (savedToday >= bodyToJson['todayWalkCount']) {
+                  todayWalkCount = savedToday;
+                  weeklyWalkCount = savedWeekly;
+                  monthlyWalkCount = savedMonthly;
+                  totalWalkCount = savedTotal;
+                } else {
+                  todayWalkCount = bodyToJson['todayWalkCount'];
+                  weeklyWalkCount = bodyToJson['weeklyWalkCount'];
+                  monthlyWalkCount = bodyToJson['monthlyWalkCount'];
+                  totalWalkCount = bodyToJson['totalWalkCount'];
+                }
               }
               _lastReportedSteps = bodyToJson['todayWalkCount'];
-              _walkReports.clear();
             } else {
-              todayWalkCount = savedToday;
-              weeklyWalkCount = savedWeekly;
-              monthlyWalkCount = savedMonthly;
-              totalWalkCount = savedTotal;
-              _lastReportedSteps = savedToday;
+              if (_lastReportedTime.day != DateTime.now().day) {
+                resetAtMidnight();
+              } else {
+                todayWalkCount = savedToday;
+                weeklyWalkCount = savedWeekly;
+                monthlyWalkCount = savedMonthly;
+                totalWalkCount = savedTotal;
+                _lastReportedSteps = savedToday;
+              }
             }
           } catch (e) {
             BEATLogger.d("PedometerController : ever : ${e.toString()}");
           } finally {
+            _walkReports.clear();
             PrefsManager().setUnsentStepsList(reports);
             BEATLogger.d(
                 "PedometerController : ever : unsentStepsList : ${PrefsManager().getUnsentStepsList().toString()}");
@@ -204,6 +216,8 @@ class PedometerController extends GetxController {
 
   /// 백그라운드 걸음 수 이벤트 처리
   void onStepCountFromNative(int stepsFromNative) {
+    // iOS: 자정 보정 가드
+    ensureDailyResetGuard();
     // 1) 베이스라인은 항상 갱신
     if (stepsAfterLastBoot == null ||
         (stepsAfterLastBoot != null && stepsAfterLastBoot! > stepsFromNative)) {
@@ -245,6 +259,8 @@ class PedometerController extends GetxController {
 
   /// 백그라운드 걸음 수 이벤트 처리
   void onPedestrianStatusChangedFromNative(String status) {
+    // iOS: 자정 보정 가드
+    ensureDailyResetGuard();
     if (status == "stopped") {
       PrefsManager().setSteps(
         todayWalkCount,
@@ -376,10 +392,31 @@ class PedometerController extends GetxController {
     _lastReportedSteps = 0;
     PrefsManager().setLastReportedSteps(0);
 
-    final (savedSteps, savedWeekly, savedMonthly, savedTotal) =
-        PrefsManager().getSteps();
-    final int savedLastReportedSteps = PrefsManager().getLastReportedSteps();
-    BEATLogger.d(
-        "PedometerController : resetAtMidnight : savedStepd : $savedSteps, savedWeekly : $savedWeekly, savedMonthly : $savedMonthly, savedTotal : $savedTotal, savedLastReportedSteps : $savedLastReportedSteps");
+    // 마지막 초기화 일자 저장 (YYYY-MM-DD)
+    final String todayKey = DateFormat('yyyy-MM-dd').format(now);
+    PrefsManager().setLastResetYmd(todayKey);
+
+    // final (savedSteps, savedWeekly, savedMonthly, savedTotal) =
+    //     PrefsManager().getSteps();
+    // final int savedLastReportedSteps = PrefsManager().getLastReportedSteps();
+    // BEATLogger.d(
+    //     "PedometerController : resetAtMidnight : savedStepd : $savedSteps, savedWeekly : $savedWeekly, savedMonthly : $savedMonthly, savedTotal : $savedTotal, savedLastReportedSteps : $savedLastReportedSteps");
+  }
+
+  /// iOS에서 자정 초기화 누락 방지를 위한 가드
+  /// 저장된 마지막 초기화 일자와 오늘 날짜가 다르면 즉시 자정 초기화 수행
+  void ensureDailyResetGuard() {
+    try {
+      final String lastYmd = PrefsManager().getLastResetYmd();
+      final String todayKey = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      if (lastYmd != todayKey) {
+        BEATLogger.d(
+            "PedometerController : ensureDailyResetGuard() : lastYmd=$lastYmd, today=$todayKey -> reset");
+        resetAtMidnight();
+      }
+    } catch (e) {
+      BEATLogger.d(
+          "PedometerController : ensureDailyResetGuard() error : ${e.toString()}");
+    }
   }
 }

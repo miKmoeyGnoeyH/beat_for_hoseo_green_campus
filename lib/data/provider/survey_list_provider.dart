@@ -8,14 +8,16 @@ import 'package:beat_flutter/managers/logger/beat_logger.dart';
 import 'package:http/http.dart' as http;
 
 class SurveyListProvider {
-  Future<DataListState> fetchSurveyList() async {
+  Future<DataListState> fetchSurveyList(String authorization) async {
     final String requestUrl = DotEnvManager().surveyList;
 
     try {
-      final http.Response response =
-          await http.get(Uri.parse(requestUrl)).timeout(
-                const Duration(seconds: 5),
-              );
+      final http.Response response = await http.get(
+        Uri.parse(requestUrl),
+        headers: {"Authorization": authorization},
+      ).timeout(
+        const Duration(seconds: 5),
+      );
 
       if (response.statusCode == 200) {
         List<SurveyModel> dataList = [];

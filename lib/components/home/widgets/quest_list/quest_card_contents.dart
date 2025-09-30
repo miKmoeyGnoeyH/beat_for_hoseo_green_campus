@@ -260,7 +260,7 @@ class _QuestCardContentsState extends State<QuestCardContents> {
 
             if (surveyId > 0) {
               Get.find<SurveyDetailController>().surveyId = surveyId;
-              Get.find<SurveyDetailController>().fetchSurveyDetail();
+              Get.find<SurveyDetailController>().fetchSurveyDetail(userController.state.authorization);
             }
 
             Get.back();

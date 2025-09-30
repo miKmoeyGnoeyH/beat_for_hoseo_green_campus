@@ -90,7 +90,7 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
   /// 자정 초기화 타이머
   /// 절대로 이 타이머는 멈추면 안됨
   /// (테스트용으로 5분마다 0초에 초기화 신호 전송)
-  Timer? midnightTimer;
+  Timer? midnightOnce;
 
   /// 1시간 단위 걸음 수 동기화 타이머
   Timer? hourlySyncTimer;
@@ -155,7 +155,7 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
     stepSubscription?.cancel();
     // statusSubscription?.cancel();
     positionSubscription?.cancel();
-    midnightTimer?.cancel();
+    midnightOnce?.cancel();
     hourlySyncTimer?.cancel();
     rankSyncTimer?.cancel();
     permissionCheckTimer?.cancel();
@@ -164,27 +164,11 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
     stepSubscription = null;
     // statusSubscription = null;
     positionSubscription = null;
-    midnightTimer = null;
+    midnightOnce = null;
     hourlySyncTimer = null;
     rankSyncTimer = null;
     permissionCheckTimer = null;
     serviceStatusSub = null;
-  }
-
-  void setValidArea(bool value) {
-    if (isInValidArea == value) return; // 변경 있을 때만 전파
-    isInValidArea = value;
-    service.invoke("updateIsInValidArea", {"isInValidArea": value});
-
-    if (service is AndroidServiceInstance) {
-      final content = value
-          ? notificationContentCountingSteps()
-          : notificationContentOutOfRange();
-      service.setForegroundNotificationInfo(
-        title: notificationTitle,
-        content: content,
-      );
-    }
   }
 
   void updateUISteps() {
@@ -197,6 +181,22 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
         "totalWalkCount": totalWalkCount
       },
     );
+  }
+
+  void setValidArea(bool value, {bool force = false}) {
+    if (!force && isInValidArea == value) return; // 변경 있을 때만 전파
+    isInValidArea = value;
+    service.invoke("updateIsInValidArea", {"isInValidArea": value});
+
+    if (service is AndroidServiceInstance) {
+      final content = value
+          ? notificationContentCountingSteps()
+          : notificationContentOutOfRange();
+      service.setForegroundNotificationInfo(
+        title: notificationTitle,
+        content: content,
+      );
+    }
   }
 
   /// API 요청을 통해 오늘이 공휴일인지를 확인.
@@ -233,6 +233,8 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
       final (savedToday, savedWeekly, savedMonthly, savedTotal) =
           PrefsManager().getSteps();
 
+      final savedLastReportedSteps = PrefsManager().getLastReportedSteps();
+
       final response = await http.get(
         Uri.parse(requestURL),
         headers: {"Authorization": authorization},
@@ -258,7 +260,7 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
         weeklyWalkCount = savedWeekly;
         monthlyWalkCount = savedMonthly;
         totalWalkCount = savedTotal;
-        lastReportedSteps = lastReportedSteps;
+        lastReportedSteps = savedLastReportedSteps;
       }
       PrefsManager().setSteps(
           todayWalkCount, weeklyWalkCount, monthlyWalkCount, totalWalkCount);
@@ -316,49 +318,6 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
     }
 
     PrefsManager().setDeviceStepsLastHandled(latest);
-  }
-
-  /// 백그라운드 걸음 수 이벤트 처리
-  void onStepCountFromNative(int stepsFromNative) {
-    // 1) 베이스라인은 항상 갱신
-    if (stepsAfterLastBoot == null ||
-        (stepsAfterLastBoot != null && stepsAfterLastBoot! > stepsFromNative)) {
-      stepsAfterLastBoot = stepsFromNative;
-      PrefsManager().setStepsAfterLastboot(stepsAfterLastBoot!);
-    }
-
-    // 2) 이전 디바이스 스텝을 항상 최신으로 유지
-    if (previousSteps == null ||
-        (previousSteps != null && previousSteps! > stepsFromNative)) {
-      previousSteps = stepsFromNative;
-    }
-
-    int diff = stepsFromNative - previousSteps!;
-    previousSteps = stepsFromNative;
-
-    // 3) 합산은 조건 만족할 때만
-    if (hasActivityPermission != true ||
-        !isInValidArea ||
-        isHoliday ||
-        diff <= 0) {
-      return;
-    }
-
-    // steps += diff;
-    todayWalkCount += diff;
-    weeklyWalkCount += diff;
-    monthlyWalkCount += diff;
-    totalWalkCount += diff;
-
-    // 증가 시점마다 즉시 영속화
-    PrefsManager().setSteps(
-      todayWalkCount,
-      weeklyWalkCount,
-      monthlyWalkCount,
-      totalWalkCount,
-    );
-
-    updateUISteps();
   }
 
   List<LatLng> asanArea = [
@@ -459,25 +418,6 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
     hasLocationPermission = PermissionManager.isLocationPermissionGrantedStatic;
   }
 
-  /// 걸음 수 및 보행 상태 스트림 설정
-  void setStepAndPedestrianStatusStream() {
-    final stepStream = Pedometer.stepCountStream;
-    stepSubscription = stepStream.listen(
-      (event) {
-        onStepCountFromNative(event.steps);
-      },
-      onDone: () {
-        stepSubscription = null;
-      },
-      onError: (e) async {
-        log('BackgroundService: pedometer stream error: $e');
-        await stepSubscription?.cancel();
-        stepSubscription = null;
-      },
-      cancelOnError: true,
-    );
-  }
-
   /// 위치 스트림 설정
   void setPositionStream() {
     positionSubscription = Geolocator.getPositionStream(
@@ -496,110 +436,6 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
       },
       cancelOnError: true,
     );
-  }
-
-  /// 스트림이 설정중인지를 나타내는 플래그.
-  /// 일종의 mutex?
-  /// 스트림 설정 중 새로운 스트림 설정 요청이 들어왔을 때
-  /// 스트림을 중복으로 설정하는 문제를 방지하기 위함
-  bool setting = false;
-
-  /// 구독 스트림을 안전하게 설정하는 함수
-  /// 함수 진입 시 setting 플래그를 설정
-  /// 우선 위치, 활동 권한이 있는지를 확인한 후,
-  /// 위치 스트림, 걸음 수, 보행 상태 스트림을 중지
-  /// 이후 각 스트림이 이미 구독중인지를 확인하고 구독중이 아니라면 스트림을 설정
-  /// 함수 종료 시 setting 플래그를 false로 설정
-  Future<void> safeSetStreams() async {
-    log("FlutterBackgroundService: safeSetStreams called");
-
-    if (setting) return;
-    setting = true;
-    try {
-      await updateActivityAndLocationPermission();
-
-      log("FlutterBackgroundService: safeSetStreams: hasLocationPermission: $hasLocationPermission, hasActivityPermission: $hasActivityPermission, isHoliday: $isHoliday, isInValidArea: $isInValidArea");
-
-      if (hasLocationPermission != true || hasActivityPermission != true) {
-        await positionSubscription?.cancel();
-        positionSubscription = null;
-
-        await stepSubscription?.cancel();
-        stepSubscription = null;
-
-        // await statusSubscription?.cancel();
-        // statusSubscription = null;
-        return;
-      }
-      if (isHoliday) {
-        await positionSubscription?.cancel();
-        positionSubscription = null;
-      } else if (positionSubscription == null) {
-        try {
-          final pos = await Geolocator.getCurrentPosition(
-            locationSettings:
-                const LocationSettings(accuracy: LocationAccuracy.best),
-          );
-          checkIsValidAreaBackground(pos.latitude, pos.longitude);
-        } catch (e) {
-          log('getCurrentPosition error: $e');
-        }
-        setPositionStream();
-      }
-      if (stepSubscription == null) {
-        setStepAndPedestrianStatusStream();
-      }
-    } finally {
-      setting = false;
-    }
-  }
-
-  void setServiceStatusSub() {
-    serviceStatusSub = Geolocator.getServiceStatusStream().listen(
-      (s) async {
-        if (s == ServiceStatus.enabled) {
-          isLocationServiceEnabled = true;
-          // isInValidArea = true;
-          // service.invoke("updateIsInValidArea", {"isInValidArea": true});
-
-          await safeSetStreams();
-        } else {
-          isLocationServiceEnabled = false;
-
-          setValidArea(false);
-
-          // isInValidArea = false;
-          // service.invoke("updateIsInValidArea", {"isInValidArea": false});
-
-          stepSubscription?.cancel();
-          stepSubscription = null;
-
-          positionSubscription?.cancel();
-          positionSubscription = null;
-        }
-      },
-      onDone: () {
-        serviceStatusSub = null;
-      },
-      onError: (e) async {
-        isLocationServiceEnabled = false;
-
-        setValidArea(false);
-
-        // isInValidArea = false;
-        // service.invoke("updateIsInValidArea", {"isInValidArea": false});
-
-        await serviceStatusSub?.cancel();
-        serviceStatusSub = null;
-      },
-      cancelOnError: true,
-    );
-  }
-
-  void setPermissionCheckTimer() {
-    permissionCheckTimer = Timer.periodic(const Duration(seconds: 30), (_) {
-      safeSetStreams();
-    });
   }
 
   Future<void> resetAtMidnight() async {
@@ -644,22 +480,220 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
         "totalWalkCount": totalWalkCount
       },
     );
+
+    // ✅ 오늘자로 리셋 마커 업데이트 (중복 리셋 방지)
+    final todayKey = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    PrefsManager().setLastResetYmd(todayKey);
   }
 
-  void setMidnightTimer() {
-    // 자정(테스트: 5분마다 0초)에 리셋 트리거
-    midnightTimer = Timer.periodic(const Duration(seconds: 1), (_) {
-      final now = DateTime.now();
-      if (now.hour == 0 && now.minute == 0 && now.second == 0) {
-        // if (now.minute % 5 == 0 && now.second == 0) {
-        resetAtMidnight();
+  Future<void> maybeResetIfNeeded() async {
+    final now = DateTime.now();
+    final String todayKey = DateFormat('yyyy-MM-dd').format(now);
+    final String lastKey = PrefsManager().getLastResetYmd(); // 없으면 ""
+
+    // ✅ 첫 실행: 리셋하지 말고 ‘오늘자 마커’만 세팅
+    if (lastKey.isEmpty) {
+      PrefsManager().setLastResetYmd(todayKey);
+      return;
+    }
+
+    if (lastKey != todayKey) {
+      await resetAtMidnight();
+      PrefsManager().setLastResetYmd(todayKey);
+    }
+  }
+
+  /// 백그라운드 걸음 수 이벤트 처리
+  void onStepCountFromNative(int stepsFromNative) {
+    maybeResetIfNeeded();
+
+    // 1) 베이스라인은 항상 갱신
+    if (stepsAfterLastBoot == null ||
+        (stepsAfterLastBoot != null && stepsAfterLastBoot! > stepsFromNative)) {
+      stepsAfterLastBoot = stepsFromNative;
+      PrefsManager().setStepsAfterLastboot(stepsAfterLastBoot!);
+    }
+
+    // 2) 이전 디바이스 스텝을 항상 최신으로 유지
+    if (previousSteps == null ||
+        (previousSteps != null && previousSteps! > stepsFromNative)) {
+      previousSteps = stepsFromNative;
+    }
+
+    int diff = stepsFromNative - previousSteps!;
+    previousSteps = stepsFromNative;
+
+    // 3) 합산은 조건 만족할 때만
+    if (hasActivityPermission != true ||
+        !isInValidArea ||
+        isHoliday ||
+        diff <= 0) {
+      return;
+    }
+
+    // steps += diff;
+    todayWalkCount += diff;
+    weeklyWalkCount += diff;
+    monthlyWalkCount += diff;
+    totalWalkCount += diff;
+
+    // 증가 시점마다 즉시 영속화
+    PrefsManager().setSteps(
+      todayWalkCount,
+      weeklyWalkCount,
+      monthlyWalkCount,
+      totalWalkCount,
+    );
+
+    updateUISteps();
+  }
+
+  /// 걸음 수 및 보행 상태 스트림 설정
+  void setStepAndPedestrianStatusStream() {
+    final stepStream = Pedometer.stepCountStream;
+    stepSubscription = stepStream.listen(
+      (event) {
+        onStepCountFromNative(event.steps);
+      },
+      onDone: () {
+        stepSubscription = null;
+      },
+      onError: (e) async {
+        log('BackgroundService: pedometer stream error: $e');
+        await stepSubscription?.cancel();
+        stepSubscription = null;
+      },
+      cancelOnError: true,
+    );
+  }
+
+  /// 스트림이 설정중인지를 나타내는 플래그.
+  /// 일종의 mutex?
+  /// 스트림 설정 중 새로운 스트림 설정 요청이 들어왔을 때
+  /// 스트림을 중복으로 설정하는 문제를 방지하기 위함
+  bool setting = false;
+
+  /// 구독 스트림을 안전하게 설정하는 함수
+  /// 함수 진입 시 setting 플래그를 설정
+  /// 우선 위치, 활동 권한이 있는지를 확인한 후,
+  /// 위치 스트림, 걸음 수, 보행 상태 스트림을 중지
+  /// 이후 각 스트림이 이미 구독중인지를 확인하고 구독중이 아니라면 스트림을 설정
+  /// 함수 종료 시 setting 플래그를 false로 설정
+  Future<void> safeSetStreams() async {
+    log("FlutterBackgroundService: safeSetStreams called");
+
+    if (setting) return;
+    setting = true;
+    try {
+      await updateActivityAndLocationPermission();
+
+      log("FlutterBackgroundService: safeSetStreams: hasLocationPermission: $hasLocationPermission, hasActivityPermission: $hasActivityPermission, isHoliday: $isHoliday, isInValidArea: $isInValidArea");
+
+      if (hasLocationPermission != true || hasActivityPermission != true) {
+        await positionSubscription?.cancel();
+        positionSubscription = null;
+
+        await stepSubscription?.cancel();
+        stepSubscription = null;
+
+        // await statusSubscription?.cancel();
+        // statusSubscription = null;
+        return;
       }
+      if (isHoliday) {
+        await positionSubscription?.cancel();
+        positionSubscription = null;
+      } else if (positionSubscription == null) {
+        try {
+          final last = await Geolocator.getLastKnownPosition();
+          if (last != null) {
+            checkIsValidAreaBackground(last.latitude, last.longitude);
+          }
+
+          final pos = await Geolocator.getCurrentPosition(
+            locationSettings:
+                const LocationSettings(accuracy: LocationAccuracy.best),
+          );
+          checkIsValidAreaBackground(pos.latitude, pos.longitude);
+        } catch (e) {
+          log('getCurrentPosition error: $e');
+        }
+        setPositionStream();
+      }
+      if (stepSubscription == null) {
+        setStepAndPedestrianStatusStream();
+      }
+    } finally {
+      setting = false;
+    }
+  }
+
+  void setPermissionCheckTimer() {
+    permissionCheckTimer = Timer.periodic(const Duration(seconds: 30), (_) {
+      safeSetStreams();
+    });
+  }
+
+  void setServiceStatusSub() {
+    serviceStatusSub = Geolocator.getServiceStatusStream().listen(
+      (s) async {
+        if (s == ServiceStatus.enabled) {
+          isLocationServiceEnabled = true;
+          maybeResetIfNeeded();
+          // isInValidArea = true;
+          // service.invoke("updateIsInValidArea", {"isInValidArea": true});
+
+          await safeSetStreams();
+        } else {
+          isLocationServiceEnabled = false;
+
+          setValidArea(false);
+
+          // isInValidArea = false;
+          // service.invoke("updateIsInValidArea", {"isInValidArea": false});
+
+          stepSubscription?.cancel();
+          stepSubscription = null;
+
+          positionSubscription?.cancel();
+          positionSubscription = null;
+        }
+      },
+      onDone: () {
+        serviceStatusSub = null;
+      },
+      onError: (e) async {
+        isLocationServiceEnabled = false;
+
+        setValidArea(false);
+
+        // isInValidArea = false;
+        // service.invoke("updateIsInValidArea", {"isInValidArea": false});
+
+        await serviceStatusSub?.cancel();
+        serviceStatusSub = null;
+      },
+      cancelOnError: true,
+    );
+  }
+
+  void scheduleMidnightOnce() {
+    // 자정(테스트: 5분마다 0초)에 리셋 트리거
+    midnightOnce?.cancel();
+    final now = DateTime.now();
+    final tomorrow = DateTime(now.year, now.month, now.day + 1);
+    final diff = tomorrow.difference(now);
+    midnightOnce = Timer(diff, () async {
+      // midnightOnce = Timer(const Duration(minutes: 1), () async {
+      await resetAtMidnight();
+      scheduleMidnightOnce();
     });
   }
 
   void setHourlySyncTimer() {
     // 1시간마다 동기화 트리거
     hourlySyncTimer = Timer.periodic(const Duration(hours: 1), (_) async {
+      maybeResetIfNeeded();
       addWalkReport();
       updateUISteps();
     });
@@ -680,7 +714,6 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
   void startBackgroundService() async {
     log("FlutterBackgroundService: startBackgroundService called");
 
-    await getWalkHitory();
     isHoliday = await getIsHoliday();
 
     final enabled = await Geolocator.isLocationServiceEnabled();
@@ -691,6 +724,8 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
     lastReportedSteps = PrefsManager().getLastReportedSteps();
     stepsAfterLastBoot = PrefsManager().getStepsAfterLastboot();
     walkReports.assignAll(PrefsManager().getUnsentStepsList());
+
+    await getWalkHitory();
 
     log("FlutterBackgroundService: startBackgroundService: lastReportedTime: $lastReportedTime, lastReportedSteps: $lastReportedSteps, stepsAfterLastBoot: $stepsAfterLastBoot, unsentStepsList: $walkReports");
 
@@ -715,29 +750,40 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
 
           if (response.statusCode == 200) {
             final bodyToJson = jsonDecode(response.body);
-            if (savedToday >= bodyToJson['todayWalkCount']) {
-              todayWalkCount = savedToday;
-              weeklyWalkCount = savedWeekly;
-              monthlyWalkCount = savedMonthly;
-              totalWalkCount = savedTotal;
-            } else {
+            if (lastReportedTime.day != DateTime.now().day) {
               todayWalkCount = bodyToJson['todayWalkCount'];
               weeklyWalkCount = bodyToJson['weeklyWalkCount'];
               monthlyWalkCount = bodyToJson['monthlyWalkCount'];
               totalWalkCount = bodyToJson['totalWalkCount'];
+            } else {
+              if (savedToday >= bodyToJson['todayWalkCount']) {
+                todayWalkCount = savedToday;
+                weeklyWalkCount = savedWeekly;
+                monthlyWalkCount = savedMonthly;
+                totalWalkCount = savedTotal;
+              } else {
+                todayWalkCount = bodyToJson['todayWalkCount'];
+                weeklyWalkCount = bodyToJson['weeklyWalkCount'];
+                monthlyWalkCount = bodyToJson['monthlyWalkCount'];
+                totalWalkCount = bodyToJson['totalWalkCount'];
+              }
             }
             lastReportedSteps = bodyToJson['todayWalkCount'];
-            walkReports.clear();
           } else {
-            todayWalkCount = savedToday;
-            weeklyWalkCount = savedWeekly;
-            monthlyWalkCount = savedMonthly;
-            totalWalkCount = savedTotal;
-            lastReportedSteps = savedToday;
+            if (lastReportedTime.day != DateTime.now().day) {
+              resetAtMidnight();
+            } else {
+              todayWalkCount = savedToday;
+              weeklyWalkCount = savedWeekly;
+              monthlyWalkCount = savedMonthly;
+              totalWalkCount = savedTotal;
+              lastReportedSteps = savedToday;
+            }
           }
         } catch (e) {
           log("BackgroundService: send walk report error: $e");
         } finally {
+          walkReports.clear();
           PrefsManager().setUnsentStepsList(reports);
         }
       },
@@ -745,10 +791,19 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
 
     // await recoverMissedSteps();
 
+    // ✅ 첫 실행이면 리셋 금지: 마커만 세팅, 아니면 평소처럼 체크
+    final todayKey = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    final lastKey = PrefsManager().getLastResetYmd();
+    if (lastKey.isEmpty) {
+      PrefsManager().setLastResetYmd(todayKey);
+    } else {
+      await maybeResetIfNeeded();
+    }
+
     safeSetStreams();
     setServiceStatusSub();
     setPermissionCheckTimer();
-    setMidnightTimer();
+    scheduleMidnightOnce();
     setHourlySyncTimer();
     setRankSyncTimer();
     startCount = 0;
@@ -757,12 +812,16 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
       "bg_started",
       {
         "isHoliday": isHoliday,
+        "isInValidArea": isInValidArea,
         "todayWalkCount": todayWalkCount,
         "weeklyWalkCount": weeklyWalkCount,
         "monthlyWalkCount": monthlyWalkCount,
         "totalWalkCount": totalWalkCount
       },
     );
+
+    updateUISteps();
+    setValidArea(isInValidArea, force: true);
   }
 
   /// FlutterBackgroundService 이벤트 핸들러
@@ -791,6 +850,10 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
     if (service is AndroidServiceInstance) {
       await service.stopSelf();
     }
+  });
+
+  service.on("addWalkReport").listen((_) {
+    addWalkReport();
   });
 
   /// 실제 동작 실행

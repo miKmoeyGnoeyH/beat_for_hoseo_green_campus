@@ -6,7 +6,7 @@ import '../../../data/states/data_list_state.dart';
 import '../events/data_events.dart';
 
 class SurveyListController extends Bloc<DataEvent, DataListState> {
-  SurveyListController() : super(DataListInitial()) {
+  SurveyListController(this.authorization) : super(DataListInitial()) {
     on<DataListRequest>(_onDataListRequest);
     add(DataListRequest());
   }
@@ -14,11 +14,12 @@ class SurveyListController extends Bloc<DataEvent, DataListState> {
   Future<void> _onDataListRequest(DataEvent event, Emitter<DataListState> emit) async {
     emit(DataListLoading());
 
-    final DataListState eventState = await dataListProvider.fetchSurveyList();
+    final DataListState eventState = await dataListProvider.fetchSurveyList(authorization);
     // final DataListState eventState = await dataListProvider.fetchSurveyListTest();
 
     emit(eventState);
   }
 
   final SurveyListProvider dataListProvider = SurveyListProvider();
+  final String authorization;
 }

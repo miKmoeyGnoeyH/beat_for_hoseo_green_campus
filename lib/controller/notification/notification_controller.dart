@@ -5,7 +5,7 @@ import '../../data/states/data_list_state.dart';
 import '../home/events/data_events.dart';
 
 class NotificationsController extends Bloc<DataEvent, DataListState> {
-  NotificationsController() : super(DataListInitial()) {
+  NotificationsController(this.authorization) : super(DataListInitial()) {
     on<DataListRequest>(_onDataListRequest);
     add(DataListRequest());
   }
@@ -14,7 +14,7 @@ class NotificationsController extends Bloc<DataEvent, DataListState> {
       DataEvent event, Emitter<DataListState> emit) async {
     emit(DataListLoading());
 
-    final DataListState eventState = await noticeProvider.fetchDataList();
+    final DataListState eventState = await noticeProvider.fetchDataList(authorization);
 
     // final DataListState eventState =
     //     await Future.delayed(const Duration(seconds: 5), () {
@@ -25,4 +25,5 @@ class NotificationsController extends Bloc<DataEvent, DataListState> {
   }
 
   final NoticeProvider noticeProvider = NoticeProvider();
+  final String authorization;
 }

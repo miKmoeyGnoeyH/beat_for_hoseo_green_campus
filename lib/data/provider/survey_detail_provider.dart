@@ -9,17 +9,20 @@ import 'package:http/http.dart' as http;
 class SurveyDetailProvider {
   final LocalizationManager localizationManager = LocalizationManager();
 
-  Future<Map<String, dynamic>> fetchSurveyDetail(int surveyId) async {
+  Future<Map<String, dynamic>> fetchSurveyDetail(
+      int surveyId, String authorization) async {
     final String requestURL = "${DotEnvManager().surveyDetail}$surveyId";
 
     BEATLogger.d(
         "SurveyDetailProvider : fetchSurveyDetail : requestURL : $requestURL");
 
     try {
-      final http.Response response =
-          await http.get(Uri.parse(requestURL)).timeout(
-                const Duration(seconds: 5),
-              );
+      final http.Response response = await http.get(
+        Uri.parse(requestURL),
+        headers: {"Authorization": authorization},
+      ).timeout(
+        const Duration(seconds: 5),
+      );
 
       BEATLogger.d(
           "SurveyDetailProvider : fetchSurveyDetail : response.body : ${response.body}");

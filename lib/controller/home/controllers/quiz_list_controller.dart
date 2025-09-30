@@ -8,7 +8,7 @@ import '../../../data/states/data_list_state.dart';
 import '../events/data_events.dart';
 
 class QuizListController extends Bloc<DataEvent, DataListState> {
-  QuizListController() : super(DataListInitial()) {
+  QuizListController(this.authorization) : super(DataListInitial()) {
     log("QuizListController created.");
     on<DataListRequest>(_onDataListRequest);
     add(DataListRequest());
@@ -17,10 +17,11 @@ class QuizListController extends Bloc<DataEvent, DataListState> {
   Future<void> _onDataListRequest(DataEvent event, Emitter<DataListState> emit) async {
     emit(DataListLoading());
 
-    final DataListState eventState = await dataListProvider.fetchDataList(DataListType.quiz);
+    final DataListState eventState = await dataListProvider.fetchDataList(DataListType.quiz, authorization);
 
     emit(eventState);
   }
 
   final DataListProvider dataListProvider = DataListProvider();
+  final String authorization;
 }
