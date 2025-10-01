@@ -104,6 +104,7 @@ class _MyPageState extends State<MyPage> {
                         buildMyPageTableRow(
                           label: localizationManager.mpEmail,
                           content: userController.state.email,
+                          // content: "hsu.greencampus@gmail.com",
                         ),
                         buildMyPageTableRowSpacing(),
                         buildMyPageTableRow(

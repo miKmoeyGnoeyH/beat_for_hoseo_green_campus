@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:beat_flutter/components/global/widgets/custom_circular_progress_indicator.dart';
 import 'package:beat_flutter/components/global/widgets/custom_text_field.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.dart';
@@ -8,6 +10,7 @@ import 'package:beat_flutter/managers/navigator/routes.dart';
 import 'package:beat_flutter/managers/prefs/prefs_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
@@ -39,8 +42,21 @@ class _SignInScreenState extends State<SignInScreen> {
 
   final LocalizationManager localizationManager = LocalizationManager();
 
+  Future<void> removeSplash() async {
+    final String savedId = PrefsManager().getSavedStudentId();
+    final String savedPassword = PrefsManager().getSavedPassword();
+
+    if (savedId.isEmpty || savedPassword.isEmpty) {
+      FlutterNativeSplash.remove();
+    }
+  }
+
   @override
   void initState() {
+    log("SignInScreen: initState");
+
+    removeSplash();
+
     for (final node in [
       emailFocusNode,
       passwordFocusNode,

@@ -59,7 +59,7 @@ Future<dynamic> customShowDialog(
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 16.w),
                 child: Text(
-                  buttonText ?? context.tr('confirm'),
+                  buttonText ?? LocalizationManager().generalConfirm,
                   style: CustomLargeTexts.subtitleLarge
                       .copyWith(color: context.appColors.onPrimary),
                 ),
@@ -72,15 +72,16 @@ Future<dynamic> customShowDialog(
   );
 }
 
-Future<dynamic> customConfirmDialog(
-    {required BuildContext context,
-    required String? title,
-    required String? content,
-    String? confirmText,
-    String? cancelText,
-    String? routeName,
-    Function()? onConfirmTap,
-    Function()? onCancelTap}) {
+Future<dynamic> customConfirmDialog({
+  required BuildContext context,
+  required String? title,
+  required String? content,
+  String? confirmText,
+  String? cancelText,
+  String? routeName,
+  Function()? onConfirmTap,
+  Function()? onCancelTap,
+}) {
   return showDialog(
     context: context,
     builder: (context) => AlertDialog(
@@ -91,9 +92,9 @@ Future<dynamic> customConfirmDialog(
         ),
         borderRadius: BorderRadius.circular(16),
       ),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+      insetPadding: EdgeInsets.symmetric(horizontal: 20.w),
       backgroundColor: context.appColors.background,
-      titlePadding: const EdgeInsets.only(left: 20, right: 20, top: 16),
+      titlePadding: EdgeInsets.only(left: 20.w, right: 20.w, top: 16.w),
       title: title != null
           ? Text(
               title,
@@ -101,7 +102,7 @@ Future<dynamic> customConfirmDialog(
                   .copyWith(color: context.appColors.onBackground),
             )
           : null,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      contentPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.w),
       content: content != null
           ? SizedBox(
               width: context.width * 0.7,
@@ -113,7 +114,7 @@ Future<dynamic> customConfirmDialog(
             )
           : null,
       actionsAlignment: MainAxisAlignment.center,
-      actionsPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      actionsPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.w),
       actions: [
         GestureDetector(
           onTap: () {
@@ -123,7 +124,7 @@ Future<dynamic> customConfirmDialog(
           child: CustomRoundedBorderedContainer(
             child: Center(
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                padding: EdgeInsets.symmetric(vertical: 16.w),
                 child: Text(
                   confirmText ?? LocalizationManager().generalConfirm,
                   style: CustomLargeTexts.subtitleLarge
@@ -133,7 +134,7 @@ Future<dynamic> customConfirmDialog(
             ),
           ),
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.w),
         GestureDetector(
           onTap: () {
             NavigatorKeyManager().pop();
@@ -143,7 +144,7 @@ Future<dynamic> customConfirmDialog(
             color: context.appColors.disabled,
             child: Center(
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                padding: EdgeInsets.symmetric(vertical: 16.w),
                 child: Text(
                   cancelText ?? LocalizationManager().generalCancel,
                   style: CustomLargeTexts.subtitleLarge

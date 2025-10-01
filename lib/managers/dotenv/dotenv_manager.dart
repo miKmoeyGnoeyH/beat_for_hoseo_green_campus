@@ -28,6 +28,8 @@ class DotEnvManager {
     }
   }
 
+  String get appstoreId => dotenv.env['APPSTORE_ID'] ?? "";
+  String get googleplayId => dotenv.env['GOOGLEPLAY_ID'] ?? "";
   String get signIn => dotenv.env['SIGN_IN'] ?? "";
   String get pointHistory => dotenv.env['NEURO_HISTORY'] ?? "";
   String get myPoint => dotenv.env['MY_NEURO'] ?? "";

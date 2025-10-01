@@ -29,6 +29,7 @@ class HomeAppbar extends StatelessWidget {
           BlocBuilder<UserController, User>(
             builder: (context, state) => CustomBodyLarge(
               text: state is !Member ? '' : state.nickname,
+              // text: "BEAT: Event and Activity",
             ),
             // builder: (context, state) => Text(
             //   state is !Member ? '' : state.nickname, style: context.textTheme.bodyLarge,

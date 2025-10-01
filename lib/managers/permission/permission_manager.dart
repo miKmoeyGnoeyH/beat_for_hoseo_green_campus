@@ -52,7 +52,7 @@ abstract class PermissionManager {
     final notificationStatus = await Permission.notification.request();
 
     if (!PrefsManager().isStudentIdSaved() || !PrefsManager().isPasswordSaved()) {
-      FlutterNativeSplash.remove();
+      // FlutterNativeSplash.remove();
     }
 
     return notificationStatus.isGranted;

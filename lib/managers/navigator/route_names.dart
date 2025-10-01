@@ -1,6 +1,7 @@
 part of 'routes.dart';
 
 abstract class RouteNames {
+  static const String init = "/init";
   static const String info = '/info';
   static const String neuroHistory = '/neuro_history';
   static const String questDetail = '/quest_detail';

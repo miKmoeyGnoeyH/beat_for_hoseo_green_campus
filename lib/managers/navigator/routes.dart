@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:beat_flutter/components/init/init_page.dart';
 import 'package:beat_flutter/components/notice_detail/notice_detail.dart';
 import 'package:beat_flutter/components/oss_licenses/oss_licenses.dart';
 import 'package:beat_flutter/components/reset_password/reset_password.dart';
@@ -12,6 +13,7 @@ import 'package:beat_flutter/controller/rank/rank_controller_test.dart';
 import 'package:beat_flutter/controller/user_controller.dart';
 import 'package:beat_flutter/data/provider/rank_list_provider.dart';
 import 'package:beat_flutter/data/repository/rank_list_repository.dart';
+import 'package:beat_flutter/managers/prefs/prefs_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -59,6 +61,14 @@ part 'route_names.dart';
 abstract class Routes {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case RouteNames.init:
+        {
+          return MaterialPageRoute(
+            builder: (context) {
+              return InitPage();
+            },
+          );
+        }
       case RouteNames.info:
         {
           return MaterialPageRoute(
@@ -239,8 +249,10 @@ abstract class Routes {
                   BlocProvider(
                       create: (context) =>
                           QuestListController(arguments.authorization)),
-                  BlocProvider(create: (context) => QuizListController(authorization)),
-                  BlocProvider(create: (context) => SurveyListController(authorization)),
+                  BlocProvider(
+                      create: (context) => QuizListController(authorization)),
+                  BlocProvider(
+                      create: (context) => SurveyListController(authorization)),
                   // BlocProvider(
                   //   create: (context) =>
                   //       VoteListController(arguments.authorization),
@@ -257,7 +269,18 @@ abstract class Routes {
 
       case RouteNames.signIn:
         return MaterialPageRoute(
-          builder: (context) => const SignInScreen(),
+          builder: (context) {
+            if (PrefsManager().isStudentIdSaved() &&
+                PrefsManager().isPasswordSaved()) {
+              context.read<UserController>().add(
+                    SignIn(
+                      PrefsManager().getSavedStudentId(),
+                      PrefsManager().getSavedPassword(),
+                    ),
+                  );
+            }
+            return const SignInScreen();
+          },
         );
 
       case RouteNames.voteDetail:
@@ -298,9 +321,9 @@ abstract class Routes {
       case RouteNames.notifications:
         {
           return MaterialPageRoute(
-            builder: (context)
-            {
-              final String authorization = context.read<UserController>().state.authorization;
+            builder: (context) {
+              final String authorization =
+                  context.read<UserController>().state.authorization;
               return BlocProvider(
                 create: (context) => NotificationsController(authorization),
                 child: NotificationsScreen(),

@@ -43,6 +43,8 @@ class LocalizationManager {
   String get generalDone => "general".tr(gender: "done");
   String get generalInitialNotificationTitle => getSafeTranslation("general.initial_notification_title", initialNotificationTitleFallback);
   String get generalInitialNotificationContent => getSafeTranslation("general.initial_notification_content", initialNotificationContentFallback);
+  String get generalUpdateAvailable => "general".tr(gender: "update_available");
+  String get generalUpdateAvailableContent => "general".tr(gender: "update_available_content");
 
   // android foreground notification
   String get afnTitle => "android_foreground_notification".tr(gender: "title");

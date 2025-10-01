@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:beat_flutter/components/init/init_page.dart';
 import 'package:beat_flutter/components/sign_in/sign_in_screen.dart';
 import 'package:beat_flutter/managers/permission/permission_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -24,17 +25,6 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> with WidgetsBindingObserver {
-  // final List<Permission> permissions = [
-  //   Permission.storage,
-  //   Permission.camera,
-  //   Permission.notification,
-  // ];
-  //
-  // Future<void> requestPermissions() async {
-  //   Map<Permission, PermissionStatus> status = await permissions.request();
-  //   log(status.map((key, value) => MapEntry(key, value.toString())).toString());
-  // }
-
   @override
   Widget build(BuildContext context) {
     return CustomThemeApp(
@@ -58,7 +48,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
             supportedLocales: context.supportedLocales,
             navigatorKey: NavigatorKeyManager().navigatorKey,
             onGenerateRoute: Routes.onGenerateRoute,
-            home: const SignInScreen(),
+            home: InitPage(),
             // initialRoute: RouteNames.signIn,
           ),
         ),

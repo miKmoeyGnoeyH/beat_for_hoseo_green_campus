@@ -34,14 +34,6 @@ class UserController extends Bloc<UserEvent, User> {
     on<SignIn>(_signIn);
     on<SignOut>(_signOut);
     on<GetMyNeuro>(_getMyNeuro);
-    if(PrefsManager().isStudentIdSaved() && PrefsManager().isPasswordSaved()) {
-      add(
-        SignIn(
-          PrefsManager().getSavedStudentId(),
-          PrefsManager().getSavedPassword(),
-        ),
-      );
-    }
   }
 
   Future<void> _signIn(SignIn event, Emitter<User> emit) async {
@@ -62,7 +54,7 @@ class UserController extends Bloc<UserEvent, User> {
       } else {
         if (await _userProvider.registerToken(user.authorization, fcmToken)) {
           // log("FlutterNativeSplash.remove()");
-          FlutterNativeSplash.remove();
+          // FlutterNativeSplash.remove();
           NavigatorKeyManager().pushNamedAndRemoveUntil(
             RouteNames.screenHolder,
             arguments:
@@ -75,9 +67,9 @@ class UserController extends Bloc<UserEvent, User> {
     }
     // log("FlutterNativeSplash.remove()");
 
-    FlutterNativeSplash.remove();
-
     emit(user);
+
+    FlutterNativeSplash.remove();
   }
 
   void _signOut(SignOut event, Emitter<User> emit) async {

@@ -5,7 +5,9 @@
     "cancel": "Cancel",
     "done": "Done",
     "initial_notification_title": "BEAT is running.",
-    "initial_notification_content": "Location and steps are being recorded."
+    "initial_notification_content": "Location and steps are being recorded.",
+    "update_available": "Update Available",
+    "update_available_content": "A new version is available. Please update the app in the store."
   },
   "android_foreground_notification": {
     "title": "BEAT",
