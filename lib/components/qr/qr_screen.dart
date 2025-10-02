@@ -195,12 +195,81 @@ class _QrScreenState extends State<QrScreen> {
 
                   Get.find<SurveyDetailController>().surveyId =
                       int.parse(surveyId);
-                  Get.find<SurveyDetailController>().fetchSurveyDetail(userBloc.state.authorization);
+                  Get.find<SurveyDetailController>()
+                      .fetchSurveyDetail(userBloc.state.authorization);
 
                   NavigatorKeyManager().pushNamed(RouteNames.surveyDetail);
 
                   pageIndexController.setIndex(
                       pageIndexController.homeIndex, context);
+
+                  isScanning = false;
+                  startScanTimer();
+                },
+              );
+            } else if (qrCreditFilterRelease.hasMatch(requestUrl)) {
+              customConfirmDialog(
+                context: context,
+                title: localizationManager.qrScanTitle,
+                content: localizationManager.qrScanContent,
+                onCancelTap: () {
+                  isScanning = false;
+                  startScanTimer();
+                },
+                onConfirmTap: () async {
+                  log(requestUrl);
+
+                  http.Response? response;
+
+                  try {
+                    response = await Get.showOverlay(
+                      asyncFunction: () async {
+                        return await http
+                            .get(
+                              Uri.parse(requestUrl),
+                              headers: <String, String>{
+                                'Authorization': userBloc.state.authorization,
+                                'Content-Type': 'application/json',
+                              },
+                            )
+                            .timeout(
+                              const Duration(seconds: 5),
+                            );
+                      },
+                      loadingWidget: const CustomCircularProgressIndicator(),
+                    );
+                  } catch (e) {
+                    await customShowDialog(
+                      context: context,
+                      title: localizationManager.qrQRScanFailed,
+                      content: localizationManager.qrErrorOccured,
+                    );
+                  }
+                  if (response != null) {
+                    if (response.statusCode == 200) {
+                      await customShowDialog(
+                          context: context,
+                          title: localizationManager.qrQRScanSuccess,
+                          content: response.body,
+                          onTap: () {
+                            final UserController userController =
+                                context.read<UserController>();
+                            userController.add(GetMyNeuro());
+                            context
+                                .read<QuestListController>()
+                                .add(DataListRequest());
+
+                            pageIndexController.setIndex(
+                                pageIndexController.homeIndex, context);
+                          });
+                    } else {
+                      await customShowDialog(
+                        context: context,
+                        title: localizationManager.qrQRScanFailed,
+                        content: response.body,
+                      );
+                    }
+                  }
 
                   isScanning = false;
                   startScanTimer();
