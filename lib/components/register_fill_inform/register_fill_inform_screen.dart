@@ -7,6 +7,7 @@ import 'package:beat_flutter/components/global/widgets/custom_text_field.dart';
 import 'package:beat_flutter/components/register_fill_inform/widgets/rfi_regexp.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -607,11 +608,6 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                               registerNameController.nameController.text;
                           final String nickname = registerNicknameController
                               .nicknameController.text;
-                          // final String department =
-                          //     context.deviceLocale.toString() == "ko_KR"
-                          //         ? registerDepartmentController!.department
-                          //         : context.tr(
-                          //             registerDepartmentController!.department);
 
                           if (!registerSignController
                               .handSignatureControl.isFilled) {
@@ -638,7 +634,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                               asyncFunction: () {
                                 return userProvider.signUp(
                                   category,
-                                  registerDepartmentController!.department,
+                                  localizationManager.departmentsToKR(registerDepartmentController!.department),
                                   studentId,
                                   email,
                                   name,

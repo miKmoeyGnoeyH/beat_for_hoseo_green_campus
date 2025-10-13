@@ -235,7 +235,7 @@ class StepCountStatisticsChart extends StatelessWidget {
                                       EdgeInsets.only(
                                         right: (1 - ratioRatioRatio) *
                                                 (constraints.maxWidth - 90.w) +
-                                            5.w, // 막대 끝에 살짝 여백
+                                            5.w,
                                       ),
                                       child: Align(
                                         alignment: Alignment.centerRight,

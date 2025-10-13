@@ -116,7 +116,7 @@ class ActivityServiceController extends GetxController {
             ]),
       );
     } catch (e) {
-      print('Failed to initialize background service: $e');
+      log('Failed to initialize background service: $e');
       // 서비스 초기화 실패 시에도 앱이 계속 실행되도록 함
     }
   }

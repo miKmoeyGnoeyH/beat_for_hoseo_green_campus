@@ -397,4 +397,5 @@ class LocalizationManager {
   List<String> departmentsFromCollage(String collage) => "departments".tr(gender: collage).split(", ");
   List<String> get departmentsOld => "departments_old".tr().split(", ");
   List<String> departmentsOldFromCollege(String college) => "departments_old".tr(gender: college).split(", ");
+  String departmentsToKR(String gender) => "departments_to_kr".tr(gender: gender);
 }
