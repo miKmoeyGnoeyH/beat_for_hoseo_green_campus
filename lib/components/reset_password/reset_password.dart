@@ -417,21 +417,28 @@ class _ResetPasswordState extends State<ResetPassword> {
   void onVerifyCodeButtonTap() async {
     final String requestUrl = DotEnvManager().resetPasswordCodeVerify;
 
+    log("reset_password: onVerifyCodeButtonTap: requestUrl: $requestUrl");
+    log("reset_password: onVerifyCodeButtonTap: studentId: ${idController.text}, authCode: ${validationCodeController.text}");
+
     try {
       final http.Response response = await Get.showOverlay(
-        asyncFunction: () => http.post(
-          Uri.parse(requestUrl),
-          // headers: {
-          //   "Content-Type": "application/json",
-          // },
-          body: {
-            "studentId": idController.text,
-            "authCode": validationCodeController.text,
-          },
-        ).timeout(const Duration(seconds: 10)),
+        asyncFunction: () => http
+            .post(
+              Uri.parse(requestUrl),
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: jsonEncode({
+                "studentId": idController.text.trim(),
+                "authCode": validationCodeController.text,
+              }),
+            )
+            .timeout(const Duration(seconds: 10)),
         loadingWidget: const CustomCircularProgressIndicator(),
       );
 
+      log("ResetPassword: onVerifyCodeButtonTap: response.statusCode: ${response.statusCode}");
+      log("ResetPassword: onVerifyCodeButtonTap: response.headers['content-type']: ${response.headers['content-type']}");
       log("ResetPassword: onVerifyCodeButtonTap: response.body: ${response.body}");
 
       if (response.statusCode == 200) {
@@ -460,6 +467,7 @@ class _ResetPasswordState extends State<ResetPassword> {
         );
         isValidationCodeCorrect = false;
         isValidationCodeTextFieldEnabled = true;
+        isValidationCodeButtonEnabled = true;
       }
     } on TimeoutException {
       log("ResetPassword: onValidateMailButtonTap: TimeoutException");
@@ -472,6 +480,7 @@ class _ResetPasswordState extends State<ResetPassword> {
 
       isValidationCodeCorrect = false;
       isValidationCodeTextFieldEnabled = true;
+      isValidationCodeButtonEnabled = true;
     } catch (e) {
       log("ResetPassword: onValidateMailButtonTap: error: $e");
       customShowDialog(
@@ -481,6 +490,7 @@ class _ResetPasswordState extends State<ResetPassword> {
       );
       isValidationCodeCorrect = false;
       isValidationCodeTextFieldEnabled = true;
+      isValidationCodeButtonEnabled = true;
     }
   }
 

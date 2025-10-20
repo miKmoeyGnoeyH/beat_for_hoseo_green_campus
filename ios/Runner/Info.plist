@@ -4,7 +4,6 @@
 <dict>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
-		<string>com.beat.app.walkreport</string>
 		<string>com.beat.app.ranking</string>
 		<string>com.beat.app.midnight</string>
 	</array>

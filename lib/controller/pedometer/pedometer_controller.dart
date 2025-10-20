@@ -48,7 +48,7 @@ class PedometerController extends GetxController {
   set status(String value) => _status.value = value;
 
   /// 일일 최대 걸음 수
-  final int maxDailySteps = 20000;
+  // final int maxDailySteps = 20000;
 
   /// 부팅 이후 걸음 수
   /// 객체가 생성될 때 초기화

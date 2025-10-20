@@ -119,7 +119,7 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
   int lastReportedSteps = 0;
   bool isInValidArea = false;
 
-  int startCount = 0;
+  bool hasStarted = false;
 
   /// 랭킹 집계를 위해 서버로 걸음 수를 전송할 때, 몇 초에 전송할 것인지를 저장하는 변수
   /// 실제로 background isolate에서는 데이터를 전송하지 않고, [FlutterBackgroundService]의
@@ -148,7 +148,7 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
   ///
   bool isHoliday = true;
 
-  bool isLocationServiceEnabled = false;
+  // (Removed) isLocationServiceEnabled: 직접 사용하지 않음
 
   /// 모든 구독 스트림과 타이머를 취소
   void cancelAll() {
@@ -296,29 +296,7 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
     PrefsManager().setLastReportedSteps(lastReportedSteps);
   }
 
-  Future<void> recoverMissedSteps() async {
-    log("FlutterBackgroundService: recoverMissedSteps called");
-
-    final latest = PrefsManager().getDeviceStepsLatest();
-
-    final lastHandled = PrefsManager().getDeviceStepsLastHandled();
-
-    final missed = latest - lastHandled;
-    if (missed > 0 &&
-        (PermissionManager.isActivityPermissionGrantedStatic ?? false) &&
-        !isHoliday &&
-        isInValidArea) {
-      todayWalkCount += missed;
-      weeklyWalkCount += missed;
-      monthlyWalkCount += missed;
-      totalWalkCount += missed;
-      PrefsManager().setSteps(
-          todayWalkCount, weeklyWalkCount, monthlyWalkCount, totalWalkCount);
-      updateUISteps();
-    }
-
-    PrefsManager().setDeviceStepsLastHandled(latest);
-  }
+  // (Removed) recoverMissedSteps: 현재 미사용
 
   List<LatLng> asanArea = [
     LatLng(36.73905847633573, 127.07441645479297),
@@ -638,15 +616,12 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
     serviceStatusSub = Geolocator.getServiceStatusStream().listen(
       (s) async {
         if (s == ServiceStatus.enabled) {
-          isLocationServiceEnabled = true;
           maybeResetIfNeeded();
           // isInValidArea = true;
           // service.invoke("updateIsInValidArea", {"isInValidArea": true});
 
           await safeSetStreams();
         } else {
-          isLocationServiceEnabled = false;
-
           setValidArea(false);
 
           // isInValidArea = false;
@@ -663,8 +638,6 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
         serviceStatusSub = null;
       },
       onError: (e) async {
-        isLocationServiceEnabled = false;
-
         setValidArea(false);
 
         // isInValidArea = false;
@@ -690,14 +663,7 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
     });
   }
 
-  void setHourlySyncTimer() {
-    // 1시간마다 동기화 트리거
-    hourlySyncTimer = Timer.periodic(const Duration(hours: 1), (_) async {
-      maybeResetIfNeeded();
-      addWalkReport();
-      updateUISteps();
-    });
-  }
+  // (Removed) 시간별 동기화 타이머: 랭킹 동기화만 유지
 
   void setRankSyncTimer() {
     // 매 시간 59분 특정 초에 랭킹 동기화 트리거
@@ -713,11 +679,11 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
 
   void startBackgroundService() async {
     log("FlutterBackgroundService: startBackgroundService called");
+    hasStarted = true;
 
     isHoliday = await getIsHoliday();
 
     final enabled = await Geolocator.isLocationServiceEnabled();
-    isLocationServiceEnabled = enabled;
     if (!enabled) setValidArea(false);
 
     lastReportedTime = PrefsManager().getLastReportedTime();
@@ -810,9 +776,8 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
     setServiceStatusSub();
     setPermissionCheckTimer();
     scheduleMidnightOnce();
-    setHourlySyncTimer();
     setRankSyncTimer();
-    startCount = 0;
+    // no-op
 
     service.invoke(
       "bg_started",
@@ -834,19 +799,20 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
   service.on("startBackgroundTasks").listen((data) {
     log("FlutterBackgroundService: startBackgroundTasks called: data: $data");
 
-    if (startCount >= 3) return;
+    if (hasStarted) return; // 이미 시작됨 가드
     if (data == null) {
       service.invoke("bg_ready");
-      startCount++;
-    } else if (data["authorization"] == null || data["sendToTime"] == null) {
-      service.invoke("bg_ready");
-      startCount++;
-    } else {
-      authorization = data['authorization'];
-      sendToTime = data['sendToTime'];
-
-      startBackgroundService();
+      return;
     }
+    if (data["authorization"] == null || data["sendToTime"] == null) {
+      service.invoke("bg_ready");
+      return;
+    }
+
+    authorization = data['authorization'];
+    sendToTime = data['sendToTime'];
+
+    startBackgroundService();
   });
 
   /// FlutterBackgroundService 중지

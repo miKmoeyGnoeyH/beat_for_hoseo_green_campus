@@ -37,10 +37,6 @@ let activityManager = CMMotionActivityManager()
         // BGTask 등록
         // BGTask 등록 - 백그라운드에서 작업을 실행하기 위한 iOS 시스템 레벨 태스크
         // 실제 Flutter 통신은 pedometer/location 각 채널을 통해 이루어짐
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.beat.app.walkreport", using: nil) { task in
-            self.handleWalkReportTask(task: task as! BGProcessingTask)
-        }
-        
         BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.beat.app.ranking", using: nil) { task in
             self.handleRankingTask(task: task as! BGProcessingTask)
         }
@@ -165,7 +161,8 @@ let activityManager = CMMotionActivityManager()
         self.sendToTime = sendToTime
         print("✅ sendToTime 설정됨: \(sendToTime)")
         
-        // BGTaskScheduler 전용 스케줄링 시스템 시작
+        // BGTaskScheduler 전용 스케줄링 시스템 시작 (중복 방지 위해 기존 요청 취소 후 재스케줄)
+        BGTaskScheduler.shared.cancelAllTaskRequests()
         scheduleAllBackgroundTasks(sendToTime: sendToTime)
 //        startPedometer()
         
@@ -277,29 +274,9 @@ let activityManager = CMMotionActivityManager()
     
     /// BGTaskScheduler만 사용하는 백그라운드 작업 스케줄링
     func scheduleAllBackgroundTasks(sendToTime: Int) {
-        scheduleWalkReportBGTask()
         scheduleRankingBGTask(sendToTime: sendToTime)
         scheduleMidnightBGTask()
         print("✅ 모든 BGTask 스케줄 완료 (sendToTime: \(sendToTime))")
-    }
-    
-    /// 걸음 수 동기화 BGTask 스케줄링 (시작 시점 기준 매 1시간)
-    func scheduleWalkReportBGTask() {
-        let request = BGProcessingTaskRequest(identifier: "com.beat.app.walkreport")
-        request.requiresNetworkConnectivity = true
-        request.requiresExternalPower = false
-
-        // 지금부터 +1시간 후를 earliestBeginDate로 지정
-        request.earliestBeginDate = Date(timeIntervalSinceNow: TimeInterval(1 * 3600))
-
-        do {
-            try BGTaskScheduler.shared.submit(request)
-            print("✅ 걸음 수 동기화 BGTask 스케줄 완료: \(String(describing: request.earliestBeginDate)) (매 1시간)")
-            print("✅ 현재 시간: \(Date())")
-            if let t = request.earliestBeginDate { print("✅ 다음 실행까지 남은 시간: \(t.timeIntervalSinceNow)초") }
-        } catch {
-            print("❌ 걸음 수 동기화 BGTask 스케줄 실패: \(error)")
-        }
     }
     
     /// 랭킹 집계 BGTask 스케줄링 (매시간 59분 {sendToTime}초)
@@ -371,20 +348,6 @@ let activityManager = CMMotionActivityManager()
     
     // MARK: - BGTask 핸들러들
     
-    func handleWalkReportTask(task: BGProcessingTask) {
-        print("📡 걸음 수 동기화 BGTask 시작")
-        task.expirationHandler = {
-            task.setTaskCompleted(success: false)
-        }
-        
-        // 다음 스케줄 예약 (BGTask로)
-        scheduleWalkReportBGTask()
-        
-        executeWalkReportSync { success in
-            task.setTaskCompleted(success: success)
-        }
-    }
-    
     func handleRankingTask(task: BGProcessingTask) {
         print("📊 랭킹 집계 BGTask 시작 (sendToTime: \(sendToTime))")
         print("📊 현재 시간: \(Date())")
@@ -417,25 +380,7 @@ let activityManager = CMMotionActivityManager()
     
     // MARK: - 실제 작업 실행
     
-    func executeWalkReportSync(completion: @escaping (Bool) -> Void) {
-        guard let controller = window?.rootViewController as? FlutterViewController else {
-            completion(false)
-            return
-        }
-        
-        // 위치 채널 사용
-        locationChannel = FlutterMethodChannel(
-            name: "com.beat.walkreport/location",
-            binaryMessenger: controller.binaryMessenger
-        )
-
-        DispatchQueue.main.async {
-            self.locationChannel?.invokeMethod("syncWalkDataInBackground", arguments: nil) { result in
-                print("📬 걸음 수 동기화 완료: \(String(describing: result))")
-                completion(true)
-            }
-        }
-    }
+    // (Removed) 시간별 걸음 수 동기화 BGTask 관련 로직
     
     func executeRankingSync(completion: @escaping (Bool) -> Void) {
         guard let controller = window?.rootViewController as? FlutterViewController else {

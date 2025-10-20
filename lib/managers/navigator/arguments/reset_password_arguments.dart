@@ -4,8 +4,8 @@ import 'package:beat_flutter/controller/reset_password/reset_password_controller
 
 class ResetPasswordArguments {
   ResetPasswordArguments({
-    required this.resetPasswordController,
+    required this.isSignedIn,
   });
 
-  final ResetPasswordController resetPasswordController;
+  final bool isSignedIn;
 }

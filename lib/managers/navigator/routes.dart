@@ -13,6 +13,7 @@ import 'package:beat_flutter/controller/rank/rank_controller_test.dart';
 import 'package:beat_flutter/controller/user_controller.dart';
 import 'package:beat_flutter/data/provider/rank_list_provider.dart';
 import 'package:beat_flutter/data/repository/rank_list_repository.dart';
+import 'package:beat_flutter/managers/navigator/arguments/reset_password_arguments.dart';
 import 'package:beat_flutter/managers/prefs/prefs_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -359,6 +360,7 @@ abstract class Routes {
         {
           // final ResetPasswordArguments resetPasswordArguments =
           // settings.arguments as ResetPasswordArguments;
+
           return MaterialPageRoute(
             builder: (context) => const ResetPassword(),
           );
