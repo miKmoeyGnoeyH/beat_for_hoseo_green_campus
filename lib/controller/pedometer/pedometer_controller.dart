@@ -128,10 +128,7 @@ class PedometerController extends GetxController {
   /// 내부 저장소에 저장된 보고하지 못한 걸음 수 리스트를 읽어옴
   /// [_walkReports]에 변화가 있을 때마다 이를 감지해 서버에 보고하도록 리스너 추가
   PedometerController() {
-    // initPlatformState();
-
     if (Platform.isIOS) {
-      // TODO: 만약 한 기기에서 어떤 사용자가 앱을 사용하다 로그아웃하고, 다른 사용자가 로그인한 경우
       // 내부 저장소에 저장된 lastReportedSteps, unsentStepsList가 이전 사용자의 것을 사용하게 됨
       // lastReportedSteps, unsentStepsList는 앱 내에서 측정된 "실제 걸음수"를 저장하기 때문에,
       // 두 사용자 모두에게 유효한 값이 아닐 수도 있음
@@ -183,7 +180,6 @@ class PedometerController extends GetxController {
               }
               _lastReportedSteps = bodyToJson['todayWalkCount'];
 
-              // ✅ 성공 시에만 큐 비우기 및 영속화
               _walkReports.clear();
               await PrefsManager().setUnsentStepsList(_walkReports);
             } else {
@@ -197,12 +193,10 @@ class PedometerController extends GetxController {
                 _lastReportedSteps = savedToday;
               }
 
-              // ❌ 실패: 큐 유지, 현재 큐를 영속화
               await PrefsManager().setUnsentStepsList(reports);
             }
           } catch (e) {
             BEATLogger.d("PedometerController : ever : ${e.toString()}");
-            // 예외: 큐 유지, 현재 큐를 영속화
             await PrefsManager().setUnsentStepsList(reports);
           }
         },
@@ -210,26 +204,15 @@ class PedometerController extends GetxController {
     }
   }
 
-  // TODO: updateUISteps로 대체됨
-  // void onStepCountFromAndroidBackground(int stepsFromBackground) {
-  //   todayWalkCount += stepsFromBackground;
-  //   weeklyWalkCount += stepsFromBackground;
-  //   monthlyWalkCount += stepsFromBackground;
-  //   totalWalkCount += stepsFromBackground;
-  // }
-
   /// 백그라운드 걸음 수 이벤트 처리
   void onStepCountFromNative(int stepsFromNative) {
-    // iOS: 자정 보정 가드
     ensureDailyResetGuard();
-    // 1) 베이스라인은 항상 갱신
     if (stepsAfterLastBoot == null ||
         (stepsAfterLastBoot != null && stepsAfterLastBoot! > stepsFromNative)) {
       stepsAfterLastBoot = stepsFromNative;
       PrefsManager().setStepsAfterLastboot(stepsAfterLastBoot!);
     }
 
-    // 2) 이전 디바이스 스텝을 항상 최신으로 유지
     if (_previousSteps == null ||
         (_previousSteps != null && _previousSteps! > stepsFromNative)) {
       _previousSteps = stepsFromNative;
@@ -238,7 +221,6 @@ class PedometerController extends GetxController {
     int diff = stepsFromNative - _previousSteps!;
     _previousSteps = stepsFromNative;
 
-    // 3) 합산은 조건 만족할 때만
     if (PermissionManager.isActivityPermissionGrantedStatic != true ||
         !isInValidArea ||
         isHoliday ||
@@ -252,7 +234,6 @@ class PedometerController extends GetxController {
     monthlyWalkCount += diff;
     totalWalkCount += diff;
 
-    // 증가 시점마다 즉시 영속화
     PrefsManager().setSteps(
       todayWalkCount,
       weeklyWalkCount,
@@ -263,7 +244,6 @@ class PedometerController extends GetxController {
 
   /// 백그라운드 걸음 수 이벤트 처리
   void onPedestrianStatusChangedFromNative(String status) {
-    // iOS: 자정 보정 가드
     ensureDailyResetGuard();
     if (status == "stopped") {
       PrefsManager().setSteps(
@@ -339,7 +319,7 @@ class PedometerController extends GetxController {
 
     _walkReports.add({
       "historyDateTime":
-          DateTime(now.year, now.month, now.day, now.hour + 1, 0, 0)
+          DateTime(now.year, now.month, now.day, now.hour, 0, 0)
               .toIso8601String(),
       "walkCount": reportStep,
     });
@@ -396,15 +376,8 @@ class PedometerController extends GetxController {
     _lastReportedSteps = 0;
     PrefsManager().setLastReportedSteps(0);
 
-    // 마지막 초기화 일자 저장 (YYYY-MM-DD)
     final String todayKey = DateFormat('yyyy-MM-dd').format(now);
     PrefsManager().setLastResetYmd(todayKey);
-
-    // final (savedSteps, savedWeekly, savedMonthly, savedTotal) =
-    //     PrefsManager().getSteps();
-    // final int savedLastReportedSteps = PrefsManager().getLastReportedSteps();
-    // BEATLogger.d(
-    //     "PedometerController : resetAtMidnight : savedStepd : $savedSteps, savedWeekly : $savedWeekly, savedMonthly : $savedMonthly, savedTotal : $savedTotal, savedLastReportedSteps : $savedLastReportedSteps");
   }
 
   /// iOS에서 자정 초기화 누락 방지를 위한 가드
@@ -413,7 +386,6 @@ class PedometerController extends GetxController {
     try {
       final String lastYmd = PrefsManager().getLastResetYmd();
       final String todayKey = DateFormat('yyyy-MM-dd').format(DateTime.now());
-      // 최초 실행 등으로 저장값이 없을 때는 리셋하지 않고 오늘 날짜만 저장
       if (lastYmd.isEmpty) {
         PrefsManager().setLastResetYmd(todayKey);
         return;

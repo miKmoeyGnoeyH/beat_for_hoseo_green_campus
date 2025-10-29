@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:app_settings/app_settings.dart';
+import 'package:app_version_update/app_version_update.dart';
 import 'package:beat_flutter/components/global/methods/custom_show_dialog.dart';
 import 'package:beat_flutter/components/my_page/my_page.dart';
 import 'package:beat_flutter/controller/home/controllers/quest_list_controller.dart';
@@ -6,11 +9,16 @@ import 'package:beat_flutter/controller/activity_service_controller.dart';
 import 'package:beat_flutter/controller/my_page/my_page_controller.dart';
 import 'package:beat_flutter/controller/screen_holder/page_index_controller.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
+import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
+import 'package:beat_flutter/managers/navigator/navigator_key_manager.dart';
+import 'package:beat_flutter/managers/navigator/routes.dart';
 import 'package:beat_flutter/managers/permission/permission_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../controller/home/controllers/survey_list_controller.dart';
 import '../../controller/home/events/data_events.dart';
@@ -141,4 +149,57 @@ class _ScreenHolderState extends State<ScreenHolder> {
     MyPage(),
     // const VoteScreen()
   ];
+
+  Future<void> _openStore({
+    required String iosHttpsUrl,
+    required String androidPkgId,
+  }) async {
+    if (Platform.isIOS) {
+      final itms = Uri.parse(iosHttpsUrl.replaceFirst('https://', 'itms-apps://'));
+      if (!await launchUrl(itms, mode: LaunchMode.externalApplication)) {
+        await launchUrl(Uri.parse(iosHttpsUrl), mode: LaunchMode.externalApplication);
+      }
+    } else {
+      final market = Uri.parse('market://details?id=$androidPkgId');
+      if (!await launchUrl(market, mode: LaunchMode.externalApplication)) {
+        final web = Uri.parse('https://play.google.com/store/apps/details?id=$androidPkgId');
+        await launchUrl(web, mode: LaunchMode.externalApplication);
+      }
+    }
+  }
+
+  Future<void> checkUpdate() async {
+    try {
+      final data = await AppVersionUpdate.checkForUpdates(
+        appleId: DotEnvManager().appstoreId,
+        playStoreId: DotEnvManager().googleplayId,
+      );
+      if (!mounted) return;
+
+      if (data.canUpdate == true) {
+        FlutterNativeSplash.remove();
+        await customConfirmDialog(
+          context: context,
+          title: localizationManager.generalUpdateAvailable,
+          content: localizationManager.generalUpdateAvailableContent,
+          onConfirmTap: () async {
+            Navigator.of(context, rootNavigator: true).pop();
+            await _openStore(
+              iosHttpsUrl: data.storeUrl!,
+              androidPkgId: DotEnvManager().googleplayId,
+            );
+          },
+          onCancelTap: () {
+            Navigator.of(context, rootNavigator: true).pop();
+            if (mounted) NavigatorKeyManager().pushNamedAndRemoveUntil(RouteNames.signIn);
+          },
+        );
+      } else {
+        NavigatorKeyManager().pushNamedAndRemoveUntil(RouteNames.signIn);
+      }
+    } catch (e) {
+      if (!mounted) return;
+      NavigatorKeyManager().pushNamedAndRemoveUntil(RouteNames.signIn);
+    }
+  }
 }

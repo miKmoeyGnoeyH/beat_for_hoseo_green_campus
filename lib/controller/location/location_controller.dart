@@ -19,7 +19,7 @@ class LatLng {
 class LocationController extends GetxController {
   /// iOS 네이티브와 통신하기 위한 MethodChannel
   /// 모든 백그라운드 작업(걸음 수 동기화, 랭킹 집계, 자정 초기화)이 이 채널을 통해 이루어짐
-  static const _locationChannel = MethodChannel("com.beat.walkreport/location");
+  // static const _locationChannel = MethodChannel("com.beat.walkreport/location");
 
   // 위치
   final Rx<LatLng?> _locationData = Rx<LatLng?>(null);
@@ -35,26 +35,52 @@ class LocationController extends GetxController {
 
   LocationController();
 
+  // List<LatLng> asanArea = [
+  //   LatLng(36.73905847633573, 127.07441645479297),
+  //   LatLng(36.73912287279299, 127.07227801510604),
+  //   LatLng(36.73684411973639, 127.07046772248447),
+  //   LatLng(36.73573576644016, 127.07042192605417),
+  //   LatLng(36.73516838296647, 127.06987281506066),
+  //   LatLng(36.73499676688655, 127.07055560002914),
+  //   LatLng(36.73551867439705, 127.07179881381333),
+  //   LatLng(36.735284149061435, 127.07218485008256),
+  //   LatLng(36.73539632511584, 127.07294626975272),
+  //   LatLng(36.73460225454914, 127.07469204585705),
+  //   LatLng(36.73360175547217, 127.07509411621912),
+  //   LatLng(36.7326814599723, 127.07689568084213),
+  //   LatLng(36.73303259290043, 127.07736624033019),
+  //   LatLng(36.73454715737327, 127.07631536610076),
+  //   LatLng(36.736222818531225, 127.07697758417414),
+  //   LatLng(36.73880014890887, 127.07678982054752),
+  //   LatLng(36.738827370019735, 127.07649874382037),
+  //   LatLng(36.7393687288168, 127.07542442851555),
+  //   LatLng(36.739477490720276, 127.07442805567023),
+  // ];
+
   List<LatLng> asanArea = [
-    LatLng(36.73905847633573, 127.07441645479297),
-    LatLng(36.73912287279299, 127.07227801510604),
-    LatLng(36.73684411973639, 127.07046772248447),
-    LatLng(36.73573576644016, 127.07042192605417),
-    LatLng(36.73516838296647, 127.06987281506066),
-    LatLng(36.73499676688655, 127.07055560002914),
-    LatLng(36.73551867439705, 127.07179881381333),
-    LatLng(36.735284149061435, 127.07218485008256),
-    LatLng(36.73539632511584, 127.07294626975272),
-    LatLng(36.73460225454914, 127.07469204585705),
-    LatLng(36.73360175547217, 127.07509411621912),
-    LatLng(36.7326814599723, 127.07689568084213),
-    LatLng(36.73303259290043, 127.07736624033019),
-    LatLng(36.73454715737327, 127.07631536610076),
-    LatLng(36.736222818531225, 127.07697758417414),
-    LatLng(36.73880014890887, 127.07678982054752),
-    LatLng(36.738827370019735, 127.07649874382037),
-    LatLng(36.7393687288168, 127.07542442851555),
-    LatLng(36.739477490720276, 127.07442805567023),
+    LatLng(36.738665, 127.077041),
+    LatLng(36.738750, 127.076391),
+    LatLng(36.739498, 127.075712),
+    LatLng(36.739439, 127.074505),
+    LatLng(36.740096, 127.074337),
+    LatLng(36.739655, 127.073618),
+    LatLng(36.740085, 127.072995),
+    LatLng(36.738334, 127.071278),
+    LatLng(36.735504, 127.070047),
+    LatLng(36.735225, 127.070037),
+    LatLng(36.735188, 127.070396),
+    LatLng(36.735417, 127.071305),
+    LatLng(36.735013, 127.072693),
+    LatLng(36.735409, 127.072880),
+    LatLng(36.734680, 127.074740),
+    LatLng(36.733959, 127.074943),
+    LatLng(36.732805, 127.076793),
+    LatLng(36.733010, 127.077406),
+    LatLng(36.734392, 127.076388),
+    LatLng(36.735113, 127.076939),
+    LatLng(36.735218, 127.076731),
+    LatLng(36.736264, 127.077744),
+    LatLng(36.737103, 127.077636),
   ];
 
   List<LatLng> cheonanArea = [
@@ -127,7 +153,6 @@ class LocationController extends GetxController {
     final PedometerController pedometerController =
         Get.find<PedometerController>();
 
-    // iOS: 자정 보정 가드 (안드로이드 분기 미변경)
     if (Platform.isIOS) {
       pedometerController.ensureDailyResetGuard();
     }
@@ -142,9 +167,6 @@ class LocationController extends GetxController {
       if (!pedometerController.isInValidArea) return;
       pedometerController.isInValidArea = false;
 
-      BEATLogger.d(
-          "LocationController : checkIsValidAreaBackground() : User Location Out of Range : $lat, $lon");
-
       LocalNotificationManager.showValidAreaNotification(
         localizationManager.lnOutOfRangeTitle,
         localizationManager.lnOutOfRangeBody,
@@ -152,9 +174,6 @@ class LocationController extends GetxController {
     } else {
       if (pedometerController.isInValidArea) return;
       pedometerController.isInValidArea = true;
-
-      BEATLogger.d(
-          "LocationController : checkIsValidAreaBackground() : User Location Back in Range : $lat, $lon");
 
       LocalNotificationManager.showValidAreaNotification(
         localizationManager.lnBackInRangeTitle,
@@ -167,7 +186,6 @@ class LocationController extends GetxController {
   Future<void> syncWalkDataInBackground() async {
     BEATLogger.d("LocationController : syncWalkDataInBackground()");
     try {
-      // iOS: 자정 보정 가드
       if (Platform.isIOS) {
         final pedometerController = Get.find<PedometerController>();
         pedometerController.ensureDailyResetGuard();
@@ -177,7 +195,6 @@ class LocationController extends GetxController {
           PermissionManager.isLocationPermissionGrantedStatic!) {
         final pedometerController = Get.find<PedometerController>();
         pedometerController.addWalkReport();
-        BEATLogger.d("LocationController : 백그라운드 걸음 수 동기화 완료");
       } else {
         BEATLogger.d("LocationController : 권한이 없어 걸음 수 동기화 건너뜀");
       }
@@ -188,9 +205,7 @@ class LocationController extends GetxController {
 
   /// 백그라운드에서 정확한 시간(매시간 정각)에 호출되는 백그라운드 랭킹 집계
   Future<void> syncRankingInBackground() async {
-    BEATLogger.d("LocationController : syncRankingInBackground()");
     try {
-      // iOS: 자정 보정 가드
       if (Platform.isIOS) {
         final pedometerController = Get.find<PedometerController>();
         pedometerController.ensureDailyResetGuard();
@@ -200,7 +215,6 @@ class LocationController extends GetxController {
           PermissionManager.isLocationPermissionGrantedStatic!) {
         final pedometerController = Get.find<PedometerController>();
         pedometerController.addWalkReport();
-        BEATLogger.d("LocationController : 백그라운드 랭킹 집계 완료 - 걸음 수 전송됨");
       } else {
         BEATLogger.d("LocationController : 권한이 없어서 랭킹 집계 건너뜀");
       }

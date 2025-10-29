@@ -1,14 +1,21 @@
 import 'dart:developer';
+import 'dart:io';
 
+import 'package:app_version_update/app_version_update.dart';
+import 'package:beat_flutter/components/global/methods/custom_show_dialog.dart';
 import 'package:beat_flutter/components/init/init_page.dart';
 import 'package:beat_flutter/components/sign_in/sign_in_screen.dart';
+import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
+import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/managers/permission/permission_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'components/global/widgets/custom_theme_app.dart';
 import 'controller/user_controller.dart';
@@ -25,6 +32,8 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> with WidgetsBindingObserver {
+  final LocalizationManager localizationManager = LocalizationManager();
+
   @override
   Widget build(BuildContext context) {
     return CustomThemeApp(
@@ -86,7 +95,6 @@ class _AppState extends State<App> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
-    debugPrint('didChangeAppLifecycleState: $state');
     switch (state) {
       case AppLifecycleState.resumed:
         // Get.find<PedometerController>().stopBackgroundService();

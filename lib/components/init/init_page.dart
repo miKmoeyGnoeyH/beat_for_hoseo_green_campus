@@ -2,12 +2,14 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:app_version_update/app_version_update.dart';
+import 'package:beat_flutter/app.dart';
 import 'package:beat_flutter/components/global/methods/custom_show_dialog.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/managers/navigator/navigator_key_manager.dart';
 import 'package:beat_flutter/managers/navigator/routes.dart';
+import 'package:beat_flutter/managers/permission/permission_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -19,13 +21,12 @@ class InitPage extends StatefulWidget {
   State<InitPage> createState() => _InitPageState();
 }
 
-class _InitPageState extends State<InitPage> {
+class _InitPageState extends State<InitPage> with WidgetsBindingObserver {
   final LocalizationManager localizationManager = LocalizationManager();
 
   @override
   void initState() {
     super.initState();
-    // 첫 프레임 이후에 실행(컨텍스트/네비 안정)
     WidgetsBinding.instance.addPostFrameCallback((_) => checkUpdate());
   }
 
@@ -41,14 +42,12 @@ class _InitPageState extends State<InitPage> {
     );
   }
 
-  // 외부 앱(앱스토어/플레이스토어)로 여는 공용 함수
   Future<void> _openStore({
-    required String iosHttpsUrl,   // e.g. https://apps.apple.com/app/idxxxx
-    required String androidPkgId,  // e.g. com.example.app
+    required String iosHttpsUrl,
+    required String androidPkgId,
   }) async {
     if (Platform.isIOS) {
       final itms = Uri.parse(iosHttpsUrl.replaceFirst('https://', 'itms-apps://'));
-      // 1차: itms-apps (앱스토어 앱), 2차: https (사파리) — 모두 외부앱 모드
       if (!await launchUrl(itms, mode: LaunchMode.externalApplication)) {
         await launchUrl(Uri.parse(iosHttpsUrl), mode: LaunchMode.externalApplication);
       }
@@ -71,32 +70,42 @@ class _InitPageState extends State<InitPage> {
 
       if (data.canUpdate == true) {
         FlutterNativeSplash.remove();
-        await customConfirmDialog(
+        await customShowDialog(
           context: context,
           title: localizationManager.generalUpdateAvailable,
           content: localizationManager.generalUpdateAvailableContent,
-          onConfirmTap: () async {
-            // 다이얼로그 먼저 닫고(겹침 방지) -> 스토어 외부앱으로 열기
+          onTap: () async {
             Navigator.of(context, rootNavigator: true).pop();
             await _openStore(
-              iosHttpsUrl: data.storeUrl!,                       // AppVersionUpdate가 준 https 링크
+              iosHttpsUrl: data.storeUrl!,
               androidPkgId: DotEnvManager().googleplayId,
             );
-            // 앱 강제종료 금지: 사용자가 복귀할 수 있게 둠
-          },
-          onCancelTap: () {
-            // 강제 종료 금지. 홈으로 또는 로그인으로.
-            Navigator.of(context, rootNavigator: true).pop();
-            if (mounted) NavigatorKeyManager().pushNamedAndRemoveUntil(RouteNames.signIn);
+            checkUpdate();
           },
         );
       } else {
         NavigatorKeyManager().pushNamedAndRemoveUntil(RouteNames.signIn);
       }
     } catch (e) {
-      // 실패 시 안전하게 진행
       if (!mounted) return;
       NavigatorKeyManager().pushNamedAndRemoveUntil(RouteNames.signIn);
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        checkUpdate();
+        App.isForeground = true;
+        break;
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.paused:
+      case AppLifecycleState.detached:
+        App.isForeground = false;
+        break;
+      default:
+        break;
     }
   }
 }
