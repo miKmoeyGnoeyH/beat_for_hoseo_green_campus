@@ -205,16 +205,20 @@ class LocationController extends GetxController {
 
   /// 백그라운드에서 정확한 시간(매시간 정각)에 호출되는 백그라운드 랭킹 집계
   Future<void> syncRankingInBackground() async {
+    BEATLogger.d("LocationController: syncRankingInBackground()");
     try {
       if (Platform.isIOS) {
         final pedometerController = Get.find<PedometerController>();
         pedometerController.ensureDailyResetGuard();
       }
+
       await PermissionManager.updateLocationAndActivityPemission();
+
       if (PermissionManager.isActivityPermissionGrantedStatic! &&
           PermissionManager.isLocationPermissionGrantedStatic!) {
         final pedometerController = Get.find<PedometerController>();
         pedometerController.addWalkReport();
+        BEATLogger.d("LocationController: syncRankingInBackground: addWalkReport 호출 완료");
       } else {
         BEATLogger.d("LocationController : 권한이 없어서 랭킹 집계 건너뜀");
       }

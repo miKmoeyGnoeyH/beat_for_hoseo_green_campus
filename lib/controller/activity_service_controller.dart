@@ -145,6 +145,8 @@ class ActivityServiceController extends GetxController {
         await _pedometerChannel.invokeMethod("stopPedometer");
         _pedometerChannel.invokeMethod("startPedometer");
 
+        BEATLogger.d("ActivityServiceController: iOS Background Service Started.");
+
         return;
       } else {
         _setAndroidBackgroundServiceHandler();

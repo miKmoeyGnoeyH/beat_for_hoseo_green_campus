@@ -237,7 +237,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                       if (value == null || value.isEmpty) {
                         _isNameValid = false;
                         return localizationManager.rfiNameIsEmpty;
-                      // } else if (initialConsonantRegExp.hasMatch(value)) {
+                        // } else if (initialConsonantRegExp.hasMatch(value)) {
                       } else if (koreanInitialConsonantRegExp.hasMatch(name)) {
                         _isNameValid = false;
                         return localizationManager.rfiNameHasInitialConsonant;
@@ -245,8 +245,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                         log("value: $name");
                         _isNameValid = false;
                         return localizationManager.rfiInavailableNameMessage2;
-                      }
-                      else if (customProfanityFilter.hasMatch(name)) {
+                      } else if (customProfanityFilter.hasMatch(name)) {
                         _isNameValid = false;
                         return localizationManager.rfiInavailableNameMessage;
                       }
@@ -627,6 +626,12 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                                   .toImage(background: Colors.transparent);
                           final String encodedSignFile =
                               base64Encode(signature!.buffer.asUint8List());
+                          final String department =
+                              Localizations.localeOf(context).languageCode ==
+                                      "ko"
+                                  ? registerDepartmentController!.department
+                                  : localizationManager.departmentsToKR(
+                                      registerDepartmentController!.department);
 
                           try {
                             final http.Response response =
@@ -634,7 +639,7 @@ class _RegisterFillInformScreenState extends State<RegisterFillInformScreen> {
                               asyncFunction: () {
                                 return userProvider.signUp(
                                   category,
-                                  localizationManager.departmentsToKR(registerDepartmentController!.department),
+                                  department,
                                   studentId,
                                   email,
                                   name,
