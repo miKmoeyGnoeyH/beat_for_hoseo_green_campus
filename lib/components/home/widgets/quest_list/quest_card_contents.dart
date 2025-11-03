@@ -6,6 +6,7 @@ import 'package:beat_flutter/components/global/methods/custom_show_dialog.dart';
 import 'package:beat_flutter/components/global/widgets/buttons/custom_text_button.dart';
 import 'package:beat_flutter/components/global/widgets/custom_circular_progress_indicator.dart';
 import 'package:beat_flutter/components/global/widgets/texts/custom_body_large.dart';
+import 'package:beat_flutter/controller/activity_service_controller.dart';
 import 'package:beat_flutter/controller/home/controllers/quest_list_controller.dart';
 import 'package:beat_flutter/controller/home/controllers/survey_detail_controller.dart';
 import 'package:beat_flutter/controller/home/events/data_events.dart';
@@ -244,6 +245,7 @@ class _QuestCardContentsState extends State<QuestCardContents> {
           asyncFunction: () =>
               requestReward(userController.state.authorization),
           loadingWidget: const CustomCircularProgressIndicator());
+      Get.find<ActivityServiceController>().addWalkReport();
 
       log(response.statusCode.toString());
 

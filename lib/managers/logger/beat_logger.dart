@@ -5,6 +5,9 @@ import 'dart:io';
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 
+// TODO: AppDelegate 확인할 것.
+// 현재 iOS 백그라운드 작업이 1분에 한 번씩 실행하도록 변경돼있음. 수정할 것.
+// 2025.10.30
 class PermissiveFilter extends LogFilter {
   @override
   bool shouldLog(LogEvent event) => true;

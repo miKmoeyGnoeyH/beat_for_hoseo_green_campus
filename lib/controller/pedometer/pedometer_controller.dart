@@ -265,9 +265,12 @@ class PedometerController extends GetxController {
     try {
       final (savedToday, savedWeekly, savedMonthly, savedTotal) =
           PrefsManager().getSteps();
+      final List<Map<String, dynamic>> unsentStepsList = PrefsManager().getUnsentStepsList();
 
       BEATLogger.d(
           "PedometerController : getWalkHistory : savedToday : $savedToday, savedWeekly : $savedWeekly, savedMonthly : $savedMonthly, savedTotal : $savedTotal");
+      BEATLogger.d(
+          "PedometerController : getWalkHistory : unsentStepsList : ${unsentStepsList.toString()}");
 
       final lastReportedSteps = PrefsManager().getLastReportedSteps();
 

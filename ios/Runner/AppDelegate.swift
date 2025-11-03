@@ -282,67 +282,90 @@ let activityManager = CMMotionActivityManager()
     
     /// BGTaskScheduler만 사용하는 백그라운드 작업 스케줄링
     func scheduleAllBackgroundTasks(sendToTime: Int) {
-//        scheduleRankingBGTask(sendToTime: sendToTime)
-        scheduleRankingBGTaskTest(sendToTime: sendToTime)
+        scheduleRankingBGTask(sendToTime: sendToTime)
+//        scheduleRankingBGTaskTest(sendToTime: sendToTime)
         scheduleMidnightBGTask()
         print("scheduleAllBackgroundTasks(sendToTime: \(sendToTime))")
     }
     
-    /// 테스트용 랭킹 집계 BGTask 스케줄링 (매시간 1분 {sendToTime}초)
+    /// 랭킹 집계 BGTask 스케줄링 (매시간 59분 {sendToTime}초)
     func scheduleRankingBGTask(sendToTime: Int) {
         let request = BGProcessingTaskRequest(identifier: "com.beat.app.ranking")
         request.requiresNetworkConnectivity = true
         request.requiresExternalPower = false
-        
-        // 다음 59분 {sendToTime}초까지의 시간 계산
+
         let cal = Calendar.current
         let now = Date()
-        var target = cal.startOfHour(for: now)
-        target = cal.date(byAdding: .minute, value: 1, to: target)!
-        target = cal.date(byAdding: .second, value: sendToTime, to: target)!
-        if cal.component(.second, from: now) >= sendToTime {
+
+        // 초 범위 [0, 59] 보정
+        let sec = max(0, min(sendToTime, 59))
+
+        // 이번 시간의 "59분 sec초"
+        var target = cal.date(
+            bySettingHour: cal.component(.hour, from: now),
+            minute: 59,
+            second: sec,
+            of: now
+        )!
+
+        // 이미 지났으면 다음 시간의 "59분 sec초"
+        if target <= now {
             target = cal.date(byAdding: .hour, value: 1, to: target)!
         }
+
         request.earliestBeginDate = target
-        
+
         do {
             try BGTaskScheduler.shared.submit(request)
-            print("랭킹 집계 BGTask 스케줄 완료: \(target)")
-            print("현재 시간: \(Date())")
-            print("다음 실행까지 남은 시간: \(target.timeIntervalSinceNow)초")
+            print("랭킹 집계 BGTask 스케줄 완료: \(target) (59분 \(sec)초)")
+            print("현재 시간: \(now)")
+            print("다음 실행까지 남은 시간: \(target.timeIntervalSince(now))초")
         } catch {
             print("랭킹 집계 BGTask 스케줄 실패: \(error)")
         }
-        
+
         print("scheduleRankingBGTask Called.")
     }
     
+    /// 테스트용 랭킹 집계 BGTask 스케줄링 (매분 {sendToTime}초)
     func scheduleRankingBGTaskTest(sendToTime: Int) {
-        let request = BGProcessingTaskRequest(identifier: "com.beat.app.ranking")
+        let identifier = "com.beat.app.ranking"
+        let request = BGProcessingTaskRequest(identifier: identifier)
         request.requiresNetworkConnectivity = true
         request.requiresExternalPower = false
-        
-        // 다음 59분 {sendToTime}초까지의 시간 계산
+
+        // 초 범위 보정 [0, 59]
+        let sec = max(0, min(sendToTime, 59))
+
         let cal = Calendar.current
         let now = Date()
-        var target = cal.startOfHour(for: now)
-        target = cal.date(byAdding: .minute, value: 59, to: target)!
-        target = cal.date(byAdding: .second, value: sendToTime, to: target)!
-        if cal.component(.minute, from: now) == 59 && cal.component(.second, from: now) >= sendToTime {
-            target = cal.date(byAdding: .hour, value: 1, to: target)!
+
+        // 다음 분의 "sec초"로 예약
+        var components = cal.dateComponents([.year, .month, .day, .hour, .minute], from: now)
+        if let minute = components.minute {
+            components.minute = minute + 1
+        } else {
+            components.minute = cal.component(.minute, from: now) + 1
         }
+        components.second = sec
+
+        var target = cal.date(from: components)!
+        if target <= now {
+            target = cal.date(byAdding: .minute, value: 1, to: target)!
+        }
+
         request.earliestBeginDate = target
-        
+
         do {
             try BGTaskScheduler.shared.submit(request)
-            print("랭킹 집계 BGTask 스케줄 완료: \(target) (59분 \(sendToTime)초)")
-            print("현재 시간: \(Date())")
-            print("다음 실행까지 남은 시간: \(target.timeIntervalSinceNow)초")
+            print("랭킹 집계 BGTask 스케줄 완료: \(target) (매분 \(sec)초)")
+            print("현재 시간: \(now)")
+            print("다음 실행까지 남은 시간: \(target.timeIntervalSince(now))초")
         } catch {
             print("랭킹 집계 BGTask 스케줄 실패: \(error)")
         }
-        
-        print("scheduleRankingBGTask Called.")
+
+        print("scheduleRankingBGTaskTest Called.")
     }
     
     /// 자정 초기화 BGTask 스케줄링 (매일 자정)
@@ -400,6 +423,7 @@ let activityManager = CMMotionActivityManager()
         
         // 다음 스케줄 예약 (BGTask로, sendToTime 전달)
         scheduleRankingBGTask(sendToTime: sendToTime)
+//        scheduleRankingBGTaskTest(sendToTime: sendToTime)
         
         executeRankingSync { success in
             print("랭킹 집계 BGTask 완료: \(success)")
