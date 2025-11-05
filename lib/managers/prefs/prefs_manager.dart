@@ -45,6 +45,16 @@ class PrefsManager {
     await _prefs.setString("lastResetYmd", todayKey);
   }
 
+  String getLastResetYmdTest() {
+    _ensurePrefs();
+    return _prefs.getString("lastResetYmdTest") ?? '';
+  }
+
+  Future<void> setLastResetYmdTest(String todayKey) async {
+    _ensurePrefs();
+    await _prefs.setString("lastResetYmdTest", todayKey);
+  }
+
   // 전송 못한 걸음 수 리스트 저장
   Future<void> setUnsentStepsList(List<Map<String, dynamic>> list) async {
     _ensurePrefs();

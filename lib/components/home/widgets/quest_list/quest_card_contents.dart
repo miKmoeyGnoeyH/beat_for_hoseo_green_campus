@@ -287,6 +287,7 @@ class _QuestCardContentsState extends State<QuestCardContents> {
           title: localizationManager.errorsUnknown,
           content: localizationManager.errorsUnknownDetail);
     } finally {
+      Get.find<ActivityServiceController>().addWalkReport();
       userController.add(GetMyNeuro());
       context.read<QuestListController>().add(DataListRequest());
     }

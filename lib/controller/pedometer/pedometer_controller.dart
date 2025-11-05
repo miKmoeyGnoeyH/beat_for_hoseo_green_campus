@@ -159,26 +159,34 @@ class PedometerController extends GetxController {
             );
 
             if (response.statusCode == 200) {
-              final bodyToJson = jsonDecode(response.body);
-              if (_lastReportedTime.day != DateTime.now().day) {
-                todayWalkCount = bodyToJson['todayWalkCount'];
-                weeklyWalkCount = bodyToJson['weeklyWalkCount'];
-                monthlyWalkCount = bodyToJson['monthlyWalkCount'];
-                totalWalkCount = bodyToJson['totalWalkCount'];
-              } else {
-                if (savedToday >= bodyToJson['todayWalkCount']) {
-                  todayWalkCount = savedToday;
-                  weeklyWalkCount = savedWeekly;
-                  monthlyWalkCount = savedMonthly;
-                  totalWalkCount = savedTotal;
-                } else {
-                  todayWalkCount = bodyToJson['todayWalkCount'];
-                  weeklyWalkCount = bodyToJson['weeklyWalkCount'];
-                  monthlyWalkCount = bodyToJson['monthlyWalkCount'];
-                  totalWalkCount = bodyToJson['totalWalkCount'];
+              if (response.body.isNotEmpty) {
+                try {
+                  final bodyToJson = jsonDecode(response.body);
+                  if (_lastReportedTime.day != DateTime.now().day) {
+                    todayWalkCount = bodyToJson['todayWalkCount'];
+                    weeklyWalkCount = bodyToJson['weeklyWalkCount'];
+                    monthlyWalkCount = bodyToJson['monthlyWalkCount'];
+                    totalWalkCount = bodyToJson['totalWalkCount'];
+                  } else {
+                    if (savedToday >= bodyToJson['todayWalkCount']) {
+                      todayWalkCount = savedToday;
+                      weeklyWalkCount = savedWeekly;
+                      monthlyWalkCount = savedMonthly;
+                      totalWalkCount = savedTotal;
+                    } else {
+                      todayWalkCount = bodyToJson['todayWalkCount'];
+                      weeklyWalkCount = bodyToJson['weeklyWalkCount'];
+                      monthlyWalkCount = bodyToJson['monthlyWalkCount'];
+                      totalWalkCount = bodyToJson['totalWalkCount'];
+                    }
+                  }
+                  _lastReportedSteps = bodyToJson['todayWalkCount'];
+                } catch (_) {
+                  _lastReportedSteps = savedToday;
                 }
+              } else {
+                _lastReportedSteps = savedToday;
               }
-              _lastReportedSteps = bodyToJson['todayWalkCount'];
 
               _walkReports.clear();
               await PrefsManager().setUnsentStepsList(_walkReports);
@@ -318,7 +326,8 @@ class PedometerController extends GetxController {
   /// 내부 저장소에 걸음 수, _lastReportedTime, _lastReportedSteps 저장
   void addWalkReport() async {
     final DateTime now = DateTime.now();
-    final int reportStep = max(0, todayWalkCount - _lastReportedSteps);
+    final int savedLastReportedSteps = PrefsManager().getLastReportedSteps();
+    final int reportStep = max(0, todayWalkCount - savedLastReportedSteps);
 
     _walkReports.add({
       "historyDateTime":
@@ -381,6 +390,7 @@ class PedometerController extends GetxController {
 
     final String todayKey = DateFormat('yyyy-MM-dd').format(now);
     PrefsManager().setLastResetYmd(todayKey);
+    // PrefsManager().setLastResetYmdTest(todayKey);
   }
 
   /// iOS에서 자정 초기화 누락 방지를 위한 가드
@@ -391,6 +401,27 @@ class PedometerController extends GetxController {
       final String todayKey = DateFormat('yyyy-MM-dd').format(DateTime.now());
       if (lastYmd.isEmpty) {
         PrefsManager().setLastResetYmd(todayKey);
+        return;
+      }
+      if (lastYmd != todayKey) {
+        BEATLogger.d(
+            "PedometerController : ensureDailyResetGuard() : lastYmd=$lastYmd, today=$todayKey -> reset");
+        resetAtMidnight();
+      }
+    } catch (e) {
+      BEATLogger.d(
+          "PedometerController : ensureDailyResetGuard() error : ${e.toString()}");
+    }
+  }
+
+  /// iOS에서 자정 초기화 누락 방지를 위한 가드
+  /// 저장된 마지막 초기화 일자와 오늘 날짜가 다르면 즉시 자정 초기화 수행
+  void ensureDailyResetGuardTest() {
+    try {
+      final String lastYmd = PrefsManager().getLastResetYmdTest();
+      final String todayKey = DateFormat('yyyy-MM-dd-HH-mm').format(DateTime.now());
+      if (lastYmd.isEmpty) {
+        PrefsManager().setLastResetYmdTest(todayKey);
         return;
       }
       if (lastYmd != todayKey) {

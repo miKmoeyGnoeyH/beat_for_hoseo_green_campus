@@ -16,6 +16,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 import '../managers/logger/beat_logger.dart';
+import '../managers/prefs/prefs_manager.dart';
 
 const String notificationChannelId = "activity_service_channel";
 const String notificationChannelTitle = "BEAT Activity Service";
@@ -69,6 +70,10 @@ class ActivityServiceController extends GetxController {
   int sendToTime = 0;
   bool isHoliday = true;
 
+  /// 중복 configure/start 방지 플래그
+  bool _serviceConfigured = false;
+  bool _serviceStartRequested = false;
+
   ActivityServiceController() {
     pedometerController = Get.find<PedometerController>();
     locationController = Get.find<LocationController>();
@@ -77,6 +82,7 @@ class ActivityServiceController extends GetxController {
   /// 단일 백그라운드 서비스 초기화 (부팅 자동 시작 비활성화)
   Future<void> initializeService() async {
     try {
+      if (_serviceConfigured) return;
       const AndroidNotificationChannel channel = AndroidNotificationChannel(
         notificationChannelId, // id
         notificationChannelTitle,
@@ -115,6 +121,7 @@ class ActivityServiceController extends GetxController {
               AndroidForegroundType.dataSync
             ]),
       );
+      _serviceConfigured = true;
     } catch (e) {
       log('Failed to initialize background service: $e');
       // 서비스 초기화 실패 시에도 앱이 계속 실행되도록 함
@@ -123,6 +130,10 @@ class ActivityServiceController extends GetxController {
 
   Future<void> startService() async {
     try {
+      if (_serviceStartRequested) return;
+
+      _serviceStartRequested = true;
+
       if (Platform.isIOS) {
         isHoliday = await _getIsHoliday();
         // isHoliday = false;
@@ -166,6 +177,8 @@ class ActivityServiceController extends GetxController {
     } catch (e) {
       BEATLogger.d('Failed to start service: $e');
       // 서비스 시작 실패 시에도 앱이 계속 실행되도록 함
+    } finally {
+      // 이미 요청된 상태 유지 (중복 호출 차단)
     }
   }
 
@@ -177,6 +190,7 @@ class ActivityServiceController extends GetxController {
 
       _fbsSubscriptions.add(service.on("updateUISteps").listen((data) {
         if (data == null) return;
+        pedometerController.isHoliday = data["isHoliday"] ?? true;
         pedometerController.todayWalkCount = data["todayWalkCount"] ?? 0;
         pedometerController.weeklyWalkCount = data["weeklyWalkCount"] ?? 0;
         pedometerController.monthlyWalkCount = data["monthlyWalkCount"] ?? 0;
@@ -186,15 +200,6 @@ class ActivityServiceController extends GetxController {
       _fbsSubscriptions.add(service.on("updateIsInValidArea").listen((data) {
         if (data == null) return;
         pedometerController.isInValidArea = data["isInValidArea"] ?? false;
-      }));
-
-      _fbsSubscriptions.add(service.on("midnightReset").listen((data) {
-        if (data == null) return;
-        pedometerController.isHoliday = data["isHoliday"] ?? true;
-        pedometerController.todayWalkCount = data["todayWalkCount"] ?? 0;
-        pedometerController.weeklyWalkCount = data["weeklyWalkCount"] ?? 0;
-        pedometerController.monthlyWalkCount = data["monthlyWalkCount"] ?? 0;
-        pedometerController.totalWalkCount = data["totalWalkCount"] ?? 0;
       }));
 
       _fbsSubscriptions.add(service.on('bg_started').listen((data) {
@@ -350,10 +355,13 @@ class ActivityServiceController extends GetxController {
   void setAuthorization(String authorization) {
     this.authorization = authorization;
     pedometerController.setAuthorization(authorization);
+    // 백그라운드 메시지 핸들러(iOS)에서 직접 전송할 수 있도록 영속화
+    PrefsManager().setValue<String>('authorization', authorization);
   }
 
   void setSendToTime(int value) {
     sendToTime = value;
+    PrefsManager().setValue<int>('sendToTime', value);
   }
 
   Future<void> getWalkHistory() async {

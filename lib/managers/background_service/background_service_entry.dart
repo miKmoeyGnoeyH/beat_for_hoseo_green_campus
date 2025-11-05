@@ -90,13 +90,13 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
   /// 자정 초기화 타이머
   /// 절대로 이 타이머는 멈추면 안됨
   /// (테스트용으로 5분마다 0초에 초기화 신호 전송)
-  Timer? midnightOnce;
+  // Timer? midnightOnce;
 
   /// 1시간 단위 걸음 수 동기화 타이머
-  Timer? hourlySyncTimer;
+  // Timer? hourlySyncTimer;
 
   /// 매 시간 특정 초에 랭킹 집계를 위해 서버로 걸음 수를 전송함
-  Timer? rankSyncTimer;
+  // Timer? rankSyncTimer;
 
   /// 권한 상태 점검 타이머
   Timer? permissionCheckTimer;
@@ -155,18 +155,18 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
     stepSubscription?.cancel();
     // statusSubscription?.cancel();
     positionSubscription?.cancel();
-    midnightOnce?.cancel();
-    hourlySyncTimer?.cancel();
-    rankSyncTimer?.cancel();
+    // midnightOnce?.cancel();
+    // hourlySyncTimer?.cancel();
+    // rankSyncTimer?.cancel();
     permissionCheckTimer?.cancel();
     serviceStatusSub?.cancel();
 
     stepSubscription = null;
     // statusSubscription = null;
     positionSubscription = null;
-    midnightOnce = null;
-    hourlySyncTimer = null;
-    rankSyncTimer = null;
+    // midnightOnce = null;
+    // hourlySyncTimer = null;
+    // rankSyncTimer = null;
     permissionCheckTimer = null;
     serviceStatusSub = null;
   }
@@ -175,6 +175,7 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
     service.invoke(
       "updateUISteps",
       {
+        "isHoliday": isHoliday,
         "todayWalkCount": todayWalkCount,
         "weeklyWalkCount": weeklyWalkCount,
         "monthlyWalkCount": monthlyWalkCount,
@@ -273,18 +274,23 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
   /// lastReportedTime, lastReportedSteps 갱신
   /// 내부 저장소에 걸음 수, lastReportedTime, lastReportedSteps 저장
   void addWalkReport() async {
+    final int savedLastReportedSteps = PrefsManager().getLastReportedSteps();
+    log("backgroundService: addWalkReport: todayWalkCount: $todayWalkCount, lastReportedSteps: $savedLastReportedSteps");
+
     final DateTime now = DateTime.now();
-    final int reportStep = math.max(0, todayWalkCount - lastReportedSteps);
+    final int reportStep = math.max(0, todayWalkCount - savedLastReportedSteps);
 
     walkReports.add({
       "historyDateTime":
-          DateTime(now.year, now.month, now.day, now.hour + 1, 0, 0)
+          DateTime(now.year, now.month, now.day, now.hour, 0, 0)
               .toIso8601String(),
       "walkCount": reportStep,
     });
 
     lastReportedTime = now;
     lastReportedSteps = todayWalkCount;
+
+    log("backgroundService: addWalkReport: todayWalkCount: $todayWalkCount, lastReportedSteps: $lastReportedSteps");
 
     PrefsManager().setSteps(
       todayWalkCount,
@@ -452,16 +458,7 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
     lastReportedSteps = 0;
     PrefsManager().setLastReportedSteps(0);
 
-    service.invoke(
-      "midnightReset",
-      {
-        "isHoliday": isHoliday,
-        "todayWalkCount": todayWalkCount,
-        "weeklyWalkCount": weeklyWalkCount,
-        "monthlyWalkCount": monthlyWalkCount,
-        "totalWalkCount": totalWalkCount
-      },
-    );
+    updateUISteps();
 
     // ✅ 오늘자로 리셋 마커 업데이트 (중복 리셋 방지)
     final todayKey = DateFormat('yyyy-MM-dd').format(DateTime.now());
@@ -654,32 +651,32 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
     );
   }
 
-  void scheduleMidnightOnce() {
-    // 자정(테스트: 5분마다 0초)에 리셋 트리거
-    midnightOnce?.cancel();
-    final now = DateTime.now();
-    final tomorrow = DateTime(now.year, now.month, now.day + 1);
-    final diff = tomorrow.difference(now);
-    midnightOnce = Timer(diff, () async {
-      // midnightOnce = Timer(const Duration(minutes: 1), () async {
-      await resetAtMidnight();
-      scheduleMidnightOnce();
-    });
-  }
+  // void scheduleMidnightOnce() {
+  //   // 자정(테스트: 5분마다 0초)에 리셋 트리거
+  //   midnightOnce?.cancel();
+  //   final now = DateTime.now();
+  //   final tomorrow = DateTime(now.year, now.month, now.day + 1);
+  //   final diff = tomorrow.difference(now);
+  //   midnightOnce = Timer(diff, () async {
+  //     // midnightOnce = Timer(const Duration(minutes: 1), () async {
+  //     await resetAtMidnight();
+  //     scheduleMidnightOnce();
+  //   });
+  // }
 
   // (Removed) 시간별 동기화 타이머: 랭킹 동기화만 유지
 
-  void setRankSyncTimer() {
-    // 매 시간 59분 특정 초에 랭킹 동기화 트리거
-    rankSyncTimer = Timer.periodic(const Duration(seconds: 1), (_) async {
-      final now = DateTime.now();
-      if (now.minute == 59 && now.second == sendToTime) {
-        // if (now.minute % 3 == 0 && now.second == sendToTime) {
-        addWalkReport();
-        updateUISteps();
-      }
-    });
-  }
+  // void setRankSyncTimer() {
+  //   // 매 시간 59분 특정 초에 랭킹 동기화 트리거
+  //   rankSyncTimer = Timer.periodic(const Duration(seconds: 1), (_) async {
+  //     final now = DateTime.now();
+  //     if (now.minute == 59 && now.second == sendToTime) {
+  //       // if (now.minute % 3 == 0 && now.second == sendToTime) {
+  //       addWalkReport();
+  //       updateUISteps();
+  //     }
+  //   });
+  // }
 
   void startBackgroundService() async {
     log("FlutterBackgroundService: startBackgroundService called");
@@ -719,26 +716,36 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
           );
 
           if (response.statusCode == 200) {
-            final bodyToJson = jsonDecode(response.body);
-            if (lastReportedTime.day != DateTime.now().day) {
-              todayWalkCount = bodyToJson['todayWalkCount'];
-              weeklyWalkCount = bodyToJson['weeklyWalkCount'];
-              monthlyWalkCount = bodyToJson['monthlyWalkCount'];
-              totalWalkCount = bodyToJson['totalWalkCount'];
-            } else {
-              if (savedToday >= bodyToJson['todayWalkCount']) {
-                todayWalkCount = savedToday;
-                weeklyWalkCount = savedWeekly;
-                monthlyWalkCount = savedMonthly;
-                totalWalkCount = savedTotal;
-              } else {
-                todayWalkCount = bodyToJson['todayWalkCount'];
-                weeklyWalkCount = bodyToJson['weeklyWalkCount'];
-                monthlyWalkCount = bodyToJson['monthlyWalkCount'];
-                totalWalkCount = bodyToJson['totalWalkCount'];
+            if (response.body.isNotEmpty) {
+              try {
+                final bodyToJson = jsonDecode(response.body);
+                if (lastReportedTime.day != DateTime.now().day) {
+                  todayWalkCount = bodyToJson['todayWalkCount'];
+                  weeklyWalkCount = bodyToJson['weeklyWalkCount'];
+                  monthlyWalkCount = bodyToJson['monthlyWalkCount'];
+                  totalWalkCount = bodyToJson['totalWalkCount'];
+                } else {
+                  if (savedToday >= bodyToJson['todayWalkCount']) {
+                    todayWalkCount = savedToday;
+                    weeklyWalkCount = savedWeekly;
+                    monthlyWalkCount = savedMonthly;
+                    totalWalkCount = savedTotal;
+                  } else {
+                    todayWalkCount = bodyToJson['todayWalkCount'];
+                    weeklyWalkCount = bodyToJson['weeklyWalkCount'];
+                    monthlyWalkCount = bodyToJson['monthlyWalkCount'];
+                    totalWalkCount = bodyToJson['totalWalkCount'];
+                  }
+                }
+                lastReportedSteps = bodyToJson['todayWalkCount'];
+              } catch (_) {
+                // 본문이 비어있거나 JSON이 아닐 때: 저장값 유지, lastReportedSteps는 현재 today 기준으로 설정
+                lastReportedSteps = savedToday;
               }
+            } else {
+              // 본문 없음: 성공으로 간주하고 lastReportedSteps만 갱신
+              lastReportedSteps = savedToday;
             }
-            lastReportedSteps = bodyToJson['todayWalkCount'];
 
             // ✅ 성공 시에만 큐 비우기 및 영속화
             walkReports.clear();
@@ -779,8 +786,8 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
     safeSetStreams();
     setServiceStatusSub();
     setPermissionCheckTimer();
-    scheduleMidnightOnce();
-    setRankSyncTimer();
+    // scheduleMidnightOnce();
+    // setRankSyncTimer();
     // no-op
 
     service.invoke(
@@ -828,8 +835,20 @@ Future<void> startServiceAndroid(ServiceInstance service) async {
     }
   });
 
-  service.on("addWalkReport").listen((_) {
+  service.on("addWalkReport").listen((_) async {
+    try {
+      final nowMs = DateTime.now().millisecondsSinceEpoch;
+      final lastMs = PrefsManager().getValueAs<int>('lastPushHandledAtMs');
+      if (nowMs - lastMs < 10000) {
+        return;
+      }
+      await PrefsManager().setValue<int>('lastPushHandledAtMs', nowMs);
+    } catch (_) {}
     addWalkReport();
+  });
+
+  service.on("midnightReset").listen((_) async {
+    resetAtMidnight();
   });
 
   /// 실제 동작 실행

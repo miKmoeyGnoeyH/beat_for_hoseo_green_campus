@@ -4,14 +4,17 @@ import 'dart:io';
 import 'package:app_version_update/app_version_update.dart';
 import 'package:beat_flutter/app.dart';
 import 'package:beat_flutter/components/global/methods/custom_show_dialog.dart';
+import 'package:beat_flutter/controller/pedometer/pedometer_controller.dart';
 import 'package:beat_flutter/extensions/buildcontext_extension.dart';
 import 'package:beat_flutter/managers/dotenv/dotenv_manager.dart';
 import 'package:beat_flutter/managers/localization/localization_manager.dart';
 import 'package:beat_flutter/managers/navigator/navigator_key_manager.dart';
 import 'package:beat_flutter/managers/navigator/routes.dart';
 import 'package:beat_flutter/managers/permission/permission_manager.dart';
+import 'package:beat_flutter/managers/prefs/prefs_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class InitPage extends StatefulWidget {
@@ -27,7 +30,7 @@ class _InitPageState extends State<InitPage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => checkUpdate());
+    WidgetsBinding.instance.addPostFrameCallback((_) => init());
   }
 
   @override
@@ -40,6 +43,12 @@ class _InitPageState extends State<InitPage> with WidgetsBindingObserver {
         ),
       ),
     );
+  }
+
+  Future<void> init() async {
+    Get.find<PedometerController>().ensureDailyResetGuard();
+    // Get.find<PedometerController>().ensureDailyResetGuardTest();
+    checkUpdate();
   }
 
   Future<void> _openStore({
@@ -96,7 +105,7 @@ class _InitPageState extends State<InitPage> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     switch (state) {
       case AppLifecycleState.resumed:
-        checkUpdate();
+        init();
         App.isForeground = true;
         break;
       case AppLifecycleState.inactive:
