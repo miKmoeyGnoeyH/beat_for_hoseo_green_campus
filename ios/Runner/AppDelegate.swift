@@ -28,21 +28,10 @@ let activityManager = CMMotionActivityManager()
         // 로컬 알림 등록
         FlutterLocalNotificationsPlugin.setPluginRegistrantCallback { registry in
             GeneratedPluginRegistrant.register(with: registry)
-        } 
+        }
         
         if #available(iOS 10.0, *) {
             UNUserNotificationCenter.current().delegate = self
-        }
-        
-        // BGTask 등록
-        // BGTask 등록 - 백그라운드에서 작업을 실행하기 위한 iOS 시스템 레벨 태스크
-        // 실제 Flutter 통신은 pedometer/location 각 채널을 통해 이루어짐
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.beat.app.ranking", using: nil) { task in
-            self.handleRankingTask(task: task as! BGProcessingTask)
-        }
-        
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.beat.app.midnight", using: nil) { task in
-            self.handleMidnightTask(task: task as! BGProcessingTask)
         }
         
         // 🔑 MethodChannel 등록
@@ -71,10 +60,10 @@ let activityManager = CMMotionActivityManager()
 //         locationChannel 핸들러
 //         "startBackgroundTasks"   4시간 단위 걸음 수 동기화 시작, 랭킹 집계 시작, 자정 초기화 시작
 //                                  위치 추적 시작
-//        
+//
 //         "stopBackgroundTasks"    위치 추적 중지
 //                                  4시간 단위 걸음 수 동기화 중지, 랭킹 집계 중지, 자정 초기화 중지
-//        
+//
 //         "updateHolidayStatus"    isHoliday가 true이면 위치 추적 중지
 //                                  isHoliday가 false이면 위치 추적 재시작
         locationChannel?.setMethodCallHandler { [weak self] (call, result) in
@@ -87,13 +76,10 @@ let activityManager = CMMotionActivityManager()
                     self.startBackgroundTasks(isHoliday: isHoliday, sendToTime: sendToTime)
                 } else if let args = call.arguments as? [String: Any],
                           let isHoliday = args["isHoliday"] as? Bool {
-                    // sendToTime이 없는 경우 기본값 0 사용
                     self.startBackgroundTasks(isHoliday: isHoliday, sendToTime: 0)
                 } else {
-                    // 모든 인자가 없는 경우 기본값 사용
                     self.startBackgroundTasks(isHoliday: true, sendToTime: 0)
                 }
-                print("locationChannel: startBackgroundTasks Started.")
                 result("Background tasks started")
                 
             } else if call.method == "stopBackgroundTasks" {
@@ -103,13 +89,11 @@ let activityManager = CMMotionActivityManager()
             } else if call.method == "updateHolidayStatus" {
                 if let args = call.arguments as? [String: Any],
                    let isHoliday = args["isHoliday"] as? Bool {
-                    // ✅ 공휴일 상태 업데이트 반영 (BGTask는 계속 동작)
                     if isHoliday {
                         self.locationManager?.stopUpdatingLocation()
-                        print("🛑 Holiday: location tracking stopped (BGTask는 계속 동작)")
+                        self.locationManager = nil
                     } else {
                         self.initLocationTracking()
-                        print("✅ Holiday ended: location tracking resumed (BGTask는 계속 동작)")
                     }
                 }
                 result("Holiday status updated")
@@ -122,13 +106,13 @@ let activityManager = CMMotionActivityManager()
 //         "isMotionPermissionGranted"  활동 권한이 부여되었는지 확인
 //                                      iOS는 안드로이드와 달리 permission_handler 패키지를 사용해 활동 권한을 정확히 받아올 수 없음.
 //                                      메소드 채널을 통해 iOS 네이티브에서 권한 부여 여부를 정확히 확인하고 플러터 UI isolate에 전달
-//        
+//
 //         "startPedometer"             걸음 수 측정 시작. 걸음 수 이벤트 발생 시마다 메소드 채널 핸들러를 통해 플러터 UI isolate에 전달
-//        
+//
 //         "stopPedometer"              걸음 수 측정 중지
-//        
+//
 //         "startActivityUpdates"       보행 상태 추적 시작
-//        
+//
 //         "stopActivityUpdates"        보행 상태 추적 중지
         pedometerChannel?.setMethodCallHandler { [weak self] (call, result) in
             guard let self = self else { return }
@@ -138,6 +122,18 @@ let activityManager = CMMotionActivityManager()
                 let permissionGranted = CMMotionActivityManager.authorizationStatus() == .authorized
                 let granted = hardwareAvailable && permissionGranted
                 result(granted)
+            } else if call.method == "getStepsSinceMidnight" {
+                let cal = Calendar.current
+                let now = Date()
+                let from = cal.startOfDay(for: now)
+                if CMPedometer.isStepCountingAvailable() {
+                    pedometer.queryPedometerData(from: from, to: now) { data, _ in
+                        let steps = data?.numberOfSteps.intValue ?? 0
+                        result(steps)
+                    }
+                } else {
+                    result(0)
+                }
             } else if call.method == "startPedometer" {
                 startPedometer()
                 print("pedometerChannel: Pedometer Background Task Started.")
@@ -159,42 +155,23 @@ let activityManager = CMMotionActivityManager()
     
     // MARK: - 로그인 성공 시 호출
     func startBackgroundTasks(isHoliday: Bool, sendToTime: Int) {
-        // sendToTime 저장
         self.sendToTime = sendToTime
-        print("sendToTime 설정됨: \(sendToTime)")
-        
-        // BGTaskScheduler 전용 스케줄링 시스템 시작 (중복 방지 위해 기존 요청 취소 후 재스케줄)
-        BGTaskScheduler.shared.cancelAllTaskRequests()
-        scheduleAllBackgroundTasks(sendToTime: sendToTime)
-//        startPedometer()
-        
-        // 공휴일 여부에 따라 위치 추적 처리
-        if !isHoliday {
-            initLocationTracking()
-            print("Background tasks started (isHoliday: false, sendToTime: \(sendToTime))")
+
+        if isHoliday {
+            locationManager?.stopUpdatingLocation()
+            locationManager = nil
+            print("Holiday: location tracking ensured stopped")
         } else {
-            print("Background tasks started (isHoliday: true, sendToTime: \(sendToTime)) — location tracking stopped, event timer disabled")
+            initLocationTracking()
+            print("Workday: location tracking started")
         }
-        
-        print("iOS Background Task Started.")
     }
     
     // MARK: - 로그아웃 시 호출
     func stopBackgroundTasks() {
-        // 만보기 중지
-//        stopPedometer()
-        
         // 위치 추적 중지
         locationManager?.stopUpdatingLocation()
         locationManager = nil
-        
-        // Pedometer 중지
-        print("🛑 Pedometer updates stopped")
-        
-        // BGTask 취소
-        BGTaskScheduler.shared.cancelAllTaskRequests()
-        
-        print("🛑 Background tasks stopped")
     }
     
     // MARK: - Pedometer
@@ -275,221 +252,6 @@ let activityManager = CMMotionActivityManager()
                 "latitude": lat,
                 "longitude": lon
             ])
-        }
-    }
-    
-    // MARK: - BGTaskScheduler 전용 스케줄링 시스템
-    
-    /// BGTaskScheduler만 사용하는 백그라운드 작업 스케줄링
-    func scheduleAllBackgroundTasks(sendToTime: Int) {
-        scheduleRankingBGTask(sendToTime: sendToTime)
-//        scheduleRankingBGTaskTest(sendToTime: sendToTime)
-        scheduleMidnightBGTask()
-        print("scheduleAllBackgroundTasks(sendToTime: \(sendToTime))")
-    }
-    
-    /// 랭킹 집계 BGTask 스케줄링 (매시간 59분 {sendToTime}초)
-    func scheduleRankingBGTask(sendToTime: Int) {
-        let request = BGProcessingTaskRequest(identifier: "com.beat.app.ranking")
-        request.requiresNetworkConnectivity = true
-        request.requiresExternalPower = false
-
-        let cal = Calendar.current
-        let now = Date()
-
-        // 초 범위 [0, 59] 보정
-        let sec = max(0, min(sendToTime, 59))
-
-        // 이번 시간의 "59분 sec초"
-        var target = cal.date(
-            bySettingHour: cal.component(.hour, from: now),
-            minute: 59,
-            second: sec,
-            of: now
-        )!
-
-        // 이미 지났으면 다음 시간의 "59분 sec초"
-        if target <= now {
-            target = cal.date(byAdding: .hour, value: 1, to: target)!
-        }
-
-        request.earliestBeginDate = target
-
-        do {
-            try BGTaskScheduler.shared.submit(request)
-            print("랭킹 집계 BGTask 스케줄 완료: \(target) (59분 \(sec)초)")
-            print("현재 시간: \(now)")
-            print("다음 실행까지 남은 시간: \(target.timeIntervalSince(now))초")
-        } catch {
-            print("랭킹 집계 BGTask 스케줄 실패: \(error)")
-        }
-
-        print("scheduleRankingBGTask Called.")
-    }
-    
-    /// 테스트용 랭킹 집계 BGTask 스케줄링 (매분 {sendToTime}초)
-    func scheduleRankingBGTaskTest(sendToTime: Int) {
-        let identifier = "com.beat.app.ranking"
-        let request = BGProcessingTaskRequest(identifier: identifier)
-        request.requiresNetworkConnectivity = true
-        request.requiresExternalPower = false
-
-        // 초 범위 보정 [0, 59]
-        let sec = max(0, min(sendToTime, 59))
-
-        let cal = Calendar.current
-        let now = Date()
-
-        // 다음 분의 "sec초"로 예약
-        var components = cal.dateComponents([.year, .month, .day, .hour, .minute], from: now)
-        if let minute = components.minute {
-            components.minute = minute + 1
-        } else {
-            components.minute = cal.component(.minute, from: now) + 1
-        }
-        components.second = sec
-
-        var target = cal.date(from: components)!
-        if target <= now {
-            target = cal.date(byAdding: .minute, value: 1, to: target)!
-        }
-
-        request.earliestBeginDate = target
-
-        do {
-            try BGTaskScheduler.shared.submit(request)
-            print("랭킹 집계 BGTask 스케줄 완료: \(target) (매분 \(sec)초)")
-            print("현재 시간: \(now)")
-            print("다음 실행까지 남은 시간: \(target.timeIntervalSince(now))초")
-        } catch {
-            print("랭킹 집계 BGTask 스케줄 실패: \(error)")
-        }
-
-        print("scheduleRankingBGTaskTest Called.")
-    }
-    
-    /// 자정 초기화 BGTask 스케줄링 (매일 자정)
-    func scheduleMidnightBGTask() {
-        let request = BGProcessingTaskRequest(identifier: "com.beat.app.midnight")
-        request.requiresNetworkConnectivity = false
-        request.requiresExternalPower = false
-        
-        // 다음 자정까지의 시간 계산
-        let calendar = Calendar.current
-        let now = Date()
-        let tomorrow = calendar.date(byAdding: .day, value: 1, to: now)!
-        let midnight = calendar.startOfDay(for: tomorrow)
-        
-        request.earliestBeginDate = midnight
-        
-        do {
-            try BGTaskScheduler.shared.submit(request)
-            print("자정 초기화 BGTask 스케줄 완료: \(midnight)")
-            print("현재 시간: \(Date())")
-            print("다음 자정까지 남은 시간: \(midnight.timeIntervalSinceNow)초")
-        } catch {
-            print("자정 초기화 BGTask 스케줄 실패: \(error)")
-        }
-        
-        print("scheduleMidnightBGTask Called.")
-    }
-    
-//    func scheduleMidnightBGTask() {
-//        let request = BGProcessingTaskRequest(identifier: "com.beat.app.midnight")
-//        request.requiresNetworkConnectivity = false
-//        request.requiresExternalPower = false
-//        
-//        // ✅ 테스트: 5분 뒤 실행
-//        request.earliestBeginDate = Date(timeIntervalSinceNow: 5 * 60)
-//        
-//        do {
-//            try BGTaskScheduler.shared.submit(request)
-//            print("✅ 테스트 모드: 5분 뒤 자정 초기화 BGTask 실행 예정")
-//        } catch {
-//            print("❌ 자정 초기화 BGTask 스케줄 실패: \(error)")
-//        }
-//    }
-    
-    // MARK: - BGTask 핸들러들
-    
-    func handleRankingTask(task: BGProcessingTask) {
-        print("랭킹 집계 BGTask 시작 (sendToTime: \(sendToTime))")
-        print("현재 시간: \(Date())")
-        
-        task.expirationHandler = {
-            print("랭킹 집계 BGTask 만료됨")
-            task.setTaskCompleted(success: false)
-        }
-        
-        // 다음 스케줄 예약 (BGTask로, sendToTime 전달)
-        scheduleRankingBGTask(sendToTime: sendToTime)
-//        scheduleRankingBGTaskTest(sendToTime: sendToTime)
-        
-        executeRankingSync { success in
-            print("랭킹 집계 BGTask 완료: \(success)")
-            task.setTaskCompleted(success: success)
-        }
-        
-        print("handleRankingTask Called.")
-    }
-    
-    func handleMidnightTask(task: BGProcessingTask) {
-        print("🌙 자정 초기화 BGTask 시작")
-        task.expirationHandler = {
-            task.setTaskCompleted(success: false)
-        }
-
-        scheduleMidnightBGTask() // 다음 자정 예약
-
-        executeMidnightReset { success in
-            task.setTaskCompleted(success: success)
-        }
-        
-        print("handleMidnightTask Called.")
-    }
-    
-    // MARK: - 실제 작업 실행
-    func executeRankingSync(completion: @escaping (Bool) -> Void) {
-        guard let controller = window?.rootViewController as? FlutterViewController else {
-            print("FlutterViewController를 찾을 수 없음")
-            completion(false)
-            return
-        }
-        
-        // 위치 채널 사용
-        locationChannel = FlutterMethodChannel(
-            name: "com.beat.walkreport/location",
-            binaryMessenger: controller.binaryMessenger
-        )
-        
-        print("Flutter와 통신하여 랭킹 집계 시작")
-        DispatchQueue.main.async {
-            self.locationChannel?.invokeMethod("syncRankingInBackground", arguments: nil) { result in
-                print("랭킹 집계 완료: \(String(describing: result))")
-                completion(true)
-            }
-        }
-    }
-    
-    func executeMidnightReset(completion: @escaping (Bool) -> Void) {
-        guard let controller = window?.rootViewController as? FlutterViewController else {
-            print("FlutterViewController를 찾을 수 없음")
-            completion(false)
-            return
-        }
-        
-        // 위치 채널 사용
-        locationChannel = FlutterMethodChannel(
-            name: "com.beat.walkreport/location",
-            binaryMessenger: controller.binaryMessenger
-        )
-        
-        print("Flutter와 통신하여 자정 초기화 시작")
-        DispatchQueue.main.async {
-            self.locationChannel?.invokeMethod("midnightReset", arguments: nil) { result in
-                print("자정 초기화 완료: \(String(describing: result))")
-                completion(true)
-            }
         }
     }
 }
